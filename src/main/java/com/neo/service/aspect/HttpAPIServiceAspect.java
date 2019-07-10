@@ -1,0 +1,34 @@
+package com.neo.service.aspect;
+
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.stereotype.Component;
+
+import com.neo.commons.util.UrlEncodingUtils;
+
+
+/**
+ * 暂时实现不了，貌似是因为Aspect jar包的版本太低
+ * @author Lenovo
+ *
+ */
+@Aspect
+@Component
+public class HttpAPIServiceAspect {
+
+    @Pointcut(value = "execution(* com.neo.service.httpclient.HttpAPIService.getFileHeaderBOByHead(..))")
+    public void getFileHeaderBOByHead() {
+    }
+
+    @Before(value = "getFileHeaderBOByHead()")
+    public void getFileHeaderBOByHeadBefore(JoinPoint joinPoint) {
+    	System.out.println("getFileHeaderBOByHead老子进来啦！");
+        Object[] args = joinPoint.getArgs();
+        args[0] = UrlEncodingUtils.encodeUrl(args[0].toString());  //url进行encode编码,不然httpclient可能请求失败
+    }
+    
+  
+    
+}

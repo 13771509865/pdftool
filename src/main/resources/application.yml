@@ -1,0 +1,87 @@
+server:
+  port: 8081                 #端口号
+  servlet:
+    context-path: /          #项目名
+
+spring:
+  #  profiles:
+  #    active: local          #使用哪个配置文件
+
+  devtools:
+    restart:
+      enabled: false       #热部署
+
+  thymeleaf:
+    cache: false           # 是否启用模板缓存
+    encoding: UTF-8        # 编码格式,默认UTF-8
+    mode: HTML             # 应用于模板的模板模式
+    prefix: classpath:/templates/  # 模板文件存放位置,默认 classpath:/templates/
+    suffix: .html          # 后缀默认 .html
+    servlet:
+      content-type: text/html   # 不配置子文件夹有问题
+
+  servlet:
+    multipart:                  #上传文件配置
+      enabled: true             #是否支持多文件上传
+      max-file-size: 100MB      #最大文件大小
+      max-request-size: 100MB   #最大请求大小(多文件上传总大小限制)
+
+
+
+  #缓存方式配置
+  #redis缓存
+  #######################################################################
+  redis:
+    database: 0 # Redis数据库索引（默认为0）
+    timeout: 10000 #设置客户端超时时间，单位是毫秒，默认为2000
+    #password: babel220 #密码
+    #单机版
+    host: 127.0.0.1
+    port: 6379
+    #集群版
+    #    cluster:
+    #      max-redirects: 3  # 获取失败 最大重定向次数
+    #      nodes:
+    #        - 127.0.0.1:6379
+    #        - 192.168.91.5:9002
+    lettuce:
+      pool:
+        max-active: 1000 #连接池最大连接数（使用负值表示没有限制）
+        max-wait: -1 #连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 300 #最大空闲数
+        min-idle: 0 #最小空闲数
+      shutdown-timeout: 1000
+
+
+logging:
+  config: classpath:log4j2.xml      #log4j2配置文件名称
+
+#actuator,spring监控服务
+management:
+  endpoint:
+    health:
+      show-details: always   #显示健康具体信息  默认不会显示详细信息
+  endpoints:
+    web:
+      base-path: /actuator   #修改访问路径
+      exposure:
+        include: "*"           #开放所有页面节点  默认只开启了health、info两个节点
+
+#httpclient相关优化配置
+http:
+  maxTotal: 400                      #设置最大连接数
+  defaultMaxPerRoute: 400            #设置每个主机地址的并发数
+  connectTimeout: 2000               #创建连接的最长时间
+  connectionRequestTimeout: 2000     #从连接池中获取到连接的最长时间
+  socketTimeout: 60000               #数据传输的最长时间（毫秒）
+  maxIdleTime: 60000                 #空闲时间(用于定期清理空闲连接)
+
+
+
+#################自定义配置#################
+#自定义配置
+uaa:
+  uaa_logout_url: http://auth.yozodocs.com/api/account/logout
+  uaa_userinfo_url: http://auth.yozocloud.cn/api/account/userinfo
+
+

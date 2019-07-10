@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--设置log4j2的自身log级别为warn-->
+<!--日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+<!--Configuration后面的status，这个用于设置log4j2自身内部的信息输出，可以不设置，
+    当设置成trace时，你会看到log4j2内部各种详细输出-->
+<!--monitorInterval：Log4j能够自动检测修改配置 文件和重新配置本身，设置间隔秒数-->
+<configuration status="info" monitorInterval="60">
+    <properties>
+        <!--日志路径-->
+        <property name="LOG_HOME">E:/dcs/log</property>
+        <!--日志文件名-->
+        <property name="FILE_NAME">pts</property>
+         <!--日志文件名-->
+        <property name="MYLOG_NAME">mylog</property>
+        <!--用户反馈日志文件名-->
+        <property name="SIZEROLLING_FILE_NAME">Feedback</property>
+        <!--#DEBUG、INFO、WARN、ERROR和FATAL-->
+        <property name="LOG_LEVEL">INFO</property>
+    </properties>
+    <!--先定义所有的appender-->
+    <appenders>
+        <!--这个输出控制台的配置-->
+        <console name="Console" target="SYSTEM_OUT">
+            <!--输出日志的格式-->
+            <PatternLayout pattern="[%p] %d{yyyy-MM-dd HH:mm:ss,SSS} - %l - %m%n"/>
+        </console>
+
+        <RollingFile name="DayRollingFile" fileName="${LOG_HOME}/${FILE_NAME}.log" filePattern="${LOG_HOME}/${FILE_NAME}-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="[%p] %d{yyyy-MM-dd HH:mm:ss,SSS} - %l - %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1" />
+            </Policies>
+        </RollingFile>
+        
+          <RollingFile name="LogRollingFile" fileName="${LOG_HOME}/${MYLOG_NAME}.log" filePattern="${LOG_HOME}/${MYLOG_NAME}-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="[%p] %d{yyyy-MM-dd HH:mm:ss,SSS} - %l - %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1" />
+            </Policies>
+        </RollingFile>
+
+
+        <RollingFile name="SizeRollingFile" fileName="${LOG_HOME}/${SIZEROLLING_FILE_NAME}.log" filePattern="${LOG_HOME}/${SIZEROLLING_FILE_NAME}-%d{yyyy-MM}-%i.log">
+            <PatternLayout pattern="[%p] %d{yyyy-MM-dd HH:mm:ss,SSS} - %l - %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <!--按大小归档-->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="30"/>
+        </RollingFile>
+    </appenders>
+
+    <loggers>
+        <root level="${LOG_LEVEL}">
+            <appender-ref ref="Console"/>
+        </root>
+
+        <Logger name="R" level="ERROR" additivity="false">
+            <appender-ref ref="DayRollingFile"/>
+        </Logger>
+        
+        <Logger name="N" level="${LOG_LEVEL}" additivity="true">
+            <appender-ref ref="LogRollingFile"/>
+        </Logger>
+
+        <Logger name="Feedback" level="INFO" additivity="false">
+            <appender-ref ref="SizeRollingFile"/>
+        </Logger>
+    </loggers>
+</configuration>
+
+
+
