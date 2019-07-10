@@ -8,7 +8,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.neo.commons.SysConfig;
+import com.neo.config.SysConfig;
 
 /**
  * 限制转换并发的类

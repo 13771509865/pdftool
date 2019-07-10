@@ -3,11 +3,11 @@ package com.neo.service.accessTimes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.neo.commons.SysConfig;
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.RedisConsts;
 import com.neo.commons.util.SysLog4JUtils;
+import com.neo.config.SysConfig;
 import com.neo.service.IAccessTimesService;
 import com.neo.service.cache.CacheManager;
 import com.neo.service.cache.CacheService;

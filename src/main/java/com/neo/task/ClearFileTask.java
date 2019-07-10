@@ -10,11 +10,12 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import com.neo.commons.SysConfig;
 import com.neo.commons.cons.RedisConsts;
 import com.neo.commons.cons.SysConstant;
 import com.neo.commons.util.SysLog4JUtils;
+import com.neo.config.SysConfig;
 import com.neo.service.cache.CacheManager;
 import com.neo.service.cache.CacheService;
 import com.neo.service.file.FileService;
@@ -27,6 +28,7 @@ import com.neo.service.file.FileService;
  * @author zhouf
  * @create 2018-12-10 21:20
  */
+@Component
 public class ClearFileTask {
 	@Autowired
 	private FileService fileService;

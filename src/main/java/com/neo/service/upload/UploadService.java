@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.neo.commons.SysConfig;
+import com.neo.config.SysConfig;
 import com.neo.service.IUploadService;
 
 public class UploadService implements IUploadService{

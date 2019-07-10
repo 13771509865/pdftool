@@ -1,6 +1,5 @@
 package com.neo.service.convertParameterBO;
 
-import com.neo.commons.SysConfig;
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumConvertType;
 import com.neo.commons.cons.IResult;
@@ -8,6 +7,7 @@ import com.neo.commons.cons.ResultCode;
 import com.neo.commons.cons.SysConstant;
 import com.neo.commons.util.GetConvertMd5Utils;
 import com.neo.commons.util.UUIDHelper;
+import com.neo.config.SysConfig;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.service.file.FileService;
 

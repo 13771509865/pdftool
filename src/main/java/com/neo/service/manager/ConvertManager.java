@@ -1,12 +1,12 @@
 package com.neo.service.manager;
 
-import com.neo.commons.SysConfig;
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.RedisConsts;
 import com.neo.commons.cons.ResultCode;
 import com.neo.commons.cons.SysConstant;
 import com.neo.commons.util.SysLog4JUtils;
+import com.neo.config.SysConfig;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FileInfoBO;
 import com.neo.service.IConvertManager;

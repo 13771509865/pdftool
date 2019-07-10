@@ -13,7 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.neo.commons.SysConfig;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.RedisConsts;
 import com.neo.commons.cons.ResultCode;
@@ -22,6 +21,7 @@ import com.neo.commons.cons.TimeConsts;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLog4JUtils;
+import com.neo.config.SysConfig;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FileInfoBO;
 import com.neo.service.IMqConvertManager;

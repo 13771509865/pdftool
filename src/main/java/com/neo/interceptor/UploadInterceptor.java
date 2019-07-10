@@ -1,5 +1,6 @@
 package com.neo.interceptor;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,13 +11,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.neo.commons.SysConfig;
 import com.neo.commons.cons.ConstantAdmin;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.ResultCode;
 import com.neo.commons.cons.SysConstant;
 import com.neo.commons.util.GetIpAddrUtils;
 import com.neo.commons.util.JsonResultUtils;
+import com.neo.config.SysConfig;
 import com.neo.service.accessTimes.AccessTimesService;
 
 /**
@@ -65,26 +66,34 @@ public class UploadInterceptor implements HandlerInterceptor {
 		}
 		IResult<Integer> uploadTimesResult = accessTimesService.getIpUploadTimes(ipAddr);
 		if (!uploadTimesResult.isSuccess()) {
-			response.setContentType("text/html;charset=UTF-8");
-			response.setCharacterEncoding("UTF-8");
-			PrintWriter out = response.getWriter();
-			out.write(JsonResultUtils.buildFailJsonResultByResultCode(ResultCode.E_REDIS_FAIL));
-			out.flush();
-			out.close();
+			sendResult(response,ResultCode.E_REDIS_FAIL);
 			return false;
 		} else {
 			Integer ipUploadTimes = uploadTimesResult.getData();
 			if (ipUploadTimes >= maxUploadTimes) { // 超过上传次数
-				response.setContentType("text/html;charset=UTF-8");
-				response.setCharacterEncoding("UTF-8");
-				PrintWriter out = response.getWriter();
-				out.write(JsonResultUtils.buildFailJsonResultByResultCode(ResultCode.E_UPLOAD_OVER_TIME));
-				out.flush();
-				out.close();
+				sendResult(response,ResultCode.E_UPLOAD_OVER_TIME);
 				return false;
 			} else {
 				return true;
 			}
 		}
 	}
+	
+	
+	public void sendResult( HttpServletResponse response,ResultCode resultCode) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		PrintWriter out = response.getWriter();
+		out.write(JsonResultUtils.buildFailJsonResultByResultCode(resultCode));
+		out.flush();
+		out.close();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 }

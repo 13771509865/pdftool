@@ -1,6 +1,7 @@
 package com.neo.task;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.neo.commons.util.SysLog4JUtils;
 import com.neo.service.accessTimes.AccessTimesService;
@@ -14,6 +15,7 @@ import com.neo.service.accessTimes.AccessTimesService;
  * @author zhouf
  * @create 2018-12-10 21:20
  */
+@Component
 public class ClearIpTimesTask {
 	@Autowired
 	private AccessTimesService accessTimesService;

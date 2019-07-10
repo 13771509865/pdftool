@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.neo.commons.SysConfig;
 import com.neo.commons.cons.ConstantAdmin;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.ResultCode;
 import com.neo.commons.cons.SysConstant;
 import com.neo.commons.util.GetIpAddrUtils;
 import com.neo.commons.util.JsonResultUtils;
+import com.neo.config.SysConfig;
 import com.neo.service.accessTimes.AccessTimesService;
 
 /**

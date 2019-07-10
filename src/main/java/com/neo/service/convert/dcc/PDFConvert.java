@@ -1,9 +1,9 @@
 package com.neo.service.convert.dcc;
 
-import com.neo.commons.SysConfig;
 import com.neo.commons.cons.ResultCode;
 import com.neo.commons.helper.FilePathHelper;
 import com.neo.commons.util.SysLog4JUtils;
+import com.neo.config.SysConfig;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 

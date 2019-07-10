@@ -1,9 +1,10 @@
 package com.neo.controller;
 
-import com.neo.commons.SysConfig;
 import com.neo.commons.cons.ResultCode;
 import com.neo.commons.cons.SysConstant;
 import com.neo.commons.util.JsonResultUtils;
+import com.neo.config.SysConfig;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
