@@ -14,8 +14,11 @@ import com.neo.service.TicketManager;
 import com.neo.service.cache.CacheManager;
 import com.neo.service.cache.CacheService;
 import com.neo.service.convert.ConvertService;
+import com.neo.service.convertParameterBO.ConvertParameterBOService;
 import com.neo.service.file.FileService;
 
+import org.apache.commons.io.Charsets;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +44,8 @@ public class ConvertManager implements IConvertManager {
 	private FileService fileService;
 	@Autowired
 	private SysConfig config;
+    @Autowired
+    private ConvertParameterBOService convertParameterBOService;
 	
 	private final Integer pollTimeOut = 7; //取超时时间
 
@@ -101,7 +106,7 @@ public class ConvertManager implements IConvertManager {
 			return DefaultResult.failResult(ResultCode.E_SERVER_BUSY.getInfo(),fileInfo);
 		}
 		try {
-			IResult<String> preResult = preConvert(paramBO);
+            IResult<ResultCode> preResult = convertParameterBOService.prepareConvert(paramBO);
 			if(!preResult.isSuccess()) {
 				fileInfo.setCode(ResultCode.E_FILESERVICE_FAIL.getValue());
 				return DefaultResult.failResult(preResult.getMessage(),fileInfo);
@@ -130,13 +135,19 @@ public class ConvertManager implements IConvertManager {
 		}
 	}
 	
-	private boolean mkBOFile(ConvertParameterBO paramBO) {
-		String parame = paramBO.toString();
-		File file =new File(paramBO.getSrcPath()).getParentFile();
-		String boFilePath = file.getAbsolutePath() + File.separator + SysConstant.CONVERTPARAMETERFILENAME;
-		return fileService.writeStringToFile(parame, boFilePath);
-	}
-	
+    private boolean mkBOFile(ConvertParameterBO convertBO) {
+        try {
+            String paramStr = convertBO.toString();
+            File rootFile = new File(config.getInputDir(), SysConstant.CONVERTPARAMETERDIR);
+            File paramFile = new File(rootFile, convertBO.getFileHash() + File.separator + SysConstant.CONVERTPARAMETERFILENAME);
+            FileUtils.writeStringToFile(paramFile, paramStr, Charsets.UTF_8);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            SysLog4JUtils.error("生成BO.txt文件失败", e);
+            return false;
+        }
+    }
 	/**
 	 * 创建父文件夹,创建BO文件
 	 * @param paramBO
@@ -174,7 +185,7 @@ public class ConvertManager implements IConvertManager {
 	private FileInfoBO buildFileInfoBO(ConvertParameterBO paramBO,FileInfoBO fileInfo) {
 		fileInfo.setWordStoragePath(paramBO.getDestRelativePath());
 		fileInfo.setFileHash(paramBO.getFileHash());
-		fileInfo.setFileName(paramBO.getFileName());
+		fileInfo.setFileName(paramBO.getSrcFileName());
 		fileInfo.setStoragePath(paramBO.getSrcRelativePath());
 		fileInfo.setCode(ResultCode.E_SUCCES.getValue());
 		return fileInfo;

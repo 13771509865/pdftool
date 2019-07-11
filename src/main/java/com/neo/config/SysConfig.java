@@ -68,4 +68,6 @@ public class SysConfig{
 	@Value(value= "${awaitTerminationSeconds}")
 	private Integer awaitTerminationSeconds = 60;
 
+    @Value(value = "${folderFormat}")
+    private String folderFormat = "yyyy/MM";
 }

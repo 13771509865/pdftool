@@ -60,4 +60,15 @@ public interface SysConstant {
 	 * 用于临时Cookie的MaxAge
 	 */
 	int TEMP        = -1;
+	
+	public static final String FILEATTRIBUTEVO = "fileAttributeVO";
+	
+	public static final String  CONVERTPARAMETERDIR= "convertParameterDir";
+
+	public static final String SIGNATURE_INTERFACE = "/edit/signature/";
+
+	public static final String SIGNATUREFILEPATH = "signature";
+	
+	public static final String UUIDMD5_HEADER = "uuid_";
+
 }

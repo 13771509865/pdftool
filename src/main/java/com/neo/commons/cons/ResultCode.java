@@ -34,8 +34,18 @@ public enum ResultCode {
 	E_VISITOR_CONVERT_ARRAY_ERROR(25,"游客不支持批量转换，获取更大权限，请注册登录"),
 	E_USER_UPLOAD_ERROR(26,"文件大小超出30M，暂不支持，如有紧急，请联系客服"),
 	E_USER_CONVERT_NUM_ERROR(27,"每天可转换20个文件"),
-	E_USER_CONVERT_ARRAY_ERROR(28,"您最多可同时对5个文档进行操作");
+	E_USER_CONVERT_ARRAY_ERROR(28,"您最多可同时对5个文档进行操作"),
 	
+	E_UNSUPPORT_FAIL(44,"没有支持的转码服务,请联系永中技术支持"),
+	E_SIGNATURE_FAIL(45, "签批生成失败"),
+	E_SIGNATURE_USE(46, "文件已被锁住，提交失败"),
+	E_FCSENI_ERROR(47,"fcs授权文件错误,请检查文件"),
+	E_WAITING_STATUS(48,"文档转换中,请稍后"),
+	E_CONVERTYPE_SRCFILE_ERROR(49,"转换类型与文件不匹配,请检查参数"),
+	E_MERGEFILE_NULL(51,"需要合并的文档不存在"),
+	E_WMPICFILE_ERROE(52,"图片水印不存在或文件有误,请检查"),
+	E_ILLEGA_PARAM(53,"参数包含非法字符，请检查参数");
+
 	private Integer value;
 	private String info;
 	private ResultCode(Integer value, String info) {
