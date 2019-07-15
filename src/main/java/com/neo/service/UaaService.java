@@ -75,7 +75,6 @@ public class UaaService {
 	        //清空cookie
 	        for (String domain : yozoCloudProperties.getUaaCookieDomains()) {
 	            for (String cookieName : COOKIE_NAMES) {
-	            	
 	            	CookieUtils.deleteCookie(request, response, cookieName, domain);
 	            }
 	        }

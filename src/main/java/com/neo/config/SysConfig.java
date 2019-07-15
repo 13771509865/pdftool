@@ -29,14 +29,26 @@ public class SysConfig{
 	@Value(value = "${convertTimeout}")
 	private String convertTimeout;
 
-	@Value(value = "${uploadSize}")
-	private Integer uploadSize;
+	@Value(value = "${mUploadSize}")
+	private Integer mUploadSize;
 
-	@Value(value = "${uploadTimes}")
-	private Integer uploadTimes;
+	@Value(value = "${vUploadSize}")
+	private Integer vUploadSize;
 
-	@Value(value = "${convertTimes}")
-	private Integer convertTimes;
+	@Value(value = "${mConvertTimes}")
+	private Integer mConvertTimes;
+
+	@Value(value = "${vConvertTimes}")
+	private Integer vConvertTimes;
+	
+	@Value(value = "${mConvertNum}")
+	private Integer mConvertNum;
+	
+	@Value(value = "${vConvertNum}")
+	private Integer vConvertNum;
+	
+	@Value(value = "${clearDay}")
+	private Integer clearDay;
 
 	@Value(value = "${pdf2WordPath}")
 	private String pdf2WordPath;
@@ -46,9 +58,6 @@ public class SysConfig{
 
 	@Value(value = "${pdf2WordConfig}")
 	private String pdf2WordConfig;
-
-	@Value(value = "${clearDay}")
-	private Integer clearDay;
 
 	@Value(value= "${corePoolSize}")
 	private Integer corePoolSize = 5;
@@ -68,6 +77,7 @@ public class SysConfig{
 	@Value(value= "${awaitTerminationSeconds}")
 	private Integer awaitTerminationSeconds = 60;
 
-    @Value(value = "${folderFormat}")
+	@Value(value = "${folderFormat}")
     private String folderFormat = "yyyy/MM";
+
 }

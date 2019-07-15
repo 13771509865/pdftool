@@ -5,8 +5,9 @@ public class RedisConsts {
 	
 	public static final String TotalConvertTimesKey = "totalConvertTimes";
 	public static final String IpKey = "ip";
-	public static final String IpUploadTimesKey = "uploadTimes";
-	public static final String IpconvertTimesKey = "convertTimes";
+//	public static final String IpUploadTimesKey = "uploadTimes";
+	public static final String IpConvertTimesKey = "ipConvertTimes";
+	public static final String IdConvertTimesKey = "idConvertTimes";
 	
 	public static final String MqWaitConvert = "mqWaitConvert"; //待转换消息队列
 	public static final String MqConvertResult = "mqConvertResult"; //转换完成队列

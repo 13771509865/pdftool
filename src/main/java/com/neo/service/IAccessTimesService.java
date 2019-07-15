@@ -15,7 +15,7 @@ public interface IAccessTimesService {
 	 * @param ip
 	 * @return
 	 */
-	public IResult<Integer> getIpUploadTimes(String ip);
+//	public IResult<Integer> getIpUploadTimes(String ip);
 
 	/**
 	 * Description:获取该ip当天转码次数
@@ -31,7 +31,7 @@ public interface IAccessTimesService {
 	 * @param ip
 	 * @return
 	 */
-	public IResult<Integer> addUploadTimes(String ip);
+//	public IResult<Integer> addUploadTimes(String ip);
 
 	/**
 	 * Description:该ip当天上传次数加一；达到最大限制则返回失败

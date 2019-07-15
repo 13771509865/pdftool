@@ -25,8 +25,9 @@ public class AccessTimesService implements IAccessTimesService {
 	private CacheService<String> cacheService;
 	private String totalConvertTimesKey = RedisConsts.TotalConvertTimesKey;
 	private String ipKey = RedisConsts.IpKey;
-	private String ipUploadTimesKey = RedisConsts.IpUploadTimesKey;
-	private String ipconvertTimesKey = RedisConsts.IpconvertTimesKey;
+//	private String ipUploadTimesKey = RedisConsts.IpUploadTimesKey;
+	private String ipconvertTimesKey = RedisConsts.IpConvertTimesKey;
+	private String idconvertTimesKey = RedisConsts.IdConvertTimesKey;
 
 	/**
 	 * Description:获取该ip当天上传次数
@@ -34,18 +35,18 @@ public class AccessTimesService implements IAccessTimesService {
 	 * @param ip
 	 * @return
 	 */
-	@Override
-	public IResult<Integer> getIpUploadTimes(String ip) {
-
-		try {
-			addTotalIp(ip);
-			Integer uploadTimes = getUploadTimes(ip);
-			return DefaultResult.successResult(uploadTimes);
-		} catch (Exception e) {
-			SysLog4JUtils.error(e);
-			return DefaultResult.failResult("get upload times failed :" + ip);
-		}
-	}
+//	@Override
+//	public IResult<Integer> getIpUploadTimes(String ip) {
+//
+//		try {
+//			addTotalIp(ip);
+//			Integer uploadTimes = getUploadTimes(ip);
+//			return DefaultResult.successResult(uploadTimes);
+//		} catch (Exception e) {
+//			SysLog4JUtils.error(e);
+//			return DefaultResult.failResult("get upload times failed :" + ip);
+//		}
+//	}
 
 	/**
 	 * Description:获取该ip当天上传次数
@@ -53,37 +54,36 @@ public class AccessTimesService implements IAccessTimesService {
 	 * @param ip
 	 * @return
 	 */
-	private Integer getUploadTimes(String ip) {
-		try {
-			CacheManager<String> cacheManager = cacheService.getCacheManager();
-			Double uploadTimesDouble = cacheManager.getScore(ipUploadTimesKey, ip);
-			if (uploadTimesDouble == null) {
-				cacheManager.pushZSet(ipUploadTimesKey, "ip");
-				uploadTimesDouble = (double) 0;
-			}
-			Integer uploadTimes = uploadTimesDouble.intValue();
-			return uploadTimes;
-		} catch (Exception e) {
-			SysLog4JUtils.error(e);
-			e.printStackTrace();
-		}
-		return -1;
-	}
+//	private Integer getUploadTimes(String ip) {
+//		try {
+//			CacheManager<String> cacheManager = cacheService.getCacheManager();
+//			Double uploadTimesDouble = cacheManager.getScore(ipUploadTimesKey, ip);
+//			if (uploadTimesDouble == null) {
+//				cacheManager.pushZSet(ipUploadTimesKey, "ip");
+//				uploadTimesDouble = (double) 0;
+//			}
+//			Integer uploadTimes = uploadTimesDouble.intValue();
+//			return uploadTimes;
+//		} catch (Exception e) {
+//			SysLog4JUtils.error(e);
+//			e.printStackTrace();
+//		}
+//		return -1;
+//	}
 
 	/**
-	 * Description:获取该ip当天转码次数
-	 * 
-	 * @param ip
+	 * Description:获取该ip或者userID当天转码次数
+	 * @param key
 	 * @return
 	 */
 	@Override
-	public IResult<Integer> getIpConvertTimes(String ip) {
+	public IResult<Integer> getIpConvertTimes(String key) {
 		try {
-			Integer convertTimes = getConvertTimes(ip);
+			Integer convertTimes = getConvertTimes(key);
 			return DefaultResult.successResult(convertTimes);
 		} catch (Exception e) {
 			SysLog4JUtils.error(e);
-			return DefaultResult.failResult("get convert times failed :" + ip);
+			return DefaultResult.failResult("get convert times failed :" + key);
 		}
 	}
 
@@ -116,42 +116,34 @@ public class AccessTimesService implements IAccessTimesService {
 	 * @param ip
 	 * @return
 	 */
-	public IResult<Integer> addUploadTimes(String ip) {
-		try {
-			Integer result = 0;
-			CacheManager<String> cacheManager = cacheService.getCacheManager();
-			Integer uploadTimes = getUploadTimes(ip);
-
-			// if (uploadTimes >= config.getUploadTimes()) {
-			// result = 0;
-			// } else {
-			// }
-			cacheManager.pushZSet(ipUploadTimesKey, ip);
-			result = uploadTimes + 1;
-			return DefaultResult.successResult(result);
-		} catch (Exception e) {
-			SysLog4JUtils.error(e);
-			return DefaultResult.failResult("add upload times failed :" + ip);
-		}
-	}
+//	public IResult<Integer> addUploadTimes(String ip) {
+//		try {
+//			Integer result = 0;
+//			CacheManager<String> cacheManager = cacheService.getCacheManager();
+//			Integer uploadTimes = getUploadTimes(ip);
+//
+//			cacheManager.pushZSet(ipUploadTimesKey, ip);
+//			result = uploadTimes + 1;
+//			return DefaultResult.successResult(result);
+//		} catch (Exception e) {
+//			SysLog4JUtils.error(e);
+//			return DefaultResult.failResult("add upload times failed :" + ip);
+//		}
+//	}
 
 	/**
-	 * Description:该ip当天转码次数加一返回上传次数；达到最大限制则返回0
+	 * Description:该ip或者userID当天转码次数加一返回上传次数；达到最大限制则返回0
 	 * 
 	 * @param ip
 	 * @return
 	 */
-	public IResult<Integer> addConvertTimes(String ip) {
+	public IResult<Integer> addConvertTimes(String key) {
 		try {
 			Integer result = 0;
 			CacheManager<String> cacheManager = cacheService.getCacheManager();
-			Integer convertTimes = getConvertTimes(ip);
+			Integer convertTimes = getConvertTimes(key);
 			Integer totalConvertTimes = 0;
 
-			// if (convertTimes >= config.getConvertTimes()) {
-			// result = 0;
-			// } else {
-			// }
 			result = convertTimes + 1;
 
 			if (!cacheManager.exists(totalConvertTimesKey)) {
@@ -159,13 +151,13 @@ public class AccessTimesService implements IAccessTimesService {
 			}
 			totalConvertTimes = getTotalConvertCount() + 1;
 			if (totalConvertTimes > 0) {
-				cacheManager.pushZSet(ipconvertTimesKey, ip);
+				cacheManager.pushZSet(ipconvertTimesKey, key);
 				cacheManager.set(totalConvertTimesKey, totalConvertTimes.toString());
 			}
 			return DefaultResult.successResult(result);
 		} catch (Exception e) {
 			SysLog4JUtils.error(e);
-			return DefaultResult.failResult("add convert times failed :" + ip);
+			return DefaultResult.failResult("add convert times failed :" + key);
 		}
 	}
 
@@ -242,8 +234,9 @@ public class AccessTimesService implements IAccessTimesService {
 	 */
 	public void clearIpTimes() {
 		CacheManager<String> cacheManager = cacheService.getCacheManager();
-		cacheManager.delete(ipUploadTimesKey);
+//		cacheManager.delete(ipUploadTimesKey);
 		cacheManager.delete(ipconvertTimesKey);
+		cacheManager.delete(idconvertTimesKey);
 	}
 
 }

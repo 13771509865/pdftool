@@ -119,9 +119,9 @@ public class ConvertParameterBOService {
         boolean checkFileName = fileName != null && !"".equals(fileName);
         boolean checkType = EnumConvertType.getEnum(convertType) != null;
         if (checkInput && checkFileName && checkType) {
-            if (new File(srcPath).length() > sysConfig.getUploadSize() * 1024 * 1024) {//文件过大
-                return DefaultResult.failResult(ResultCode.E_UPLOAD_SIZE.getInfo(), ResultCode.E_UPLOAD_SIZE);
-            }
+//            if (new File(srcPath).length() > sysConfig.getUploadSize() * 1024 * 1024) {//文件过大
+//                return DefaultResult.failResult(ResultCode.E_UPLOAD_SIZE.getInfo(), ResultCode.E_UPLOAD_SIZE);
+//            }
             if(StringUtils.isEmpty(convertBO.getFileHash()) || convertBO.getFileHash().startsWith(SysConstant.UUIDMD5_HEADER)){
                 return DefaultResult.failResult(ResultCode.E_GETCONVERTMD5_FAIL.getInfo(),ResultCode.E_GETCONVERTMD5_FAIL);
             }
