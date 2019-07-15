@@ -22,43 +22,56 @@ import javax.servlet.http.HttpSession;
 /**
  * 用户反馈controller
  *
- * @authore sumnear
- * @create 2018-12-13 20:36
+ * @authore xujun
+ * @create 2018-7-15
  */
 @Controller
 public class FeedbackController{
-	
-	private Logger feedback =  LoggerFactory.getLogger("Feedback");
-	
 
-    @RequestMapping(value = "/feedback")
-    @ResponseBody
-    public Map<String, Object> convertPdf2word(Integer star,Integer type,String content,HttpServletRequest request)  {
-        
-        if(StringUtils.isEmpty(star)) {
-        	return JsonResultUtils.failMapResult("请为我打分");
-        }
-        if(StringUtils.isEmpty(type)) {
-        	return JsonResultUtils.failMapResult("请选择反馈类型");
-        }
-        if(type == 10 && StringUtils.isEmpty(content)) {
-        	return JsonResultUtils.failMapResult("请填写反馈内容");
-        }
-        if(type != 10) {
-        	content = EnumFeedbackType.getStatusInfo(type);
-        } 
-        HttpSession session = request.getSession();
-        String userInfo = (String)session.getAttribute(ConstantCookie.SESSION_USER);
-        String strInfo = "";
-        String username = "游客";
-        if(!StringUtils.isEmpty(userInfo)) {
-        	UserBO userBO = JsonUtils.json2obj(userInfo, UserBO.class);
-        	username = userBO.getName();
-        	strInfo =userBO.getPhone()+"::"+userBO.getAccount();
-        }
-        feedback.info(username+"::"+star+"颗星"+"::"+content+"::"+strInfo);
-        return JsonResultUtils.successMapResult("操作成功！");
-    }
-    
-    
+
+
+	@RequestMapping(value = "/feedback")
+	@ResponseBody
+	public Map<String, Object> convertPdf2word(Integer star,String type,String content,HttpServletRequest request)  {
+		Logger feedback = LoggerFactory.getLogger("Feedback");
+		if(StringUtils.isEmpty(star)) {
+			return JsonResultUtils.failMapResult("请为我打分");
+		}
+
+		if(type.contains(",")) {//选了多个反馈标签
+			String[] types = type.split(",");
+			if(types.length>3) {
+				return JsonResultUtils.failMapResult("最多只能选择3个标签");
+			}
+			for(String value : types) {
+				if("10".equals(value) && StringUtils.isEmpty(content)) {
+					return JsonResultUtils.failMapResult("请填写反馈内容");
+				}
+				if(!"10".equals(value)) {
+					content += EnumFeedbackType.getStatusInfo(value)+"::";
+				} 
+			}
+		}else {//只选择一个标签
+			if("10".equals(type) && StringUtils.isEmpty(content) ) {
+				return JsonResultUtils.failMapResult("请填写反馈内容");
+			}
+			if(!"10".equals(type)) {
+				content = EnumFeedbackType.getStatusInfo(type);
+			} 
+		}
+
+		HttpSession session = request.getSession();
+		String userInfo = (String)session.getAttribute(ConstantCookie.SESSION_USER);
+		String strInfo = "";
+		String username = "游客";
+		if(!StringUtils.isEmpty(userInfo)) {//获取登录者信息
+			UserBO userBO = JsonUtils.json2obj(userInfo, UserBO.class);
+			username = userBO.getName();
+			strInfo =userBO.getPhone()+"::"+userBO.getAccount();
+		}
+		
+		feedback.info(username+"::"+star+"颗星"+"::"+content+"::"+strInfo);
+		return JsonResultUtils.successMapResult("反馈问题已记录");
+	}
+
 }
