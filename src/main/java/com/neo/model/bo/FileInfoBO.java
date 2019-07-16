@@ -169,15 +169,21 @@ public class FileInfoBO
     }
 
     public static String serializeData(FileInfoBO info) {
-        return JSONObject.toJSONString(info);
+        return JSON.toJSONString(info);
     }
 
-    public static FileInfoBO deserializeData(String str) {
-        return (FileInfoBO) JSONObject.parse(str);
+//    public static FileInfoBO deserializeData(String str) {
+//        return JSON.parseObject(str);
+//    }
+    
+    public static <T> T json2obj(String json, Class<T> clazz) {
+        return JSON.parseObject(json, clazz);
     }
 
+    
     public static void main(String[] args) {
-    	FileInfoBO bo = (FileInfoBO) JSONObject.parse(null);
+    	String str = "\"{\\\"clickConvert\\\":false,\\\"code\\\":0,\\\"committer\\\":0,\\\"convertType\\\":\\\"\\\",\\\"editionId\\\":0,\\\"enterpriseId\\\":0,\\\"fileAbsolutePath\\\":\\\"\\\",\\\"fileHash\\\":\\\"37272201681bf0e48ea7b4bb3d9d5a7302E7F83627666BF0DA47AC47261EE510\\\",\\\"fileId\\\":0,\\\"fileName\\\":\\\"无锡市房屋征收评估技术规范.pdf\\\",\\\"fileRefId\\\":0,\\\"fileSize\\\":0,\\\"folderId\\\":0,\\\"needConvert\\\":false,\\\"owner\\\":0,\\\"pageCount\\\":0,\\\"pageSize\\\":[],\\\"pdfHash\\\":\\\"\\\",\\\"pdfPassword\\\":\\\"\\\",\\\"priority\\\":0,\\\"secUpload\\\":false,\\\"sid\\\":\\\"\\\",\\\"storagePath\\\":\\\"2cd96314-5c81-475f-b92a-e4dc02bd39ef\\\\\\\\无锡市房屋征收评估技术规范.pdf\\\",\\\"tag\\\":\\\"\\\",\\\"topic\\\":\\\"\\\",\\\"uploadToken\\\":\\\"\\\",\\\"version\\\":0,\\\"waitTime\\\":0,\\\"wordHash\\\":\\\"\\\",\\\"wordStoragePath\\\":\\\"2019\\\\\\\\07\\\\\\\\15\\\\\\\\37272201681bf0e48ea7b4bb3d9d5a7302E7F83627666BF0DA47AC47261EE510\\\\\\\\无锡市房屋征收评估技术规范.docx\\\"}";
+    	FileInfoBO bo =json2obj(str,FileInfoBO.class);
     	System.out.println(bo);
 	}
     

@@ -80,7 +80,7 @@ public class ConvertManager implements IConvertManager {
 		boolean fileExists = cacheManager.existHashKey(fileInfoKey, convertMd5);
 		if (fileExists) { // 文件已转换过
 			String fileInfoString = cacheManager.getHashValue(fileInfoKey, convertMd5);
-			FileInfoBO fileInfo = FileInfoBO.deserializeData(fileInfoString);
+			FileInfoBO fileInfo = FileInfoBO.json2obj(fileInfoString,FileInfoBO.class);
 			if (fileInfo != null) {
 				String wordStoragePath = fileInfo.getWordStoragePath();
 				boolean exists = fileService.isExists(config.getOutputDir(), wordStoragePath);

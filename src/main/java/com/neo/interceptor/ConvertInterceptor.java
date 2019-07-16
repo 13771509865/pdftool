@@ -38,8 +38,6 @@ import com.neo.service.cache.CacheService;
 @Component
 public class ConvertInterceptor implements HandlerInterceptor {
 
-	//	@Autowired
-	//	private AccessTimesService accessTimesService;
 
 	@Autowired
 	private CacheService<String> cacheService;
@@ -70,8 +68,8 @@ public class ConvertInterceptor implements HandlerInterceptor {
 				String key = RedisConsts.IpConvertTimesKey;
 				String value = ipAddr; 
 				if(StringUtils.isNotBlank(userID)) {//登录用户
-					 key = RedisConsts.IdConvertTimesKey;
-					 value = userID; 
+					key = RedisConsts.IdConvertTimesKey;
+					value = userID; 
 				}
 				boolean addConvertTimes = cacheManager.pushZSet(key, value);
 				SysLog4JUtils.info("转换次数插入是否成功："+addConvertTimes);
@@ -85,13 +83,13 @@ public class ConvertInterceptor implements HandlerInterceptor {
 			throws Exception {
 		String ipAddr = GetIpAddrUtils.getIpAddr(request);
 		String userID = getSessionUserID(request);
-		
+
 		//默认为游客参数值
-		Integer maxConvertTimes = config.getVConvertTimes();//5个文件
-		String key = RedisConsts.IpConvertTimesKey;
+		Integer maxConvertTimes = config.getVConvertTimes();//游客5个文件
 		String value = ipAddr; 
+		String key = RedisConsts.IpConvertTimesKey;
 		ResultCode resultCode = ResultCode.E_VISITOR_CONVERT_NUM_ERROR;
-		
+
 		if(!ConstantAdmin.ADMIN_IP.equals(ipAddr)){//公司ip不拦截
 			if(StringUtils.isNotBlank(userID)){//会员20个文件
 				maxConvertTimes = config.getMConvertTimes();
@@ -103,7 +101,12 @@ public class ConvertInterceptor implements HandlerInterceptor {
 			int convertTimes = cacheManager.getScore(key,value).intValue();
 			SysLog4JUtils.info("转换次数为："+convertTimes);
 			if (convertTimes >= maxConvertTimes) { // 超过每日最大转换次数
-				sendResult(response,resultCode);
+				response.setContentType("text/html;charset=UTF-8");
+				response.setCharacterEncoding("UTF-8");
+				PrintWriter out = response.getWriter();
+				out.write(JsonResultUtils.buildFailJsonResultByResultCode(resultCode));
+				out.flush();
+				out.close();
 				return false;
 			} 
 		}
@@ -115,20 +118,13 @@ public class ConvertInterceptor implements HandlerInterceptor {
 	private String getSessionUserID(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		String userInfo = (String)session.getAttribute(ConstantCookie.SESSION_USER);
-		UserBO userBO = JsonUtils.json2obj(userInfo, UserBO.class);
-		return userBO.getUserId();
+		if(StringUtils.isNotBlank(userInfo)) {
+			UserBO userBO = JsonUtils.json2obj(userInfo, UserBO.class);
+			return userBO.getUserId();
+		}
+		return null;
 	}
 
-
-	//发送消息
-	private void sendResult( HttpServletResponse response,ResultCode resultCode) throws Exception {
-		response.setContentType("text/html;charset=UTF-8");
-		response.setCharacterEncoding("UTF-8");
-		PrintWriter out = response.getWriter();
-		out.write(JsonResultUtils.buildFailJsonResultByResultCode(resultCode));
-		out.flush();
-		out.close();
-	}
 
 
 	//redis初始化对象

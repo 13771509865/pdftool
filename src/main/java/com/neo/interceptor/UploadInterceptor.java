@@ -3,6 +3,7 @@ package com.neo.interceptor;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -41,6 +42,10 @@ public class UploadInterceptor implements HandlerInterceptor {
 	@Autowired
 	private SysConfig config;
 	
+	private static int MUploadSize ;
+	
+	private static int VUploadSize ;
+	
 
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
@@ -63,18 +68,23 @@ public class UploadInterceptor implements HandlerInterceptor {
 		String userInfo = (String)session.getAttribute(ConstantCookie.SESSION_USER);
 		
 		//参数默认为游客，文件大小为5M
-		long maxSize = config.getVUploadSize()*1024;
+		long maxSize = VUploadSize;
 		ResultCode resultCode = ResultCode.E_VISITOR_UPLOAD_ERROR;
 		
 		//登录用户，30M
 		if(StringUtils.isNotBlank(userInfo)) {
-			maxSize = config.getMUploadSize()*1024;
+			maxSize = MUploadSize;
 			resultCode = ResultCode.E_USER_UPLOAD_ERROR;
 		}
 		
 		IResult<String> result = checkFile(request,maxSize);
 		if(!result.isSuccess()) {
-			sendResult(response,resultCode);
+			response.setContentType("text/html;charset=UTF-8");
+			response.setCharacterEncoding("UTF-8");
+			PrintWriter out = response.getWriter();
+			out.write(JsonResultUtils.buildFailJsonResultByResultCode(resultCode));
+			out.flush();
+			out.close();
 			return false;
 		}
 		 return true;
@@ -92,19 +102,13 @@ public class UploadInterceptor implements HandlerInterceptor {
 		return DefaultResult.successResult();
 	}
 	
-	//发送消息
-	private void sendResult( HttpServletResponse response,ResultCode resultCode) throws Exception {
-		response.setContentType("text/html;charset=UTF-8");
-		response.setCharacterEncoding("UTF-8");
-		PrintWriter out = response.getWriter();
-		out.write(JsonResultUtils.buildFailJsonResultByResultCode(resultCode));
-		out.flush();
-		out.close();
+	
+	//初始化文件的大小
+	@PostConstruct
+	private void initCache() {
+		MUploadSize = config.getMUploadSize()*1024*1024;
+		VUploadSize = config.getVUploadSize()*1024*1024;
 	}
-	
-	
-	
-	
 	
 	
 	

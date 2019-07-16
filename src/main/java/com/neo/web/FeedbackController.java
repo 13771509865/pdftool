@@ -1,4 +1,4 @@
-package com.neo.controller;
+package com.neo.web;
 
 import com.neo.commons.cons.ConstantCookie;
 import com.neo.commons.cons.EnumFeedbackType;

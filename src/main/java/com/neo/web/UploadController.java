@@ -1,4 +1,4 @@
-package com.neo.controller;
+package com.neo.web;
 
 import com.neo.commons.cons.ResultCode;
 import com.neo.commons.cons.SysConstant;

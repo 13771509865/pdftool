@@ -31,10 +31,9 @@ public enum ResultCode {
 	//用户权限
 	E_VISITOR_UPLOAD_ERROR(23,"游客仅可上传10M以内文档，获取更大权限，请注册登录"),
 	E_VISITOR_CONVERT_NUM_ERROR(24,"游客每日可转换5个文件，获取更大权限，请注册登录"),
-	E_VISITOR_CONVERT_ARRAY_ERROR(25,"游客不支持批量转换，获取更大权限，请注册登录"),
-	E_USER_UPLOAD_ERROR(26,"文件大小超出30M，暂不支持，如有紧急，请联系客服"),
-	E_USER_CONVERT_NUM_ERROR(27,"每天可转换20个文件"),
-	E_USER_CONVERT_ARRAY_ERROR(28,"您最多可同时对5个文档进行操作"),
+	E_USER_UPLOAD_ERROR(25,"文件大小超出30M，暂不支持，如有紧急，请联系客服"),
+	E_USER_CONVERT_NUM_ERROR(26,"每天可转换20个文件"),
+	
 	
 	E_UNSUPPORT_FAIL(44,"没有支持的转码服务,请联系永中技术支持"),
 	E_SIGNATURE_FAIL(45, "签批生成失败"),

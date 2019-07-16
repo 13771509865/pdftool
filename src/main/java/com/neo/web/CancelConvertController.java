@@ -1,4 +1,4 @@
-package com.neo.controller;
+package com.neo.web;
 
 import java.util.Map;
 

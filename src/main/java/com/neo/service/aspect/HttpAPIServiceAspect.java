@@ -10,7 +10,7 @@ import com.neo.commons.util.UrlEncodingUtils;
 
 
 /**
- * 暂时实现不了，貌似是因为Aspect jar包的版本太低
+ *
  * @author Lenovo
  *
  */

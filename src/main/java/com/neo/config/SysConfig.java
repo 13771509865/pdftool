@@ -41,11 +41,6 @@ public class SysConfig{
 	@Value(value = "${vConvertTimes}")
 	private Integer vConvertTimes;
 	
-	@Value(value = "${mConvertNum}")
-	private Integer mConvertNum;
-	
-	@Value(value = "${vConvertNum}")
-	private Integer vConvertNum;
 	
 	@Value(value = "${clearDay}")
 	private Integer clearDay;
