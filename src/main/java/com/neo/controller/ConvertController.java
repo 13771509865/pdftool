@@ -12,6 +12,7 @@ import com.neo.service.manager.MqConvertManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -39,7 +40,7 @@ public class ConvertController
 	@Autowired
 	private ConvertParameterBOService convertParameterBOService;
 	
-    @RequestMapping(value = "/convert")
+	@PostMapping(value = "/convert")
     @ResponseBody
     public Map<String, Object> convert(@RequestBody ConvertParameterBO convertBO,HttpServletRequest request)  {
 //        SysLog4JUtils.info(parameter.toString());
@@ -60,7 +61,7 @@ public class ConvertController
         }
     }
     
-    @RequestMapping(value = "/mqconvert")
+	@PostMapping(value = "/mqconvert")
     @ResponseBody
     public Map<String, Object> mqconvert(@RequestBody ConvertParameterBO convertBO)  {
 //        SysLog4JUtils.info(parameter.toString());
