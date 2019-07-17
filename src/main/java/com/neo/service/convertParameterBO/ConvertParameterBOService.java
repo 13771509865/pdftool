@@ -11,12 +11,12 @@ import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumConvertType;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.ResultCode;
-import com.neo.commons.cons.SysConstant;
+import com.neo.commons.cons.constants.SysConstant;
+import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.DateViewUtils;
 import com.neo.commons.util.GetConvertMd5Utils;
 import com.neo.commons.util.SpringUtils;
 import com.neo.commons.util.SysLog4JUtils;
-import com.neo.config.SysConfig;
 import com.neo.model.bo.ConvertParameterBO;
 
 import java.io.File;
@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 public class ConvertParameterBOService {
 
     @Autowired
-    private SysConfig sysConfig;
+    private ConfigProperty sysConfig;
 
     /**
      * @param convertBO 转换参数

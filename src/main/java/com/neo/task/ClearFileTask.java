@@ -12,10 +12,10 @@ import java.nio.file.attribute.BasicFileAttributes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.neo.commons.cons.RedisConsts;
-import com.neo.commons.cons.SysConstant;
+import com.neo.commons.cons.constants.RedisConsts;
+import com.neo.commons.cons.constants.SysConstant;
+import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.SysLog4JUtils;
-import com.neo.config.SysConfig;
 import com.neo.service.cache.CacheManager;
 import com.neo.service.cache.CacheService;
 import com.neo.service.file.FileService;
@@ -34,7 +34,7 @@ public class ClearFileTask {
 	private FileService fileService;
 	
 	@Autowired
-	private SysConfig config;
+	private ConfigProperty config;
 	
 	@Autowired
 	private CacheService<String> cacheService;

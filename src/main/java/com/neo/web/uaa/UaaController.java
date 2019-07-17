@@ -1,4 +1,4 @@
-package com.neo.web;
+package com.neo.web.uaa;
 
 import java.util.Map;
 
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.neo.commons.cons.ConstantCookie;
+import com.neo.commons.cons.constants.ConstantCookie;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.model.bo.UserBO;
-import com.neo.service.UaaService;
+import com.neo.service.uaa.UaaService;
 
 @Controller
 public class UaaController {
@@ -26,7 +26,11 @@ public class UaaController {
 	private  UaaService uaaService;
 
 	
-	
+	/**
+	 * 获取用户信息
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping("/detail")
 	@ResponseBody
 	public Map<String,Object> getUserInfoUaa(HttpServletRequest request){

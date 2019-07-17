@@ -7,9 +7,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.neo.commons.cons.ConvertConsts;
 import com.neo.commons.cons.ResultCode;
-import com.neo.commons.cons.SysConstant;
+import com.neo.commons.cons.constants.ConvertConsts;
+import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.util.SysLog4JUtils;
 import com.neo.service.convert.dcc.DccConvert;
 import com.neo.service.convert.dcc.PDFConvert;

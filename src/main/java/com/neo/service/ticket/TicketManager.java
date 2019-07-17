@@ -1,4 +1,4 @@
-package com.neo.service;
+package com.neo.service.ticket;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -8,7 +8,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.neo.config.SysConfig;
+import com.neo.commons.properties.ConfigProperty;
 
 /**
  * 限制转换并发的类
@@ -18,7 +18,7 @@ import com.neo.config.SysConfig;
 @Service("ticketManager")
 public class TicketManager {
 	@Autowired
-	private SysConfig config;
+	private ConfigProperty config;
 
 	@PostConstruct
 	public void init() {

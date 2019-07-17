@@ -3,7 +3,7 @@ package com.neo.commons.util;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.neo.commons.cons.SysConstant;
+import com.neo.commons.cons.constants.SysConstant;
 import com.neo.model.bo.ConvertParameterBO;
 
 import java.io.File;

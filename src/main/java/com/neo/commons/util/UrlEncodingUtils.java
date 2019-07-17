@@ -10,7 +10,7 @@ import java.util.BitSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.neo.commons.cons.SysConstant;
+import com.neo.commons.cons.constants.SysConstant;
 
 public class UrlEncodingUtils {
     public static void main(String[] args) {

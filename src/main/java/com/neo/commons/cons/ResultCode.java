@@ -3,7 +3,7 @@ package com.neo.commons.cons;
  * 返回对象的枚举类
  */
 public enum ResultCode {
-	E_SUCCES(0, "转换成功"), 
+	E_SUCCES(0, "操作成功"), 
 	E_INPUT_FILE_NOTFOUND(1,"找不到指定文档"), 
 	E_INPUT_FILE_OPENFAILED(2,"无法打开指定文档"), 
 	E_CONVERSION_FAIL(3,"操作失败"), 

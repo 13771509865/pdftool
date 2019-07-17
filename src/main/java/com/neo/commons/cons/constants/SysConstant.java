@@ -1,4 +1,4 @@
-package com.neo.commons.cons;
+package com.neo.commons.cons.constants;
 
 public interface SysConstant {
 	

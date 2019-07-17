@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.neo.commons.cons.PathConsts;
+import com.neo.commons.cons.constants.PathConsts;
 
 
 public class FileInfoBO

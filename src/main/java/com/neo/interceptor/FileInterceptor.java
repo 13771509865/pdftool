@@ -22,7 +22,7 @@ import com.neo.model.bo.FileInfoBO;
  *
  */
 @Component
-public class UserInterceptor implements HandlerInterceptor {
+public class FileInterceptor implements HandlerInterceptor {
 
 	@Override
 	public void afterCompletion(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, Exception arg3)

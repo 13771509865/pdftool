@@ -1,4 +1,4 @@
-package com.neo.commons.cons;
+package com.neo.commons.cons.constants;
 
 public class RedisConsts {
 	public static final String FileInfoKey = "fileInfo"; //存储转换后filehash和文件对应关系的

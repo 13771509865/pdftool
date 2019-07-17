@@ -13,17 +13,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.neo.commons.cons.ConstantAdmin;
-import com.neo.commons.cons.ConstantCookie;
 import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.RedisConsts;
 import com.neo.commons.cons.ResultCode;
-import com.neo.commons.cons.SysConstant;
+import com.neo.commons.cons.constants.ConstantAdmin;
+import com.neo.commons.cons.constants.ConstantCookie;
+import com.neo.commons.cons.constants.RedisConsts;
+import com.neo.commons.cons.constants.SysConstant;
+import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.GetIpAddrUtils;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLog4JUtils;
-import com.neo.config.SysConfig;
 import com.neo.model.bo.UserBO;
 import com.neo.service.accessTimes.AccessTimesService;
 import com.neo.service.cache.CacheManager;
@@ -43,7 +43,7 @@ public class ConvertInterceptor implements HandlerInterceptor {
 	private CacheService<String> cacheService;
 
 	@Autowired
-	private SysConfig config;
+	private ConfigProperty config;
 
 	private CacheManager<String> cacheManager;
 

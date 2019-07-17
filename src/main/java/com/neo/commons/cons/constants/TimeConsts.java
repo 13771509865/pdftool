@@ -1,6 +1,6 @@
 /**
  */
-package com.neo.commons.cons;
+package com.neo.commons.cons.constants;
 
 public final class TimeConsts {
 	public static final int SessionTimout 		= 3600*24*5;//五天的秒数

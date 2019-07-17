@@ -1,5 +1,7 @@
 package com.neo.commons.cons;
 
+import com.neo.commons.cons.constants.ConvertConsts;
+
 /**
  * 转换类型枚举封装
  */

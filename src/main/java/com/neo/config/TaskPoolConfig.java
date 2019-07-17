@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import com.neo.commons.properties.ConfigProperty;
+
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -17,7 +19,7 @@ public class TaskPoolConfig {
 	
 	
     @Autowired
-    private SysConfig sysConfig;
+    private ConfigProperty sysConfig;
 
     @Bean("asynConvertExecutor")
     public Executor asynConvertExecutor(){

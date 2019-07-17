@@ -1,4 +1,4 @@
-package com.neo.commons.cons;
+package com.neo.commons.cons.constants;
 /**
 * @Description:  csc服务相关consts
 * @Author: zhoufeng

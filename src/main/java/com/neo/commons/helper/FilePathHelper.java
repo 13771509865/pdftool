@@ -13,15 +13,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.neo.commons.cons.PathConsts;
+import com.neo.commons.cons.constants.PathConsts;
+import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.UUIDHelper;
-import com.neo.config.SysConfig;
 
 @Component
 public class FilePathHelper {
 	
 	@Autowired
-	private SysConfig config;
+	private ConfigProperty config;
 	
 	public final String UploadFile = "UploadFile";
 	public final String TempFolder = "UploadTemp";

@@ -1,7 +1,7 @@
 package com.neo.web;
 
-import com.neo.commons.cons.ConstantCookie;
 import com.neo.commons.cons.EnumFeedbackType;
+import com.neo.commons.cons.constants.ConstantCookie;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLog4JUtils;

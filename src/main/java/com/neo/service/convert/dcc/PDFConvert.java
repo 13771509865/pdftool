@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.neo.commons.cons.ResultCode;
 import com.neo.commons.util.SysLog4JUtils;
-import com.neo.service.ConvertConfig;
+import com.neo.config.ConvertConfig;
 
 import java.io.*;
 import java.util.HashMap;

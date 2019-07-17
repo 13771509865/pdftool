@@ -22,14 +22,14 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.neo.commons.cons.ConstantCookie;
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.UaaSupportApp;
+import com.neo.commons.cons.constants.ConstantCookie;
+import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.util.CookieUtils;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.commons.util.SysLog4JUtils;
-import com.neo.service.UaaService;
+import com.neo.service.uaa.UaaService;
 import com.yozosoft.auth.client.config.YozoCloudProperties;
 import com.yozosoft.auth.client.security.JwtAuthenticator;
 import com.yozosoft.auth.client.security.OAuth2AccessToken;

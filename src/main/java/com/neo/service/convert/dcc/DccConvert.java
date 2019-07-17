@@ -6,11 +6,11 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.neo.commons.cons.ResultCode;
-import com.neo.commons.cons.SysConstant;
+import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.util.MyFileUtils;
 import com.neo.commons.util.SysLog4JUtils;
 import com.neo.commons.util.UUIDHelper;
-import com.neo.service.ConvertConfig;
+import com.neo.config.ConvertConfig;
 
 import java.io.*;
 import java.util.HashMap;

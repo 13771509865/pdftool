@@ -23,7 +23,7 @@ import com.neo.interceptor.ConvertInterceptor;
 import com.neo.interceptor.SecurityInterceptor;
 import com.neo.interceptor.UaaAuthInterceptor;
 import com.neo.interceptor.UploadInterceptor;
-import com.neo.interceptor.UserInterceptor;
+import com.neo.interceptor.FileInterceptor;
 
 @Configuration
 @EnableWebMvc
@@ -39,7 +39,7 @@ public class SpringMVCConfigure implements WebMvcConfigurer{
 	private ConvertInterceptor convertInterceptor;
 	
 	@Autowired
-	private UserInterceptor userInterceptor;
+	private FileInterceptor fileInterceptor;
 	
 	@Autowired
 	private UaaAuthInterceptor uaaAuthInterceptor;
@@ -56,8 +56,8 @@ public class SpringMVCConfigure implements WebMvcConfigurer{
 
 	    /**
 	     * @description 配置拦截器
-	     * @author zhoufeng
-	     * @date 2019/5/5
+	     * @author xujun
+	     * @date 2019-07-17
 	     */
 	    @Override
 	    public void addInterceptors(InterceptorRegistry registry) {
@@ -65,15 +65,15 @@ public class SpringMVCConfigure implements WebMvcConfigurer{
 //	        registry.addInterceptor(securityInterceptor).addPathPatterns("/aaa").excludePathPatterns("/test1", "/*.html");
 	        registry.addInterceptor(uploadInterceptor).addPathPatterns("/defaultUpload");
 	        registry.addInterceptor(convertInterceptor).addPathPatterns("/convert","/mqconvert");
-	        registry.addInterceptor(userInterceptor).addPathPatterns("/user/**", "/user/*.html");
+	        registry.addInterceptor(fileInterceptor).addPathPatterns("/file/**", "/file/*.html");
 
 
 	    }
 
 	    /**
 	     * @description 允许跨域
-	     * @author zhoufeng
-	     * @date 2019/2/22
+	     * @author xujun
+	     * @date 2019-07-17
 	     */
 	    @Override
 	    public void addCorsMappings(CorsRegistry registry) {

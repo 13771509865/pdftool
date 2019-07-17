@@ -2,20 +2,19 @@ package com.neo.service.manager;
 
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.RedisConsts;
 import com.neo.commons.cons.ResultCode;
-import com.neo.commons.cons.SysConstant;
+import com.neo.commons.cons.constants.RedisConsts;
+import com.neo.commons.cons.constants.SysConstant;
+import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.SysLog4JUtils;
-import com.neo.config.SysConfig;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FileInfoBO;
-import com.neo.service.IConvertManager;
-import com.neo.service.TicketManager;
 import com.neo.service.cache.CacheManager;
 import com.neo.service.cache.CacheService;
 import com.neo.service.convert.ConvertService;
 import com.neo.service.convertParameterBO.ConvertParameterBOService;
 import com.neo.service.file.FileService;
+import com.neo.service.ticket.TicketManager;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
@@ -33,7 +32,7 @@ import java.util.Map;
  * @create 2018-12-14 11:52
  */
 @Service("convertManager")
-public class ConvertManager implements IConvertManager {
+public class ConvertManager {
 	@Autowired
 	private CacheService<String> cacheService;
 	@Autowired
@@ -43,7 +42,7 @@ public class ConvertManager implements IConvertManager {
 	@Autowired
 	private FileService fileService;
 	@Autowired
-	private SysConfig config;
+	private ConfigProperty config;
     @Autowired
     private ConvertParameterBOService convertParameterBOService;
 	
@@ -51,7 +50,7 @@ public class ConvertManager implements IConvertManager {
 
 	private final String fileInfoKey = RedisConsts.FileInfoKey;
 
-	@Override
+	
 	public IResult<FileInfoBO> dispatchConvert(ConvertParameterBO paramBO) {
 		FileInfoBO fileInfo =new FileInfoBO();
 		try{

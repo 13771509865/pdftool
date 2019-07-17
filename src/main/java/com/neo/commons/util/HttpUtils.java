@@ -17,8 +17,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.springframework.http.HttpStatus;
 
-import com.neo.commons.cons.ConstantCookie;
 import com.neo.commons.cons.IResult;
+import com.neo.commons.cons.constants.ConstantCookie;
 import com.neo.commons.cons.entity.HttpResultEntity;
 
 /**

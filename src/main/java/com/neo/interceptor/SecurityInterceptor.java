@@ -12,11 +12,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.neo.commons.cons.SysConstant;
-import com.neo.commons.cons.SysConstant;
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumStatus;
 import com.neo.commons.cons.IResult;
+import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.permission.EnumAdmin;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.model.bo.UserBO;

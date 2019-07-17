@@ -1,4 +1,4 @@
-package com.neo.config;
+package com.neo.commons.properties;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -15,7 +15,7 @@ import lombok.Getter;
 @Component
 @PropertySource(value={"classpath:config.properties"},ignoreResourceNotFound=true)
 @Getter
-public class SysConfig{
+public class ConfigProperty{
 
 	@Value(value = "${inputDir}")
 	private String inputDir;
@@ -44,6 +44,19 @@ public class SysConfig{
 	
 	@Value(value = "${clearDay}")
 	private Integer clearDay;
+	
+	@Value(value = "${clearMaster}")
+	private Integer clearMaster;
+	
+	@Value(value = "${clearInputDir}")
+	private Integer clearInputDir;
+	
+	@Value(value = "${clearOutputDir}")
+	private Integer clearOutputDir;
+	
+	
+	@Value(value = "${folderFormat}")
+    private String folderFormat = "yyyy/MM";
 
 	@Value(value = "${pdf2WordPath}")
 	private String pdf2WordPath;
@@ -72,7 +85,6 @@ public class SysConfig{
 	@Value(value= "${awaitTerminationSeconds}")
 	private Integer awaitTerminationSeconds = 60;
 
-	@Value(value = "${folderFormat}")
-    private String folderFormat = "yyyy/MM";
+	
 
 }

@@ -1,7 +1,7 @@
 package com.neo.service.convert.pdfToWord;
 
-import com.neo.commons.cons.PathConsts;
 import com.neo.commons.cons.ResultCode;
+import com.neo.commons.cons.constants.PathConsts;
 import com.neo.commons.util.SysLog4JUtils;
 import com.neo.service.convert.dcc.PDFConvert;
 

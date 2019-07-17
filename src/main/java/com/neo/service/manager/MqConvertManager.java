@@ -14,23 +14,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.RedisConsts;
 import com.neo.commons.cons.ResultCode;
-import com.neo.commons.cons.SysConstant;
-import com.neo.commons.cons.TimeConsts;
+import com.neo.commons.cons.constants.RedisConsts;
+import com.neo.commons.cons.constants.SysConstant;
+import com.neo.commons.cons.constants.TimeConsts;
+import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLog4JUtils;
-import com.neo.config.SysConfig;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FileInfoBO;
-import com.neo.service.IMqConvertManager;
 import com.neo.service.cache.CacheManager;
 import com.neo.service.cache.CacheService;
 import com.neo.service.convertParameterBO.ConvertParameterBOService;
 
 @Service("mqConvertManager")
-public class MqConvertManager implements IMqConvertManager{
+public class MqConvertManager{
 
 	@Autowired
 	private CacheService<String> cacheService;
@@ -39,7 +38,7 @@ public class MqConvertManager implements IMqConvertManager{
 	@Autowired
 	private ConvertManager convertManager;
 	@Autowired
-	private SysConfig config;
+	private ConfigProperty config;
 	
 	private ExecutorService pExecutorService;
 	private List<ExecutorService> threadList;

@@ -3,7 +3,7 @@
  * Date: 2017年12月21日
  * Author: zhao_yuanchao
  */
-package com.neo.commons.cons;
+package com.neo.commons.cons.constants;
 
 import java.io.File;
 

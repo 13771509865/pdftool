@@ -5,7 +5,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.neo.commons.cons.ConstantCookie;
+import com.neo.commons.cons.constants.ConstantCookie;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;

@@ -1,4 +1,4 @@
-package com.neo.service;
+package com.neo.config;
 
 
 import org.springframework.beans.factory.annotation.Value;
@@ -6,7 +6,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
-import com.neo.commons.cons.ConvertConsts;
+import com.neo.commons.cons.constants.ConvertConsts;
 import com.neo.commons.util.SysLog4JUtils;
 
 import java.io.File;

@@ -10,11 +10,10 @@ import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumConvertType;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.ResultCode;
-import com.neo.commons.cons.SysConstant;
+import com.neo.commons.cons.constants.SysConstant;
+import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.SysLog4JUtils;
-import com.neo.config.SysConfig;
-import com.neo.service.ConvertConfig;
-import com.neo.service.IConvertService;
+import com.neo.config.ConvertConfig;
 import com.neo.service.convert.convertCenter.ConvertFileService;
 
 import org.apache.commons.io.FilenameUtils;
@@ -29,12 +28,12 @@ import org.springframework.stereotype.Service;
  * @create 2018-12-10 20:40
  */
 @Service("convertService")
-public class ConvertService implements IConvertService {
+public class ConvertService  {
 	@Autowired
 	private ConvertConfig convertConfig;
 
 	@Autowired
-	private SysConfig sysConfig;
+	private ConfigProperty sysConfig;
 
 	@Autowired
 	private ConvertFileService convertFileService;
@@ -48,7 +47,6 @@ public class ConvertService implements IConvertService {
 	 * @param parame
 	 * @return
 	 */
-	@Override
 	public IResult<Map<String, Object>> convert(String parame) {
 //		Long start=System.currentTimeMillis();
 
@@ -65,7 +63,6 @@ public class ConvertService implements IConvertService {
 	 * @param parame
 	 * @return
 	 */
-	@Override
 	public Map<String, Object> convertResult(String parame) {
 
 		Map<String, Object> resultMap = new HashMap<String, Object>();

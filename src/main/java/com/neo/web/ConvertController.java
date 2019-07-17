@@ -2,7 +2,7 @@ package com.neo.web;
 
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.ResultCode;
-import com.neo.commons.cons.SysConstant;
+import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FileInfoBO;

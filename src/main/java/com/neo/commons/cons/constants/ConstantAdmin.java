@@ -1,4 +1,4 @@
-package com.neo.commons.cons;
+package com.neo.commons.cons.constants;
 
 public class ConstantAdmin {
 	public static final String ADMIN = "near0919";

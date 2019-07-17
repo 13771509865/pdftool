@@ -1,4 +1,4 @@
-package com.neo.controller.user;
+package com.neo.web.file;
 
 import java.io.File;
 import java.util.Map;
@@ -8,16 +8,14 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
 import com.neo.commons.cons.ResultCode;
+import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.JsonResultUtils;
-import com.neo.config.SysConfig;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FileInfoBO;
 import com.neo.service.file.FileService;
@@ -28,10 +26,10 @@ import com.neo.service.file.FileService;
  * @create 2018-12-13 20:42
  */
 @Controller
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/file")
 public class DeleteFileController {
 	@Autowired
-	private SysConfig config;
+	private ConfigProperty config;
 	
 	@Autowired
 	private FileService fileService;

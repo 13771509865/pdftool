@@ -1,4 +1,4 @@
-package com.neo.controller.user;
+package com.neo.web.file;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -16,24 +16,23 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.neo.config.SysConfig;
+import com.neo.commons.properties.ConfigProperty;
 import com.neo.model.bo.FileInfoBO;
 
 /**
- * @author zhouf 文件下载接口 session中有值才允许下载
+ * @author xujun 文件下载接口 session中有值才允许下载
  */
 @Controller
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/file")
 public class DownloadController {
 
 	@Autowired
-    private SysConfig config;
-	
-	@PostMapping(value = "/download")
+	private ConfigProperty config;
+
+	@RequestMapping(value = "/download")
 	public void downloadFile(@RequestParam(value = "fileHash", required = true) String fileHash,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		HttpSession httpSession = request.getSession();
