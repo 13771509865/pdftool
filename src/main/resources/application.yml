@@ -79,9 +79,12 @@ http:
 
 
 #################自定义配置#################
-#自定义配置
-uaa:
-  uaa_logout_url: http://auth.yozodocs.com/api/account/logout
+pts:
+  uaa_logout_url: http://auth.yozocloud.cn/api/account/logout
   uaa_userinfo_url: http://auth.yozocloud.cn/api/account/userinfo
 
+  fcs_upload_url: http://172.18.21.30:8080/fcscloud/file/upload
+  fcs_convert_url: http://172.18.21.30:8080/fcscloud/composite/convert
+  fcs_signature_url: http://172.18.21.30:8080/edit/signature/
+ 
 

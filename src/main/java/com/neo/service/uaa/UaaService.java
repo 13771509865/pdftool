@@ -18,6 +18,7 @@ import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.ConstantCookie;
 import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.cons.entity.HttpResultEntity;
+import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.CookieUtils;
 import com.neo.service.httpclient.HttpAPIService;
 import com.yozosoft.auth.client.config.YozoCloudProperties;
@@ -31,6 +32,9 @@ public class UaaService {
 
 	@Autowired
 	private HttpAPIService httpAPIService;
+	
+	@Autowired
+	private PtsProperty ptsProperty;
 
 	private Map<String, Object> params;
 
@@ -47,7 +51,7 @@ public class UaaService {
 		String userInfo;
 		try {
 			headers.put(UaaConsts.COOKIE, request.getHeader(UaaConsts.COOKIE));
-			IResult<HttpResultEntity> result = httpAPIService.doGet(UaaConsts.USER_INFO_URL,params, headers);
+			IResult<HttpResultEntity> result = httpAPIService.doGet(ptsProperty.getUaa_userinfo_url(),params, headers);
 			userInfo = result.getData().getBody();
 			return userInfo;
 		} catch (Exception e) {
@@ -65,7 +69,7 @@ public class UaaService {
 	public IResult<String> uaaLogout(HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
 		session.removeAttribute(ConstantCookie.SESSION_USER);
-		httpAPIService.doGet(UaaConsts.LOGIN_OUT_URL,params);
+		httpAPIService.doGet(ptsProperty.getUaa_logout_url(),params);
 		//清空cookie
 		for (String domain : yozoCloudProperties.getUaaCookieDomains()) {
 			for (String cookieName : UaaConsts.COOKIE_NAMES) {

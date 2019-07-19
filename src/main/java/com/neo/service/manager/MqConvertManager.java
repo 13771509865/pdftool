@@ -98,7 +98,7 @@ public class MqConvertManager{
 			CacheManager<String> cacheManager = cacheService.getCacheManager();
 			String json = cacheManager.pop(RedisConsts.MqWaitConvert);
 			if(StringUtils.isEmpty(json)) {
-				System.out.println("消费队列无商品,等待中");
+//				System.out.println("消费队列无商品,等待中");
 				Thread.sleep(TimeConsts.Mq_Free_Wait);
 			}else {
 				//TODO 记得到时候删除

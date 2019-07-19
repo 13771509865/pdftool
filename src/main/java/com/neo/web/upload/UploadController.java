@@ -29,7 +29,7 @@ public class UploadController{
     @RequestMapping(value = "/defaultUpload")
     @ResponseBody
     public Map<String, Object> fileUpload(HttpServletRequest request){
-    	IResult<List<String>> result  =uploadService.uploadFile(request);
+    	IResult<String> result  =uploadService.upload(request);
     	if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
 		}else {

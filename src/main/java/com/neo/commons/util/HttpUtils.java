@@ -1,6 +1,7 @@
 package com.neo.commons.util;
 
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URLDecoder;
@@ -13,9 +14,18 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.ConstantCookie;
@@ -197,4 +207,52 @@ public class HttpUtils {
         }
         return filename;
     }
+    
+    
+    /**
+     * 跨域服务器之间文件的传送
+     * @param file
+     * @param url
+     * @param filename
+     * @author xujun
+     * @date 2019-07-19
+     * @return
+     */
+    public static String uploadResouse(MultipartFile file,String url ,String  filename) {
+    	CloseableHttpClient  aDefault  =  HttpClients.createDefault();
+    	Object  object  =  null;
+		try  {
+			HttpPost  httpPost  =  new  HttpPost(url);
+			MultipartEntityBuilder  builder  =  MultipartEntityBuilder.create();
+			builder.addBinaryBody("file",file.getBytes(),ContentType.create("multipart/form-data"),filename);
+			HttpEntity  entity  =  builder.build();
+			httpPost.setEntity(entity);
+			ResponseHandler<Object>  rh  =  new  ResponseHandler<Object>()  {
+				@Override
+				public  Object  handleResponse(HttpResponse  response)  throws  IOException  {
+					HttpEntity  entity  =  response.getEntity();
+					String  result  =  EntityUtils.toString(entity,  "UTF-8");
+					return  result;
+				}
+			};
+			aDefault  =  HttpClients.createDefault();
+			object  =   aDefault.execute(httpPost, rh);
+
+		}  catch  (Exception  e)  {
+			e.printStackTrace();
+			return null;
+		}  finally  {
+			try {
+				aDefault.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return object.toString();
+    }
+    
+    
+    
+    
+    
 }

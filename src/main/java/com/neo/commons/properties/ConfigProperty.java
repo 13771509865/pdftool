@@ -9,8 +9,8 @@ import lombok.Getter;
 /**
  * 对应config.properties文件的配置类
  *
- * @authore sumnear
- * @create 2018-12-11 18:35
+ * @authore xujun
+ * @create 2019-07-19
  */
 @Component
 @PropertySource(value={"classpath:config.properties"},ignoreResourceNotFound=true)
@@ -46,13 +46,13 @@ public class ConfigProperty{
 	private Integer clearDay;
 	
 	@Value(value = "${clearMaster}")
-	private Integer clearMaster;
+	private Boolean clearMaster;
 	
 	@Value(value = "${clearInputDir}")
-	private Integer clearInputDir;
+	private Boolean clearInputDir;
 	
 	@Value(value = "${clearOutputDir}")
-	private Integer clearOutputDir;
+	private Boolean clearOutputDir;
 	
 	
 	@Value(value = "${folderFormat}")

@@ -17,7 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <skipTests>true</skipTests>
-        <httpclient.version>4.5.8</httpclient.version>
+        <httpclient.version>4.5.9</httpclient.version>
         <fastjson.version>1.2.57</fastjson.version>
         <log4j-web.version>2.11.2</log4j-web.version>
         <commons-lang3.version>3.9</commons-lang3.version>
@@ -30,6 +30,7 @@
         <jna.version>3.0.9</jna.version>
         <exec.version>1.3</exec.version>
         <fileupload.version>1.2.2</fileupload.version>
+        <httpmime.version>4.5.9</httpmime.version>
     </properties>
 
     <dependencies>
@@ -214,6 +215,15 @@
 		    <artifactId>commons-fileupload</artifactId>
 		    <version>${fileupload.version}</version>
 		</dependency>
+		
+		
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime -->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpmime</artifactId>
+		    <version>${httpmime.version}</version>
+		</dependency>
+		
         
         
     </dependencies>
