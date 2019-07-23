@@ -16,7 +16,7 @@ import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.DateViewUtils;
 import com.neo.commons.util.GetConvertMd5Utils;
 import com.neo.commons.util.SpringUtils;
-import com.neo.commons.util.SysLog4JUtils;
+import com.neo.commons.util.SysLogUtils;
 import com.neo.model.bo.ConvertParameterBO;
 
 import java.io.File;
@@ -160,7 +160,7 @@ public class ConvertParameterBOService {
             }
             return DefaultResult.successResult();
         } else {
-            SysLog4JUtils.info("FcsCloud返回无效参数,checkInput,checkFileName,checkType依次为:" + checkInput + "," + checkFileName + "," + checkType);
+            SysLogUtils.info("FcsCloud返回无效参数,checkInput,checkFileName,checkType依次为:" + checkInput + "," + checkFileName + "," + checkType);
             return DefaultResult.failResult(ResultCode.E_INVALID_PARAM.getInfo(), ResultCode.E_INVALID_PARAM);
         }
     }
@@ -256,7 +256,7 @@ public class ConvertParameterBOService {
             return true;
         } catch (Exception e) {
             e.printStackTrace();
-            SysLog4JUtils.error("生成BO.txt文件失败", e);
+            SysLogUtils.error("生成BO.txt文件失败", e);
             return false;
         }
     }

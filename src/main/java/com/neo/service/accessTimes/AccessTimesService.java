@@ -7,15 +7,14 @@ import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.RedisConsts;
 import com.neo.commons.properties.ConfigProperty;
-import com.neo.commons.util.SysLog4JUtils;
+import com.neo.commons.util.SysLogUtils;
 import com.neo.service.cache.CacheManager;
 import com.neo.service.cache.CacheService;
 
 /**
- * ${DESCRIPTION} ip上传转码次数控制服务
  * 
- * @authore dh
- * @create 2018-12-13 20:40
+ * @authore xujun
+ * @create 2019-07-22
  */
 @Service("accessTimesService")
 public class AccessTimesService {
@@ -30,8 +29,8 @@ public class AccessTimesService {
 	 */
 	public void clearIpTimes() {
 		CacheManager<String> cacheManager = cacheService.getCacheManager();
-		cacheManager.delete( RedisConsts.IpConvertTimesKey);
-		cacheManager.delete( RedisConsts.IdConvertTimesKey);
+		cacheManager.delete( RedisConsts.IP_CONVERT_TIME_KEY);
+		cacheManager.delete( RedisConsts.ID_CONVERT_TIME_KEY);
 	}
 
 }

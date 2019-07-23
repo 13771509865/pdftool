@@ -7,7 +7,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import com.neo.commons.cons.constants.ConvertConsts;
-import com.neo.commons.util.SysLog4JUtils;
+import com.neo.commons.util.SysLogUtils;
 
 import java.io.File;
 
@@ -32,7 +32,7 @@ public class ConvertConfig {
             p2wJarPath = file.getAbsolutePath();
         }catch (Exception e){
             System.out.println("pdf2word转换jar包不存在!");
-            SysLog4JUtils.error("pdf2word转换jar包不存在",e);
+            SysLogUtils.error("pdf2word转换jar包不存在",e);
         }
         try{
             ClassPathResource resource = new ClassPathResource(ConvertConsts.DCCJARPATH+ConvertConsts.DCCJARNAME);
@@ -41,7 +41,7 @@ public class ConvertConfig {
             dccJarParentPath = file.getParentFile().getAbsolutePath();
         }catch (Exception e){
             System.out.println("dcc转换jar包不存在!");
-            SysLog4JUtils.error("dcc转换jar包不存在",e);
+            SysLogUtils.error("dcc转换jar包不存在",e);
         }
     }
 

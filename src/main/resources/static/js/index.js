@@ -232,7 +232,7 @@ $(".upfilebtn1").fileupload({
             $('#wrapper-file').css('background', 'transparent').css('border', 'none').css('box-shadow', 'none')
             $("#svg_pw").hide();
             $("#png_xianshi").hide();
-            $("#convertFile").show();
+            $("#File").show();
             $("#tuo").hide();
             $("#shang").hide();
             $("#fileinput-button").addClass('fileinput-button-two fileinput');
@@ -493,7 +493,7 @@ function convert() {
             $("#showUrl_" + fid + "").attr('onclick', 'deleteConvert(\"' + fid + '\",\"' + times + '\",\"' + count + '\")');
             //转码
             ajaxTimeOut = $.ajax({
-                url: "convert",
+                url: "mqconvert",
                 contentType: "application/json; charset=utf-8",
 
                 data: JSON.stringify({

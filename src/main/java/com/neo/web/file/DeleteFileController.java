@@ -34,17 +34,17 @@ public class DeleteFileController {
 	@Autowired
 	private FileService fileService;
 
-	@RequestMapping(value = "/deleteFile")
-    @ResponseBody
-    public Map<String, Object> deleteFile(@RequestParam(value = "fileHash", required = true) String fileHash,HttpSession httpSession)  {
-		Object obj = httpSession.getAttribute(fileHash);
-		FileInfoBO fileInfoBO = (FileInfoBO)obj;
-		String srcRelativePath = fileInfoBO.getStoragePath();
-		if(StringUtils.isEmpty(srcRelativePath)){
-			return JsonResultUtils.failMapResultByCode(ResultCode.E_INVALID_PARAM);
-		}
-		String srcPath = config.getInputDir() + File.separator + srcRelativePath;
-		fileService.deleteSrcFile(srcPath);
-		return JsonResultUtils.successMapResult();
-    }
+//	@RequestMapping(value = "/deleteFile")
+//    @ResponseBody
+//    public Map<String, Object> deleteFile(@RequestParam(value = "fileHash", required = true) String fileHash,HttpSession httpSession)  {
+//		Object obj = httpSession.getAttribute(fileHash);
+//		FileInfoBO fileInfoBO = (FileInfoBO)obj;
+//		String srcRelativePath = fileInfoBO.getStoragePath();
+//		if(StringUtils.isEmpty(srcRelativePath)){
+//			return JsonResultUtils.failMapResultByCode(ResultCode.E_INVALID_PARAM);
+//		}
+//		String srcPath = config.getInputDir() + File.separator + srcRelativePath;
+//		fileService.deleteSrcFile(srcPath);
+//		return JsonResultUtils.successMapResult();
+//    }
 }

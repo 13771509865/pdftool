@@ -108,7 +108,7 @@ public class GetConvertMd5Utils {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            SysLog4JUtils.error("获取" + param.toString() + "对象HashCode失败");
+            SysLogUtils.error("获取" + param.toString() + "对象HashCode失败");
             return null;
         }
         String md5 = MD5Utils.getMD5(paramMd5);

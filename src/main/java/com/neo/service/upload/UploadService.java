@@ -17,6 +17,7 @@ import com.neo.commons.cons.ResultCode;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
+import com.neo.service.httpclient.HttpAPIService;
 
 @Service("uploadService")
 public class UploadService {
@@ -29,6 +30,9 @@ public class UploadService {
 	
 	@Autowired
 	private PtsProperty ptsProperty;
+	
+	@Autowired
+	private HttpAPIService httpAPIService;
 
 	
 	
@@ -44,7 +48,8 @@ public class UploadService {
 		MultipartFile  file  =  multipartRequest.getFile("file");
 		if(file != null) {
 			String  fileName  =  file.getOriginalFilename();
-			String reuslt = HttpUtils.uploadResouse(file,fileName,ptsProperty.getFcs_upload_url());
+			String  url  =  String.format(ptsProperty.getFcs_upload_url());
+			String reuslt = httpAPIService.uploadResouse(file,url,fileName);
 			if(StringUtils.isNotBlank(reuslt)) {
 				Map<String,Object> map = JsonUtils.parseJSON2Map(reuslt);
 				String errorcode  = map.get(ERRORCODE).toString();

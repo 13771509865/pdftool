@@ -4,7 +4,11 @@ public interface CacheManager<T> {
 	
 	public abstract boolean set(String key,T value);//设置指定key的值
 	
+	public abstract boolean set(String key, T value, Long time);
+	
 	public abstract T get(String key);//获取指定key的value
+	
+	public abstract T get(String key, Class<T> clazz);
 	
 	public abstract boolean exists(String key);//判断指定key是否存在
 	
@@ -17,6 +21,8 @@ public interface CacheManager<T> {
 	public abstract T pop(String key);
 	
 	public abstract Boolean pushZSet(String key,T value); //往zset中塞值
+	
+	public abstract  Long getListLen(String key);
 	
 	public abstract Double getScore(String key,T value);//获得指定value的ip
 	

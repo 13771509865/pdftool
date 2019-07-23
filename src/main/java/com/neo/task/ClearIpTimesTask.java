@@ -3,7 +3,7 @@ package com.neo.task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.neo.commons.util.SysLog4JUtils;
+import com.neo.commons.util.SysLogUtils;
 import com.neo.service.accessTimes.AccessTimesService;
 
 /*
@@ -21,11 +21,11 @@ public class ClearIpTimesTask {
 	private AccessTimesService accessTimesService;
 
 	public void clearIpTimes() {
-		SysLog4JUtils.info("=======================================开始清理ip=======================================");
+		SysLogUtils.info("=======================================开始清理ip=======================================");
 		try {
 			accessTimesService.clearIpTimes();
 		} catch (Exception e) {
-			SysLog4JUtils.info("清理ip线程异常");
+			SysLogUtils.info("清理ip线程异常");
 		}
 	}
 

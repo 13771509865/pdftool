@@ -209,50 +209,7 @@ public class HttpUtils {
     }
     
     
-    /**
-     * 跨域服务器之间文件的传送
-     * @param file
-     * @param url
-     * @param filename
-     * @author xujun
-     * @date 2019-07-19
-     * @return
-     */
-    public static String uploadResouse(MultipartFile file,String url ,String  filename) {
-    	CloseableHttpClient  aDefault  =  HttpClients.createDefault();
-    	Object  object  =  null;
-		try  {
-			HttpPost  httpPost  =  new  HttpPost(url);
-			MultipartEntityBuilder  builder  =  MultipartEntityBuilder.create();
-			builder.addBinaryBody("file",file.getBytes(),ContentType.create("multipart/form-data"),filename);
-			HttpEntity  entity  =  builder.build();
-			httpPost.setEntity(entity);
-			ResponseHandler<Object>  rh  =  new  ResponseHandler<Object>()  {
-				@Override
-				public  Object  handleResponse(HttpResponse  response)  throws  IOException  {
-					HttpEntity  entity  =  response.getEntity();
-					String  result  =  EntityUtils.toString(entity,  "UTF-8");
-					return  result;
-				}
-			};
-			aDefault  =  HttpClients.createDefault();
-			object  =   aDefault.execute(httpPost, rh);
 
-		}  catch  (Exception  e)  {
-			e.printStackTrace();
-			return null;
-		}  finally  {
-			try {
-				aDefault.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return object.toString();
-    }
-    
-    
-    
     
     
 }

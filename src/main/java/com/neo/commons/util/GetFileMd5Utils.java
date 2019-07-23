@@ -24,7 +24,7 @@ public class GetFileMd5Utils {
 			return fileMd5;
 	    } catch (Exception e) {
 	        e.printStackTrace();
-	        SysLog4JUtils.error("获取"+file.getAbsolutePath()+"文件MD5失败");
+	        SysLogUtils.error("获取"+file.getAbsolutePath()+"文件MD5失败");
 	        return null;
 	    } finally {
 	        try {

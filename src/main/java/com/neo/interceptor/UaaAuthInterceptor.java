@@ -28,7 +28,7 @@ import com.neo.commons.cons.constants.ConstantCookie;
 import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.util.CookieUtils;
 import com.neo.commons.util.JsonResultUtils;
-import com.neo.commons.util.SysLog4JUtils;
+import com.neo.commons.util.SysLogUtils;
 import com.neo.service.uaa.UaaService;
 import com.yozosoft.auth.client.config.YozoCloudProperties;
 import com.yozosoft.auth.client.security.JwtAuthenticator;

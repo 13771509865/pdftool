@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import com.neo.commons.cons.constants.RedisConsts;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.properties.ConfigProperty;
-import com.neo.commons.util.SysLog4JUtils;
+import com.neo.commons.util.SysLogUtils;
 import com.neo.service.cache.CacheManager;
 import com.neo.service.cache.CacheService;
 import com.neo.service.file.FileService;
@@ -41,14 +41,14 @@ public class ClearFileTask {
 	
 	private static final int PERIOD_DAY  = 24*3600*1000;
 	
-	private final String fileInfoKey = RedisConsts.FileInfoKey;
+	private final String fileInfoKey = RedisConsts.FILE_INFO_KEY;
 	
 	private final String htmlFolder = SysConstant.FILENAME+".files";
 	
 	private void clearFile(String path,final Long clearTime){
 		final Path clearPath = Paths.get(path);
 		final Long currentTime = System.currentTimeMillis();
-		SysLog4JUtils.info("=======================================开始清理文件=======================================");
+		SysLogUtils.info("=======================================开始清理文件=======================================");
 		try {
 			Files.walkFileTree(clearPath
 					, new SimpleFileVisitor<Path>()
@@ -92,7 +92,7 @@ public class ClearFileTask {
 					}
 				});
 		} catch (Exception e) {
-			SysLog4JUtils.info("清理过期文件线程异常");
+			SysLogUtils.info("清理过期文件线程异常");
 		}
 	}
 	

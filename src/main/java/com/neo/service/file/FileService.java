@@ -12,7 +12,7 @@ import org.springframework.util.StringUtils;
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.util.StrEncodingUtils;
-import com.neo.commons.util.SysLog4JUtils;
+import com.neo.commons.util.SysLogUtils;
 
 @Service("fileService")
 public class FileService {
@@ -73,7 +73,7 @@ public class FileService {
 		if(!pathFile.exists()){
 			boolean mkdirsResult = pathFile.mkdirs();
 			if(!mkdirsResult){
-				SysLog4JUtils.error("创建"+pathFile+"文件夹失败,请检查");
+				SysLogUtils.error("创建"+pathFile+"文件夹失败,请检查");
 				return DefaultResult.failResult("创建文件夹失败");
 			}
 		}

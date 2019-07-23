@@ -14,7 +14,10 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -24,11 +27,14 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumResultCode;
@@ -37,7 +43,7 @@ import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.entity.FileHeaderEntity;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.util.HttpUtils;
-import com.neo.commons.util.SysLog4JUtils;
+import com.neo.commons.util.SysLogUtils;
 
 @Service("httpApiService")
 public class HttpAPIService {
@@ -62,7 +68,7 @@ public class HttpAPIService {
             return DefaultResult.successResult(httpResultEntity);
         } catch (Exception e) {
             e.printStackTrace();
-            SysLog4JUtils.info("get请求失败,请求URL为:" + url);
+            SysLogUtils.info("get请求失败,请求URL为:" + url);
             return DefaultResult.failResult(EnumResultCode.E_HTTP_SEND_FAIL.getInfo());
         } finally {
             closeResource(response);
@@ -95,7 +101,7 @@ public class HttpAPIService {
             return DefaultResult.successResult(httpResultEntity);
         } catch (Exception e) {
             e.printStackTrace();
-            SysLog4JUtils.info("post请求失败,请求URL为:" + url);
+            SysLogUtils.info("post请求失败,请求URL为:" + url);
             return DefaultResult.failResult(EnumResultCode.E_HTTP_SEND_FAIL.getInfo());
         } finally {
             closeResource(response);
@@ -128,7 +134,7 @@ public class HttpAPIService {
             return DefaultResult.successResult(httpResultEntity);
         } catch (Exception e) {
             e.printStackTrace();
-            SysLog4JUtils.info("postByJson请求失败,请求URL为:" + url);
+            SysLogUtils.info("postByJson请求失败,请求URL为:" + url);
             return DefaultResult.failResult(EnumResultCode.E_HTTP_SEND_FAIL.getInfo());
         } finally {
             closeResource(response);
@@ -171,7 +177,7 @@ public class HttpAPIService {
             return DefaultResult.failResult(EnumResultCode.E_HTTP_SEND_FAIL.getInfo());
         } catch (Exception e) {
             e.printStackTrace();
-            SysLog4JUtils.info("head方式获取文件头信息失败,文件Url为:" + url);
+            SysLogUtils.info("head方式获取文件头信息失败,文件Url为:" + url);
             return DefaultResult.failResult(EnumResultCode.E_HTTP_SEND_FAIL.getInfo());
         } finally {
             closeResource(response);
@@ -206,7 +212,7 @@ public class HttpAPIService {
             return DefaultResult.failResult(EnumResultCode.E_DOWNLOAD_FILE_FAIL.getInfo(), EnumResultCode.E_DOWNLOAD_FILE_FAIL.getValue().toString());
         } catch (Exception e) {
             e.printStackTrace();
-            SysLog4JUtils.info("下载文件失败,文件Url为:" + url);
+            SysLogUtils.info("下载文件失败,文件Url为:" + url);
             return DefaultResult.failResult(EnumResultCode.E_DOWNLOAD_FILE_FAIL.getInfo(), EnumResultCode.E_DOWNLOAD_FILE_FAIL.getValue().toString());
         } finally {
             closeResource(response);
@@ -289,4 +295,60 @@ public class HttpAPIService {
         } catch (IOException e) {
         }
     }
+    
+    
+    /**
+     * 跨域服务器之间文件的传送
+     * @param file
+     * @param url
+     * @param filename
+     * @author xujun
+     * @date 2019-07-19
+     * @return
+     */
+    public  String uploadResouse(MultipartFile file,String url ,String  filename) {
+    	CloseableHttpClient  aDefault  =  HttpClients.createDefault();
+    	Object  object  =  null;
+		try  {
+			HttpPost  httpPost  =  new  HttpPost(url);
+			MultipartEntityBuilder  builder  =  MultipartEntityBuilder.create();
+			builder.addBinaryBody("file",file.getBytes(),ContentType.create("multipart/form-data"),filename);
+			HttpEntity  entity  =  builder.build();
+			httpPost.setEntity(entity);
+			ResponseHandler<Object>  rh  =  new  ResponseHandler<Object>()  {
+				@Override
+				public  Object  handleResponse(HttpResponse  response)  throws  IOException  {
+					HttpEntity  entity  =  response.getEntity();
+					String  result  =  EntityUtils.toString(entity,  "UTF-8");
+					return  result;
+				}
+			};
+			aDefault  =  HttpClients.createDefault();
+			object  =   aDefault.execute(httpPost, rh);
+
+		}  catch  (Exception  e)  {
+			e.printStackTrace();
+			return null;
+		}  finally  {
+			try {
+				aDefault.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return object.toString();
+    }
+    
+    
+       
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }

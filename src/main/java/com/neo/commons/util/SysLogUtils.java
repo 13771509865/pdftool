@@ -3,7 +3,7 @@ package com.neo.commons.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SysLog4JUtils {
+public class SysLogUtils {
 	 private static final Logger logger = LoggerFactory.getLogger("N");
 
 	public static void error(Throwable t){

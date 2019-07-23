@@ -4,7 +4,7 @@ import com.neo.commons.cons.EnumFeedbackType;
 import com.neo.commons.cons.constants.ConstantCookie;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.commons.util.JsonUtils;
-import com.neo.commons.util.SysLog4JUtils;
+import com.neo.commons.util.SysLogUtils;
 import com.neo.model.bo.UserBO;
 
 import org.slf4j.Logger;

@@ -12,13 +12,17 @@ import com.neo.commons.properties.ConfigProperty;
 
 /**
  * 限制转换并发的类
- * @author zhouf
- * @create 2018-12-14 11:50
+ * @author xujun
+ * @create 2019-07-23
  */
 @Service("ticketManager")
 public class TicketManager {
 	@Autowired
 	private ConfigProperty config;
+	
+	private static int totalSize;
+	
+	private ArrayBlockingQueue<String> pool;
 
 	@PostConstruct
 	public void init() {
@@ -30,8 +34,6 @@ public class TicketManager {
 		}
 	}
 
-	private static int totalSize;
-	private ArrayBlockingQueue<String> pool;
 
 	public int getTotalSize() {
 		return totalSize;

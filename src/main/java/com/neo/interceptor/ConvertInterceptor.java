@@ -23,7 +23,7 @@ import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.GetIpAddrUtils;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.commons.util.JsonUtils;
-import com.neo.commons.util.SysLog4JUtils;
+import com.neo.commons.util.SysLogUtils;
 import com.neo.model.bo.UserBO;
 import com.neo.service.accessTimes.AccessTimesService;
 import com.neo.service.cache.CacheManager;
@@ -65,14 +65,14 @@ public class ConvertInterceptor implements HandlerInterceptor {
 			if (ResultCode.E_SUCCES.getValue() == result) {
 				String userID = getSessionUserID(request);
 				String ipAddr = GetIpAddrUtils.getIpAddr(request);
-				String key = RedisConsts.IpConvertTimesKey;
+				String key = RedisConsts.IP_CONVERT_TIME_KEY;
 				String value = ipAddr; 
 				if(StringUtils.isNotBlank(userID)) {//登录用户
-					key = RedisConsts.IdConvertTimesKey;
+					key = RedisConsts.ID_CONVERT_TIME_KEY;
 					value = userID; 
 				}
 				boolean addConvertTimes = cacheManager.pushZSet(key, value);
-				SysLog4JUtils.info("转换次数插入是否成功："+addConvertTimes);
+				SysLogUtils.info("转换次数插入是否成功："+addConvertTimes);
 			}
 		}
 	}
@@ -87,19 +87,19 @@ public class ConvertInterceptor implements HandlerInterceptor {
 		//默认为游客参数值
 		Integer maxConvertTimes = config.getVConvertTimes();//游客5个文件
 		String value = ipAddr; 
-		String key = RedisConsts.IpConvertTimesKey;
+		String key = RedisConsts.IP_CONVERT_TIME_KEY;
 		ResultCode resultCode = ResultCode.E_VISITOR_CONVERT_NUM_ERROR;
 
 		if(!ConstantAdmin.ADMIN_IP.equals(ipAddr)){//公司ip不拦截
 			if(StringUtils.isNotBlank(userID)){//会员20个文件
 				maxConvertTimes = config.getMConvertTimes();
-				key = RedisConsts.IdConvertTimesKey;
+				key = RedisConsts.ID_CONVERT_TIME_KEY;
 				value = userID;
 				resultCode = ResultCode.E_USER_CONVERT_NUM_ERROR;
 			}
 
 			int convertTimes = cacheManager.getScore(key,value).intValue();
-			SysLog4JUtils.info("转换次数为："+convertTimes);
+			SysLogUtils.info("转换次数为："+convertTimes);
 			if (convertTimes >= maxConvertTimes) { // 超过每日最大转换次数
 				response.setContentType("text/html;charset=UTF-8");
 				response.setCharacterEncoding("UTF-8");

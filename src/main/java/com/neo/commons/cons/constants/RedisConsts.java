@@ -1,14 +1,20 @@
 package com.neo.commons.cons.constants;
 
+
+/**
+ * redis存储key常量
+ * @author xujun
+ *
+ */
 public class RedisConsts {
-	public static final String FileInfoKey = "fileInfo"; //存储转换后filehash和文件对应关系的
 	
-	public static final String TotalConvertTimesKey = "totalConvertTimes";
-	public static final String IpKey = "ip";
-//	public static final String IpUploadTimesKey = "uploadTimes";
-	public static final String IpConvertTimesKey = "ipConvertTimes";
-	public static final String IdConvertTimesKey = "idConvertTimes";
+	public static final String FILE_INFO_KEY="fileInfo";//存储转换后filehash和文件对应关系的
 	
-	public static final String MqWaitConvert = "mqWaitConvert"; //待转换消息队列
-	public static final String MqConvertResult = "mqConvertResult"; //转换完成队列
+	public static final String IP_CONVERT_TIME_KEY = "ipConvertTimes";//ip转换次数
+	
+	public static final String ID_CONVERT_TIME_KEY = "idConvertTimes";//用户id转换次数
+	
+	public static final String MQ_WAIT_CONVERT = "mqWaitConvert"; //待转换消息队列
+	
+	public static final String MQ_RESULT_CONVERT = "mqConvertResult"; //待转换消息队列
 }
