@@ -345,7 +345,12 @@ public class HttpAPIService {
     
     
     
-    
+    public static void main(String[] args) {
+    	HttpAPIService h = new HttpAPIService();
+    	String url = "http://172.18.21.30:8080/fcscloud/view/download/s8mSvTjKia8LKgyJoI_cTCz0TwesMEEwjn6OgahAEWzSByUclpymeFWJ3B5U_mBQuhbASnaZRpbGSvkVCucUI_0v1bi9FLQbky9GsETZTWzYsxaHf6MdmagNd1IfYJmTDq4SpmWk4QxZ872PFmJsD2Tu6MeiT9oUJ0bPQh5WXKjFo4489bi3cXtRLE69ySrj-6EkWyuKEwnW5dWjQ_tUeiComggFvBCKVQ4kUSAXvISYFbBRKiHhxpfQ0DwZeuBepcOudGl7tgF58mcPGB5-d4Wc01FpYEf7FZyDc6_7Qzw";
+    	IResult<HttpResultEntity> r = h.doGet(url);
+    	System.out.println(r.getData().toString());
+	}
     
     
     

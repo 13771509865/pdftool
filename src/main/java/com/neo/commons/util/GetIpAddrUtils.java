@@ -7,9 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * 获取客户端ip地址工具类
- * 
- * @author 许玉康
- * @date 2018年12月7日
  */
 
 public class GetIpAddrUtils {
@@ -48,5 +45,7 @@ public class GetIpAddrUtils {
 		}
 		return ipAddress;
 	}
+	
+
 
 }

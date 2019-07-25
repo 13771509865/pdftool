@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class UserBO {
 	
 	private String role;
-	private String userId;
+	private Long userId;
 	private String yomoerId;
 	private String	lastLogin;
 	private String	modifyTime;

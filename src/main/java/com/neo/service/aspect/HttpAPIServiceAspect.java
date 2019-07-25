@@ -11,8 +11,8 @@ import com.neo.commons.util.UrlEncodingUtils;
 
 /**
  *
- * @author Lenovo
- *
+ * @author xujun
+ * 2019-07-23
  */
 @Aspect
 @Component
@@ -24,7 +24,7 @@ public class HttpAPIServiceAspect {
 
     @Before(value = "getFileHeaderBOByHead()")
     public void getFileHeaderBOByHeadBefore(JoinPoint joinPoint) {
-    	System.out.println("getFileHeaderBOByHead老子进来啦！");
+    	
         Object[] args = joinPoint.getArgs();
         args[0] = UrlEncodingUtils.encodeUrl(args[0].toString());  //url进行encode编码,不然httpclient可能请求失败
     }

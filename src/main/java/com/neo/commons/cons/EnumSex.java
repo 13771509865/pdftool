@@ -9,9 +9,6 @@ public enum EnumSex {
 		this.value = code;
 		this.info = info;
 	}
-//	public static void main(String[] args) {
-//		System.out.println(getCheckedValue(null));
-//	}
 
 	public static Integer getCheckedValue(Integer velue) {
          for (EnumSex sex : values()) {

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neo.dao.FcsFileInfoBOMapper">
+    <resultMap id="BaseResultMap" type="com.neo.model.po.FcsFileInfoPO">
+        <id column="ID" property="id" jdbcType="INTEGER"/>
+        <result column="IP_ADDRESS" property="ipaddress" jdbcType="INTEGER"/>
+        <result column="USERID" property="userID" jdbcType="BIGINT"/>
+        <result column="FILE_HASH" property="fileHash" jdbcType="VARCHAR"/>
+        <result column="RESULT_CODE" property="resultCode" jdbcType="INTEGER"/>
+        <result column="DEST_FILE_NAME" property="destFileName" jdbcType="VARCHAR"/>
+        <result column="SRC_FILE_NAME" property="srcFileName" jdbcType="VARCHAR"/>
+        <result column="SRC_FILE_SIZE" property="srcFileSize" jdbcType="BIGINT"/>
+        <result column="DEST_FILE_SIZE" property="destFileSize" jdbcType="BIGINT"/>
+        <result column="CONVERT_TYPE" property="convertType" jdbcType="INTEGER"/>
+        <result column="SRC_STORAGE_PATH" property="srcStoragePath" jdbcType="VARCHAR"/>
+        <result column="DEST_STORAGE_PATH" property="destStoragePath" jdbcType="VARCHAR"/>
+        <result column="DOWNLOAD_URL" property="viewUrl" jdbcType="VARCHAR"/>
+        <result column="GMT_CREATE" property="gmtCreate" jdbcType="TIMESTAMP"/>
+        <result column="GMT_MODIFIED" property="gmtModified" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    
+      <insert id="insert" parameterType="com.neo.model.po.FcsFileInfoPO">
+	    insert into pts_convert (
+	    IP_ADDRESS, USERID,FILE_HASH, RESULT_CODE,
+		DEST_FILE_NAME, SRC_FILE_NAME, DEST_FILE_SIZE, SRC_FILE_SIZE,
+		CONVERT_TYPE, SRC_STORAGE_PATH, DEST_STORAGE_PATH, DOWNLOAD_URL,
+		GMT_CREATE, GMT_MODIFIED)
+	    values (
+	      #{ipaddress,jdbcType=INTEGER}, 		#{userID,jdbcType=BIGINT}, 
+	      #{fileHash,jdbcType=VARCHAR}, 		#{resultCode,jdbcType=INTEGER}, 
+	      #{destFileName,jdbcType=VARCHAR}, 	#{srcFileName,jdbcType=VARCHAR},
+	      #{srcFileSize,jdbcType=BIGINT}, 		#{destFileSize,jdbcType=BIGINT}, 
+	      #{convertType,jdbcType=INTEGER},  	#{srcStoragePath,jdbcType=VARCHAR},
+	      #{destStoragePath,jdbcType=VARCHAR}, 	#{viewUrl,jdbcType=VARCHAR}, 
+	      now(),now())
+ 	  </insert>
+    
+    
+</mapper>

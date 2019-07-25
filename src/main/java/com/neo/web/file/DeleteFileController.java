@@ -17,7 +17,6 @@ import com.neo.commons.cons.ResultCode;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.model.bo.ConvertParameterBO;
-import com.neo.model.bo.FileInfoBO;
 import com.neo.service.file.FileService;
 
 /**

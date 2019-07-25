@@ -32,4 +32,7 @@ public final class UUIDHelper {
         String uuid = generateUUID() ;
         return upperCase == true ? uuid.toUpperCase() : uuid ;
     }
+    
+    
+
 }

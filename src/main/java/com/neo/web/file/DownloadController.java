@@ -1,26 +1,29 @@
 package com.neo.web.file;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.neo.commons.cons.DefaultResult;
+import com.neo.commons.cons.IResult;
+import com.neo.commons.cons.entity.FileHeaderEntity;
 import com.neo.commons.properties.ConfigProperty;
-import com.neo.model.bo.FileInfoBO;
+import com.neo.commons.util.GetFileMd5Utils;
+import com.neo.commons.util.JsonResultUtils;
+import com.neo.commons.util.MD5Utils;
+import com.neo.commons.util.MyFileUtils;
+import com.neo.service.httpclient.HttpAPIService;
+
+
 
 /**
  * @author xujun 文件下载接口 session中有值才允许下载
@@ -31,6 +34,9 @@ public class DownloadController {
 
 	@Autowired
 	private ConfigProperty config;
+	
+	@Autowired
+	private HttpAPIService httpAPIService;
 
 //	@RequestMapping(value = "/download")
 //	public void downloadFile(@RequestParam(value = "fileHash", required = true) String fileHash,
@@ -100,4 +106,75 @@ public class DownloadController {
 //			}
 //		}
 //	}
+	
+	
+	
+	  @RequestMapping(value = "/download")
+	  @ResponseBody
+	  public Map<String, Object> getFileByHttp(String fileUrl, HttpServletRequest request) {
+	        IResult<String> storageResult = storageFileByHttp(fileUrl, request);
+	        if (storageResult.isSuccess()) {
+	            return JsonResultUtils.successMapResult(storageResult.getData());
+	        } else {
+	            return JsonResultUtils.buildMapResult(Integer.parseInt(storageResult.getData()), null, storageResult.getMessage());
+	        }
+	    }
+	
+	
+	 public IResult<String> storageFileByHttp(String fileUrl, HttpServletRequest request) {
+	        String filePath = null;
+	        String fileName = null;
+	        Map<String, Object> headers = getFcsCustomHeaders(request);
+	        IResult<FileHeaderEntity> fileHeaderBOByHead = httpAPIService.getFileHeaderBOByHead(fileUrl, headers);
+	        if (fileHeaderBOByHead.isSuccess()) {     //判断是否需要重新下载
+	        	FileHeaderEntity fileHeaderBO = fileHeaderBOByHead.getData();
+	            String fileMD5 = getFileMD5(fileHeaderBO);
+	            if (StringUtils.isNotEmpty(fileMD5)) {
+	                String relativePath = fileMD5 + File.separator + fileHeaderBO.getFileName();
+	                boolean exists = MyFileUtils.isExists(config.getInputDir(), relativePath);
+	                if (exists) {
+	                    return DefaultResult.successResult(relativePath);
+	                }
+	                filePath = config.getInputDir()+fileMD5;
+	                fileName = fileHeaderBO.getFileName();
+	            }
+	        }
+	        IResult<String> downloadResult = httpAPIService.download(fileUrl, null, headers, filePath, fileName);
+	        return downloadResult;
+	    }
+	
+	 
+	 public  Map<String, Object> getFcsCustomHeaders(HttpServletRequest request){
+	        Map<String, Object> headers = new HashMap<>();
+	        Enumeration<String> headerNames = request.getHeaderNames();
+	        while (headerNames.hasMoreElements()) {
+	            String headerName = headerNames.nextElement();
+	            if (headerName.startsWith("fcs")) { //如果是fcs开头就是自定义头信息
+	                String realHeaderName = headerName.substring("fcs".length());
+	                headers.put(realHeaderName, request.getHeader(headerName));
+	            }
+	        }
+	        return headers;
+	    }
+	
+	 
+	 
+	  public  String getFileMD5(FileHeaderEntity fileHeaderBO) {
+	        String fileName = fileHeaderBO.getFileName();
+	        Long contentLength = fileHeaderBO.getContentLength();
+	        String lastModified = fileHeaderBO.getLastModified();
+	        String url = fileHeaderBO.getUrl();
+	        if (contentLength!=null && StringUtils.isNotEmpty(lastModified) && StringUtils.isNotEmpty(fileName) && StringUtils.isNotEmpty(url)) {
+	            String fileHashStr = fileHeaderBO.toString();
+	            String md5 = MD5Utils.getMD5(fileHashStr);
+	            if (StringUtils.isNotEmpty(md5)) {
+	                return "f"+md5;
+	            }
+	        }
+	        return null;
+	    }
+	
+
+	  
+	  
 }

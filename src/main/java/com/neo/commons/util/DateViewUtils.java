@@ -329,5 +329,9 @@ public class DateViewUtils {
         return null;
     }
     public static void main(String[] args) {
+    	
+    	String a = getNowFull();
+    	System.out.println(a);
+    	
     }
 }

@@ -20,10 +20,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neo.interceptor.ConvertInterceptor;
-import com.neo.interceptor.SecurityInterceptor;
 import com.neo.interceptor.UaaAuthInterceptor;
 import com.neo.interceptor.UploadInterceptor;
-import com.neo.interceptor.FileInterceptor;
 
 @Configuration
 @EnableWebMvc
@@ -38,8 +36,8 @@ public class SpringMVCConfigure implements WebMvcConfigurer{
 	@Autowired
 	private ConvertInterceptor convertInterceptor;
 	
-	@Autowired
-	private FileInterceptor fileInterceptor;
+//	@Autowired
+//	private FileInterceptor fileInterceptor;
 	
 	@Autowired
 	private UaaAuthInterceptor uaaAuthInterceptor;
@@ -65,7 +63,7 @@ public class SpringMVCConfigure implements WebMvcConfigurer{
 //	        registry.addInterceptor(securityInterceptor).addPathPatterns("/aaa").excludePathPatterns("/test1", "/*.html");
 	        registry.addInterceptor(uploadInterceptor).addPathPatterns("/defaultUpload");
 	        registry.addInterceptor(convertInterceptor).addPathPatterns("/convert","/mqconvert");
-	        registry.addInterceptor(fileInterceptor).addPathPatterns("/file/**", "/file/*.html");
+//	        registry.addInterceptor(fileInterceptor).addPathPatterns("/file/**", "/file/*.html");
 
 
 	    }

@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.ResultCode;
+import com.neo.commons.cons.entity.FileHeaderEntity;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
@@ -44,9 +45,11 @@ public class UploadService {
 	 * @return
 	 */
 	public IResult<String> upload(HttpServletRequest  request) {
+		
 		MultipartHttpServletRequest  multipartRequest  =  (MultipartHttpServletRequest)  request;
 		MultipartFile  file  =  multipartRequest.getFile("file");
 		if(file != null) {
+			file.getSize();
 			String  fileName  =  file.getOriginalFilename();
 			String  url  =  String.format(ptsProperty.getFcs_upload_url());
 			String reuslt = httpAPIService.uploadResouse(file,url,fileName);

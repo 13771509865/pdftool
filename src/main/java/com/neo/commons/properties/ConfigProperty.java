@@ -27,7 +27,7 @@ public class ConfigProperty{
 	private Integer convertPoolSize;
 
 	@Value(value = "${convertTimeout}")
-	private String convertTimeout;
+	private Long convertTimeout;
 
 	@Value(value = "${mUploadSize}")
 	private Integer mUploadSize;

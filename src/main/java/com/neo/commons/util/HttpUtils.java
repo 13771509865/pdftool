@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
@@ -30,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.ConstantCookie;
 import com.neo.commons.cons.entity.HttpResultEntity;
+import com.neo.model.bo.UserBO;
 
 /**
  * @author zhoufeng
@@ -208,8 +210,20 @@ public class HttpUtils {
         return filename;
     }
     
-    
+	//获取session中的userID
+	public static Long getSessionUserID(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		String userInfo = (String)session.getAttribute(ConstantCookie.SESSION_USER);
+		if(StringUtils.isNotBlank(userInfo)) {
+			UserBO userBO = JsonUtils.json2obj(userInfo, UserBO.class);
+			return userBO.getUserId();
+		}
+		return null;
+	}
 
     
+	
+
+	
     
 }

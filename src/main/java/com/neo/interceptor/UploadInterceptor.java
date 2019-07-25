@@ -41,42 +41,41 @@ public class UploadInterceptor implements HandlerInterceptor {
 
 	@Autowired
 	private ConfigProperty config;
-	
+
 	private static int MUploadSize ;
-	
+
 	private static int VUploadSize ;
-	
+
 
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
 			Exception arg3) throws Exception {
 	}
 
-	
+
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView arg3)
 			throws Exception {
 
 	}
 
-	
+
 	//游客仅可上传10M,会员可上传30M
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		HttpSession session = request.getSession();
 		String userInfo = (String)session.getAttribute(ConstantCookie.SESSION_USER);
-		
+
 		//参数默认为游客，文件大小为5M
 		long maxSize = VUploadSize;
 		ResultCode resultCode = ResultCode.E_VISITOR_UPLOAD_ERROR;
-		
+
 		//登录用户，30M
 		if(StringUtils.isNotBlank(userInfo)) {
 			maxSize = MUploadSize;
 			resultCode = ResultCode.E_USER_UPLOAD_ERROR;
 		}
-		
 		IResult<String> result = checkFile(request,maxSize);
 		if(!result.isSuccess()) {
 			response.setContentType("text/html;charset=UTF-8");
@@ -87,30 +86,30 @@ public class UploadInterceptor implements HandlerInterceptor {
 			out.close();
 			return false;
 		}
-		 return true;
+		return true;
 	}
-	
+
 	//检查上传的文件是否超过maxSize
 	private IResult<String> checkFile(HttpServletRequest request, long maxSize){
 		if(request!=null && ServletFileUpload.isMultipartContent(request)) {
-            ServletRequestContext ctx = new ServletRequestContext(request);
-            long requestSize = ctx.contentLength();
-            if (requestSize > maxSize) {
-            	return DefaultResult.failResult();
-            }
-        }
+			ServletRequestContext ctx = new ServletRequestContext(request);
+			long requestSize = ctx.contentLength();
+			if (requestSize > maxSize) {
+				return DefaultResult.failResult();
+			}
+		}
 		return DefaultResult.successResult();
 	}
-	
-	
+
+
 	//初始化文件的大小
 	@PostConstruct
 	private void initCache() {
 		MUploadSize = config.getMUploadSize()*1024*1024;
 		VUploadSize = config.getVUploadSize()*1024*1024;
 	}
-	
-	
-	
-	
+
+
+
+
 }

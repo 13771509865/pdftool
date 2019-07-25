@@ -22,6 +22,9 @@
         <log4j-web.version>2.11.2</log4j-web.version>
         <commons-lang3.version>3.9</commons-lang3.version>
         <swagger2.version>2.9.2</swagger2.version>
+        <mysql.connector.version>8.0.16</mysql.connector.version>
+        <mybatis.starter.version>2.0.1</mybatis.starter.version>
+        <druid.version>1.1.17</druid.version>
         <commons-io.version>2.6</commons-io.version>
         <commons-pool2.version>2.6.2</commons-pool2.version>
         <rocketmq.version>2.0.2</rocketmq.version>
@@ -136,6 +139,33 @@
             <version>${swagger2.version}</version>
         </dependency>
 
+        <!-- 数据库 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+
+        <!-- mybatis的依赖 -->
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>${mybatis.starter.version}</version>
+        </dependency>
+
+        <!-- 添加MySQL数据库驱动依赖 -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.connector.version}</version>
+        </dependency>
+
+        <!-- 数据库连接池 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <version>${druid.version}</version>
+        </dependency>
+		
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

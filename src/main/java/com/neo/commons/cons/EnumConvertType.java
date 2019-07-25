@@ -270,33 +270,33 @@ public enum EnumConvertType {
 	 * @return
 	 * @author zhouf
 	 */
-	public static String useWhichJar(Integer value) {
-		EnumConvertType enumConvertType = getEnum(value);
-		if (enumConvertType != null) {
-			switch (enumConvertType) {
-			case PDF_WORD:
-				return ConvertConsts.PDF2WORDJAR;
-			case VIDEO_MP4:
-			case AI_PDF:
-			case CAD_PDF:
-			case INDD_PDF:
-			case CDR_PDF:
-			case PSD_PDF:
-			case ThreeD_DAE:
-				return ConvertConsts.FcsOtherConvertJAR;
-			case TIF_HTML_TEMP:
-			case OFD_HTML_TEMP:
-			case EPUB_HTML_TEMP:
-			case PDF_HTML_TEMP:
-			case DAE_HTML_TEMP:
-			case ZIP_HTML_TEMP:
-				return ConvertConsts.FcsOtherActionJAR;
-			default:
-				return ConvertConsts.DCCJAR;
-			}
-		}
-		return null;
-	}
+//	public static String useWhichJar(Integer value) {
+//		EnumConvertType enumConvertType = getEnum(value);
+//		if (enumConvertType != null) {
+//			switch (enumConvertType) {
+//			case PDF_WORD:
+//				return ConvertConsts.PDF2WORDJAR;
+//			case VIDEO_MP4:
+//			case AI_PDF:
+//			case CAD_PDF:
+//			case INDD_PDF:
+//			case CDR_PDF:
+//			case PSD_PDF:
+//			case ThreeD_DAE:
+//				return ConvertConsts.FcsOtherConvertJAR;
+//			case TIF_HTML_TEMP:
+//			case OFD_HTML_TEMP:
+//			case EPUB_HTML_TEMP:
+//			case PDF_HTML_TEMP:
+//			case DAE_HTML_TEMP:
+//			case ZIP_HTML_TEMP:
+//				return ConvertConsts.FcsOtherActionJAR;
+//			default:
+//				return ConvertConsts.DCCJAR;
+//			}
+//		}
+//		return null;
+//	}
 
 	public static boolean isMultiTarget(Integer value) {
 		EnumConvertType enumConvertType = getEnum(value);

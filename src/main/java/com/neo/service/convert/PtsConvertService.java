@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.ResultCode;
+import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.HttpUtils;
@@ -16,6 +17,7 @@ import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FcsFileInfoBO;
+import com.neo.model.po.FcsFileInfoPO;
 import com.neo.service.httpclient.HttpAPIService;
 import com.neo.service.ticket.TicketManager;
 
@@ -61,7 +63,6 @@ public class PtsConvertService {
 			fcsFileInfoBO.setCode(ResultCode.E_SERVER_BUSY.getValue());
 			return DefaultResult.failResult(ResultCode.E_SERVER_BUSY.getInfo(), fcsFileInfoBO);
 		}
-		
 		try {
 			//调用fcs进行转码
 			IResult<HttpResultEntity> httpResult = httpAPIService.doPost(ptsProperty.getFcs_convert_url(), ptsConvertParamService.buildFcsMapParam(convertBO));
@@ -70,11 +71,17 @@ public class PtsConvertService {
 				fcsFileInfoBO.setCode(ResultCode.E_FCS_CONVERT_FAIL.getValue());
 				return DefaultResult.failResult(ResultCode.E_FCS_CONVERT_FAIL.getInfo(),fcsFileInfoBO);
 			}
-
-			fcsFileInfoBO = JsonUtils.json2obj(httpResult.getData().getBody(),FcsFileInfoBO.class);
-			SysLogUtils.info("fcs转码结果："+fcsFileInfoBO.toString());
+			Map<String, Object> fcsMap= JsonUtils.parseJSON2Map(httpResult.getData().getBody());
+			SysLogUtils.info("fcs转码结果："+fcsMap.toString());
 			
-			return DefaultResult.successResult(fcsFileInfoBO);
+			fcsFileInfoBO = (FcsFileInfoBO)fcsMap.get(SysConstant.FCS_DATA);
+			if(fcsFileInfoBO.getCode() == 0) {
+				//成功的话在request里面给个标记，别忘了
+				
+				return DefaultResult.successResult(fcsFileInfoBO);
+			}else {
+				return DefaultResult.failResult(fcsMap.get(SysConstant.FCS_MESSAGE).toString(),fcsFileInfoBO);
+			}
 			
 		} catch (Exception e) {
 			fcsFileInfoBO.setCode(ResultCode.E_SERVER_UNKNOW_ERROR.getValue());
@@ -85,6 +92,8 @@ public class PtsConvertService {
 		}
 
 	}
+	
+	
 
 
 }

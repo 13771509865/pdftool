@@ -17,10 +17,12 @@ import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.ResultCode;
 import com.neo.commons.cons.constants.ConstantAdmin;
 import com.neo.commons.cons.constants.ConstantCookie;
+import com.neo.commons.cons.constants.ConvertConsts;
 import com.neo.commons.cons.constants.RedisConsts;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.GetIpAddrUtils;
+import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLogUtils;
@@ -63,7 +65,7 @@ public class ConvertInterceptor implements HandlerInterceptor {
 		if (convertResult != null && convertResult instanceof Integer) {
 			Integer result = (Integer) convertResult;
 			if (ResultCode.E_SUCCES.getValue() == result) {
-				String userID = getSessionUserID(request);
+				String userID =HttpUtils.getSessionUserID(request).toString();
 				String ipAddr = GetIpAddrUtils.getIpAddr(request);
 				String key = RedisConsts.IP_CONVERT_TIME_KEY;
 				String value = ipAddr; 
@@ -82,7 +84,7 @@ public class ConvertInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		String ipAddr = GetIpAddrUtils.getIpAddr(request);
-		String userID = getSessionUserID(request);
+		String userID = HttpUtils.getSessionUserID(request).toString();
 
 		//默认为游客参数值
 		Integer maxConvertTimes = config.getVConvertTimes();//游客5个文件
@@ -112,19 +114,6 @@ public class ConvertInterceptor implements HandlerInterceptor {
 		}
 		return true;
 	}
-
-
-	//获取session中的userID
-	private String getSessionUserID(HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		String userInfo = (String)session.getAttribute(ConstantCookie.SESSION_USER);
-		if(StringUtils.isNotBlank(userInfo)) {
-			UserBO userBO = JsonUtils.json2obj(userInfo, UserBO.class);
-			return userBO.getUserId();
-		}
-		return null;
-	}
-
 
 
 	//redis初始化对象
