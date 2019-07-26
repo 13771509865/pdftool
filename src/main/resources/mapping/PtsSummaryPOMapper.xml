@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neo.dao.PtsSummaryPOMapper">
+     
+     
+     <!-- 根据文档大小，统计每个ip每天的转换量 -->
+      <insert id="insertPtsSumm" parameterType="com.neo.model.po.PtsSummaryPO">
+	    insert into pts_summ (
+			ZERO_THREE, THREE_FIVE, FIVE_TEN, TEN_FIFTEEN,
+			FIFTEEN_TWENTY, TWENTY_THIRTY, THIRTY_FOURTY,
+			FOURTY_FIFTY, FIFTY_MORE, IP_ADDRESS, IS_SUCCESS,
+			APP_TYPE, CREATE_DATE, CREATE_TIME,
+			MODIFIED_DATE, MODIFIED_TIME
+			)
+	 	values (
+	      #{zeroToThree,jdbcType=INTEGER}, 		#{threeToFive,jdbcType=INTEGER}, 
+	      #{fiveToTen,jdbcType=INTEGER}, 		#{tenToFifteen,jdbcType=INTEGER}, 
+	      #{fifteenToTwenty,jdbcType=INTEGER}, 	#{twentyToThirty,jdbcType=INTEGER},
+	      #{thirtyToFourty,jdbcType=INTEGER}, 		#{fourtyToFifty,jdbcType=INTEGER}, 
+	      #{FiftyMore,jdbcType=INTEGER},  	#{ipAddress,jdbcType=VARCHAR},
+	      #{isSuccess,jdbcType=INTEGER}, 	#{appType,jdbcType=INTEGER}, 
+	      #{createDate,jdbcType=INTEGER}, 	#{createTime,jdbcType=INTEGER}, 
+	      #{modifiedDate,jdbcType=INTEGER}, 	#{modifiedTime,jdbcType=INTEGER} 
+	      )
+ 	  </insert>
+ 	  
+
+ 	<!-- 每日根据ip地址，更新转换成功失败的数量 -->
+ 	  <update id="updatePtsSummID" parameterType="com.neo.model.po.PtsSummaryPO" >
+		    update pts_summ
+		    <set >
+		      <if test="zeroToThree != null" >
+		        ZERO_THREE = ZERO_THREE+1,
+		      </if>
+		      <if test="threeToFive != null" >
+		        THREE_FIVE = THREE_FIVE+1,
+		      </if>
+		      <if test="fiveToTen != null" >
+		        FIVE_TEN = FIVE_TEN+1,
+		      </if>
+		      <if test="tenToFifteen != null" >
+		        TEN_FIFTEEN = TEN_FIFTEEN+1,
+		      </if>
+		      <if test="fifteenToTwenty != null" >
+		        FIFTEEN_TWENTY = FIFTEEN_TWENTY+1,
+		      </if>
+		      <if test="twentyToThirty != null" >
+		       TWENTY_THIRTY = TWENTY_THIRTY+1,
+		      </if>
+		      <if test="thirtyToFourty != null" >
+		        THIRTY_FOURTY = THIRTY_FOURTY+1,
+		      </if>
+		      <if test="fourtyToFifty != null" >
+		        FOURTY_FIFTY = FOURTY_FIFTY+1,
+		      </if>
+		      <if test="FiftyMore != null" >
+		        FIFTY_MORE = FIFTY_MORE+1,
+		      </if>
+		      <if test="ipAddress != null" >
+		        IP_ADDRESS = #{ipAddress,jdbcType=VARCHAR},
+		      </if>
+		      <if test="isSuccess != null" >
+		        IS_SUCCESS = #{isSuccess,jdbcType=INTEGER},
+		      </if>
+		      <if test="appType != null" >
+		        APP_TYPE = #{appType,jdbcType=INTEGER},
+		      </if>
+		      <if test="createDate != null" >
+		        CREATE_DATE = #{createDate,jdbcType=DATE},
+		      </if>
+		       <if test="createTime != null" >
+		        CREATE_TIME = #{createTime,jdbcType=TIME},
+		      </if>
+		       <if test="modifiedDate != null" >
+		        MODIFIED_DATE = #{modifiedDate,jdbcType=DATE},
+		      </if>
+		       <if test="modifiedTime != null" >
+		        MODIFIED_TIME = #{modifiedTime,jdbcType=TIME},
+		      </if>
+		    </set>
+		    where IP_ADDRESS = #{ipAddress,jdbcType=INTEGER} 
+		    and IS_SUCCESS = #{isSuccess,jdbcType=INTEGER}
+		    and CREATE_DATE = #{createDate,jdbcType=DATE}
+ 		</update>
+ 	  
+ 	  
+    
+</mapper>

@@ -2,6 +2,8 @@ package com.neo.service.convert;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLogUtils;
+import com.neo.dao.FcsFileInfoPOMapper;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.model.po.FcsFileInfoPO;
@@ -41,6 +44,9 @@ public class PtsConvertService {
 	
 	@Autowired
 	private PtsConvertParamService ptsConvertParamService;
+	
+	@Autowired
+	private FcsFileInfoPOMapper fcsFileInfoBOMapper;
 
 	
 	/**
@@ -49,7 +55,7 @@ public class PtsConvertService {
 	 * @param waitTime
 	 * @return
 	 */
-	public IResult<FcsFileInfoBO> dispatchConvert(ConvertParameterBO convertBO,Integer waitTime){
+	public IResult<FcsFileInfoBO> dispatchConvert(ConvertParameterBO convertBO,Integer waitTime,HttpServletRequest request){
 		
 		FcsFileInfoBO fcsFileInfoBO = new FcsFileInfoBO();
 		//取超时时间
@@ -75,9 +81,10 @@ public class PtsConvertService {
 			SysLogUtils.info("fcs转码结果："+fcsMap.toString());
 			
 			fcsFileInfoBO = (FcsFileInfoBO)fcsMap.get(SysConstant.FCS_DATA);
+			
 			if(fcsFileInfoBO.getCode() == 0) {
-				//成功的话在request里面给个标记，别忘了
-				
+				insertFcsFileInfo(fcsFileInfoBO,request);//这里只记录转换成功的pts_convert
+				request.setAttribute(SysConstant.CONVERT_RESULT, ResultCode.E_SUCCES.getValue());
 				return DefaultResult.successResult(fcsFileInfoBO);
 			}else {
 				return DefaultResult.failResult(fcsMap.get(SysConstant.FCS_MESSAGE).toString(),fcsFileInfoBO);
@@ -93,6 +100,25 @@ public class PtsConvertService {
 
 	}
 	
+	/**
+	 * pts_convert插入成功的转换数据
+	 * @param fcsFileInfoBO
+	 * @param request
+	 * @return
+	 */
+	public IResult<String> insertFcsFileInfo(FcsFileInfoBO fcsFileInfoBO,HttpServletRequest request) {
+		try {
+			FcsFileInfoPO fcsFileInfoPO = ptsConvertParamService.buildFcsFileInfoParameter(fcsFileInfoBO, request);
+			int count = fcsFileInfoBOMapper.insert(fcsFileInfoPO);
+			if(count < 1) {
+				return DefaultResult.failResult();
+			}
+			return DefaultResult.successResult();
+		} catch (Exception e) {
+			SysLogUtils.error("fcsFileInfo插入数据库失败，失败原因："+e);
+			return DefaultResult.failResult();
+		}
+	}
 	
 
 

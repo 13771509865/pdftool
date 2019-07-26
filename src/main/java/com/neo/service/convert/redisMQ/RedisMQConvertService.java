@@ -8,10 +8,13 @@ import java.util.concurrent.Executors;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
@@ -79,7 +82,8 @@ public class RedisMQConvertService {
 			}else {
 				System.out.println("消费者为"+json);
 				ConvertParameterBO convertBO = JsonUtils.json2obj(json, ConvertParameterBO.class);
-				IResult<FcsFileInfoBO> convertResult = PtsConvertService.dispatchConvert(convertBO, -1);
+				HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+				IResult<FcsFileInfoBO> convertResult = PtsConvertService.dispatchConvert(convertBO, -1,request);
 				if(convertResult.isSuccess()){
 					FcsFileInfoBO fcsFileInfoBO = convertResult.getData();
 					result = JsonResultUtils.success(fcsFileInfoBO);

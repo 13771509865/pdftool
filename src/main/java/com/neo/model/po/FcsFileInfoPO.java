@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class FcsFileInfoPO {
 	
 	private Integer id;
-	private String ipaddress;
+	private String ipAddress;
 	private Long userID;
 	private String fileHash;
 	private Integer resultCode;
@@ -27,6 +27,8 @@ public class FcsFileInfoPO {
 	private String srcStoragePath;
 	private String destStoragePath;
 	private String viewUrl;
+	private Date gmtcreate;
+	private Date gmtmodified;
     
     @Override
     public String toString() {

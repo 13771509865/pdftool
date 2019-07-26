@@ -101,7 +101,7 @@ public class ConvertInterceptor implements HandlerInterceptor {
 			}
 
 			int convertTimes = cacheManager.getScore(key,value).intValue();
-			SysLogUtils.info("转换次数为："+convertTimes);
+			SysLogUtils.info("今日转换次数为："+convertTimes);
 			if (convertTimes >= maxConvertTimes) { // 超过每日最大转换次数
 				response.setContentType("text/html;charset=UTF-8");
 				response.setCharacterEncoding("UTF-8");

@@ -17,11 +17,6 @@ import lombok.Getter;
 @Getter
 public class ConfigProperty{
 
-	@Value(value = "${inputDir}")
-	private String inputDir;
-
-	@Value(value = "${outputDir}")
-	private String outputDir;
 
 	@Value(value = "${convertPoolSize}")
 	private Integer convertPoolSize;
@@ -60,16 +55,6 @@ public class ConfigProperty{
 	@Value(value = "${convertTicketWaitTime}")
 	private Integer convertTicketWaitTime;
 	
-
-	@Value(value = "${pdf2WordPath}")
-	private String pdf2WordPath;
-
-	@Value(value = "${pdf2WordExt}")
-	private String pdf2WordExt;
-
-	@Value(value = "${pdf2WordConfig}")
-	private String pdf2WordConfig;
-
 	@Value(value= "${corePoolSize}")
 	private Integer corePoolSize = 5;
 

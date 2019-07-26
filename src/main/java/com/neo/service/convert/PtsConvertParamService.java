@@ -45,7 +45,7 @@ public class PtsConvertParamService {
 	
 	public FcsFileInfoPO buildFcsFileInfoParameter(FcsFileInfoBO fcsFileInfoBO,HttpServletRequest request) {
 		FcsFileInfoPO fcsFileInfoPO = new FcsFileInfoPO();
-		fcsFileInfoPO.setIpaddress(GetIpAddrUtils.getIpAddr(request));
+		fcsFileInfoPO.setIpAddress(GetIpAddrUtils.getIpAddr(request));
 		fcsFileInfoPO.setUserID(HttpUtils.getSessionUserID(request));
 		fcsFileInfoPO.setFileHash(fcsFileInfoBO.getFileHash());
 		fcsFileInfoPO.setResultCode(fcsFileInfoBO.getCode());

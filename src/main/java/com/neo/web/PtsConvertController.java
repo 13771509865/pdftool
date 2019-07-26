@@ -1,5 +1,6 @@
 package com.neo.web;
 
+import java.io.File;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.ResultCode;
-import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.model.bo.ConvertParameterBO;
@@ -45,13 +44,11 @@ public class PtsConvertController{
 	@RequestMapping(value = "/convert")
 	@ResponseBody
 	public Map<String, Object> convert(@RequestBody ConvertParameterBO convertBO,HttpServletRequest request)  {
-		IResult<FcsFileInfoBO> result = ptsConvertService.dispatchConvert(convertBO, ConfigProperty.getConvertTicketWaitTime());
-		FcsFileInfoBO fcsFileInfoBO = result.getData();
+		IResult<FcsFileInfoBO> result = ptsConvertService.dispatchConvert(convertBO, ConfigProperty.getConvertTicketWaitTime(),request);
 		if (result.isSuccess()) {
-			request.setAttribute(SysConstant.CONVERT_RESULT, ResultCode.E_SUCCES.getValue());
-			return JsonResultUtils.successMapResult(fcsFileInfoBO);
+			return JsonResultUtils.successMapResult(result.getData());
 		} else {
-			return JsonResultUtils.buildMapResult(fcsFileInfoBO.getCode(), fcsFileInfoBO, result.getMessage());
+			return JsonResultUtils.buildMapResult(result.getData().getCode(), result.getData(), result.getMessage());
 		}
 	}
 
@@ -70,6 +67,8 @@ public class PtsConvertController{
 		}
 		
 	}
+	
+
 
 
 }

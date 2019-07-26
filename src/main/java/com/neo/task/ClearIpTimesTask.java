@@ -1,25 +1,25 @@
 package com.neo.task;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.neo.commons.util.SysLogUtils;
 import com.neo.service.accessTimes.AccessTimesService;
 
-/*
- * spring.xml 配置的 任务调度类
- */
 /**
- * 定期清理文件
- * 
- * @author zhouf
- * @create 2018-12-10 21:20
+ * 定期清理redis中的记录
+ * @author xujun
+ * @create 2019-07-26
  */
 @Component
 public class ClearIpTimesTask {
+	
 	@Autowired
 	private AccessTimesService accessTimesService;
 
+	
+	@Scheduled(cron = "0 0 0 * * ?")
 	public void clearIpTimes() {
 		SysLogUtils.info("=======================================开始清理ip=======================================");
 		try {

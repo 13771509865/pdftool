@@ -109,71 +109,71 @@ public class DownloadController {
 	
 	
 	
-	  @RequestMapping(value = "/download")
-	  @ResponseBody
-	  public Map<String, Object> getFileByHttp(String fileUrl, HttpServletRequest request) {
-	        IResult<String> storageResult = storageFileByHttp(fileUrl, request);
-	        if (storageResult.isSuccess()) {
-	            return JsonResultUtils.successMapResult(storageResult.getData());
-	        } else {
-	            return JsonResultUtils.buildMapResult(Integer.parseInt(storageResult.getData()), null, storageResult.getMessage());
-	        }
-	    }
-	
-	
-	 public IResult<String> storageFileByHttp(String fileUrl, HttpServletRequest request) {
-	        String filePath = null;
-	        String fileName = null;
-	        Map<String, Object> headers = getFcsCustomHeaders(request);
-	        IResult<FileHeaderEntity> fileHeaderBOByHead = httpAPIService.getFileHeaderBOByHead(fileUrl, headers);
-	        if (fileHeaderBOByHead.isSuccess()) {     //判断是否需要重新下载
-	        	FileHeaderEntity fileHeaderBO = fileHeaderBOByHead.getData();
-	            String fileMD5 = getFileMD5(fileHeaderBO);
-	            if (StringUtils.isNotEmpty(fileMD5)) {
-	                String relativePath = fileMD5 + File.separator + fileHeaderBO.getFileName();
-	                boolean exists = MyFileUtils.isExists(config.getInputDir(), relativePath);
-	                if (exists) {
-	                    return DefaultResult.successResult(relativePath);
-	                }
-	                filePath = config.getInputDir()+fileMD5;
-	                fileName = fileHeaderBO.getFileName();
-	            }
-	        }
-	        IResult<String> downloadResult = httpAPIService.download(fileUrl, null, headers, filePath, fileName);
-	        return downloadResult;
-	    }
-	
-	 
-	 public  Map<String, Object> getFcsCustomHeaders(HttpServletRequest request){
-	        Map<String, Object> headers = new HashMap<>();
-	        Enumeration<String> headerNames = request.getHeaderNames();
-	        while (headerNames.hasMoreElements()) {
-	            String headerName = headerNames.nextElement();
-	            if (headerName.startsWith("fcs")) { //如果是fcs开头就是自定义头信息
-	                String realHeaderName = headerName.substring("fcs".length());
-	                headers.put(realHeaderName, request.getHeader(headerName));
-	            }
-	        }
-	        return headers;
-	    }
-	
-	 
-	 
-	  public  String getFileMD5(FileHeaderEntity fileHeaderBO) {
-	        String fileName = fileHeaderBO.getFileName();
-	        Long contentLength = fileHeaderBO.getContentLength();
-	        String lastModified = fileHeaderBO.getLastModified();
-	        String url = fileHeaderBO.getUrl();
-	        if (contentLength!=null && StringUtils.isNotEmpty(lastModified) && StringUtils.isNotEmpty(fileName) && StringUtils.isNotEmpty(url)) {
-	            String fileHashStr = fileHeaderBO.toString();
-	            String md5 = MD5Utils.getMD5(fileHashStr);
-	            if (StringUtils.isNotEmpty(md5)) {
-	                return "f"+md5;
-	            }
-	        }
-	        return null;
-	    }
-	
+//	  @RequestMapping(value = "/download")
+//	  @ResponseBody
+//	  public Map<String, Object> getFileByHttp(String fileUrl, HttpServletRequest request) {
+//	        IResult<String> storageResult = storageFileByHttp(fileUrl, request);
+//	        if (storageResult.isSuccess()) {
+//	            return JsonResultUtils.successMapResult(storageResult.getData());
+//	        } else {
+//	            return JsonResultUtils.buildMapResult(Integer.parseInt(storageResult.getData()), null, storageResult.getMessage());
+//	        }
+//	    }
+//	
+//	
+//	 public IResult<String> storageFileByHttp(String fileUrl, HttpServletRequest request) {
+//	        String filePath = null;
+//	        String fileName = null;
+//	        Map<String, Object> headers = getFcsCustomHeaders(request);
+//	        IResult<FileHeaderEntity> fileHeaderBOByHead = httpAPIService.getFileHeaderBOByHead(fileUrl, headers);
+//	        if (fileHeaderBOByHead.isSuccess()) {     //判断是否需要重新下载
+//	        	FileHeaderEntity fileHeaderBO = fileHeaderBOByHead.getData();
+//	            String fileMD5 = getFileMD5(fileHeaderBO);
+//	            if (StringUtils.isNotEmpty(fileMD5)) {
+//	                String relativePath = fileMD5 + File.separator + fileHeaderBO.getFileName();
+//	                boolean exists = MyFileUtils.isExists(config.getInputDir(), relativePath);
+//	                if (exists) {
+//	                    return DefaultResult.successResult(relativePath);
+//	                }
+//	                filePath = config.getInputDir()+fileMD5;
+//	                fileName = fileHeaderBO.getFileName();
+//	            }
+//	        }
+//	        IResult<String> downloadResult = httpAPIService.download(fileUrl, null, headers, filePath, fileName);
+//	        return downloadResult;
+//	    }
+//	
+//	 
+//	 public  Map<String, Object> getFcsCustomHeaders(HttpServletRequest request){
+//	        Map<String, Object> headers = new HashMap<>();
+//	        Enumeration<String> headerNames = request.getHeaderNames();
+//	        while (headerNames.hasMoreElements()) {
+//	            String headerName = headerNames.nextElement();
+//	            if (headerName.startsWith("fcs")) { //如果是fcs开头就是自定义头信息
+//	                String realHeaderName = headerName.substring("fcs".length());
+//	                headers.put(realHeaderName, request.getHeader(headerName));
+//	            }
+//	        }
+//	        return headers;
+//	    }
+//	
+//	 
+//	 
+//	  public  String getFileMD5(FileHeaderEntity fileHeaderBO) {
+//	        String fileName = fileHeaderBO.getFileName();
+//	        Long contentLength = fileHeaderBO.getContentLength();
+//	        String lastModified = fileHeaderBO.getLastModified();
+//	        String url = fileHeaderBO.getUrl();
+//	        if (contentLength!=null && StringUtils.isNotEmpty(lastModified) && StringUtils.isNotEmpty(fileName) && StringUtils.isNotEmpty(url)) {
+//	            String fileHashStr = fileHeaderBO.toString();
+//	            String md5 = MD5Utils.getMD5(fileHashStr);
+//	            if (StringUtils.isNotEmpty(md5)) {
+//	                return "f"+md5;
+//	            }
+//	        }
+//	        return null;
+//	    }
+//	
 
 	  
 	  
