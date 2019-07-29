@@ -21,7 +21,6 @@ import com.neo.commons.cons.constants.ConvertConsts;
 import com.neo.commons.cons.constants.RedisConsts;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.properties.ConfigProperty;
-import com.neo.commons.util.GetIpAddrUtils;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.commons.util.JsonUtils;
@@ -66,7 +65,7 @@ public class ConvertInterceptor implements HandlerInterceptor {
 			Integer result = (Integer) convertResult;
 			if (ResultCode.E_SUCCES.getValue() == result) {
 				String userID =HttpUtils.getSessionUserID(request).toString();
-				String ipAddr = GetIpAddrUtils.getIpAddr(request);
+				String ipAddr = HttpUtils.getIpAddr(request);
 				String key = RedisConsts.IP_CONVERT_TIME_KEY;
 				String value = ipAddr; 
 				if(StringUtils.isNotBlank(userID)) {//登录用户
@@ -83,7 +82,7 @@ public class ConvertInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		String ipAddr = GetIpAddrUtils.getIpAddr(request);
+		String ipAddr = HttpUtils.getIpAddr(request);
 		String userID = HttpUtils.getSessionUserID(request).toString();
 
 		//默认为游客参数值

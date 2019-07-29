@@ -18,9 +18,11 @@ import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.dao.FcsFileInfoPOMapper;
+import com.neo.dao.PtsSummaryPOMapper;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.model.po.FcsFileInfoPO;
+import com.neo.model.po.PtsSummaryPO;
 import com.neo.service.httpclient.HttpAPIService;
 import com.neo.service.ticket.TicketManager;
 
@@ -48,6 +50,8 @@ public class PtsConvertService {
 	@Autowired
 	private FcsFileInfoPOMapper fcsFileInfoBOMapper;
 
+	@Autowired
+	private PtsSummaryPOMapper ptsSummaryPOMapper;
 	
 	/**
 	 * 调用fcs进行真实转换
@@ -83,7 +87,9 @@ public class PtsConvertService {
 			fcsFileInfoBO = (FcsFileInfoBO)fcsMap.get(SysConstant.FCS_DATA);
 			
 			if(fcsFileInfoBO.getCode() == 0) {
-				insertFcsFileInfo(fcsFileInfoBO,request);//这里只记录转换成功的pts_convert
+				
+				/** 还有问题不能只insert， 这样会有重复数据*/
+				updateFcsFileInfo(fcsFileInfoBO,request);//这里只记录转换成功的pts_convert
 				request.setAttribute(SysConstant.CONVERT_RESULT, ResultCode.E_SUCCES.getValue());
 				return DefaultResult.successResult(fcsFileInfoBO);
 			}else {
@@ -101,17 +107,20 @@ public class PtsConvertService {
 	}
 	
 	/**
-	 * pts_convert插入成功的转换数据
+	 * pts_convert插入成功的转换数据，只更新登录用户并且转换成功的
 	 * @param fcsFileInfoBO
 	 * @param request
 	 * @return
 	 */
-	public IResult<String> insertFcsFileInfo(FcsFileInfoBO fcsFileInfoBO,HttpServletRequest request) {
+	public IResult<String> updateFcsFileInfo(FcsFileInfoBO fcsFileInfoBO,HttpServletRequest request) {
 		try {
-			FcsFileInfoPO fcsFileInfoPO = ptsConvertParamService.buildFcsFileInfoParameter(fcsFileInfoBO, request);
-			int count = fcsFileInfoBOMapper.insert(fcsFileInfoPO);
-			if(count < 1) {
+			if(HttpUtils.getSessionUserID(request) == null) {//看有没有登录
 				return DefaultResult.failResult();
+			}
+			FcsFileInfoPO fcsFileInfoPO = ptsConvertParamService.buildFcsFileInfoParameter(fcsFileInfoBO, request);
+			int count = fcsFileInfoBOMapper.updatePtsConvert(fcsFileInfoPO);
+			if(count < 1) {
+				fcsFileInfoBOMapper.insertPtsConvert(fcsFileInfoPO);
 			}
 			return DefaultResult.successResult();
 		} catch (Exception e) {
@@ -121,5 +130,25 @@ public class PtsConvertService {
 	}
 	
 
+	/**
+	 * 每次转换，更新转换的记录,不区分登录转态
+	 * @param fcsFileInfoBO
+	 * @param convertBO
+	 * @param request
+	 * @return
+	 */
+	public IResult<String> updatePtsSummay(FcsFileInfoBO fcsFileInfoBO, ConvertParameterBO convertBO,HttpServletRequest request){
+		try {
+			PtsSummaryPO ptsSummaryPO = ptsConvertParamService.buildPtsSummaryPOParameter(fcsFileInfoBO,convertBO, request);
+			int upCount = ptsSummaryPOMapper.updatePtsSumm(ptsSummaryPO);
+			if(upCount < 1) {
+				ptsSummaryPOMapper.insertPtsSumm(ptsSummaryPO);
+			}
+		} catch (Exception e) {
+			SysLogUtils.error("更新转换的记录失败，失败原因："+e);
+		}
+		return DefaultResult.successResult();
+	}
+	
 
 }

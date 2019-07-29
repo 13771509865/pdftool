@@ -71,7 +71,7 @@ public class FeedbackController{
 		}
 		
 		feedback.info(username+"::"+star+"颗星"+"::"+content+"::"+strInfo);
-		return JsonResultUtils.successMapResult("反馈问题已记录");
+		return JsonResultUtils.successMapResult("操作成功！");
 	}
 
 }

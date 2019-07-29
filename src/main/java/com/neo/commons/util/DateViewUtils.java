@@ -20,7 +20,9 @@ public class DateViewUtils {
     public static final String                                    DATE_FORMAT_PATTERN        = "MM-dd HH:mm:ss";
     public static final String                                    DATE_FORMAT_MMddHHmm       = "MM-dd HH:mm";
     public static final String                                    FORMAT_HOUR                = "HH:mm";
-
+    public static final String   								  FORMAT_HHmmss				 = "HH:mm:ss";
+    
+    
     private static SimpleDateFormat getFormat(String key) {
         HashMap<String, SimpleDateFormat> map = formatHolder.get();
         if (map == null) {
@@ -103,7 +105,22 @@ public class DateViewUtils {
         }
         return getFormat(FORMAT_HOUR).format(date);
     }
+    
+    
+    
+    /**
+     * 将日期转换为HH:mm:ss格式的字符串
+     * @param date
+     * @return
+     */
+    public static String formatHHmmss(Date date) {
+        if (date == null) {
+            date = new Date(System.currentTimeMillis());
+        }
+        return getFormat(FORMAT_HHmmss).format(date);
+    }
 
+    
     /**
 	 * 格式化稿件的日期
 	 * 
@@ -200,6 +217,11 @@ public class DateViewUtils {
         Date date = new Date();
         return getFormat(SIMPLE_DATE_FORMAT_PATTERN).format(date);
     }
+    
+    public static String getNowTime() {
+        Date date = new Date();
+        return getFormat(FORMAT_HHmmss).format(date);
+    }
 
     public static String yesterday() {
         Calendar calendar = Calendar.getInstance();
@@ -266,6 +288,21 @@ public class DateViewUtils {
             return new Date();
         }
     }
+    
+    
+    /**
+     * 将时间字符串(精确到秒，格式--HH：mm：ss)解析为Date对象。如果解析失败返回<code>当前日期</code>
+     * @param date
+     * @return
+     */
+    public static Date parseSimpleTime(String date) {
+        try {
+            return getFormat(FORMAT_HHmmss).parse(date);
+        } catch (ParseException e) {
+            return new Date();
+        }
+    }
+    
 
     /**
 	 * 特殊的pattern进行格式化处理
@@ -328,10 +365,13 @@ public class DateViewUtils {
         }
         return null;
     }
-    public static void main(String[] args) {
-    	
-    	String a = getNowFull();
-    	System.out.println(a);
-    	
+    public static void main(String[] args) throws ParseException {
+    	Date date = new Date();
+    	String time = formatHHmmss(date);
+    	date = parseSimpleTime(time);
+    	System.out.println(time);
+    	System.out.println(date);
+    	System.out.println(getNowTime());
+    	System.out.println(parseSimpleTime(getNow()));
     }
 }

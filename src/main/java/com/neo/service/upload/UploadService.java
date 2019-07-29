@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.ResultCode;
+import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.entity.FileHeaderEntity;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.HttpUtils;
@@ -23,12 +24,6 @@ import com.neo.service.httpclient.HttpAPIService;
 @Service("uploadService")
 public class UploadService {
 
-	private  static final String ERRORCODE = "errorcode";
-	
-	private  static final String DATA = "data";
-	
-	private  static final String MESSAGE = "message";
-	
 	@Autowired
 	private PtsProperty ptsProperty;
 	
@@ -49,17 +44,23 @@ public class UploadService {
 		MultipartHttpServletRequest  multipartRequest  =  (MultipartHttpServletRequest)  request;
 		MultipartFile  file  =  multipartRequest.getFile("file");
 		if(file != null) {
-			file.getSize();
+			
 			String  fileName  =  file.getOriginalFilename();
 			String  url  =  String.format(ptsProperty.getFcs_upload_url());
+			
+			//去传文件给fcs
 			String reuslt = httpAPIService.uploadResouse(file,url,fileName);
+			
 			if(StringUtils.isNotBlank(reuslt)) {
 				Map<String,Object> map = JsonUtils.parseJSON2Map(reuslt);
-				String errorcode  = map.get(ERRORCODE).toString();
-				String data = map.get(DATA).toString();
-				String  message = map.get(MESSAGE).toString();
+				String errorcode  = map.get(SysConstant.FCS_ERRORCODE).toString();
+				String data = map.get(SysConstant.FCS_DATA).toString();
+				String  message = map.get(SysConstant.FCS_MESSAGE).toString();
 				if("0".equals(errorcode)) {
-					return DefaultResult.successResult(data);
+					//这里加了一个源文件大小的参数进去，转换记录的时候要用
+					Map<String,Object> srcFilePathMap = JsonUtils.parseJSON2Map(data);
+					srcFilePathMap.put(SysConstant.SRC_FILE_SIZE, file.getSize());
+					return DefaultResult.successResult(srcFilePathMap.toString());
 				}else {
 					return DefaultResult.failResult(message);
 				}

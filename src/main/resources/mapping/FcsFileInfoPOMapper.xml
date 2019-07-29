@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.neo.dao.FcsFileInfoPOMapper">
-    <resultMap id="BaseResultMap" type="com.neo.model.po.FcsFileInfoPO">
+    <resultMap id="FcsFileInfoPOResultMap" type="com.neo.model.po.FcsFileInfoPO">
         <id column="ID" property="id" jdbcType="INTEGER"/>
         <result column="IP_ADDRESS" property="ipAddress" jdbcType="INTEGER"/>
         <result column="USERID" property="userID" jdbcType="BIGINT"/>
@@ -19,7 +19,17 @@
         <result column="GMT_MODIFIED" property="gmtModified" jdbcType="TIMESTAMP"/>
     </resultMap>
     
-      <insert id="insert" parameterType="com.neo.model.po.FcsFileInfoPO">
+    <sql id="Base_Column_List">
+		ID,IP_ADDRESS, USERID,FILE_HASH, RESULT_CODE,
+		DEST_FILE_NAME, SRC_FILE_NAME, DEST_FILE_SIZE, SRC_FILE_SIZE,
+		CONVERT_TYPE, SRC_STORAGE_PATH, DEST_STORAGE_PATH, DOWNLOAD_URL,
+		GMT_CREATE, GMT_MODIFIED
+  	</sql>
+    
+    
+    
+   	  <!-- 插入转换成功的数据 -->
+      <insert id="insertPtsConvert" parameterType="com.neo.model.po.FcsFileInfoPO">
 	    insert into pts_convert (
 	   	 	IP_ADDRESS, USERID,FILE_HASH, RESULT_CODE,
 			DEST_FILE_NAME, SRC_FILE_NAME, DEST_FILE_SIZE, SRC_FILE_SIZE,
@@ -36,6 +46,36 @@
 	      now(),now()
 	      )
  	  </insert>
+ 	  
+ 	  
+ 	  <!-- 查询用户三天的转换记录 -->
+ 	  	<select id="selectFcsFileInfoPOByUserID" resultMap="FcsFileInfoPOResultMap" parameterType="java.lang.Long">
+			select
+			<include refid="Base_Column_List" />
+			from pts_convert 
+			where USERID = #{userID,jdbcType=BIGINT}
+			and  DATEDIFF(now(), GMT_CREATE)<3
+		</select>
+ 	  
+ 	  
+ 	  <!-- 转换相同文件时，修改转换时间和下载地址 -->
+ 	   <update id="updatePtsConvert" parameterType="com.neo.model.po.FcsFileInfoPO" >
+		    update pts_convert
+		    set 
+		    GMT_CREATE = now(),
+		    GMT_MODIFIED = now(),
+		    DOWNLOAD_URL = #{viewUrl,jdbcType= VARCHAR}
+		    where USERID = #{userID,jdbcType=BIGINT} 
+		    and FILE_HASH = #{fileHash,jdbcType= VARCHAR}
+ 		</update>
+ 	  
+ 	  
+ 	  <!-- 删除相应的转换记录 -->
+ 	   <delete id="deletePtsConvert" parameterType="com.neo.model.po.FcsFileInfoPO">
+        delete from pts_convert
+      	where USERID = #{userID,jdbcType=BIGINT}  
+      	and FILE_HASH = #{fileHash,jdbcType= VARCHAR}
+   	   </delete>
  	  
 
  	  

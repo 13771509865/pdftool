@@ -1,6 +1,5 @@
 package com.neo.commons.cons;
 
-import com.neo.commons.cons.constants.ConvertConsts;
 
 /**
  * 转换类型枚举封装
@@ -65,8 +64,13 @@ public enum EnumConvertType {
 	OFD_MERGE(49, "ofdtoofd", "合并ofd", "ofd", false, false, false, false),
 	HTML_PDF(50, "html2pdf", "html到pdf", "pdf", false, false, false, false),
 	EPUB_HTML_TEMP(51, "epub2htmltemp", "epub到html的转换(模板)", "html", false, false, false, true),
-	DAE_HTML_TEMP(52, "dae2htmltemp", "dae到html的转换(模板)", "html", false, false, false, true);
+	DAE_HTML_TEMP(52, "dae2htmltemp", "dae到html的转换(模板)", "html", false, false, false, true),
 
+	PDF_PPT(80, "pdf2ppt", "pdf到ppt的转换", "pptx", false, false, false, false),
+	PDF_EXCEL(81, "pdf2excel", "pdf到excel的转换", "xlsx", false, false, false, false),
+	PDF_SPLIT(82, "pdf2split", "pdf拆分", "pdf", true, false, true, false);
+
+	
 	private final Integer value;
 	private String type;
 	private String info;
@@ -225,6 +229,9 @@ public enum EnumConvertType {
 			case PDF_PDF:
 			case PDF_WORD:
 			case MS_OFD:
+			case PDF_PPT:
+			case PDF_EXCEL:
+			case PDF_SPLIT:
 				return true;
 			default:
 				return false;
@@ -275,6 +282,9 @@ public enum EnumConvertType {
 //		if (enumConvertType != null) {
 //			switch (enumConvertType) {
 //			case PDF_WORD:
+//			case PDF_PPT:
+//			case PDF_EXCEL:
+//			case PDF_SPLIT:
 //				return ConvertConsts.PDF2WORDJAR;
 //			case VIDEO_MP4:
 //			case AI_PDF:

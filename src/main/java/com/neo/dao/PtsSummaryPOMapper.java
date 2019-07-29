@@ -6,6 +6,6 @@ public interface PtsSummaryPOMapper {
 	
 	int insertPtsSumm(PtsSummaryPO ptsSummaryPO);
 	
-	int updatePtsSummID(PtsSummaryPO ptsSummaryPO);
+	int updatePtsSumm(PtsSummaryPO ptsSummaryPO);
 
 }

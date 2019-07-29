@@ -43,7 +43,8 @@ public enum ResultCode {
 	E_CONVERTYPE_SRCFILE_ERROR(49,"转换类型与文件不匹配,请检查参数"),
 	E_MERGEFILE_NULL(51,"需要合并的文档不存在"),
 	E_WMPICFILE_ERROE(52,"图片水印不存在或文件有误,请检查"),
-	E_ILLEGA_PARAM(53,"参数包含非法字符，请检查参数");
+	E_ILLEGA_PARAM(53,"参数包含非法字符，请检查参数"),
+	E_NOTALL_PARAM(54,"参数不完整,请检查参数");
 
 	private Integer value;
 	private String info;

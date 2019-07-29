@@ -17,5 +17,7 @@ public interface SysConstant {
 	public static final String UUIDMD5_HEADER = "uuid_";
 	
 	public static final String CONVERT_RESULT = "_CONVERTRESULT";//转换结果
+	
+	public static final String SRC_FILE_SIZE = "srcFileSize";
 
 }
