@@ -59,7 +59,7 @@ public class UploadInterceptor implements HandlerInterceptor {
 	}
 
 
-	//游客仅可上传10M,会员可上传30M
+	//游客仅可上传10M,登录用户可上传30M
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {

@@ -1,14 +1,55 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.neo.dao.PtsSummaryPOMapper">
+     <resultMap id="PtsSummaryPOMap" type="com.neo.model.po.PtsSummaryPO">
+        <id column="ID" property="id" jdbcType="INTEGER"/>
+        <result column="ZERO_THREE" property="zeroToThree" jdbcType="INTEGER"/>
+        <result column="THREE_FIVE" property="threeToFive" jdbcType="INTEGER"/>
+        <result column="FIVE_TEN" property="fiveToTen" jdbcType="INTEGER"/>
+        <result column="TEN_FIFTEEN" property="tenToFifteen" jdbcType="INTEGER"/>
+        <result column="FIFTEEN_TWENTY" property="fifteenToTwenty" jdbcType="INTEGER"/>
+        <result column="TWENTY_THIRTY" property="twentyToThirty" jdbcType="INTEGER"/>
+        <result column="THIRTY_FOURTY" property="thirtyToFourty" jdbcType="INTEGER"/>
+        <result column="FOURTY_FIFTY" property="fourtyToFifty" jdbcType="INTEGER"/>
+        <result column="FIFTY_MORE" property="FiftyMore" jdbcType="INTEGER"/>
+        <result column="IP_ADDRESS" property="ipAddress" jdbcType="VARCHAR"/>
+        <result column="IS_SUCCESS" property="isSuccess" jdbcType="INTEGER"/>
+        <result column="APP_TYPE" property="appType" jdbcType="INTEGER"/>
+        <result column="CREATE_DATE" property="createDate" jdbcType="DATE"/>
+        <result column="CREATE_TIME" property="createTime" jdbcType="TIME"/>
+        <result column="MODIFIED_DATE" property="modifiedDate" jdbcType="DATE"/>
+        <result column="MODIFIED_TIME" property="modifiedTime" jdbcType="TIME"/>
+    </resultMap>
+    
+      <sql id="search_condition">
+        <where>
+            <if test="id != null and id!=''">
+                AND ID = #{id}
+            </if>
+            <if test="ipAddress != null and ipAddress!=''">
+                AND IP_ADDRESS = #{ipAddress}
+            </if>
+            <if test="appType != null andappType!=''">
+            	AND APP_TYPE = #{appType}
+            </if>
+            <if test="showDateStart != null">
+                <![CDATA[AND SHOW_DATE >= DATE_FORMAT(#{showDateStart},'%Y-%m-%d')]]>
+            </if>
+            <if test="showDateEnd !=null">
+                <![CDATA[AND SHOW_DATE <= DATE_FORMAT(#{showDateEnd},'%Y-%m-%d')]]>
+            </if>
+        </where>
+    </sql>
+    
+    
+    
      
-     
-     <!-- 根据文档大小，统计每个ip每天的转换量 -->
+     <!-- 插入每个转换结果数据（包含游客） -->
       <insert id="insertPtsSumm" parameterType="com.neo.model.po.PtsSummaryPO">
 	    insert into pts_summ (
 			ZERO_THREE, THREE_FIVE, FIVE_TEN, TEN_FIFTEEN,
 			FIFTEEN_TWENTY, TWENTY_THIRTY, THIRTY_FOURTY,
-			FOURTY_FIFTY, FIFTY_MORE, IP_ADDRESS, IS_SUCCESS,
+			FOURTY_FIFTY, FIFTY_MORE,USERID, IP_ADDRESS, IS_SUCCESS,
 			APP_TYPE, CREATE_DATE, CREATE_TIME,
 			MODIFIED_DATE, MODIFIED_TIME
 			)
@@ -16,16 +57,16 @@
 	      #{zeroToThree,jdbcType=INTEGER}, 		#{threeToFive,jdbcType=INTEGER}, 
 	      #{fiveToTen,jdbcType=INTEGER}, 		#{tenToFifteen,jdbcType=INTEGER}, 
 	      #{fifteenToTwenty,jdbcType=INTEGER}, 	#{twentyToThirty,jdbcType=INTEGER},
-	      #{thirtyToFourty,jdbcType=INTEGER}, 		#{fourtyToFifty,jdbcType=INTEGER}, 
-	      #{FiftyMore,jdbcType=INTEGER},  	#{ipAddress,jdbcType=VARCHAR},
-	      #{isSuccess,jdbcType=INTEGER}, 	#{appType,jdbcType=INTEGER}, 
-	      #{createDate,jdbcType=INTEGER}, 	#{createTime,jdbcType=INTEGER}, 
-	      #{modifiedDate,jdbcType=INTEGER}, 	#{modifiedTime,jdbcType=INTEGER} 
+	      #{thirtyToFourty,jdbcType=INTEGER}, 	#{fourtyToFifty,jdbcType=INTEGER}, 
+	      #{FiftyMore,jdbcType=INTEGER},  		#{ipAddress,jdbcType=VARCHAR},
+	      #{isSuccess,jdbcType=INTEGER}, 		#{appType,jdbcType=INTEGER}, 
+	      #{createDate,jdbcType=DATE}, 			#{createTime,jdbcType=TIME}, 
+	      #{modifiedDate,jdbcType=DATE}, 		#{modifiedTime,jdbcType=TIME} 
 	      )
  	  </insert>
  	  
 
- 	<!-- 每日根据ip地址，更新转换成功失败的数量 -->
+ 	<!-- 每日根据ip地址，更新转换的数量（包含失败的） -->
  	  <update id="updatePtsSumm" parameterType="com.neo.model.po.PtsSummaryPO" >
 		    update pts_summ
 		    <set >
@@ -75,7 +116,7 @@
 		        MODIFIED_DATE = #{modifiedDate,jdbcType=DATE},
 		      </if>
 		       <if test="modifiedTime != null" >
-		        MODIFIED_TIME = #{modifiedTime,jdbcType=TIME},
+		        MODIFIED_TIME = #{modifiedTime,jdbcType=TIME}
 		      </if>
 		    </set>
 		    where IP_ADDRESS = #{ipAddress,jdbcType=INTEGER} 
@@ -83,6 +124,38 @@
 		    and CREATE_DATE = #{createDate,jdbcType=DATE}
  		</update>
  	  
+ 	  
+ 	  
+ 	  <!--查询每个size区间内，转换的数量  -->
+ 	  <select id="selectCountBySize" resultMap="PtsSummaryPOMap" >
+			select
+			sum(ZERO_THREE), sum(THREE_FIVE), sum(FIVE_TEN),
+			sum(TEN_FIFTEEN), sum(FIFTEEN_TWENTY), sum(TWENTY_THIRTY),
+			sum(THIRTY_FOURTY), sum(FOURTY_FIFTY), sum(FIFTY_MORE)
+			from pts_summ 
+	  </select>
+	  
+	  
+	  <!--查询每个size区间内，每个ip每天,转换的数量  -->
+	  <select id="selectCountByIpAndDate" resultMap="PtsSummaryPOMap" parameterType="com.neo.model.qo.PtsSummaryQO">
+			select
+			sum(ZERO_THREE), sum(THREE_FIVE), sum(FIVE_TEN),
+			sum(TEN_FIFTEEN), sum(FIFTEEN_TWENTY), sum(TWENTY_THIRTY),
+			sum(THIRTY_FOURTY), sum(FOURTY_FIFTY), sum(FIFTY_MORE),
+			USERID,IP_ADDRESS, IS_SUCCESS,APP_TYPE, 
+			CREATE_DATE, CREATE_TIME
+			from pts_summ
+			<include refid="search_condition" />
+			GROUP BY USERID, CREATE_DATE 
+			ORDER BY CREATE_DATE
+	  </select>
+	  
+	  
+	  
+	  
+	  
+	  
+	  
  	  
     
 </mapper>

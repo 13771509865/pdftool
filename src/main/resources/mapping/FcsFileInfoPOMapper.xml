@@ -27,8 +27,40 @@
   	</sql>
     
     
+       <sql id="search_condition">
+        <where>
+            <if test="id != null and id!=''">
+                AND ID = #{id}
+            </if>
+            <if test="ipAddress != null and ipAddress!=''">
+                AND IP_ADDRESS = #{ipAddress}
+            </if>
+             <if test="fileHash != null and fileHash!=''">
+                AND FILE_HASH = #{fileHash}
+            </if>
+            <if test="userID != null and userID!=''">
+            	AND USERID = #{userID}
+            </if>
+            <if test="showDateStart != null">
+                <![CDATA[AND SHOW_DATE >= DATE_FORMAT(#{showDateStart},'%Y-%m-%d')]]>
+            </if>
+            <if test="showDateEnd !=null">
+                <![CDATA[AND SHOW_DATE <= DATE_FORMAT(#{showDateEnd},'%Y-%m-%d')]]>
+            </if>
+        </where>
+    </sql>
     
-   	  <!-- 插入转换成功的数据 -->
+    
+    
+ 	<sql id="byPage">
+		<if test="startRow != null and rows != null">
+			limit #{startRow},#{rows}
+		</if>
+	</sql>
+	
+	
+    
+   	  <!-- 插入登录用户转换成功的数据 -->
       <insert id="insertPtsConvert" parameterType="com.neo.model.po.FcsFileInfoPO">
 	    insert into pts_convert (
 	   	 	IP_ADDRESS, USERID,FILE_HASH, RESULT_CODE,
@@ -48,13 +80,14 @@
  	  </insert>
  	  
  	  
- 	  <!-- 查询用户三天的转换记录 -->
- 	  	<select id="selectFcsFileInfoPOByUserID" resultMap="FcsFileInfoPOResultMap" parameterType="java.lang.Long">
+ 	  <!-- 查询登录用户三天的转换记录 -->
+ 	  	<select id="selectFcsFileInfoPOByUserID" resultMap="FcsFileInfoPOResultMap" parameterType="com.neo.model.qo.FcsFileInfoQO">
 			select
 			<include refid="Base_Column_List" />
 			from pts_convert 
-			where USERID = #{userID,jdbcType=BIGINT}
-			and  DATEDIFF(now(), GMT_CREATE)<3
+			<include refid="search_condition" />
+			<![CDATA[and  DATEDIFF(now(), GMT_CREATE)<3]]>
+			<include refid="byPage"/>
 		</select>
  	  
  	  
@@ -70,11 +103,10 @@
  		</update>
  	  
  	  
- 	  <!-- 删除相应的转换记录 -->
- 	   <delete id="deletePtsConvert" parameterType="com.neo.model.po.FcsFileInfoPO">
-        delete from pts_convert
-      	where USERID = #{userID,jdbcType=BIGINT}  
-      	and FILE_HASH = #{fileHash,jdbcType= VARCHAR}
+ 	  <!-- 删除登录用户，相应的转换记录 -->
+ 	   <delete id="deletePtsConvert" parameterType="com.neo.model.qo.FcsFileInfoQO">
+	        delete from pts_convert
+	      	<include refid="search_condition" />
    	   </delete>
  	  
 

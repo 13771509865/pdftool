@@ -74,6 +74,8 @@ public class PtsConvertService {
 			return DefaultResult.failResult(ResultCode.E_SERVER_BUSY.getInfo(), fcsFileInfoBO);
 		}
 		try {
+			
+			ptsConvertParamService.buildConvertParameterBO(convertBO);//暂只有给个超时时间
 			//调用fcs进行转码
 			IResult<HttpResultEntity> httpResult = httpAPIService.doPost(ptsProperty.getFcs_convert_url(), ptsConvertParamService.buildFcsMapParam(convertBO));
 			
@@ -85,11 +87,11 @@ public class PtsConvertService {
 			SysLogUtils.info("fcs转码结果："+fcsMap.toString());
 			
 			fcsFileInfoBO = (FcsFileInfoBO)fcsMap.get(SysConstant.FCS_DATA);
-			
-			if(fcsFileInfoBO.getCode() == 0) {
+			if(fcsFileInfoBO.getCode() == 0) {//转换成功
 				
-				/** 还有问题不能只insert， 这样会有重复数据*/
 				updateFcsFileInfo(fcsFileInfoBO,request);//这里只记录转换成功的pts_convert
+				
+				//转换成功记录一下，拦截器要用
 				request.setAttribute(SysConstant.CONVERT_RESULT, ResultCode.E_SUCCES.getValue());
 				return DefaultResult.successResult(fcsFileInfoBO);
 			}else {
@@ -118,6 +120,8 @@ public class PtsConvertService {
 				return DefaultResult.failResult();
 			}
 			FcsFileInfoPO fcsFileInfoPO = ptsConvertParamService.buildFcsFileInfoParameter(fcsFileInfoBO, request);
+			
+			//根据userId和fileHash去update
 			int count = fcsFileInfoBOMapper.updatePtsConvert(fcsFileInfoPO);
 			if(count < 1) {
 				fcsFileInfoBOMapper.insertPtsConvert(fcsFileInfoPO);

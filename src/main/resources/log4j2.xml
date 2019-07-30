@@ -9,11 +9,11 @@
         <!--日志路径-->
         <property name="LOG_HOME">E:/dcs/log</property>
         <!--日志文件名-->
-        <property name="FILE_NAME">pts</property>
+        <property name="FILE_NAME">pts_error</property>
          <!--日志文件名-->
         <property name="MYLOG_NAME">all_log</property>
         <!--用户反馈日志文件名-->
-        <property name="SIZEROLLING_FILE_NAME">Feedback</property>
+        <property name="SIZEROLLING_FILE_NAME">pts_Feedback</property>
         <!--#DEBUG、INFO、WARN、ERROR和FATAL-->
         <property name="LOG_LEVEL">INFO</property>
     </properties>

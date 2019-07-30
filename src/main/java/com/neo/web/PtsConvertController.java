@@ -30,7 +30,6 @@ import com.neo.service.convert.redisMQ.RedisMQConvertService;
 @Controller
 public class PtsConvertController{
 
-
 	@Autowired
 	private RedisMQConvertService redisMQConvertService;
 

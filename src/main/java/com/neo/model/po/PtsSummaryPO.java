@@ -23,7 +23,7 @@ public class PtsSummaryPO {
 	private Integer twentyToThirty;
 	private Integer thirtyToFourty;
 	private Integer fourtyToFifty;
-	private Integer FiftyMore;
+	private Integer fiftyMore;
 	private String  ipAddress;
 	private Integer isSuccess;
 	private Integer appType;

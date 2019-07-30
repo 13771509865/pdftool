@@ -17,4 +17,16 @@ public class RedisConsts {
 	public static final String MQ_WAIT_CONVERT = "mqWaitConvert"; //待转换消息队列
 	
 	public static final String MQ_RESULT_CONVERT = "mqConvertResult"; //待转换消息队列
+	
+	//redis二级缓存配置
+    public static final String CACHE_DAY = "cacheDay";
+
+    public static final String CACHE_QUARTER_DAY = "cacheQuarterDay";
+
+    public static final String CACHE_HALF_DAY = "cacheHalfDay";
+
+    public static final String DYNAMIC_DOMAIN_COUNT_CACHE = "dynamicDomainCountCache";
+	
+	
+	
 }

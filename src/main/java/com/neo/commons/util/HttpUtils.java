@@ -210,7 +210,14 @@ public class HttpUtils {
         return filename;
     }
     
-	//获取session中的userID
+    
+    
+	
+    /**
+     * 获取session中的userID
+     * @param request
+     * @return
+     */
 	public static Long getSessionUserID(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		String userInfo = (String)session.getAttribute(ConstantCookie.SESSION_USER);

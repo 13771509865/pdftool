@@ -64,13 +64,13 @@ public class ConvertInterceptor implements HandlerInterceptor {
 		if (convertResult != null && convertResult instanceof Integer) {
 			Integer result = (Integer) convertResult;
 			if (ResultCode.E_SUCCES.getValue() == result) {
-				String userID =HttpUtils.getSessionUserID(request).toString();
+				Long userID =HttpUtils.getSessionUserID(request);
 				String ipAddr = HttpUtils.getIpAddr(request);
 				String key = RedisConsts.IP_CONVERT_TIME_KEY;
 				String value = ipAddr; 
-				if(StringUtils.isNotBlank(userID)) {//登录用户
+				if(userID !=null) {//登录用户
 					key = RedisConsts.ID_CONVERT_TIME_KEY;
-					value = userID; 
+					value = userID.toString(); 
 				}
 				boolean addConvertTimes = cacheManager.pushZSet(key, value);
 				SysLogUtils.info("转换次数插入是否成功："+addConvertTimes);
@@ -83,7 +83,7 @@ public class ConvertInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		String ipAddr = HttpUtils.getIpAddr(request);
-		String userID = HttpUtils.getSessionUserID(request).toString();
+		Long userID = HttpUtils.getSessionUserID(request);
 
 		//默认为游客参数值
 		Integer maxConvertTimes = config.getVConvertTimes();//游客5个文件
@@ -92,10 +92,10 @@ public class ConvertInterceptor implements HandlerInterceptor {
 		ResultCode resultCode = ResultCode.E_VISITOR_CONVERT_NUM_ERROR;
 
 		if(!ConstantAdmin.ADMIN_IP.equals(ipAddr)){//公司ip不拦截
-			if(StringUtils.isNotBlank(userID)){//会员20个文件
+			if(userID != null){//会员20个文件
 				maxConvertTimes = config.getMConvertTimes();
 				key = RedisConsts.ID_CONVERT_TIME_KEY;
-				value = userID;
+				value = userID.toString();
 				resultCode = ResultCode.E_USER_CONVERT_NUM_ERROR;
 			}
 
