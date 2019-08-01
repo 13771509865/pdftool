@@ -11,7 +11,7 @@
         <result column="TWENTY_THIRTY" property="twentyToThirty" jdbcType="INTEGER"/>
         <result column="THIRTY_FOURTY" property="thirtyToFourty" jdbcType="INTEGER"/>
         <result column="FOURTY_FIFTY" property="fourtyToFifty" jdbcType="INTEGER"/>
-        <result column="FIFTY_MORE" property="FiftyMore" jdbcType="INTEGER"/>
+        <result column="FIFTY_MORE" property="fiftyMore" jdbcType="INTEGER"/>
         <result column="IP_ADDRESS" property="ipAddress" jdbcType="VARCHAR"/>
         <result column="IS_SUCCESS" property="isSuccess" jdbcType="INTEGER"/>
         <result column="APP_TYPE" property="appType" jdbcType="INTEGER"/>
@@ -23,13 +23,13 @@
     
       <sql id="search_condition">
         <where>
-            <if test="id != null and id!=''">
+            <if test="id != null">
                 AND ID = #{id}
             </if>
             <if test="ipAddress != null and ipAddress!=''">
                 AND IP_ADDRESS = #{ipAddress}
             </if>
-            <if test="appType != null andappType!=''">
+            <if test="appType != null">
             	AND APP_TYPE = #{appType}
             </if>
             <if test="showDateStart != null">
@@ -42,26 +42,135 @@
     </sql>
     
     
+    <sql id="group_by">
+        <choose>
+			<when test=" groupby == null or groupby ==''">
+				GROUP BY IP_ADDRESS, CREATE_DATE 
+			</when>
+			<when test=" 'DATE' == groupby ">
+				GROUP BY  CREATE_DATE 
+			</when>
+		</choose>
+	</sql>
+    
+    
+	 <sql id="key">
+	   <trim suffixOverrides=",">
+	     <if test="zeroToThree != null" >
+		        ZERO_THREE,
+		      </if>
+		      <if test="threeToFive != null" >
+		        THREE_FIVE,
+		      </if>
+		      <if test="fiveToTen != null" >
+		        FIVE_TEN,
+		      </if>
+		      <if test="tenToFifteen != null" >
+		        TEN_FIFTEEN,
+		      </if>
+		      <if test="fifteenToTwenty != null" >
+		        FIFTEEN_TWENTY,
+		      </if>
+		      <if test="twentyToThirty != null" >
+		       TWENTY_THIRTY,
+		      </if>
+		      <if test="thirtyToFourty != null" >
+		        THIRTY_FOURTY,
+		      </if>
+		      <if test="fourtyToFifty != null" >
+		        FOURTY_FIFTY,
+		      </if>
+		      <if test="fiftyMore != null" >
+		        FIFTY_MORE,
+		      </if>
+		      <if test="ipAddress != null and ipAddress !=''" >
+		        IP_ADDRESS,
+		      </if>
+		      <if test="isSuccess != null" >
+		        IS_SUCCESS,
+		      </if>
+		      <if test="appType != null" >
+		        APP_TYPE,
+		      </if>
+		      <if test="createDate != null" >
+		        CREATE_DATE,
+		      </if>
+		       <if test="createTime != null" >
+		        CREATE_TIME,
+		      </if>
+		       <if test="modifiedDate != null" >
+		        MODIFIED_DATE,
+		      </if>
+		       <if test="modifiedTime != null" >
+		        MODIFIED_TIME,
+		      </if>
+	   </trim>
+	  </sql>
+
+		
+	<sql id="values">
+	   <trim suffixOverrides=",">
+	      <if test="zeroToThree != null" >
+		        #{zeroToThree,jdbcType=INTEGER},
+		      </if>
+		      <if test="threeToFive != null" >
+		        #{threeToFive,jdbcType=INTEGER}, 
+		      </if>
+		      <if test="fiveToTen != null" >
+		        #{fiveToTen,jdbcType=INTEGER}, 
+		      </if>
+		      <if test="tenToFifteen != null" >
+		        #{tenToFifteen,jdbcType=INTEGER},
+		      </if>
+		      <if test="fifteenToTwenty != null" >
+		        #{fifteenToTwenty,jdbcType=INTEGER},
+		      </if>
+		      <if test="twentyToThirty != null" >
+		       #{twentyToThirty,jdbcType=INTEGER},
+		      </if>
+		      <if test="thirtyToFourty != null" >
+		        #{thirtyToFourty,jdbcType=INTEGER},
+		      </if>
+		      <if test="fourtyToFifty != null" >
+		        #{fourtyToFifty,jdbcType=INTEGER}, 
+		      </if>
+		      <if test="fiftyMore != null" >
+		        #{fiftyMore,jdbcType=INTEGER},
+		      </if>
+		      <if test="ipAddress != null and ipAddress !=''" >
+		        #{ipAddress,jdbcType=VARCHAR},
+		      </if>
+		      <if test="isSuccess != null" >
+		        #{isSuccess,jdbcType=INTEGER},
+		      </if>
+		      <if test="appType != null" >
+		       	 #{appType,jdbcType=INTEGER},
+		      </if>
+		      <if test="createDate != null" >
+		         #{createDate,jdbcType=DATE},
+		      </if>
+		       <if test="createTime != null" >
+		         #{createTime,jdbcType=TIME},
+		      </if>
+		       <if test="modifiedDate != null" >
+		        #{modifiedDate,jdbcType=DATE},
+		      </if>
+		       <if test="modifiedTime != null" >
+		         #{modifiedTime,jdbcType=TIME}
+		      </if>
+		   </trim>
+		  </sql>	
+	
+    
     
      
      <!-- 插入每个转换结果数据（包含游客） -->
       <insert id="insertPtsSumm" parameterType="com.neo.model.po.PtsSummaryPO">
 	    insert into pts_summ (
-			ZERO_THREE, THREE_FIVE, FIVE_TEN, TEN_FIFTEEN,
-			FIFTEEN_TWENTY, TWENTY_THIRTY, THIRTY_FOURTY,
-			FOURTY_FIFTY, FIFTY_MORE,USERID, IP_ADDRESS, IS_SUCCESS,
-			APP_TYPE, CREATE_DATE, CREATE_TIME,
-			MODIFIED_DATE, MODIFIED_TIME
+			<include refid="key" />
 			)
 	 	values (
-	      #{zeroToThree,jdbcType=INTEGER}, 		#{threeToFive,jdbcType=INTEGER}, 
-	      #{fiveToTen,jdbcType=INTEGER}, 		#{tenToFifteen,jdbcType=INTEGER}, 
-	      #{fifteenToTwenty,jdbcType=INTEGER}, 	#{twentyToThirty,jdbcType=INTEGER},
-	      #{thirtyToFourty,jdbcType=INTEGER}, 	#{fourtyToFifty,jdbcType=INTEGER}, 
-	      #{FiftyMore,jdbcType=INTEGER},  		#{ipAddress,jdbcType=VARCHAR},
-	      #{isSuccess,jdbcType=INTEGER}, 		#{appType,jdbcType=INTEGER}, 
-	      #{createDate,jdbcType=DATE}, 			#{createTime,jdbcType=TIME}, 
-	      #{modifiedDate,jdbcType=DATE}, 		#{modifiedTime,jdbcType=TIME} 
+	     <include refid="values" />
 	      )
  	  </insert>
  	  
@@ -94,10 +203,10 @@
 		      <if test="fourtyToFifty != null" >
 		        FOURTY_FIFTY = FOURTY_FIFTY+1,
 		      </if>
-		      <if test="FiftyMore != null" >
+		      <if test="fiftyMore != null" >
 		        FIFTY_MORE = FIFTY_MORE+1,
 		      </if>
-		      <if test="ipAddress != null" >
+		      <if test="ipAddress != null and ipAddress!=''" >
 		        IP_ADDRESS = #{ipAddress,jdbcType=VARCHAR},
 		      </if>
 		      <if test="isSuccess != null" >
@@ -129,9 +238,11 @@
  	  <!--查询每个size区间内，转换的数量  -->
  	  <select id="selectCountBySize" resultMap="PtsSummaryPOMap" >
 			select
-			sum(ZERO_THREE), sum(THREE_FIVE), sum(FIVE_TEN),
-			sum(TEN_FIFTEEN), sum(FIFTEEN_TWENTY), sum(TWENTY_THIRTY),
-			sum(THIRTY_FOURTY), sum(FOURTY_FIFTY), sum(FIFTY_MORE)
+			sum(ZERO_THREE) ZERO_THREE,  		sum(THREE_FIVE) THREE_FIVE, 
+			sum(FIVE_TEN) FIVE_TEN, 			sum(TEN_FIFTEEN) TEN_FIFTEEN, 
+			sum(FIFTEEN_TWENTY) FIFTEEN_TWENTY, sum(TWENTY_THIRTY) TWENTY_THIRTY,
+			sum(THIRTY_FOURTY) THIRTY_FOURTY, 	sum(FOURTY_FIFTY) FOURTY_FIFTY, 
+			sum(FIFTY_MORE) FIFTY_MORE
 			from pts_summ 
 	  </select>
 	  
@@ -139,19 +250,21 @@
 	  <!--查询每个size区间内，每个ip每天,转换的数量  -->
 	  <select id="selectCountByIpAndDate" resultMap="PtsSummaryPOMap" parameterType="com.neo.model.qo.PtsSummaryQO">
 			select
-			sum(ZERO_THREE), sum(THREE_FIVE), sum(FIVE_TEN),
-			sum(TEN_FIFTEEN), sum(FIFTEEN_TWENTY), sum(TWENTY_THIRTY),
-			sum(THIRTY_FOURTY), sum(FOURTY_FIFTY), sum(FIFTY_MORE),
-			USERID,IP_ADDRESS, IS_SUCCESS,APP_TYPE, 
+			sum(ZERO_THREE) ZERO_THREE,  		sum(THREE_FIVE) THREE_FIVE, 
+			sum(FIVE_TEN) FIVE_TEN, 			sum(TEN_FIFTEEN) TEN_FIFTEEN, 
+			sum(FIFTEEN_TWENTY) FIFTEEN_TWENTY, sum(TWENTY_THIRTY) TWENTY_THIRTY,
+			sum(THIRTY_FOURTY) THIRTY_FOURTY, 	sum(FOURTY_FIFTY) FOURTY_FIFTY, 
+			sum(FIFTY_MORE) FIFTY_MORE,
+			IP_ADDRESS, IS_SUCCESS,APP_TYPE, 
 			CREATE_DATE, CREATE_TIME
 			from pts_summ
 			<include refid="search_condition" />
-			GROUP BY USERID, CREATE_DATE 
+			<include refid="group_by" />
 			ORDER BY CREATE_DATE
 	  </select>
 	  
 	  
-	  
+
 	  
 	  
 	  

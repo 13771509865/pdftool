@@ -1,13 +1,12 @@
 package com.neo.web;
 
-import java.io.File;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -42,9 +41,9 @@ public class PtsConvertController{
 
 	
 	
-	@RequestMapping(value = "/convert")
+	@PostMapping(value = "/convert")
 	@ResponseBody
-	public Map<String, Object> convert(@RequestBody ConvertParameterBO convertBO,HttpServletRequest request)  {
+	public Map<String, Object> convert( ConvertParameterBO convertBO,HttpServletRequest request)  {
 		if(convertBO.getSrcFileSize() == null) {
 			return JsonResultUtils.failMapResult(ResultCode.E_NOTALL_PARAM.getInfo());
 		}
@@ -60,7 +59,7 @@ public class PtsConvertController{
 	
 	
 
-	@RequestMapping(value = "/mqconvert")
+	@PostMapping(value = "/mqconvert")
 	@ResponseBody
 	public Map<String, Object> mqconvert(@RequestBody ConvertParameterBO convertBO)  {
 		if(convertBO.getSrcFileSize() == null) {

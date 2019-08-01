@@ -27,8 +27,8 @@ public class FcsFileInfoPO {
 	private String srcStoragePath;
 	private String destStoragePath;
 	private String viewUrl;
-	private Date gmtcreate;
-	private Date gmtmodified;
+	private Date gmtCreate;
+	private Date gmtModified;
     
     @Override
     public String toString() {

@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -31,7 +32,7 @@ public class UaaController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping("/detail")
+	@GetMapping("/detail")
 	@ResponseBody
 	public Map<String,Object> getUserInfoUaa(HttpServletRequest request){
 		UserBO userBO = null;
@@ -51,7 +52,7 @@ public class UaaController {
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping(value = "/logout")
+	@GetMapping(value = "/logout")
 	@ResponseBody
     public Map<String, Object> logout(HttpServletRequest request, HttpServletResponse response) {
 		uaaService.uaaLogout(request, response);

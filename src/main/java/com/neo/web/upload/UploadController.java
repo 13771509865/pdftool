@@ -1,17 +1,17 @@
 package com.neo.web.upload;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neo.commons.cons.IResult;
 import com.neo.commons.util.JsonResultUtils;
+import com.neo.model.bo.FileUploadBO;
 import com.neo.service.upload.UploadService;
 
 /**
@@ -26,10 +26,10 @@ public class UploadController{
 	@Autowired
 	private UploadService uploadService;
 
-    @RequestMapping(value = "/defaultUpload")
+    @PostMapping(value = "/defaultUpload")
     @ResponseBody
     public Map<String, Object> fileUpload(HttpServletRequest request){
-    	IResult<String> result  =uploadService.upload(request);
+    	IResult<FileUploadBO> result  =uploadService.upload(request);
     	if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
 		}else {

@@ -29,7 +29,7 @@
     
        <sql id="search_condition">
         <where>
-            <if test="id != null and id!=''">
+            <if test="id != null">
                 AND ID = #{id}
             </if>
             <if test="ipAddress != null and ipAddress!=''">

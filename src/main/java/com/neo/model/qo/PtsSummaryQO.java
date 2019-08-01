@@ -18,5 +18,6 @@ public class PtsSummaryQO extends PageQO{
 	private Date showDateStart;
 	private Date showDateEnd;
 	private String order;
+	private String groupby;
 
 }

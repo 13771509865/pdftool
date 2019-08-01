@@ -31,9 +31,9 @@ public class Swagger2Config {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("YozoDsc: 永中文档服务中心")
-                .description("云转换")
-                .version("DSC_0.0.1_190505_Alpha")
+                .title("YOZO_PTS: 永中PDF工具集")
+                .description("PDF工具集")
+                .version("PTS_0.0.1_190505_Alpha")
                 .build();
     }
 

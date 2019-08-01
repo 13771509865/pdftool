@@ -21,6 +21,7 @@ import com.neo.dao.FcsFileInfoPOMapper;
 import com.neo.dao.PtsSummaryPOMapper;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FcsFileInfoBO;
+import com.neo.model.po.ConvertParameterPO;
 import com.neo.model.po.FcsFileInfoPO;
 import com.neo.model.po.PtsSummaryPO;
 import com.neo.service.httpclient.HttpAPIService;
@@ -75,9 +76,9 @@ public class PtsConvertService {
 		}
 		try {
 			
-			ptsConvertParamService.buildConvertParameterBO(convertBO);//暂只有给个超时时间
+			ConvertParameterPO convertPO = ptsConvertParamService.buildConvertParameterPO(convertBO);//暂只有给个超时时间
 			//调用fcs进行转码
-			IResult<HttpResultEntity> httpResult = httpAPIService.doPost(ptsProperty.getFcs_convert_url(), ptsConvertParamService.buildFcsMapParam(convertBO));
+			IResult<HttpResultEntity> httpResult = httpAPIService.doPost(ptsProperty.getFcs_convert_url(), ptsConvertParamService.buildFcsMapParamPO(convertPO));
 			
 			if (!HttpUtils.isHttpSuccess(httpResult)) {
 				fcsFileInfoBO.setCode(ResultCode.E_FCS_CONVERT_FAIL.getValue());
@@ -86,7 +87,7 @@ public class PtsConvertService {
 			Map<String, Object> fcsMap= JsonUtils.parseJSON2Map(httpResult.getData().getBody());
 			SysLogUtils.info("fcs转码结果："+fcsMap.toString());
 			
-			fcsFileInfoBO = (FcsFileInfoBO)fcsMap.get(SysConstant.FCS_DATA);
+			fcsFileInfoBO = JsonUtils.json2obj(fcsMap.get(SysConstant.FCS_DATA), FcsFileInfoBO.class);
 			if(fcsFileInfoBO.getCode() == 0) {//转换成功
 				
 				updateFcsFileInfo(fcsFileInfoBO,request);//这里只记录转换成功的pts_convert
@@ -124,7 +125,7 @@ public class PtsConvertService {
 			//根据userId和fileHash去update
 			int count = fcsFileInfoBOMapper.updatePtsConvert(fcsFileInfoPO);
 			if(count < 1) {
-				fcsFileInfoBOMapper.insertPtsConvert(fcsFileInfoPO);
+				int a = fcsFileInfoBOMapper.insertPtsConvert(fcsFileInfoPO);
 			}
 			return DefaultResult.successResult();
 		} catch (Exception e) {
@@ -146,7 +147,7 @@ public class PtsConvertService {
 			PtsSummaryPO ptsSummaryPO = ptsConvertParamService.buildPtsSummaryPOParameter(fcsFileInfoBO,convertBO, request);
 			int upCount = ptsSummaryPOMapper.updatePtsSumm(ptsSummaryPO);
 			if(upCount < 1) {
-				ptsSummaryPOMapper.insertPtsSumm(ptsSummaryPO);
+				int a = ptsSummaryPOMapper.insertPtsSumm(ptsSummaryPO);
 			}
 		} catch (Exception e) {
 			SysLogUtils.error("更新转换的记录失败，失败原因："+e);

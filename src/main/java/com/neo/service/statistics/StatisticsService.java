@@ -102,9 +102,6 @@ public class StatisticsService {
 	
 	
 	
-	
-	
-	
 	/**
 	 * 根据fileHash和userID删除用户的转换记录
 	 * @param fcsFileInfoPO
@@ -123,7 +120,7 @@ public class StatisticsService {
 			if(count < 1) {
 				return DefaultResult.failResult("删除用户转换记录失败");
 			}
-			return DefaultResult.successResult("成功删除记录："+count+"条");
+			return DefaultResult.successResult();
 		} catch (Exception e) {
 			SysLogUtils.error("删除用户转换记录失败，原因：", e);
 			return DefaultResult.failResult("删除用户转换记录失败");
@@ -140,7 +137,7 @@ public class StatisticsService {
 		try {
 			PtsSummaryPO ptsSummaryPO = ptsSummaryPOMapper.selectCountBySize();
 			if(ptsSummaryPO == null ) {
-				DefaultResult.failResult("查询转换记录失败");
+				return DefaultResult.failResult("查询转换记录失败");
 			}
 			return DefaultResult.successResult(ptsSummaryPO);
 		} catch (Exception e) {
@@ -167,6 +164,29 @@ public class StatisticsService {
 		} catch (Exception e) {
 			SysLogUtils.error("根据ip查询每天的转换数量失败，原因：", e);
 			return DefaultResult.failResult("根据ip查询每天的转换数量失败");
+		}
+	}
+	
+	
+	
+	
+	/**
+	 * 查询每天的转换量，缓存6小时
+	 * @param request
+	 * @return
+	 */
+	@Cacheable(value = RedisConsts.CACHE_QUARTER_DAY, keyGenerator = "cacheKeyGenerator")
+	public IResult<List<PtsSummaryPO>> selectConvertByDay(PtsSummaryQO ptsSummaryQO){
+		try {
+			ptsSummaryQO.setGroupby("DATE");
+			List<PtsSummaryPO> list = ptsSummaryPOMapper.selectCountByIpAndDate(ptsSummaryQO);
+			if(list.isEmpty() || list == null) {
+				return DefaultResult.failResult("查询每天的转换数量失败");
+			}
+			return DefaultResult.successResult(list);
+		} catch (Exception e) {
+			SysLogUtils.error("查询每天的转换数量失败，原因：", e);
+			return DefaultResult.failResult("查询每天的转换数量失败");
 		}
 	}
 	
