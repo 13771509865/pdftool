@@ -6,8 +6,8 @@
 <!--monitorInterval：Log4j能够自动检测修改配置 文件和重新配置本身，设置间隔秒数-->
 <configuration status="info" monitorInterval="60">
     <properties>
-        <!--日志路径-->
-        <property name="LOG_HOME">E:/dcs/log</property>
+        <!--日志路径 /users/yozo/log -->
+        <property name="LOG_HOME">E:\dcs\log</property>
         <!--日志文件名-->
         <property name="FILE_NAME">pts_error</property>
          <!--日志文件名-->

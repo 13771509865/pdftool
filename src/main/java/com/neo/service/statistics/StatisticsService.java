@@ -133,7 +133,7 @@ public class StatisticsService {
 	 * 查询每个文件大小区间的转换数量（包括失败的），缓存6小时
 	 * @return
 	 */
-	@Cacheable(value = RedisConsts.CACHE_QUARTER_DAY, keyGenerator = "cacheKeyGenerator")
+//	@Cacheable(value = RedisConsts.CACHE_QUARTER_DAY, keyGenerator = "cacheKeyGenerator")
 	public IResult<PtsSummaryPO> selectCountBySize(){
 		try {
 			PtsSummaryPO ptsSummaryPO = ptsSummaryPOMapper.selectCountBySize();
@@ -154,7 +154,7 @@ public class StatisticsService {
 	 * @param request
 	 * @return
 	 */
-	@Cacheable(value = RedisConsts.CACHE_QUARTER_DAY, keyGenerator = "cacheKeyGenerator")
+//	@Cacheable(value = RedisConsts.CACHE_QUARTER_DAY, keyGenerator = "cacheKeyGenerator")
 	public IResult<List<PtsSummaryPO>> selectCountByIpAndDate(PtsSummaryQO ptsSummaryQO){
 		try {
 			List<PtsSummaryPO> list = ptsSummaryPOMapper.selectCountByIpAndDate(ptsSummaryQO);
@@ -176,7 +176,7 @@ public class StatisticsService {
 	 * @param request
 	 * @return
 	 */
-	@Cacheable(value = RedisConsts.CACHE_QUARTER_DAY, keyGenerator = "cacheKeyGenerator")
+//	@Cacheable(value = RedisConsts.CACHE_QUARTER_DAY, keyGenerator = "cacheKeyGenerator")
 	public IResult<List<PtsSummaryPO>> selectConvertByDay(PtsSummaryQO ptsSummaryQO){
 		try {
 			ptsSummaryQO.setGroupby("DATE");

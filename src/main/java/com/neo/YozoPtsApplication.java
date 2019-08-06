@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ServletComponentScan
 @EnableScheduling //允许schedul定时任务
 @MapperScan("com.neo.dao")
-@EnableCaching
+//@EnableCaching
 @EnableTransactionManagement //开启事务注解支持
 public class YozoPtsApplication extends SpringBootServletInitializer{
 	

@@ -3,6 +3,8 @@ package com.neo.service.cache.impl;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.neo.commons.util.SysLogUtils;
+import com.neo.config.RedisConfig;
 import com.neo.service.cache.CacheManager;
 
 /**
@@ -20,6 +23,7 @@ import com.neo.service.cache.CacheManager;
  * @create 2018-12-14 11:49
  * @param <T>
  */
+@ConditionalOnBean(RedisConfig.class)
 @Service("redisCacheManager")
 public class RedisCacheManager<T> implements CacheManager<T> {
 

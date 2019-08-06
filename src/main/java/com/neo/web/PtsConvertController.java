@@ -62,9 +62,9 @@ public class PtsConvertController{
 
 	
 	
-	@ApiOperation(value = "MQ转换")
-	@PostMapping(value = "/mqconvert")
-	@ResponseBody
+//	@ApiOperation(value = "MQ转换")
+//	@PostMapping(value = "/mqconvert")
+//	@ResponseBody
 	public Map<String, Object> mqconvert(@RequestBody ConvertParameterBO convertBO)  {
 		if(convertBO.getSrcFileSize() == null) {
 			return JsonResultUtils.failMapResult(ResultCode.E_NOTALL_PARAM.getInfo());

@@ -48,20 +48,13 @@ spring:
 
 
 
-mybatis:
-  mapper-locations: classpath:mapping/*.xml
-  type-aliases-package: com.neo.model
-
-
-
-
   #缓存方式配置
   #redis缓存
   #######################################################################
   redis:
     database: 0 # Redis数据库索引（默认为0）
     timeout: 10000 #设置客户端超时时间，单位是毫秒，默认为2000
-    #password: babel220 #密码
+    password: root #密码
     #单机版
     host: 127.0.0.1
     port: 6379
@@ -78,6 +71,12 @@ mybatis:
         max-idle: 300 #最大空闲数
         min-idle: 0 #最小空闲数
       shutdown-timeout: 1000
+
+mybatis:
+  mapper-locations: classpath:mapping/*.xml
+  type-aliases-package: com.neo.model
+
+
 
 
 logging:
