@@ -260,7 +260,7 @@
 
     <build>
         <!-- 设置打包最终名称 -->
-        <finalName>yozo-dsc</finalName>
+        <finalName>yozo-pts</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

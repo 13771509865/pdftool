@@ -1,6 +1,7 @@
 package com.neo.service.upload;
 
 
+import java.io.File;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,10 +40,8 @@ public class UploadService {
 	 * @date 2019-07-19
 	 * @return
 	 */
-	public IResult<FileUploadBO> upload(HttpServletRequest  request) {
+	public IResult<FileUploadBO> upload(MultipartFile  file,HttpServletRequest request) {
 		try {
-			MultipartHttpServletRequest  multipartRequest  =  (MultipartHttpServletRequest)  request;
-			MultipartFile  file  =  multipartRequest.getFile("file");
 			if(file != null) {
 				String  fileName  =  file.getOriginalFilename();
 				String  url  =  String.format(ptsProperty.getFcs_upload_url());
@@ -56,6 +55,7 @@ public class UploadService {
 					if(errorcode == 0) {
 						FileUploadBO fileUploadBO = JsonUtils.json2obj(map.get(SysConstant.FCS_DATA), FileUploadBO.class);
 						fileUploadBO.setSrcFileSize(file.getSize());
+						request.setAttribute(SysConstant.UPLOAD_RESULT, ResultCode.E_SUCCES.getValue());
 						return DefaultResult.successResult(message,fileUploadBO);
 					}else {
 						return DefaultResult.failResult(message);
@@ -68,4 +68,8 @@ public class UploadService {
 		}
 	}
 
+
+	
+
+	
 }

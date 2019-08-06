@@ -7,12 +7,17 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.neo.commons.cons.IResult;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.model.bo.FileUploadBO;
 import com.neo.service.upload.UploadService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 上传的控制器
@@ -20,16 +25,19 @@ import com.neo.service.upload.UploadService;
  * @authore xujun
  * @create 2018-07-17
  */
+@Api(value = "上传相关Controller", tags = {"上传相关Controller"})
 @Controller
 public class UploadController{
 
 	@Autowired
 	private UploadService uploadService;
 
+	
+	@ApiOperation(value = "文件上传")
     @PostMapping(value = "/defaultUpload")
     @ResponseBody
-    public Map<String, Object> fileUpload(HttpServletRequest request){
-    	IResult<FileUploadBO> result  =uploadService.upload(request);
+    public Map<String, Object> fileUpload(@RequestParam("file") MultipartFile  file,HttpServletRequest request){
+    	IResult<FileUploadBO> result  =uploadService.upload(file,request);
     	if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
 		}else {

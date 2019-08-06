@@ -13,10 +13,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neo.commons.cons.EnumFeedbackType;
+import com.neo.commons.cons.ResultCode;
 import com.neo.commons.cons.constants.ConstantCookie;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.model.bo.UserBO;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 用户反馈controller
@@ -24,11 +28,21 @@ import com.neo.model.bo.UserBO;
  * @authore xujun
  * @create 2018-7-15
  */
+@Api(value = "用户反馈Controller", tags = {"用户反馈Controller"})
 @Controller
 public class FeedbackController{
 
 
 
+	/**
+	 * 意见反馈
+	 * @param star
+	 * @param type
+	 * @param content
+	 * @param request
+	 * @return
+	 */
+	 @ApiOperation(value = "用户反馈")
 	@PostMapping(value = "/feedback")
 	@ResponseBody
 	public Map<String, Object> convertPdf2word(Integer star,String type,String content,HttpServletRequest request)  {
@@ -70,7 +84,7 @@ public class FeedbackController{
 		}
 		
 		feedback.info(username+"::"+star+"颗星"+"::"+content+"::"+strInfo);
-		return JsonResultUtils.successMapResult("操作成功！");
+		return JsonResultUtils.successMapResult(ResultCode.E_SUCCES.getValue());
 	}
 
 }

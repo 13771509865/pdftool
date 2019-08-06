@@ -17,7 +17,6 @@ import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.ResultCode;
 import com.neo.commons.cons.constants.ConstantAdmin;
 import com.neo.commons.cons.constants.ConstantCookie;
-import com.neo.commons.cons.constants.ConvertConsts;
 import com.neo.commons.cons.constants.RedisConsts;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.properties.ConfigProperty;
@@ -62,18 +61,15 @@ public class ConvertInterceptor implements HandlerInterceptor {
 		Object convertResult = request.getAttribute(SysConstant.CONVERT_RESULT);
 
 		if (convertResult != null && convertResult instanceof Integer) {
-			Integer result = (Integer) convertResult;
-			if (ResultCode.E_SUCCES.getValue() == result) {
+			if (ResultCode.E_SUCCES.getValue() == convertResult) {
 				Long userID =HttpUtils.getSessionUserID(request);
-				String ipAddr = HttpUtils.getIpAddr(request);
 				String key = RedisConsts.IP_CONVERT_TIME_KEY;
-				String value = ipAddr; 
+				String value = HttpUtils.getIpAddr(request); 
 				if(userID !=null) {//登录用户
 					key = RedisConsts.ID_CONVERT_TIME_KEY;
 					value = userID.toString(); 
 				}
-				boolean addConvertTimes = cacheManager.pushZSet(key, value);
-				SysLogUtils.info("转换次数插入是否成功："+addConvertTimes);
+				cacheManager.pushZSet(key, value);
 			}
 		}
 	}
@@ -100,7 +96,6 @@ public class ConvertInterceptor implements HandlerInterceptor {
 			}
 
 			int convertTimes = cacheManager.getScore(key,value).intValue();
-			SysLogUtils.info("今日转换次数为："+convertTimes);
 			if (convertTimes >= maxConvertTimes) { // 超过每日最大转换次数
 				response.setContentType("text/html;charset=UTF-8");
 				response.setCharacterEncoding("UTF-8");

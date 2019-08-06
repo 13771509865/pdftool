@@ -21,10 +21,14 @@ import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.ResultCode;
 import com.neo.commons.cons.constants.ConstantAdmin;
 import com.neo.commons.cons.constants.ConstantCookie;
+import com.neo.commons.cons.constants.RedisConsts;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.service.accessTimes.AccessTimesService;
+import com.neo.service.cache.CacheManager;
+import com.neo.service.cache.CacheService;
+import com.neo.service.cache.impl.RedisCacheManager;
 
 /**
  * 
@@ -37,6 +41,9 @@ import com.neo.service.accessTimes.AccessTimesService;
  */
 @Component
 public class UploadInterceptor implements HandlerInterceptor {
+
+	@Autowired
+	private RedisCacheManager<String> redisCacheManager;
 
 	@Autowired
 	private ConfigProperty config;
@@ -52,9 +59,22 @@ public class UploadInterceptor implements HandlerInterceptor {
 	}
 
 
+	/**
+	 * 统计上传失败和成功的次数
+	 */
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView arg3)
 			throws Exception {
+		Object uploadResult = request.getAttribute(SysConstant.UPLOAD_RESULT);
+		if(uploadResult != null && uploadResult instanceof Integer) {
+			if (ResultCode.E_SUCCES.getValue() == uploadResult) {
+				redisCacheManager.pushZSet(RedisConsts.UPLOAD_CONNT, RedisConsts.SUCCESS);
+			}else {
+				redisCacheManager.pushZSet(RedisConsts.UPLOAD_CONNT,RedisConsts.FAIL);
+			}
+		}else {
+			redisCacheManager.pushZSet(RedisConsts.UPLOAD_CONNT,RedisConsts.FAIL);
+		}
 
 	}
 
@@ -77,6 +97,7 @@ public class UploadInterceptor implements HandlerInterceptor {
 		}
 		IResult<String> result = checkFile(request,maxSize);
 		if(!result.isSuccess()) {
+			redisCacheManager.pushZSet(RedisConsts.UPLOAD_CONNT,RedisConsts.FAIL);//被拦截也统计一下次数
 			response.setContentType("text/html;charset=UTF-8");
 			response.setCharacterEncoding("UTF-8");
 			PrintWriter out = response.getWriter();

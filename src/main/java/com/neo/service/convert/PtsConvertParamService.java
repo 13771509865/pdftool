@@ -153,7 +153,7 @@ public class PtsConvertParamService {
 		ptsSummaryPO.setCreateTime(DateViewUtils.parseSimpleTime(nowTime));
 		ptsSummaryPO.setModifiedDate(DateViewUtils.parseSimple(nowDate));
 		ptsSummaryPO.setModifiedTime(DateViewUtils.parseSimpleTime(nowTime));
-		System.out.println("ptsSummaryPO对象构建完成："+ptsSummaryPO.toString());
+		
 		return ptsSummaryPO;
 	}
 	

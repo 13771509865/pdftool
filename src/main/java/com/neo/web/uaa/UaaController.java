@@ -20,6 +20,11 @@ import com.neo.commons.util.JsonUtils;
 import com.neo.model.bo.UserBO;
 import com.neo.service.uaa.UaaService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+
+@Api(value = "单点相关Controller", tags = {"单点相关Controller"})
 @Controller
 public class UaaController {
 	
@@ -32,6 +37,7 @@ public class UaaController {
 	 * @param request
 	 * @return
 	 */
+	@ApiOperation(value = "获取用户信息")
 	@GetMapping("/detail")
 	@ResponseBody
 	public Map<String,Object> getUserInfoUaa(HttpServletRequest request){
@@ -52,6 +58,7 @@ public class UaaController {
 	 * @param response
 	 * @return
 	 */
+	@ApiOperation(value = "登出")
 	@GetMapping(value = "/logout")
 	@ResponseBody
     public Map<String, Object> logout(HttpServletRequest request, HttpServletResponse response) {

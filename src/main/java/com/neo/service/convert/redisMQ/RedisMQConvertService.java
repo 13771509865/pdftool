@@ -42,7 +42,7 @@ public class RedisMQConvertService {
 	private ConfigProperty configProperty;
 
 	@Autowired
-	private PtsConvertService PtsConvertService;
+	private PtsConvertService ptsConvertService;
 
 	private ExecutorService pExecutorService;
 
@@ -83,7 +83,8 @@ public class RedisMQConvertService {
 				System.out.println("消费者为"+json);
 				ConvertParameterBO convertBO = JsonUtils.json2obj(json, ConvertParameterBO.class);
 				HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-				IResult<FcsFileInfoBO> convertResult = PtsConvertService.dispatchConvert(convertBO, -1,request);
+				IResult<FcsFileInfoBO> convertResult = ptsConvertService.dispatchConvert(convertBO, -1,request);
+				ptsConvertService.updatePtsSummay(convertResult.getData(),convertBO,request);
 				if(convertResult.isSuccess()){
 					FcsFileInfoBO fcsFileInfoBO = convertResult.getData();
 					result = JsonResultUtils.success(fcsFileInfoBO);
@@ -91,7 +92,6 @@ public class RedisMQConvertService {
 				}else{
 					result = JsonResultUtils.buildJsonResult(convertResult.getData().getCode(), null, convertResult.getMessage());
 				}
-
 				//不管转换成功或者失败，把转换结果塞入result队列
 				Boolean setHashValue = cacheManager.setHashValue(RedisConsts.MQ_RESULT_CONVERT, convertBO.getFileHash(), result);
 
@@ -99,7 +99,6 @@ public class RedisMQConvertService {
 					SysLogUtils.error("convertBO为"+convertBO+"插入转换完成队列失败");
 				}
 			}
-
 		}catch(Exception e) {
 			SysLogUtils.error("MQ转换时抛出异常", e);
 		}

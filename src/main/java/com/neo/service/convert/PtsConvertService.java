@@ -85,9 +85,9 @@ public class PtsConvertService {
 				return DefaultResult.failResult(ResultCode.E_FCS_CONVERT_FAIL.getInfo(),fcsFileInfoBO);
 			}
 			Map<String, Object> fcsMap= JsonUtils.parseJSON2Map(httpResult.getData().getBody());
-			SysLogUtils.info("fcs转码结果："+fcsMap.toString());
 			
 			fcsFileInfoBO = JsonUtils.json2obj(fcsMap.get(SysConstant.FCS_DATA), FcsFileInfoBO.class);
+			SysLogUtils.info(convertBO.getSrcRelativePath()+"fcs转码结果："+ fcsFileInfoBO.getCode());
 			if(fcsFileInfoBO.getCode() == 0) {//转换成功
 				
 				updateFcsFileInfo(fcsFileInfoBO,request);//这里只记录转换成功的pts_convert

@@ -20,12 +20,16 @@ import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.service.convert.PtsConvertService;
 import com.neo.service.convert.redisMQ.RedisMQConvertService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 /**
  * 转码控制器
  * @authore xujun
  * @create 2019-07-23
  */
 
+@Api(value = "转换相关Controller", tags = {"转换相关Controller"})
 @Controller
 public class PtsConvertController{
 
@@ -40,10 +44,10 @@ public class PtsConvertController{
 
 
 	
-	
+	@ApiOperation(value = "同步转换")
 	@PostMapping(value = "/convert")
 	@ResponseBody
-	public Map<String, Object> convert( ConvertParameterBO convertBO,HttpServletRequest request)  {
+	public Map<String, Object> convert(@RequestBody ConvertParameterBO convertBO,HttpServletRequest request)  {
 		if(convertBO.getSrcFileSize() == null) {
 			return JsonResultUtils.failMapResult(ResultCode.E_NOTALL_PARAM.getInfo());
 		}
@@ -58,7 +62,7 @@ public class PtsConvertController{
 
 	
 	
-
+	@ApiOperation(value = "MQ转换")
 	@PostMapping(value = "/mqconvert")
 	@ResponseBody
 	public Map<String, Object> mqconvert(@RequestBody ConvertParameterBO convertBO)  {

@@ -20,6 +20,7 @@ import com.neo.commons.util.JsonResultUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.dao.FcsFileInfoPOMapper;
 import com.neo.dao.PtsSummaryPOMapper;
+import com.neo.model.bo.FileUploadBO;
 import com.neo.model.po.FcsFileInfoPO;
 import com.neo.model.po.PtsSummaryPO;
 import com.neo.model.qo.FcsFileInfoQO;
@@ -193,8 +194,19 @@ public class StatisticsService {
 	
 	
 	
-	
-	
+	/**
+	 * 查询上传文件的记录
+	 * @return
+	 */
+	public IResult<FileUploadBO> getUploadTimes(){
+		Integer successUpload = redisCacheManager.getScore(RedisConsts.UPLOAD_CONNT, RedisConsts.SUCCESS).intValue();
+		Integer failUpload = redisCacheManager.getScore(RedisConsts.UPLOAD_CONNT, RedisConsts.FAIL).intValue();
+		FileUploadBO fileUploadBO = new FileUploadBO();
+		fileUploadBO.setFailNum(failUpload);
+		fileUploadBO.setSuccessNum(successUpload);
+		fileUploadBO.setCount(failUpload+successUpload);
+		return DefaultResult.successResult(fileUploadBO);
+	}
 	
 	
 	

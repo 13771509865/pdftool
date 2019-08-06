@@ -18,6 +18,12 @@ public class RedisConsts {
 	
 	public static final String MQ_RESULT_CONVERT = "mqConvertResult"; //待转换消息队列
 	
+	public static final String UPLOAD_CONNT = "uploadCount";
+	
+	public static final String SUCCESS = "success";
+	
+	public static final String	FAIL = "fail";
+	
 	//redis二级缓存配置
     public static final String CACHE_DAY = "cacheDay";
 
