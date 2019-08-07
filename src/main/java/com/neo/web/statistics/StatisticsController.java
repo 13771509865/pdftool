@@ -121,7 +121,7 @@ public class StatisticsController {
 	@ApiOperation(value = "查询每个ip每天的转换量")
 	@PostMapping(value = "/ipConvert")
 	@ResponseBody
-	public Map<String, Object> ipConvert(@RequestBody PtsSummaryQO ptsSummaryQO,HttpServletRequest request){
+	public Map<String, Object> ipConvert( PtsSummaryQO ptsSummaryQO,HttpServletRequest request){
 		IResult<List<PtsSummaryPO>> result = statisticsService.selectCountByIpAndDate(ptsSummaryQO);
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
@@ -140,7 +140,7 @@ public class StatisticsController {
 	@ApiOperation(value = "查询每天的转换量")
 	@PostMapping(value = "/convertByDay")
 	@ResponseBody
-	public Map<String, Object> ConvertByDay(@RequestBody PtsSummaryQO ptsSummaryQO,HttpServletRequest request){
+	public Map<String, Object> ConvertByDay( PtsSummaryQO ptsSummaryQO,HttpServletRequest request){
 		IResult<List<PtsSummaryPO>> result = statisticsService.selectConvertByDay(ptsSummaryQO);
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());

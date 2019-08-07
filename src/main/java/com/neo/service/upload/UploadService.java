@@ -43,11 +43,10 @@ public class UploadService {
 	public IResult<FileUploadBO> upload(MultipartFile  file,HttpServletRequest request) {
 		try {
 			if(file != null) {
-				String  fileName  =  file.getOriginalFilename();
 				String  url  =  String.format(ptsProperty.getFcs_upload_url());
 				
 				//去传文件给fcs
-				String reuslt = httpAPIService.uploadResouse(file,url,fileName);
+				String reuslt = httpAPIService.uploadResouse(file,url);
 				if(StringUtils.isNotBlank(reuslt)) {
 					Map<String,Object> map = JsonUtils.parseJSON2Map(reuslt);
 					Integer errorcode  = (Integer)map.get(SysConstant.FCS_ERRORCODE);

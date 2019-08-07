@@ -27,6 +27,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -306,13 +307,13 @@ public class HttpAPIService {
      * @date 2019-07-19
      * @return
      */
-    public  String uploadResouse(MultipartFile file,String url ,String  filename) {
+    public  String uploadResouse(MultipartFile file,String url) {
     	CloseableHttpClient  aDefault  =  HttpClients.createDefault();
     	Object  object  =  null;
 		try  {
 			HttpPost  httpPost  =  new  HttpPost(url);
-			MultipartEntityBuilder  builder  =  MultipartEntityBuilder.create();
-			builder.addBinaryBody("file",file.getBytes(),ContentType.create("multipart/form-data"),filename);
+			MultipartEntityBuilder  builder  =  MultipartEntityBuilder.create().setMode(HttpMultipartMode.RFC6532);
+			builder.addBinaryBody("file",file.getBytes(),ContentType.create("multipart/form-data"),file.getOriginalFilename());
 			HttpEntity  entity  =  builder.build();
 			httpPost.setEntity(entity);
 			ResponseHandler<Object>  rh  =  new  ResponseHandler<Object>()  {

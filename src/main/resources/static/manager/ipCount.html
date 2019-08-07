@@ -12,7 +12,7 @@
  </head>  
   
  <body>  
- 	<h1 style="text-align: center;">文档的转换数量统计</h1>
+ 	<h1 style="text-align: center;">每个ip每天的转换数量</h1>
  	<table id="example" class="display" role="grid" aria-describedby="example_info">
  		<thead>
             <tr>
@@ -25,9 +25,13 @@
                 <th>30-40M</th>
                 <th>40-50M</th>
                 <th>50M以上</th>
+                <th>ip地址</th>
+                <th>日期</th>
             </tr>
         </thead>
-
+        <tbody>
+            
+        </tbody>
         <tfoot>
             <tr>
                 <th>0-3M</th>
@@ -39,6 +43,8 @@
                 <th>30-40M</th>
                 <th>40-50M</th>
                 <th>50M以上</th>
+                <th>ip地址</th>
+                <th>日期</th>
             </tr>
         </tfoot>
  	</table>
@@ -48,7 +54,8 @@
     <script src="js/dataTables.buttons.min.js"></script>
     <script src="js/jszip.min.js"></script>
     <script src="js/buttons.html5.min.js"></script>
-    <script src="js/pdfmake.min.js"></script>
+	<script src="js/buttons.flash.min.js"></script>
+	<script src="js/pdfmake.min.js"></script>
 	<script src="js/vfs_fonts.js"></script>
 	<script src="js/buttons.print.min.js"></script>
   <script>  
@@ -56,12 +63,12 @@
     	var xx=[];
     	
     	 $.ajax({ 
- 			url:"../statistics/convertBySize",
- 			type:"GET",
+ 			url:"../statistics/ipConvert",
+ 			type:"POST",
  			data : "",
  			success:function (data){
  				if(data.errorcode == 0){
- 					xx = [data.data];
+ 					xx = data.data;
  					 for(i=0;i<xx.length;i++){
  				    	var html="<tr><td>"
  				    	+xx[i].zeroToThree+"</td><td>"
@@ -72,7 +79,9 @@
  				    	+xx[i].twentyToThirty+"</td><td>"
  				    	+xx[i].thirtyToFourty+"</td><td>"
  				    	+xx[i].fourtyToFifty+"</td><td>"
- 				    	+xx[i].fiftyMore+"</td><tr>";
+ 				    	+xx[i].fiftyMore+"</td><td>"
+ 				    	+xx[i].ipAddress+"</td><td>"
+ 				    	+getDate(xx[i].createDate)+"</td><tr>";
  				    	$("#example tbody").append(html);
  				    }
  				}else{
@@ -83,6 +92,14 @@
  			}
     	 });
 	    
+    	 function getDate(data) {
+    		  var date = new Date(data)
+    		  var Y = date.getFullYear() + '-'
+    		  var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-'
+    		  var D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) + ' '
+    		  return Y + M + D
+    		}
+    	 
 	    
 	    $('#example').DataTable( {
 	        dom: 'Bfrtip',
