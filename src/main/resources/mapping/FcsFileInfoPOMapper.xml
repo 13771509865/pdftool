@@ -42,10 +42,10 @@
             	AND USERID = #{userID}
             </if>
             <if test="showDateStart != null">
-                <![CDATA[AND SHOW_DATE >= DATE_FORMAT(#{showDateStart},'%Y-%m-%d')]]>
+                <![CDATA[AND GMT_CREATE >= DATE_FORMAT(#{showDateStart},'%Y-%m-%d')]]>
             </if>
             <if test="showDateEnd !=null">
-                <![CDATA[AND SHOW_DATE <= DATE_FORMAT(#{showDateEnd},'%Y-%m-%d')]]>
+                <![CDATA[AND GMT_CREATE <= DATE_FORMAT(#{showDateEnd},'%Y-%m-%d')]]>
             </if>
         </where>
     </sql>

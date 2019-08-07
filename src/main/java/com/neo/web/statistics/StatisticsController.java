@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -41,7 +42,7 @@ public class StatisticsController {
 	@ApiOperation(value = "查询登录用户三天的转换记录")
 	@PostMapping(value = "/idConvert")
 	@ResponseBody
-	public Map<String, Object> userConvert(FcsFileInfoQO fcsFileInfoQO,HttpServletRequest request){
+	public Map<String, Object> userConvert(@RequestBody FcsFileInfoQO fcsFileInfoQO,HttpServletRequest request){
 		IResult<List<FcsFileInfoPO>> result = statisticsService.selectConvertByUserID(fcsFileInfoQO,request);
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
@@ -59,7 +60,7 @@ public class StatisticsController {
 	@ApiOperation(value = "查询当天剩余转换次数")
 	@GetMapping(value = "/convertTimes")
 	@ResponseBody
-	public Map<String,Object> getConvertTimes(HttpServletRequest request){
+	public Map<String,Object> getConvertTimes( HttpServletRequest request){
 		IResult<String>  result = statisticsService.getConvertTimes(request);
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
@@ -81,7 +82,7 @@ public class StatisticsController {
 	@ApiOperation(value = "删除用户的转换记录")
 	@PostMapping(value = "/delete")
 	@ResponseBody
-	public Map<String, Object> deleteConvert(FcsFileInfoQO fcsFileInfoQO ,HttpServletRequest request){
+	public Map<String, Object> deleteConvert(@RequestBody FcsFileInfoQO fcsFileInfoQO ,HttpServletRequest request){
 		IResult<String> result = statisticsService.deleteConvert(fcsFileInfoQO, request);
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult();
@@ -120,7 +121,7 @@ public class StatisticsController {
 	@ApiOperation(value = "查询每个ip每天的转换量")
 	@PostMapping(value = "/ipConvert")
 	@ResponseBody
-	public Map<String, Object> ipConvert(PtsSummaryQO ptsSummaryQO,HttpServletRequest request){
+	public Map<String, Object> ipConvert(@RequestBody PtsSummaryQO ptsSummaryQO,HttpServletRequest request){
 		IResult<List<PtsSummaryPO>> result = statisticsService.selectCountByIpAndDate(ptsSummaryQO);
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
@@ -139,7 +140,7 @@ public class StatisticsController {
 	@ApiOperation(value = "查询每天的转换量")
 	@PostMapping(value = "/convertByDay")
 	@ResponseBody
-	public Map<String, Object> ConvertByDay(PtsSummaryQO ptsSummaryQO,HttpServletRequest request){
+	public Map<String, Object> ConvertByDay(@RequestBody PtsSummaryQO ptsSummaryQO,HttpServletRequest request){
 		IResult<List<PtsSummaryPO>> result = statisticsService.selectConvertByDay(ptsSummaryQO);
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
