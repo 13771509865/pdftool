@@ -87,7 +87,6 @@ public class UaaAuthInterceptor implements HandlerInterceptor{
 	//uaa验证用户是否登录
 	private IResult<Object> checkSecurity(HttpServletRequest request) { 
 		try {
-
 			request = oAuth2RequestTokenHelper.detectTokenInHeaderOrParams(request);
 			OAuth2AccessToken oAuth2AccessToken = oAuth2RequestTokenHelper.extractToken(request);
 			OAuth2AccessToken accessToken = uaaTokenRefreshClient.refreshAccessToken(oAuth2AccessToken, oAuth2AccessToken.getRefreshToken());
@@ -95,15 +94,11 @@ public class UaaAuthInterceptor implements HandlerInterceptor{
 			if (token == null) {
 				return DefaultResult.failResult("无用户信息请重新登陆！");
 			}
-			
 		} catch (Exception e) {
-		
 			return DefaultResult.failResult("用户信息错误");
 		}
 		return DefaultResult.successResult();
 	}
-
-	
 }	
 
 

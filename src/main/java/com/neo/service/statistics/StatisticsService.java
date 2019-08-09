@@ -1,5 +1,6 @@
 package com.neo.service.statistics;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.ResultCode;
 import com.neo.commons.cons.constants.RedisConsts;
+import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonResultUtils;
@@ -48,7 +50,7 @@ public class StatisticsService {
 	 * @param request
 	 * @return
 	 */
-	public IResult<List<FcsFileInfoPO>> selectConvertByUserID(FcsFileInfoQO fcsFileInfoQO,HttpServletRequest request){
+	public IResult<Map<String,Object>> selectConvertByUserID(FcsFileInfoQO fcsFileInfoQO,HttpServletRequest request){
 		Long userID = HttpUtils.getSessionUserID(request);
 		if(userID == null) {
 			return DefaultResult.failResult("请登录后，再执行此操作");
@@ -56,17 +58,24 @@ public class StatisticsService {
 			fcsFileInfoQO.setUserID(userID);
 		}
 		try {
+			Map<String,Object> map = new HashMap<>();
 			List<FcsFileInfoPO> list = fcsFileInfoPOMapper.selectFcsFileInfoPOByUserID(fcsFileInfoQO);
+			Integer counNum = fcsFileInfoPOMapper.selectCountNumFcsFileInfoPOByUserID(fcsFileInfoQO);
+			map.put(SysConstant.FCS_DATA, list);
+			map.put(SysConstant.COUNT, counNum);
+			
 			if(list.isEmpty() || list == null) {
 				return DefaultResult.failResult("没有查询到三天内的转换记录");
 			}
-			return DefaultResult.successResult(list);
+			return DefaultResult.successResult(map);
 		} catch (Exception e) {
 			SysLogUtils.error("查询三天内的转换记录失败，原因：", e);
 			return DefaultResult.failResult("没有查询到三天内的转换记录");
 		}
 	}
 	
+	
+
 	
 	
 	/**

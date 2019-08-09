@@ -20,6 +20,8 @@ public interface SysConstant {
 	
 	public static final String UPLOAD_RESULT = "_UPLOADRESULT";//上传结果
 	
-//	public static final String SRC_FILE_SIZE = "srcFileSize";
+	public static final String COUNT = "count";
+	
+	public static final String FCS_VTOKEN = "vToken";
 
 }

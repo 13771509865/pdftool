@@ -11,6 +11,8 @@ public interface FcsFileInfoPOMapper {
 	
 	List<FcsFileInfoPO> selectFcsFileInfoPOByUserID(FcsFileInfoQO fcsFileInfoQO);
 	
+	int selectCountNumFcsFileInfoPOByUserID(FcsFileInfoQO fcsFileInfoQO);
+	
 	int updatePtsConvert(FcsFileInfoPO fcsFileInfoPO);
 	
 	int deletePtsConvert(FcsFileInfoQO fcsFileInfoQO);

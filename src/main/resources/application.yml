@@ -111,6 +111,6 @@ pts:
 
   fcs_upload_url: http://172.18.21.30:8080/fcscloud/file/upload
   fcs_convert_url: http://172.18.21.30:8080/fcscloud/composite/convert
-  fcs_signature_url: http://172.18.21.30:8080/edit/signature/
- 
+  fcs_vToken_url: http://172.18.21.30:8080/fcscloud/view/vToken
+  fcs_downLoad_url: http://172.18.21.30:8080/fcscloud/view/download
 

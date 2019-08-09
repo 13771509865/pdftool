@@ -34,6 +34,7 @@ public enum ResultCode {
 	E_USER_UPLOAD_ERROR(25,"文件大小超出30M，暂不支持，如有紧急，请联系客服"),
 	E_USER_CONVERT_NUM_ERROR(26,"每天可转换20个文件"),
 	
+	E_FCS_VTOKEN_FAIL(42,"获取vToken未知错误"),
 	E_FCS_CONVERT_FAIL(43,"文档转换服务器通讯失败,请联系管理员"),
 	E_UNSUPPORT_FAIL(44,"没有支持的转码服务,请联系永中技术支持"),
 	E_SIGNATURE_FAIL(45, "签批生成失败"),

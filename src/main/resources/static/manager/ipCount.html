@@ -81,7 +81,7 @@
  				    	+xx[i].fourtyToFifty+"</td><td>"
  				    	+xx[i].fiftyMore+"</td><td>"
  				    	+xx[i].ipAddress+"</td><td>"
- 				    	+getDate(xx[i].createDate)+"</td><tr>";
+ 				    	+getDate(xx[i].createDate)+"</td></tr>";
  				    	$("#example tbody").append(html);
  				    }
  				}else{
@@ -101,25 +101,36 @@
     		}
     	 
 	    
-	    $('#example').DataTable( {
+	    $('#example').DataTable({
 	        dom: 'Bfrtip',
-	        language: {  
-                emptyTable: '',  
-                loadingRecords: '加载中...',  
-                processing: '查询中...',  
-                search: '检索:',  
-                lengthMenu: '每页 _MENU_ 件',  
-                zeroRecords: '',  
-                paginate: {  
-                    'first':      '第一页',  
-                    'last':       '最后一页',  
-                    'next':       '下一页',  
-                    'previous':   '上一页'  
-            	},  
-	            info: '第 _PAGE_ 页 / 总 _PAGES_ 页',  
-	            infoEmpty: '',  
-	            infoFiltered: '(过滤总件数 _MAX_ 条)',
+	        pageLength: 10,　//初始化显示几条数据
+	        fixedHeader: true,　//这个是用来固定头部
+	        fixedColumns:{ //这个是用来固定列的
+	          leftColumns: 0,
+	          rightColumns: 1
 	        },
+	        
+	        language: {  
+	        	buttons: {
+	                pageLength: {
+	                    _: "显示%d条",
+	                    '-1': "全部显示"
+	                }
+	            },
+	            paginate: {
+	                first: "首条",
+	                previous: "前一页",
+	                next: "下一页",
+	                last: "末页"
+	            },
+	            "info": "第_PAGE_页,共_PAGES_页",
+	            "infoEmpty": "未找到相关数据",
+	            "search": "关键字",
+	            "zeroRecords": "未找到相关数据",
+	            "decimal": ".",
+	            "thousands": ","
+	        },
+	        
 	       buttons: [
 	        	{
 	        		extend: 'copyHtml5',

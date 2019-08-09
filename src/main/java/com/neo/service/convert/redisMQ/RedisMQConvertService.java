@@ -108,7 +108,7 @@ public class RedisMQConvertService {
 
 
 
-	@PostConstruct 
+//	@PostConstruct 
 	public void init() {
 		pExecutorService = Executors.newFixedThreadPool(configProperty.getConvertPoolSize());
 		this.threadList = new ArrayList<ExecutorService>();

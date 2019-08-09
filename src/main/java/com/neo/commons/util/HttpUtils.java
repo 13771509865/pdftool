@@ -5,11 +5,13 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
@@ -228,8 +230,76 @@ public class HttpUtils {
 		return null;
 	}
 
-    
 	
+	
+    
+	/**
+	 * 根据不同的文件后缀名，塞入不同的ContentType
+	 * @param httpResponse
+	 * @param fileName
+	 */
+	public static boolean setContentType(HttpServletResponse httpResponse ,String fileName) {
+		if(!StringUtils.isBlank(fileName)) {
+			String[] split = fileName.split("\\.");
+			int length = split.length;
+			if(length > 0){
+				String fileType = split[length-1];
+				if(fileType != null && !"".equals(fileType)){
+					if(fileType.equals("doc") ){
+						httpResponse.setContentType("application/msword");
+					}else if(fileType.equals("docx")){
+						httpResponse.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+					}else if(fileType.equals("xls")){
+						httpResponse.setContentType("application/vnd.ms-excel");
+					}else if(fileType.equals("xlsx")){
+						httpResponse.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+					}else if(fileType.equals("ppt")){
+						httpResponse.setContentType("application/vnd.ms-powerpoint");
+					}else if(fileType.equals("pptx")){
+						httpResponse.setContentType("application/vnd.openxmlformats-officedocument.presentationml.presentation");
+					}else if(fileType.equals("pdf")){
+						httpResponse.setContentType("application/pdf");
+					}else{
+						httpResponse.setContentType("application/octet-stream");//octet-stream
+					}
+				}else{
+					httpResponse.setContentType("application/octet-stream");//octet-stream
+				}
+			}else{
+				httpResponse.setContentType("application/octet-stream");//octet-stream
+			}
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * 根据不同的浏览器类型，返回不同编码的文件名
+	 * @param request
+	 * @param fileNames
+	 * @return
+	 */
+	public static String processFileName(HttpServletRequest request, String fileNames) {
+		String codedfilename = null;
+		try {
+			String agent = request.getHeader("USER-AGENT");
+			if (null != agent && -1 != agent.indexOf("MSIE") || null != agent
+					&& -1 != agent.indexOf("Trident")) {// ie
+				String name = URLEncoder.encode(fileNames, "UTF8");
+				codedfilename = name;
+			} else if (null != agent && -1 != agent.indexOf("Mozilla")) {// 火狐,chrome等
+				codedfilename = new String(fileNames.getBytes("UTF-8"), "iso-8859-1");
+			}
+			return codedfilename;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+
+
 
 	
     

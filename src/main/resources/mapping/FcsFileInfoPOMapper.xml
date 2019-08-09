@@ -89,6 +89,16 @@
 			<![CDATA[and  DATEDIFF(now(), GMT_CREATE)<3]]>
 			<include refid="byPage"/>
 		</select>
+		
+		
+		<!-- 查询登录用户三天的转换数量 -->
+ 	  	<select id="selectCountNumFcsFileInfoPOByUserID" resultType="java.lang.Integer">
+			select
+			count(*)
+			from pts_convert 
+			<include refid="search_condition" />
+			<![CDATA[and  DATEDIFF(now(), GMT_CREATE)<3]]>
+		</select>
  	  
  	  
  	  <!-- 转换相同文件时，修改转换时间和下载地址 -->

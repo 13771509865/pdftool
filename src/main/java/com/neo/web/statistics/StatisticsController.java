@@ -1,5 +1,6 @@
 package com.neo.web.statistics;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neo.commons.cons.IResult;
+import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.model.bo.FileUploadBO;
 import com.neo.model.po.FcsFileInfoPO;
@@ -43,7 +45,7 @@ public class StatisticsController {
 	@PostMapping(value = "/idConvert")
 	@ResponseBody
 	public Map<String, Object> userConvert(@RequestBody FcsFileInfoQO fcsFileInfoQO,HttpServletRequest request){
-		IResult<List<FcsFileInfoPO>> result = statisticsService.selectConvertByUserID(fcsFileInfoQO,request);
+		IResult<Map<String, Object>> result = statisticsService.selectConvertByUserID(fcsFileInfoQO,request);
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
 		}else {

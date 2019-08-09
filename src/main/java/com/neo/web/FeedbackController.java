@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neo.commons.cons.ResultCode;
@@ -37,7 +38,7 @@ public class FeedbackController{
 	@ApiOperation(value = "用户反馈")
 	@PostMapping(value = "/feedback")
 	@ResponseBody
-	public Map<String, Object> convertPdf2word(@Valid FeedbackEntity feedbackEntity ,BindingResult bindingResult){
+	public Map<String, Object> convertPdf2word(@RequestBody @Valid FeedbackEntity feedbackEntity ,BindingResult bindingResult){
 		String erroMessage = BindingResultUtils.getMessage(bindingResult);
 		if(StringUtils.isNotBlank(erroMessage)) {
 			return JsonResultUtils.failMapResult(erroMessage);

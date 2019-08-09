@@ -36,7 +36,10 @@ public class PtsProperty {
 	private	String	fcs_convert_url;
 
 	@NotBlank
-	private String fcs_signature_url;
+	private String fcs_vToken_url;
+	
+	@NotBlank
+	private String fcs_downLoad_url;
 	
 	
 	
