@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8"/>
-<title>分页</title>
+<title>统计</title>
 <link rel="stylesheet" type="text/css" href="css/MyPaging.css">
 
 <script src="js/jquery.min.js"></script>
@@ -34,39 +34,23 @@ table th, table td {
 <body>
 
 <div class="main">
-	
+	<h1 style="text-align: center;">上传文件统计</h1>
 	<table border>
 		<thead>
 			<tr>
-				<th>0-3M</th>
-                <th>3-5M</th>
-                <th>5-10M</th>
-                <th>10-15M</th>
-                <th>15-20M</th>
-                <th>20-30M</th>
-                <th>30-40M</th>
-                <th>40-50M</th>
-                <th>50M以上</th>
-                <th>ip地址</th>
-                <th>日期</th>
+				<th>成功</th>
+                <th>失败</th>
+                <th>总数</th>
 			</tr>
 		</thead>
-		<!-- <tbody class="tbody">
-			<tr>
-				<td>1</td>
-				<td>会计师看到</td>
-				<td>50</td>
-			</tr>
-		</tbody> -->
+		<tbody class="tbody" style="text-align: center;">
+		</tbody>
 	</table>
 
 	<div class="box2"></div>
 </div>
 
 
-
-<script src="js/MyPaging.js"></script>
-<script src="js/script.js"></script>
-
+<script src="js/uploadCount.js"></script>
 </body>	
 </html>

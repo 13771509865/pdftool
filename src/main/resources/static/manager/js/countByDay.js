@@ -2,7 +2,7 @@
 function getData(params) {
 	var data = [];
 	$.ajax({ 
-			url:"../statistics/ipConvert",
+			url:"../statistics/convertByDay",
 			type:"POST",
 			data : "",
 			async : false, 
@@ -27,7 +27,7 @@ function getData(params) {
 // 设置tbody的html
 function setTbody (arr) {
 	var html = '';
-	alert(arr.length);
+//	alert(arr.length);
 	for (var i = 0; i < arr.length; i++) {
 		var item = arr[i];
 		
@@ -42,11 +42,14 @@ function setTbody (arr) {
 			+ item.fourtyToFifty + '</td><td>' 
 			+ item.fiftyMore + '</td><td>'
 			+getDate(item.createDate)+"</td></tr>";
+		
 	}
+	console.log(html);
 	$('.tbody').html(html);
+	
 }
 
-
+//日期转换
 function getDate(data) {
 	  var date = new Date(data)
 	  var Y = date.getFullYear() + '-'
@@ -58,7 +61,7 @@ function getDate(data) {
 
 // 初始化分页
 $('.box2').MyPaging({
-	size: 3,
+	size: 10,
 	total: 0,
 	current: 1,
 	prevHtml: '上一页',

@@ -1,136 +1,74 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">   
- <head>  
-  <title> 统计 </title>  
-  <meta charset='utf-8'>
-  <link rel="stylesheet" href="css/jquery.datatables.min.css" />
-  <link rel="stylesheet" href="css/buttons.dataTables.min.css" />
-  <style>
-  	tbody td{
-  		text-align: center;
-  	}
-  </style>
- </head>  
-  
- <body>  
- 	<h1 style="text-align: center;">文档的转换数量统计</h1>
- 	<table id="example" class="display" role="grid" aria-describedby="example_info">
- 		<thead>
-            <tr>
-                <th>0-3M</th>
-                <th>3-5M</th>
-                <th>5-10M</th>
-                <th>10-15M</th>
-                <th>15-20M</th>
-                <th>20-30M</th>
-                <th>30-40M</th>
-                <th>40-50M</th>
-                <th>50M以上</th>
-            </tr>
-        </thead>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>统计</title>
+        <link href="css/style.css" rel="stylesheet" type="text/css"/>
+        <script type="text/javascript" src="jquery/jquery.js"></script>
+        <script type="text/javascript" src="jquery/jquery.SuperSlide.2.1.1.js"></script>
+    </head>
+    <body>
+        <div class="large-content">
+            <div class="large-group clearfix">
+                <h3 class="large-header">
+                    <em>PDF数据统计</em>
+                </h3>
+                <div class="large-switch clearfix">
+                    <div class="large-switch-circle hd">
+                        <ul>
+                           <!--  <li>授权记录下载</li> -->
+                        </ul>
+                    </div>
+                    <div class="large-switch-middle bd">
+                        <ul class="clearfix" >
+                            <li class="large-switch-item">
+                                <div class="large-item-img">
+                                    <img src="img/pic-001.png" alt="">
+                                </div>
+                                <div class="large-item-title">根据文件大小，查询转换记录</div>
+								<div class="large-item-text"></div>                                
+								<a href="countBySize.html" class="large-item-link">前往</a>
+                            </li>
+                            <li class="large-switch-item">
+                                <div class="large-item-img">
+                                    <img src="img/pic-002.png" alt="">
+                                </div>
+                                <div class="large-item-title">每个ip每天的转换记录</div>
+                                <div class="large-item-text"></div>
+                                <a href="countByIp.html" class="large-item-link">前往</a>
+                            </li>
+                            <li class="large-switch-item">
+                                <div class="large-item-img">
+                                    <img src="img/pic-003.png" alt="">
+                                </div>
+                                <div class="large-item-title">每天的转换记录</div>
+                                <div class="large-item-text"></div>
+                                <a href="countByDay.html" class="large-item-link" ">前往</a>
+                            </li>
+                            <li class="large-switch-item">
+                                <div class="large-item-img">
+                                    <img src="img/pic-004.png" alt="">
+                                </div>
+                                <div class="large-item-title">上传记录</div>
+                                <div class="large-item-text"></div>
+                                <a href="uploadCount.html" class="large-item-link" id="exitFcs">前往</a>
+                            </li>
+                            <li class="large-switch-item-clear">
+                                <div class="large-switch-dx">敬请期待</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <tfoot>
-            <tr>
-                <th>0-3M</th>
-                <th>3-5M</th>
-                <th>5-10M</th>
-                <th>10-15M</th>
-                <th>15-20M</th>
-                <th>20-30M</th>
-                <th>30-40M</th>
-                <th>40-50M</th>
-                <th>50M以上</th>
-            </tr>
-        </tfoot>
- 	</table>
- 	
- 	<script src="js/jquery.min.js"></script>
-    <script src="js/jquery.datatables.min.js"></script>
-    <script src="js/dataTables.buttons.min.js"></script>
-    <script src="js/jszip.min.js"></script>
-    <script src="js/buttons.html5.min.js"></script>
-    <script src="js/pdfmake.min.js"></script>
-	<script src="js/vfs_fonts.js"></script>
-	<script src="js/buttons.print.min.js"></script>
-  <script>  
-    $(document).ready(function(){ 
-    	var xx=[];
-    	
-    	 $.ajax({ 
- 			url:"../statistics/convertBySize",
- 			type:"GET",
- 			data : "",
- 			success:function (data){
- 				if(data.errorcode == 0){
- 					xx = [data.data];
- 					 for(i=0;i<xx.length;i++){
- 				    	var html="<tr><td>"
- 				    	+xx[i].zeroToThree+"</td><td>"
- 				    	+xx[i].threeToFive+"</td><td>"
- 				    	+xx[i].fiveToTen+"</td><td>"
- 				    	+xx[i].tenToFifteen+"</td><td>"
- 				    	+xx[i].fifteenToTwenty+"</td><td>"
- 				    	+xx[i].twentyToThirty+"</td><td>"
- 				    	+xx[i].thirtyToFourty+"</td><td>"
- 				    	+xx[i].fourtyToFifty+"</td><td>"
- 				    	+xx[i].fiftyMore+"</td><tr>";
- 				    	$("#example tbody").append(html);
- 				    }
- 				}else{
- 					alert(data.message);
- 					location.reload();
- 				}
- 				
- 			}
-    	 });
-	    
-	    
-	    $('#example').DataTable( {
-	        dom: 'Bfrtip',
-	        language: {  
-                emptyTable: '',  
-                loadingRecords: '加载中...',  
-                processing: '查询中...',  
-                search: '检索:',  
-                lengthMenu: '每页 _MENU_ 件',  
-                zeroRecords: '',  
-                paginate: {  
-                    'first':      '第一页',  
-                    'last':       '最后一页',  
-                    'next':       '下一页',  
-                    'previous':   '上一页'  
-            	},  
-	            info: '第 _PAGE_ 页 / 总 _PAGES_ 页',  
-	            infoEmpty: '',  
-	            infoFiltered: '(过滤总件数 _MAX_ 条)',
-	        },
-	       buttons: [
-	        	{
-	        		extend: 'copyHtml5',
-	        	},
-	            {
-	                extend: 'excelHtml5',
-	                title: 'Data export'
-	            },
-	            {
-	                extend: 'pdfHtml5',
-	                title: 'Data export'
-	            },
-	            {
-	        		extend: 'csvHtml5',
-	        		title: 'Data export'
-	        	},
-	        	{
-	        		extend:'print',
-	        	}
-	        ]
-	    } );
-	    $(".buttons-copy").text('复制');
-	    $(".buttons-excel").text('导出到excel');
-	    $(".buttons-pdf").text('导出到pdf');
-	    $(".buttons-csv").text('导出到csv');
-	    $(".buttons-print").text('打印');
+        <script type="text/javascript">
+            jQuery(".large-switch").slide({
+                autoPlay: false,
+                trigger: "click",
+                delayTime: 1000
+            });
+        </script>
 
-	});
-  </script>  
- </body>  
-</html>  
+    </body>
+</html>
