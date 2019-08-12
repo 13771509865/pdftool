@@ -1,4 +1,4 @@
-package com.neo.web.upload;
+package com.neo.web.file;
 
 import java.util.Map;
 
@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.model.bo.FileUploadBO;
-import com.neo.service.upload.UploadService;
+import com.neo.service.file.UploadService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,6 +28,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(value = "上传相关Controller", tags = {"上传相关Controller"})
 @Controller
+@RequestMapping(value = "/file")
 public class UploadController{
 
 	@Autowired

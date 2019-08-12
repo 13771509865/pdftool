@@ -1,4 +1,4 @@
-package com.neo.web;
+package com.neo.web.composite;
 
 import java.util.Map;
 
@@ -31,6 +31,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api(value = "转换相关Controller", tags = {"转换相关Controller"})
 @Controller
+@RequestMapping(value = "/composite")
 public class PtsConvertController{
 
 	@Autowired

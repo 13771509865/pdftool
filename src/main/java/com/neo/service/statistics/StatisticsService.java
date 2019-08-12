@@ -118,24 +118,24 @@ public class StatisticsService {
 	 * @param request
 	 * @return
 	 */
-	public IResult<String> deleteConvert(FcsFileInfoQO fcsFileInfoQO,HttpServletRequest request){
-		Long userID = HttpUtils.getSessionUserID(request);
-		if(userID == null) {
-			return DefaultResult.failResult("请登录后，再执行此操作");
-		}else {
-			fcsFileInfoQO.setUserID(userID);
-		}
-		try {
-			int count = fcsFileInfoPOMapper.deletePtsConvert(fcsFileInfoQO);
-			if(count < 1) {
-				return DefaultResult.failResult("删除用户转换记录失败");
-			}
-			return DefaultResult.successResult();
-		} catch (Exception e) {
-			SysLogUtils.error("删除用户转换记录失败，原因：", e);
-			return DefaultResult.failResult("删除用户转换记录失败");
-		}
-	}
+//	public IResult<String> deleteConvert(FcsFileInfoQO fcsFileInfoQO,HttpServletRequest request){
+//		Long userID = HttpUtils.getSessionUserID(request);
+//		if(userID == null) {
+//			return DefaultResult.failResult("请登录后，再执行此操作");
+//		}else {
+//			fcsFileInfoQO.setUserID(userID);
+//		}
+//		try {
+//			int count = fcsFileInfoPOMapper.deletePtsConvert(fcsFileInfoQO);
+//			if(count < 1) {
+//				return DefaultResult.failResult("删除用户转换记录失败");
+//			}
+//			return DefaultResult.successResult();
+//		} catch (Exception e) {
+//			SysLogUtils.error("删除用户转换记录失败，原因：", e);
+//			return DefaultResult.failResult("删除用户转换记录失败");
+//		}
+//	}
 	
 	
 

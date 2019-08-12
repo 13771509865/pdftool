@@ -81,17 +81,17 @@ public class StatisticsController {
 	 * @param request
 	 * @return
 	 */
-	@ApiOperation(value = "删除用户的转换记录")
-	@PostMapping(value = "/delete")
-	@ResponseBody
-	public Map<String, Object> deleteConvert(@RequestBody FcsFileInfoQO fcsFileInfoQO ,HttpServletRequest request){
-		IResult<String> result = statisticsService.deleteConvert(fcsFileInfoQO, request);
-		if(result.isSuccess()) {
-			return JsonResultUtils.successMapResult();
-		}else {
-			return JsonResultUtils.failMapResult(result.getMessage());
-		}
-	}
+//	@ApiOperation(value = "删除用户的转换记录")
+//	@PostMapping(value = "/delete")
+//	@ResponseBody
+//	public Map<String, Object> deleteConvert(@RequestBody FcsFileInfoQO fcsFileInfoQO ,HttpServletRequest request){
+//		IResult<String> result = statisticsService.deleteConvert(fcsFileInfoQO, request);
+//		if(result.isSuccess()) {
+//			return JsonResultUtils.successMapResult();
+//		}else {
+//			return JsonResultUtils.failMapResult(result.getMessage());
+//		}
+//	}
 	
 	
 /**==================================运营统计数据============================================ */	

@@ -1,23 +1,23 @@
 package com.neo.web.file;
 
-import java.io.File;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.neo.commons.cons.EnumResultCode;
+import com.neo.commons.cons.IResult;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.JsonResultUtils;
-import com.neo.model.bo.ConvertParameterBO;
-import com.neo.service.file.FileService;
+import com.neo.model.qo.FcsFileInfoQO;
+import com.neo.service.file.DeleteFileService;
+
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 文件删除接口
@@ -27,23 +27,28 @@ import com.neo.service.file.FileService;
 @Controller
 @RequestMapping(value = "/file")
 public class DeleteFileController {
-	@Autowired
-	private ConfigProperty config;
 	
 	@Autowired
-	private FileService fileService;
+	private DeleteFileService deleteFileService;
+	
+	
+	/**
+	 * 删除用户的转换记录
+	 * @param filehash
+	 * @param request
+	 * @return
+	 */
+	@ApiOperation(value = "删除用户的转换记录")
+	@PostMapping(value = "/delete")
+	@ResponseBody
+	public Map<String, Object> deleteConvert(@RequestBody FcsFileInfoQO fcsFileInfoQO ,HttpServletRequest request){
+		IResult<String> result = deleteFileService.deleteConvert(fcsFileInfoQO, request);
+		if(result.isSuccess()) {
+			return JsonResultUtils.successMapResult();
+		}else {
+			return JsonResultUtils.failMapResult(result.getMessage());
+		}
+	}
 
-//	@RequestMapping(value = "/deleteFile")
-//    @ResponseBody
-//    public Map<String, Object> deleteFile(@RequestParam(value = "fileHash", required = true) String fileHash,HttpSession httpSession)  {
-//		Object obj = httpSession.getAttribute(fileHash);
-//		FileInfoBO fileInfoBO = (FileInfoBO)obj;
-//		String srcRelativePath = fileInfoBO.getStoragePath();
-//		if(StringUtils.isEmpty(srcRelativePath)){
-//			return JsonResultUtils.failMapResultByCode(ResultCode.E_INVALID_PARAM);
-//		}
-//		String srcPath = config.getInputDir() + File.separator + srcRelativePath;
-//		fileService.deleteSrcFile(srcPath);
-//		return JsonResultUtils.successMapResult();
-//    }
+
 }
