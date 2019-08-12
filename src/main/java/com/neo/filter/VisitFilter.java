@@ -10,8 +10,12 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.util.JsonResultUtils;
@@ -22,11 +26,12 @@ import com.neo.commons.util.JsonResultUtils;
  * @author xujun
  *
  */
+@Order(11)//顺序
+@WebFilter(filterName = "visitFilter", urlPatterns = "/composite/*")
 public class VisitFilter implements Filter{
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		// TODO Auto-generated method stub
 		Filter.super.init(filterConfig);
 	}
 

@@ -17,13 +17,15 @@ import com.neo.commons.util.JsonResultUtils;
 import com.neo.model.qo.FcsFileInfoQO;
 import com.neo.service.file.DeleteFileService;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 /**
  * 文件删除接口
- * @author zhouf
- * @create 2018-12-13 20:42
+ * @author xujun
+ * @create 2019-08-12
  */
+@Api(value = "删除相关Controller", tags = {"删除相关Controller"})
 @Controller
 @RequestMapping(value = "/file")
 public class DeleteFileController {

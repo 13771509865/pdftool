@@ -3,6 +3,7 @@ package com.neo.service.file;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
@@ -11,6 +12,8 @@ import com.neo.commons.util.SysLogUtils;
 import com.neo.dao.FcsFileInfoPOMapper;
 import com.neo.model.qo.FcsFileInfoQO;
 
+
+@Service("deleteFileService")
 public class DeleteFileService {
 	
 	

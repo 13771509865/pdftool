@@ -671,12 +671,12 @@ function uuid(len, radix) {
 
 
 var uaaPath = "http://auth.yozocloud.cn";
-var uaaLogin = "http://auth.yozocloud.cn/account/signin.html?success=http://pdf.yozocloud.cn:8080";
+var uaaLogin = "http://auth.yozocloud.cn/account/signin.html?success=http://pdf.yozocloud.cn:8081";
 var uaasetting = "http://auth.yozocloud.cn/account/index.html";
 var userId = null;
 function getUerInfo(){
 	 $.ajax({ 
-			url:"../detail",
+			url:"../uaa/detail",
 			type:"GET",
 			data : "",
 			success:function (data){
@@ -724,7 +724,7 @@ window.open(uaasetting);
 
 $("#logout").unbind("click").bind("click", function(){
 	 $.ajax({ 
-			url:"../logout",
+			url:"../uaa/logout",
 			type:"GET",
 			data : "",
 			success:function (data){
