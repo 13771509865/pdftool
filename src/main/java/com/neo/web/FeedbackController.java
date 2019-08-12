@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.neo.commons.cons.ResultCode;
+import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.entity.FeedbackEntity;
 import com.neo.commons.util.BindingResultUtils;
 import com.neo.commons.util.JsonResultUtils;
@@ -49,7 +49,7 @@ public class FeedbackController{
 		str += "===============================================================\r\n";
 		feedback.info(str);
 		
-		return JsonResultUtils.successMapResult(ResultCode.E_SUCCES.getValue());
+		return JsonResultUtils.successMapResult(EnumResultCode.E_SUCCES.getValue());
 	}
 	
 	
@@ -113,7 +113,7 @@ public class FeedbackController{
 //		}
 //
 //		feedback.info(username+"::"+star+"颗星"+"::"+content+"::"+strInfo);
-//		return JsonResultUtils.successMapResult(ResultCode.E_SUCCES.getValue());
+//		return JsonResultUtils.successMapResult(EnumResultCode.E_SUCCES.getValue());
 //	}
 
 }

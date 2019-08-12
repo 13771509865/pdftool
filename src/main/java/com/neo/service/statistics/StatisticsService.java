@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.ResultCode;
+import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.constants.RedisConsts;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.properties.ConfigProperty;

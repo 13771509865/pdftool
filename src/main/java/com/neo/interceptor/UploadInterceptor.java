@@ -18,7 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.ResultCode;
+import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.constants.ConstantAdmin;
 import com.neo.commons.cons.constants.ConstantCookie;
 import com.neo.commons.cons.constants.RedisConsts;
@@ -67,7 +67,7 @@ public class UploadInterceptor implements HandlerInterceptor {
 			throws Exception {
 		Object uploadResult = request.getAttribute(SysConstant.UPLOAD_RESULT);
 		if(uploadResult != null && uploadResult instanceof Integer) {
-			if (ResultCode.E_SUCCES.getValue() == uploadResult) {
+			if (EnumResultCode.E_SUCCES.getValue() == uploadResult) {
 				redisCacheManager.pushZSet(RedisConsts.UPLOAD_CONNT, RedisConsts.SUCCESS);
 			}else {
 				redisCacheManager.pushZSet(RedisConsts.UPLOAD_CONNT,RedisConsts.FAIL);
@@ -88,12 +88,12 @@ public class UploadInterceptor implements HandlerInterceptor {
 
 		//参数默认为游客，文件大小为5M
 		long maxSize = VUploadSize;
-		ResultCode resultCode = ResultCode.E_VISITOR_UPLOAD_ERROR;
+		EnumResultCode resultCode = EnumResultCode.E_VISITOR_UPLOAD_ERROR;
 
 		//登录用户，30M
 		if(StringUtils.isNotBlank(userInfo)) {
 			maxSize = MUploadSize;
-			resultCode = ResultCode.E_USER_UPLOAD_ERROR;
+			resultCode = EnumResultCode.E_USER_UPLOAD_ERROR;
 		}
 		IResult<String> result = checkFile(request,maxSize);
 		if(!result.isSuccess()) {

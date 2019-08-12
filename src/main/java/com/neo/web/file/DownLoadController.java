@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.ResultCode;
+import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.PtsProperty;
@@ -111,8 +111,8 @@ public class DownLoadController {
 							out.write(b);
 						}
 					} catch (Exception e) {
-						SysLogUtils.error(ResultCode.E_URLDOWNLOAD_FILE.getInfo(),e);
-						throw new Exception(ResultCode.E_URLDOWNLOAD_FILE.getInfo()+":"+e.getMessage());
+						SysLogUtils.error(EnumResultCode.E_DOWNLOAD_FILE_FAIL.getInfo(),e);
+						throw new Exception(EnumResultCode.E_DOWNLOAD_FILE_FAIL.getInfo()+":"+e.getMessage());
 					}finally {
 						try {
 							in.close();

@@ -13,7 +13,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.neo.commons.cons.ResultCode;
+import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.util.JsonResultUtils;
 
 
@@ -53,7 +53,7 @@ public class VisitFilter implements Filter{
 			res.setContentType("text/html;charset=UTF-8");
 			res.setCharacterEncoding("UTF-8");
 			PrintWriter out = res.getWriter();
-			out.write(JsonResultUtils.buildFailJsonResultByResultCode(ResultCode.E_FILESERVICE_FAIL));
+			out.write(JsonResultUtils.buildFailJsonResultByResultCode(EnumResultCode.E_FILESERVICE_FAIL));
 			out.flush();
 			out.close();
 			return ;

@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.ResultCode;
+import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.JsonUtils;
@@ -54,16 +54,16 @@ public class UploadService {
 					if(errorcode == 0) {
 						FileUploadBO fileUploadBO = JsonUtils.json2obj(map.get(SysConstant.FCS_DATA), FileUploadBO.class);
 						fileUploadBO.setSrcFileSize(file.getSize());
-						request.setAttribute(SysConstant.UPLOAD_RESULT, ResultCode.E_SUCCES.getValue());
+						request.setAttribute(SysConstant.UPLOAD_RESULT, EnumResultCode.E_SUCCES.getValue());
 						return DefaultResult.successResult(message,fileUploadBO);
 					}else {
 						return DefaultResult.failResult(message);
 					}
 				}
 			}
-			return DefaultResult.failResult(ResultCode.E_UPLOAD_FILE.getInfo());
+			return DefaultResult.failResult(EnumResultCode.E_UPLOAD_FILE.getInfo());
 		} catch (Exception e) {
-			return DefaultResult.failResult(ResultCode.E_UPLOAD_FILE.getInfo());
+			return DefaultResult.failResult(EnumResultCode.E_UPLOAD_FILE.getInfo());
 		}
 	}
 

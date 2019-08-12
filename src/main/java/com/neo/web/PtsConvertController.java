@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.ResultCode;
+import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.model.bo.ConvertParameterBO;
@@ -49,7 +49,7 @@ public class PtsConvertController{
 	@ResponseBody
 	public Map<String, Object> convert(@RequestBody ConvertParameterBO convertBO,HttpServletRequest request)  {
 		if(convertBO.getSrcFileSize() == null) {
-			return JsonResultUtils.failMapResult(ResultCode.E_NOTALL_PARAM.getInfo());
+			return JsonResultUtils.failMapResult(EnumResultCode.E_NOTALL_PARAM.getInfo());
 		}
 		IResult<FcsFileInfoBO> result = ptsConvertService.dispatchConvert(convertBO, ConfigProperty.getConvertTicketWaitTime(),request);
 		ptsConvertService.updatePtsSummay(result.getData(),convertBO,request);
@@ -67,7 +67,7 @@ public class PtsConvertController{
 //	@ResponseBody
 	public Map<String, Object> mqconvert(@RequestBody ConvertParameterBO convertBO)  {
 		if(convertBO.getSrcFileSize() == null) {
-			return JsonResultUtils.failMapResult(ResultCode.E_NOTALL_PARAM.getInfo());
+			return JsonResultUtils.failMapResult(EnumResultCode.E_NOTALL_PARAM.getInfo());
 		}
 		IResult<String>  result =  redisMQConvertService.Producer(convertBO);
 		if(result.isSuccess()) {

@@ -6,7 +6,6 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neo.commons.cons.EnumResultCode;
-import com.neo.commons.cons.ResultCode;
 
 
 public class JsonResultUtils {
@@ -77,7 +76,7 @@ public class JsonResultUtils {
 		}
 	}
 	
-	public static String buildFailJsonResultByResultCode(ResultCode code){
+	public static String buildFailJsonResultByResultCode(EnumResultCode code){
 		return buildJsonResult(code.getValue(),null,code.getInfo());
 	}
 	
@@ -116,7 +115,7 @@ public class JsonResultUtils {
 		return params;
 	}
 	
-	public static Map<String, Object> failMapResultByCode(ResultCode code){
+	public static Map<String, Object> failMapResultByCode(EnumResultCode code){
 		return buildMapResult(code.getValue(),null, code.getInfo());
 	}
 

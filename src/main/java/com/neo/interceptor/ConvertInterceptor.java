@@ -14,7 +14,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.ResultCode;
+import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.constants.ConstantAdmin;
 import com.neo.commons.cons.constants.ConstantCookie;
 import com.neo.commons.cons.constants.RedisConsts;
@@ -61,7 +61,7 @@ public class ConvertInterceptor implements HandlerInterceptor {
 		Object convertResult = request.getAttribute(SysConstant.CONVERT_RESULT);
 
 		if (convertResult != null && convertResult instanceof Integer) {
-			if (ResultCode.E_SUCCES.getValue() == convertResult) {
+			if (EnumResultCode.E_SUCCES.getValue() == convertResult) {
 				Long userID =HttpUtils.getSessionUserID(request);
 				String key = RedisConsts.IP_CONVERT_TIME_KEY;
 				String value = HttpUtils.getIpAddr(request); 
@@ -85,14 +85,14 @@ public class ConvertInterceptor implements HandlerInterceptor {
 		Integer maxConvertTimes = config.getVConvertTimes();//游客5个文件
 		String value = ipAddr; 
 		String key = RedisConsts.IP_CONVERT_TIME_KEY;
-		ResultCode resultCode = ResultCode.E_VISITOR_CONVERT_NUM_ERROR;
+		EnumResultCode resultCode = EnumResultCode.E_VISITOR_CONVERT_NUM_ERROR;
 
 		if(!ConstantAdmin.ADMIN_IP.equals(ipAddr)){//公司ip不拦截
 			if(userID != null){//会员20个文件
 				maxConvertTimes = config.getMConvertTimes();
 				key = RedisConsts.ID_CONVERT_TIME_KEY;
 				value = userID.toString();
-				resultCode = ResultCode.E_USER_CONVERT_NUM_ERROR;
+				resultCode = EnumResultCode.E_USER_CONVERT_NUM_ERROR;
 			}
 
 			int convertTimes = cacheManager.getScore(key,value).intValue();

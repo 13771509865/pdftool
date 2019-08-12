@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.ResultCode;
+import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.PtsProperty;
@@ -71,8 +71,8 @@ public class PtsConvertService {
 			ticket = ticketManager.take();
 		}
 		if (StringUtils.isEmpty(ticket)) {
-			fcsFileInfoBO.setCode(ResultCode.E_SERVER_BUSY.getValue());
-			return DefaultResult.failResult(ResultCode.E_SERVER_BUSY.getInfo(), fcsFileInfoBO);
+			fcsFileInfoBO.setCode(EnumResultCode.E_SERVER_BUSY.getValue());
+			return DefaultResult.failResult(EnumResultCode.E_SERVER_BUSY.getInfo(), fcsFileInfoBO);
 		}
 		try {
 			
@@ -81,8 +81,8 @@ public class PtsConvertService {
 			IResult<HttpResultEntity> httpResult = httpAPIService.doPost(ptsProperty.getFcs_convert_url(), ptsConvertParamService.buildFcsMapParamPO(convertPO));
 			
 			if (!HttpUtils.isHttpSuccess(httpResult)) {
-				fcsFileInfoBO.setCode(ResultCode.E_FCS_CONVERT_FAIL.getValue());
-				return DefaultResult.failResult(ResultCode.E_FCS_CONVERT_FAIL.getInfo(),fcsFileInfoBO);
+				fcsFileInfoBO.setCode(EnumResultCode.E_FCS_CONVERT_FAIL.getValue());
+				return DefaultResult.failResult(EnumResultCode.E_FCS_CONVERT_FAIL.getInfo(),fcsFileInfoBO);
 			}
 			Map<String, Object> fcsMap= JsonUtils.parseJSON2Map(httpResult.getData().getBody());
 			
@@ -93,16 +93,16 @@ public class PtsConvertService {
 				updateFcsFileInfo(fcsFileInfoBO,request);//这里只记录转换成功的pts_convert
 				
 				//转换成功记录一下，拦截器要用
-				request.setAttribute(SysConstant.CONVERT_RESULT, ResultCode.E_SUCCES.getValue());
+				request.setAttribute(SysConstant.CONVERT_RESULT, EnumResultCode.E_SUCCES.getValue());
 				return DefaultResult.successResult(fcsFileInfoBO);
 			}else {
 				return DefaultResult.failResult(fcsMap.get(SysConstant.FCS_MESSAGE).toString(),fcsFileInfoBO);
 			}
 			
 		} catch (Exception e) {
-			fcsFileInfoBO.setCode(ResultCode.E_SERVER_UNKNOW_ERROR.getValue());
+			fcsFileInfoBO.setCode(EnumResultCode.E_SERVER_UNKNOW_ERROR.getValue());
             SysLogUtils.error(convertBO.getSrcPath() + "文件转换未知错误", e);
-            return DefaultResult.failResult(ResultCode.E_SERVER_UNKNOW_ERROR.getInfo(), fcsFileInfoBO);
+            return DefaultResult.failResult(EnumResultCode.E_SERVER_UNKNOW_ERROR.getInfo(), fcsFileInfoBO);
 		}finally {
 			 ticketManager.put(ticket);
 		}

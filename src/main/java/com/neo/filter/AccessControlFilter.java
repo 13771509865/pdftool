@@ -24,10 +24,10 @@ public class AccessControlFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		HttpServletResponse resp = (HttpServletResponse) response;
-		resp.addHeader("Access-Control-Allow-Origin", "*");
-		resp.addHeader("Access-Control-Allow-Credentials", "true");
-		resp.addHeader("Access-Control-Allow-Methods", "*");
-		resp.addHeader("Access-Control-Allow-Headers", "Content-Type, X-Requested-With");
+		resp.setHeader("Access-Control-Allow-Origin", "*");
+		resp.setHeader("Access-Control-Allow-Credentials", "true");
+		resp.setHeader("Access-Control-Allow-Methods", "*");
+		resp.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Requested-With");
 		chain.doFilter(request, response);// 继续执行下一个Filter
 	}
 

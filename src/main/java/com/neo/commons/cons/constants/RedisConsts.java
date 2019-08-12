@@ -18,7 +18,7 @@ public class RedisConsts {
 	
 	public static final String MQ_RESULT_CONVERT = "mqConvertResult"; //待转换消息队列
 	
-	public static final String UPLOAD_CONNT = "uploadCount";
+	public static final String UPLOAD_CONNT = "uploadCount";//上传成功率统计
 	
 	public static final String SUCCESS = "success";
 	
