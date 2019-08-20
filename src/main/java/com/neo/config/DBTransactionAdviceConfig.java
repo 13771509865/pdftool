@@ -1,6 +1,7 @@
 package com.neo.config;
 
 import org.aspectj.lang.annotation.Aspect;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;

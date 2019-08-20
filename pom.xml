@@ -17,7 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <skipTests>true</skipTests>
-        <httpclient.version>4.5.9</httpclient.version>
+        <httpclient.version>4.5.8</httpclient.version>
         <fastjson.version>1.2.57</fastjson.version>
         <log4j-web.version>2.11.2</log4j-web.version>
         <commons-lang3.version>3.9</commons-lang3.version>

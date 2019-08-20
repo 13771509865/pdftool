@@ -18,7 +18,6 @@ import com.neo.commons.util.JsonResultUtils;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.service.convert.PtsConvertService;
-import com.neo.service.convert.redisMQ.RedisMQConvertService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,8 +33,8 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping(value = "/composite")
 public class PtsConvertController{
 
-	@Autowired
-	private RedisMQConvertService redisMQConvertService;
+//	@Autowired
+//	private RedisMQConvertService redisMQConvertService;
 
 	@Autowired
 	private PtsConvertService ptsConvertService;
@@ -66,18 +65,18 @@ public class PtsConvertController{
 //	@ApiOperation(value = "MQ转换")
 //	@PostMapping(value = "/mqconvert")
 //	@ResponseBody
-	public Map<String, Object> mqconvert(@RequestBody ConvertParameterBO convertBO)  {
-		if(convertBO.getSrcFileSize() == null) {
-			return JsonResultUtils.failMapResult(EnumResultCode.E_NOTALL_PARAM.getInfo());
-		}
-		IResult<String>  result =  redisMQConvertService.Producer(convertBO);
-		if(result.isSuccess()) {
-			return JsonResultUtils.successMapResult();
-		}else {
-			return JsonResultUtils.failMapResult(result.getMessage());
-		}
-		
-	}
+//	public Map<String, Object> mqconvert(@RequestBody ConvertParameterBO convertBO)  {
+//		if(convertBO.getSrcFileSize() == null) {
+//			return JsonResultUtils.failMapResult(EnumResultCode.E_NOTALL_PARAM.getInfo());
+//		}
+//		IResult<String>  result =  redisMQConvertService.Producer(convertBO);
+//		if(result.isSuccess()) {
+//			return JsonResultUtils.successMapResult();
+//		}else {
+//			return JsonResultUtils.failMapResult(result.getMessage());
+//		}
+//		
+//	}
 	
 
 
