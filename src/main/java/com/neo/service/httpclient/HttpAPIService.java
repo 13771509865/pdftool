@@ -6,10 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -37,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSONObject;
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
@@ -269,15 +269,29 @@ public class HttpAPIService {
 
     private CloseableHttpResponse doPostProcess(String url, Map<String, Object> params, Map<String, Object> headers) throws Exception {
         HttpPost httpPost = new HttpPost(url);
-//        // 加入配置信息
-//        httpPost.setConfig(config);
-
-        // 判断map是否为空，不为空则进行遍历，封装from表单对象
         if (params != null && !params.isEmpty()) {
             List<NameValuePair> list = new ArrayList<>();
             for (Map.Entry<String, Object> entry : params.entrySet()) {
                 if (entry.getValue() != null) {
+                	Object v=entry.getValue();
+                	if(v  instanceof ArrayList) {
+                        try {
+                            Iterator<Object> it = ((ArrayList) v).iterator();
+                            while (it.hasNext()) {
+                                JSONObject jsonObj = (JSONObject) it.next();
+                                list.add(new BasicNameValuePair(entry.getKey(), jsonObj.toString()));
+                            }
+                        } catch (Exception e) {
+                            Iterator<Object> it = ((ArrayList) v).iterator();
+                            while (it.hasNext()) {
+                            	Object jsonObj = (Object) it.next();
+                                list.add(new BasicNameValuePair(entry.getKey(), jsonObj.toString()));
+                            }
+                        }
+                	}
+                	else {
                     list.add(new BasicNameValuePair(entry.getKey(), entry.getValue().toString()));
+                	}
                 }
             }
             UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(list, "UTF-8");

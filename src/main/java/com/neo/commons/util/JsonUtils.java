@@ -40,9 +40,9 @@ public class JsonUtils {
                     map.put(k.toString(), list);
                 } catch (Exception e) {
                     Iterator<Object> it = ((JSONArray) v).iterator();
-                    List<String> list = new ArrayList<>();
+                    List<Object> list = new ArrayList<>();
                     while (it.hasNext()) {
-                        String jsonObj = (String) it.next();
+                        Object jsonObj = it.next();
                         list.add(jsonObj);
                     }
                     map.put(k.toString(), list);

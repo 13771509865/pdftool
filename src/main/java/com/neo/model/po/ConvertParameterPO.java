@@ -1,6 +1,7 @@
 package com.neo.model.po;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
@@ -209,11 +210,11 @@ public class ConvertParameterPO implements Serializable{
 
     //pdf拆分参数
     @ApiModelProperty(value = "pdf拆分起始页，默认0从第一页开始",example="0")
-    private Integer splitStartPage;
+    private Integer[] splitStartPage;
     @ApiModelProperty(value = "pdf拆分终止页，默认0到最后页结束",example="0")
-    private Integer splitEndPage;
+    private Integer[] splitEndPage;
     @ApiModelProperty(value = "pdf拆分分隔页数，默认0不分割，如果起始页和终止页都是0默认1",example="0")
-    private Integer splitPages;
+    private Integer[] splitPages;
     
     @Override
     public String toString() {
