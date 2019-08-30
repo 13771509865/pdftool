@@ -1,6 +1,7 @@
 package com.neo.commons.cons.entity;
 
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import lombok.AllArgsConstructor;

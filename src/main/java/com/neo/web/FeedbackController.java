@@ -17,6 +17,7 @@ import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.entity.FeedbackEntity;
 import com.neo.commons.util.BindingResultUtils;
 import com.neo.commons.util.JsonResultUtils;
+import com.neo.commons.util.Validator;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -43,6 +44,15 @@ public class FeedbackController{
 		if(StringUtils.isNotBlank(erroMessage)) {
 			return JsonResultUtils.failMapResult(erroMessage);
 		}
+		
+		//联系方式手机或者邮箱格式验证
+//		if(StringUtils.isNotBlank(feedbackEntity.getContactMode())) {
+//			if(!Validator.MOBILE.match(feedbackEntity.getContactMode()) || 
+//					!Validator.EMAIL.match(feedbackEntity.getContactMode())) {
+//				return JsonResultUtils.failMapResult("请填写正确的联系方式");
+//			}
+//		}
+		
 		Logger feedback = LoggerFactory.getLogger("Feedback");
 		String str  = "反馈内容："+feedbackEntity.getContent()+ "\r\n";
 		str += "联系方式："+feedbackEntity.getContactMode()+ "\r\n";
