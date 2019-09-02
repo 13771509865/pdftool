@@ -73,15 +73,15 @@ public class ConvertParameterPO implements Serializable{
     private String bookMark;
     @ApiModelProperty(value = "水印内容")
     private String wmContent;
-    @ApiModelProperty(value = "水印字体大小",example="100")
+    @ApiModelProperty(value = "水印字体大小",example="50")
     private Integer wmSize;
     @ApiModelProperty(value = "水印颜色",example="5")
     private Integer wmColor;
-    @ApiModelProperty(value = "水印字体")
+    @ApiModelProperty(value = "水印字体",example="宋体")
     private String wmFont;
     @ApiModelProperty(value = "静态水印间距",example="150")
     private Integer wmSpace;
-    @ApiModelProperty(value = "静态水印透明度",example="1")
+    @ApiModelProperty(value = "静态水印透明度",example="0.5")
     private Float wmTransparency;
     @ApiModelProperty(value = "静态水印内容旋转角度",example="-50")
     private Integer wmRotate;
@@ -123,16 +123,16 @@ public class ConvertParameterPO implements Serializable{
     private String htmlPath;
     @ApiModelProperty(value = "动态水印")
     private String dynamicMark;
-    @ApiModelProperty(value = "动态水印x轴内容之间距离")
-    private String dmXextra;
-    @ApiModelProperty(value = "动态水印y轴内容之间距离")
-    private String dmYextra;
-    @ApiModelProperty(value = "动态水印的文字大小")
-    private String dmFontSize;
+    @ApiModelProperty(value = "动态水印x轴内容之间距离",example = "150")
+    private Integer dmXextra;
+    @ApiModelProperty(value = "动态水印y轴内容之间距离",example = "150")
+    private Integer dmYextra;
+    @ApiModelProperty(value = "动态水印的文字大小",example = "50")
+    private Integer dmFontSize;
     @ApiModelProperty(value = "动态水印的透明度(范围是0到1)",example="0.5")
     private Float dmAlpha;
-    @ApiModelProperty(value = "动态水印旋转角度")
-    private String dmAngle;
+    @ApiModelProperty(value = "动态水印旋转角度",example = "0")
+    private Integer dmAngle;
     @ApiModelProperty(value = "动态水印字体")
     private String dmFont;
     @ApiModelProperty(value = "动态水印颜色,rgb方式，如rgb(0,0,0),#000000")
@@ -188,6 +188,32 @@ public class ConvertParameterPO implements Serializable{
     @ApiModelProperty(value = "需要更新的svg的位置",hidden = true,example="1")
 	private Integer signaturePage;
 
+    @ApiModelProperty(value = "传入后缀名(对于上传的文件没有后缀名，我们可以根据这个参数强制修改)")
+    private String suffix;
+    @ApiModelProperty(value = "加入图片水印，设置是否是第一页加入，默认不是，为1时就是在第一页加入",example="0")
+    private Integer isFirstImage;
+    @ApiModelProperty(value = "调整excel单元行的宽度，默认不调整，当为1时调整",example="0")
+    private Integer isExcelWidth;
+    @ApiModelProperty(value = "生成pdf是否是以绘图的方式，默认不是，设置为1是的",example="0")
+    private Integer isPdfBmp;
+    @ApiModelProperty(value = "对word生成word的红头文件做置灰处理，默认不置灰，1置灰",example="0")
+    private Integer isAshPlacing;
+    @ApiModelProperty(value = "图片转html加水印的时候，水印大小间距参照",example="0")
+    private Integer imageSacleValue;
+    @ApiModelProperty(value = "广告js地址引入")
+	private String[] addedScriptPath;
+    @ApiModelProperty(value = "图片水印x轴控制",example="0")
+	private Integer wmPicX;
+    @ApiModelProperty(value = "图片水印y轴控制",example="0")
+	private Integer wmPicY;
+    
+    @ApiModelProperty(value = "图片水印文字上方")
+    private Boolean wmPicIsTextUp;
+    @ApiModelProperty(value = "图片水印透明度",example="0.5")
+    private Float wmPicTransparency;
+    @ApiModelProperty(value = "图片水印内容旋转角度",example="0")
+    private Integer wmPicRotate;
+    
     //ofd属性参数
     @ApiModelProperty(value = "查找ofd reader中文字高亮显示")
     private String searchString;
@@ -207,7 +233,29 @@ public class ConvertParameterPO implements Serializable{
     private String modDate;
     @ApiModelProperty(value = "元数据(自定义内容)")
     private Map<String, String> customDatas;
-
+    @ApiModelProperty(value = "默认是文件水印，1是图片水印",example="0")
+	private Integer OFDType;
+    @ApiModelProperty(value = "水印旋转角度，[-90,90]",example="45")
+	private Integer OFDAngle;
+    @ApiModelProperty(value = "字体大小",example="20")
+	private Integer OFDFontSize;
+    @ApiModelProperty(value = "水印透明度，0-1",example="0.5")
+	private Float OFDAlpha;
+    @ApiModelProperty(value = "水印文字")
+	private String OFDContent;
+    @ApiModelProperty(value = "字体名称，默认宋体",example="楷体")
+    private String OFDFontName;
+    @ApiModelProperty(value = "rgb颜色 空格分隔",example="192 192 192")
+    private String OFDolor;
+    @ApiModelProperty(value = "是否平铺，默认不是，1时平铺",example="0")
+	private Integer OFDRepeat;
+    @ApiModelProperty(value = "单个水印位置，0中间 1左上 2中上 3右上 4左下 5中下 6右下,默认在中间",example="0")
+	private Integer OFDAlign;
+    @ApiModelProperty(value = "图片水印路径",example="0")
+	private String OFDImgPath;
+    @ApiModelProperty(value = "图片水印位置调整参数",example="6")
+	private Integer OFDMargin;
+    
     //pdf拆分参数
     @ApiModelProperty(value = "pdf拆分起始页，默认0从第一页开始",example="0")
     private Integer[] splitStartPage;
