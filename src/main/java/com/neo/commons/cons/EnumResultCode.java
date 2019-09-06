@@ -43,6 +43,15 @@ public enum EnumResultCode {
 	}
 
 
+	public static String getTypeInfo(Integer velue) {
+        for (EnumResultCode statu : values()) {
+			if(statu.getValue().equals(velue)){
+				return statu.getInfo();
+			}
+		}
+		return null;
+	}
+	
 	public static EnumResultCode getEnum(Integer value) {
 		for (EnumResultCode code : values()) {
 			if (value == code.getValue())

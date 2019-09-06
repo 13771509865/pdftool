@@ -312,51 +312,39 @@ public class HttpAPIService {
     }
     
     
+    
+       
     /**
-     * 跨域服务器之间文件的传送
-     * @param file
-     * @param url
-     * @param filename
-     * @author xujun
-     * @date 2019-07-19
-     * @return
-     */
-    public  String uploadResouse(MultipartFile file,String url) {
-    	CloseableHttpClient  aDefault  =  HttpClients.createDefault();
-    	Object  object  =  null;
+	 * 跨域服务器之间文件的传送
+	 * @param file
+	 * @param url
+	 * @param filename
+	 * @author xujun
+	 * @date 2019-07-19
+	 * @return
+	 */
+	public  IResult<HttpResultEntity> uploadResouse(MultipartFile file,String url) {
+		CloseableHttpResponse response = null;
 		try  {
 			HttpPost  httpPost  =  new  HttpPost(url);
 			MultipartEntityBuilder  builder  =  MultipartEntityBuilder.create().setMode(HttpMultipartMode.RFC6532);
 			builder.addBinaryBody("file",file.getBytes(),ContentType.create("multipart/form-data"),file.getOriginalFilename());
 			HttpEntity  entity  =  builder.build();
 			httpPost.setEntity(entity);
-			ResponseHandler<Object>  rh  =  new  ResponseHandler<Object>()  {
-				@Override
-				public  Object  handleResponse(HttpResponse  response)  throws  IOException  {
-					HttpEntity  entity  =  response.getEntity();
-					String  result  =  EntityUtils.toString(entity,  "UTF-8");
-					return  result;
-				}
-			};
-			aDefault  =  HttpClients.createDefault();
-			object  =   aDefault.execute(httpPost, rh);
 
-		}  catch  (Exception  e)  {
+			response  = this.httpClient.execute(httpPost);
+			HttpResultEntity httpResultEntity = new HttpResultEntity(response.getStatusLine().getStatusCode(), EntityUtils.toString(
+					response.getEntity(), SysConstant.CHARSET));
+			return DefaultResult.successResult(httpResultEntity); 
+		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
-		}  finally  {
-			try {
-				aDefault.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			SysLogUtils.info("upload--fcs请求失败,请求URL为:" + url);
+			return DefaultResult.failResult(EnumResultCode.E_HTTP_SEND_FAIL.getInfo());
+		} finally {
+			closeResource(response);
 		}
-		return object.toString();
-    }
-    
-    
-       
-    
+
+	}
     
     
     
