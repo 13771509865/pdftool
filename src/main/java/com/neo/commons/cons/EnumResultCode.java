@@ -19,8 +19,8 @@ public enum EnumResultCode {
 	//用户权限
 	E_VISITOR_UPLOAD_ERROR(23,"游客仅可上传2M以内文档，获取更大权限，请注册登录"),
 	E_VISITOR_CONVERT_NUM_ERROR(24,"游客每日可转换5个文件，获取更大权限，请注册登录"),
-	E_USER_UPLOAD_ERROR(25,"文件大小超出20M，暂不支持，如有紧急，请联系客服"),
-	E_USER_CONVERT_NUM_ERROR(26,"每天可转换10个文件"),
+	E_USER_UPLOAD_ERROR(25,"文件大小超出50M，暂不支持，如有紧急，请联系客服"),
+	E_USER_CONVERT_NUM_ERROR(26,"每天可转换30个文件"),
 
 	E_FCS_VTOKEN_FAIL(42,"获取vToken失败"),
 	E_FCS_CONVERT_FAIL(43,"文档转换服务器通讯失败,请联系管理员"),

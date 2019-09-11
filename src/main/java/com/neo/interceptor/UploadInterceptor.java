@@ -33,8 +33,6 @@ import com.neo.service.cache.impl.RedisCacheManager;
 /**
  * 
  * 对用户上传权限做拦截
- * 游客上传10M
- * 会员上传30M
  * @author xujun
  * 2019-07-11
  *
@@ -79,25 +77,24 @@ public class UploadInterceptor implements HandlerInterceptor {
 	}
 
 
-	//游客仅可上传10M,登录用户可上传30M
+	//游客仅可上传2M,登录用户不限制
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		HttpSession session = request.getSession();
 		String userInfo = (String)session.getAttribute(ConstantCookie.SESSION_USER);
 
-		//参数默认为游客，文件大小为5M
+		//参数默认为游客，文件大小为2M
 		long maxSize = VUploadSize;
 		EnumResultCode resultCode = EnumResultCode.E_VISITOR_UPLOAD_ERROR;
 
-		//登录用户，30M
+		//登录用户,不做限制
 		if(StringUtils.isNotBlank(userInfo)) {
 			maxSize = MUploadSize;
 			resultCode = EnumResultCode.E_USER_UPLOAD_ERROR;
 		}
 		IResult<String> result = checkFile(request,maxSize);
 		if(!result.isSuccess()) {
-			redisCacheManager.pushZSet(RedisConsts.UPLOAD_CONNT,RedisConsts.FAIL);//被拦截也统计一下次数
 			response.setContentType("text/html;charset=UTF-8");
 			response.setCharacterEncoding("UTF-8");
 			PrintWriter out = response.getWriter();
