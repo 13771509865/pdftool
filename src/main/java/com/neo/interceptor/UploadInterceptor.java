@@ -1,6 +1,5 @@
 package com.neo.interceptor;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.annotation.PostConstruct;
@@ -17,18 +16,13 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.neo.commons.cons.DefaultResult;
-import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.EnumResultCode;
-import com.neo.commons.cons.constants.ConstantAdmin;
+import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.ConstantCookie;
-import com.neo.commons.cons.constants.RedisConsts;
-import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.JsonResultUtils;
-import com.neo.service.accessTimes.AccessTimesService;
-import com.neo.service.cache.CacheManager;
-import com.neo.service.cache.CacheService;
 import com.neo.service.cache.impl.RedisCacheManager;
+import com.neo.service.file.UploadService;
 
 /**
  * 
@@ -45,6 +39,9 @@ public class UploadInterceptor implements HandlerInterceptor {
 
 	@Autowired
 	private ConfigProperty config;
+	
+	@Autowired
+	private UploadService uploadService;
 
 	private static int MUploadSize ;
 
@@ -63,16 +60,19 @@ public class UploadInterceptor implements HandlerInterceptor {
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView arg3)
 			throws Exception {
-		Object uploadResult = request.getAttribute(SysConstant.UPLOAD_RESULT);
-		if(uploadResult != null && uploadResult instanceof Integer) {
-			if (EnumResultCode.E_SUCCES.getValue() == uploadResult) {
-				redisCacheManager.pushZSet(RedisConsts.UPLOAD_CONNT, RedisConsts.SUCCESS);
-			}else {
-				redisCacheManager.pushZSet(RedisConsts.UPLOAD_CONNT,RedisConsts.FAIL);
-			}
-		}else {
-			redisCacheManager.pushZSet(RedisConsts.UPLOAD_CONNT,RedisConsts.FAIL);
-		}
+//		Object uploadResult = request.getAttribute(SysConstant.UPLOAD_RESULT);
+//		if(uploadResult != null && uploadResult instanceof Integer) {
+//			if (EnumResultCode.E_SUCCES.getValue() == uploadResult) {
+//				redisCacheManager.pushZSet(RedisConsts.UPLOAD_CONNT, RedisConsts.SUCCESS);
+//			}else {
+//				redisCacheManager.pushZSet(RedisConsts.UPLOAD_CONNT,RedisConsts.FAIL);
+//			}
+//		}else {
+//			redisCacheManager.pushZSet(RedisConsts.UPLOAD_CONNT,RedisConsts.FAIL);
+//		}
+		
+		
+	
 
 	}
 

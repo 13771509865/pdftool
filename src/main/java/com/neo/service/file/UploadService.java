@@ -1,7 +1,6 @@
 package com.neo.service.file;
 
 
-import java.io.File;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,19 +9,20 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.neo.commons.cons.DefaultResult;
-import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.EnumResultCode;
+import com.neo.commons.cons.IResult;
+import com.neo.commons.cons.constants.PathConsts;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLogUtils;
-import com.neo.model.bo.FcsFileInfoBO;
+import com.neo.dao.PtsApplyPOMapper;
 import com.neo.model.bo.FileUploadBO;
+import com.neo.model.po.PtsApplyPO;
 import com.neo.service.httpclient.HttpAPIService;
 
 @Service("uploadService")
@@ -30,11 +30,14 @@ public class UploadService {
 
 	@Autowired
 	private PtsProperty ptsProperty;
-	
+
 	@Autowired
 	private HttpAPIService httpAPIService;
 
-	
+	@Autowired
+	private PtsApplyPOMapper ptsApplyPOMapper;
+
+
 	/**
 	 * 文件上传到fcs服务器
 	 * @author xujun
@@ -49,8 +52,6 @@ public class UploadService {
 
 				//去传文件给fcs
 				IResult<HttpResultEntity> result = httpAPIService.uploadResouse(file,url);
-				System.out.println(result.getMessage());
-				System.out.println(result.getData());
 				if (!HttpUtils.isHttpSuccess(result)) {
 					return DefaultResult.failResult(EnumResultCode.E_UPLOAD_FILE.getInfo());
 				}
@@ -64,7 +65,7 @@ public class UploadService {
 
 				FileUploadBO fileUploadBO = JsonUtils.json2obj(map.get(SysConstant.FCS_DATA), FileUploadBO.class);
 				fileUploadBO.setSrcFileSize(file.getSize());
-				request.setAttribute(SysConstant.UPLOAD_RESULT, EnumResultCode.E_SUCCES.getValue());
+				//				request.setAttribute(SysConstant.UPLOAD_RESULT, EnumResultCode.E_SUCCES.getValue());
 				return DefaultResult.successResult(message,fileUploadBO);
 
 			}
@@ -74,8 +75,52 @@ public class UploadService {
 		}
 	}
 
-	
-	
 
-	
+	/**
+	 * 插入功能应用表
+	 * @param request
+	 * @param file
+	 * @return
+	 */
+	public IResult<String> insertPtsApply(HttpServletRequest request,MultipartFile  file){
+		try {
+			PtsApplyPO ptsApplyPO = buildPtsApplyPO(request,file);
+			boolean insertPtsApply = ptsApplyPOMapper.insertPtsApply(ptsApplyPO)>0;
+			if(insertPtsApply) {
+				return DefaultResult.successResult();
+			}else {
+				return DefaultResult.failResult();
+			}	
+		} catch (Exception e) {
+			e.printStackTrace();
+			return DefaultResult.failResult();
+		}
+	}
+
+
+
+	/**
+	 * 构建功能应用数量统计对象
+	 * @param request
+	 * @param file
+	 * @return
+	 */
+	public PtsApplyPO buildPtsApplyPO(HttpServletRequest request,MultipartFile  file) {
+		PtsApplyPO ptsApplyPO = new PtsApplyPO();
+		ptsApplyPO.setFileName(file.getOriginalFilename());
+		ptsApplyPO.setFileSize(file.getSize());
+
+		Long userId = HttpUtils.getSessionUserID(request);
+		if(userId ==null) {
+			ptsApplyPO.setAddress(HttpUtils.getIpAddr(request));
+		}else {
+			ptsApplyPO.setAddress(String.valueOf(userId));
+		}
+		
+		ptsApplyPO.setModule(Integer.valueOf(request.getParameter(PathConsts.MODULE)));
+		return ptsApplyPO;
+
+	}
+
+
 }

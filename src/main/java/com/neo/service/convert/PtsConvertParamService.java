@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.neo.commons.cons.constants.FcsParmConsts;
+import com.neo.commons.cons.constants.PathConsts;
 import com.neo.commons.cons.constants.SizeConsts;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.CheckMobileUtils;
@@ -148,7 +149,15 @@ public class PtsConvertParamService {
 		String nowDate = DateViewUtils.getNow();
 		String nowTime = DateViewUtils.getNowTime();
 		
-		ptsSummaryPO.setIpAddress(HttpUtils.getIpAddr(request));//ip地址
+		
+		Long userId = HttpUtils.getSessionUserID(request);
+		if(userId ==null) {//如果登录ip_address就记录userId，没有登录就记录ip地址
+			ptsSummaryPO.setIpAddress(HttpUtils.getIpAddr(request));
+		}else {
+			ptsSummaryPO.setIpAddress(String.valueOf(userId));
+		}
+		
+		ptsSummaryPO.setModule(Integer.valueOf(request.getParameter(PathConsts.MODULE)));//区分模块
 		
 		ptsSummaryPO.setCreateDate(DateViewUtils.parseSimple(nowDate));//时间搞一搞
 		ptsSummaryPO.setCreateTime(DateViewUtils.parseSimpleTime(nowTime));

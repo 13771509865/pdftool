@@ -27,6 +27,7 @@ public class PtsSummaryPO {
 	private String  ipAddress;
 	private Integer isSuccess;
 	private Integer appType;
+	private Integer module;
 	private Date createDate;
 	private Date createTime;
 	private Date modifiedDate;

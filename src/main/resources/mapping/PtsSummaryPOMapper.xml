@@ -15,6 +15,7 @@
         <result column="IP_ADDRESS" property="ipAddress" jdbcType="VARCHAR"/>
         <result column="IS_SUCCESS" property="isSuccess" jdbcType="INTEGER"/>
         <result column="APP_TYPE" property="appType" jdbcType="INTEGER"/>
+        <result column="MODULE" property="module" jdbcType="INTEGER"/>
         <result column="CREATE_DATE" property="createDate" jdbcType="DATE"/>
         <result column="CREATE_TIME" property="createTime" jdbcType="TIME"/>
         <result column="MODIFIED_DATE" property="modifiedDate" jdbcType="DATE"/>
@@ -92,6 +93,9 @@
 		      <if test="appType != null" >
 		        APP_TYPE,
 		      </if>
+		       <if test="module != null" >
+		        MODULE ,
+		      </if>
 		      <if test="createDate != null" >
 		        CREATE_DATE,
 		      </if>
@@ -145,6 +149,9 @@
 		      </if>
 		      <if test="appType != null" >
 		       	 #{appType,jdbcType=INTEGER},
+		      </if>
+		      <if test="module != null" >
+		        MODULE = #{module,jdbcType=INTEGER},
 		      </if>
 		      <if test="createDate != null" >
 		         #{createDate,jdbcType=DATE},
@@ -215,6 +222,9 @@
 		      <if test="appType != null" >
 		        APP_TYPE = #{appType,jdbcType=INTEGER},
 		      </if>
+		      <if test="module != null" >
+		        MODULE = #{module,jdbcType=INTEGER},
+		      </if>
 		      <if test="createDate != null" >
 		        CREATE_DATE = #{createDate,jdbcType=DATE},
 		      </if>
@@ -231,6 +241,7 @@
 		    where IP_ADDRESS = #{ipAddress,jdbcType=INTEGER} 
 		    and IS_SUCCESS = #{isSuccess,jdbcType=INTEGER}
 		    and CREATE_DATE = #{createDate,jdbcType=DATE}
+		    and MODULE = #{module,jdbcType=INTEGER}
  		</update>
  	  
  	  
