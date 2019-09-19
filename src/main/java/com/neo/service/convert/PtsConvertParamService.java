@@ -157,6 +157,7 @@ public class PtsConvertParamService {
 			ptsSummaryPO.setIpAddress(String.valueOf(userId));
 		}
 		
+		System.out.println(request.getParameter(PathConsts.MODULE));
 		ptsSummaryPO.setModule(Integer.valueOf(request.getParameter(PathConsts.MODULE)));//区分模块
 		
 		ptsSummaryPO.setCreateDate(DateViewUtils.parseSimple(nowDate));//时间搞一搞
