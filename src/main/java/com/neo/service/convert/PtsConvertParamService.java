@@ -105,7 +105,7 @@ public class PtsConvertParamService {
 	public PtsSummaryPO buildPtsSummaryPOParameter(FcsFileInfoBO fcsFileInfoBO,ConvertParameterBO convertBO,HttpServletRequest request) {
 		PtsSummaryPO ptsSummaryPO = new PtsSummaryPO();
 		Long srcFileSize = convertBO.getSrcFileSize();
-		if(srcFileSize > 0 && srcFileSize <=SizeConsts.PTS_THREE_SIZE) {
+		if(srcFileSize >= 0 && srcFileSize <=SizeConsts.PTS_THREE_SIZE) {
 			ptsSummaryPO.setZeroToThree(1);
 		}
 		if(srcFileSize >SizeConsts.PTS_THREE_SIZE  && srcFileSize <=SizeConsts.PTS_FIFTY_SIZE) {
