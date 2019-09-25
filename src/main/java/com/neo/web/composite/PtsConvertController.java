@@ -47,7 +47,7 @@ public class PtsConvertController{
 	
 	@ApiOperation(value = "同步转换")
 	@PostMapping(value = "/convert")
-	@ResponseBody
+	@ResponseBody 
 	public Map<String, Object> convert(@RequestBody ConvertParameterBO convertBO,HttpServletRequest request)  {
 		if(convertBO.getSrcFileSize() == null) {
 			return JsonResultUtils.failMapResult(EnumResultCode.E_NOTALL_PARAM.getInfo());
