@@ -2,7 +2,7 @@ package com.neo.commons.cons.constants;
 
 public class SizeConsts {
 
-	public static final long PTS_THREE_SIZE = 3145728L;
+	public static final long PTS_TWO_SIZE = 2097152L;
 
 	public static final long PTS_FIVE_SIZE = 5242880L;
 	

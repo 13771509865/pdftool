@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 public class PtsSummaryPO {
 
 	private Integer id;
-	private Integer zeroToThree;
-	private Integer threeToFive;
+	private Integer zeroToTwo;
+	private Integer twoToFive;
 	private Integer fiveToTen;
 	private Integer tenToFifteen;
 	private Integer fifteenToTwenty;

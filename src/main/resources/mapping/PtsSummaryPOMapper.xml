@@ -3,8 +3,8 @@
 <mapper namespace="com.neo.dao.PtsSummaryPOMapper">
      <resultMap id="PtsSummaryPOMap" type="com.neo.model.po.PtsSummaryPO">
         <id column="ID" property="id" jdbcType="INTEGER"/>
-        <result column="ZERO_THREE" property="zeroToThree" jdbcType="INTEGER"/>
-        <result column="THREE_FIVE" property="threeToFive" jdbcType="INTEGER"/>
+        <result column="ZERO_TWO" property="zeroToTwo" jdbcType="INTEGER"/>
+        <result column="TWO_FIVE" property="twoToFive" jdbcType="INTEGER"/>
         <result column="FIVE_TEN" property="fiveToTen" jdbcType="INTEGER"/>
         <result column="TEN_FIFTEEN" property="tenToFifteen" jdbcType="INTEGER"/>
         <result column="FIFTEEN_TWENTY" property="fifteenToTwenty" jdbcType="INTEGER"/>
@@ -57,11 +57,11 @@
     
 	 <sql id="key">
 	   <trim suffixOverrides=",">
-	     <if test="zeroToThree != null" >
-		        ZERO_THREE,
+	     <if test="zeroToTwo != null" >
+		        ZERO_TWO,
 		      </if>
-		      <if test="threeToFive != null" >
-		        THREE_FIVE,
+		      <if test="twoToFive != null" >
+		        TWO_FIVE,
 		      </if>
 		      <if test="fiveToTen != null" >
 		        FIVE_TEN,
@@ -114,11 +114,11 @@
 		
 	<sql id="values">
 	   <trim suffixOverrides=",">
-	      <if test="zeroToThree != null" >
-		        #{zeroToThree,jdbcType=INTEGER},
+	      <if test="zeroToTwo != null" >
+		        #{zeroToTwo,jdbcType=INTEGER},
 		      </if>
-		      <if test="threeToFive != null" >
-		        #{threeToFive,jdbcType=INTEGER}, 
+		      <if test="twoToFive != null" >
+		        #{twoToFive,jdbcType=INTEGER}, 
 		      </if>
 		      <if test="fiveToTen != null" >
 		        #{fiveToTen,jdbcType=INTEGER}, 
@@ -186,11 +186,11 @@
  	  <update id="updatePtsSumm" parameterType="com.neo.model.po.PtsSummaryPO" >
 		    update pts_summ
 		    <set >
-		      <if test="zeroToThree != null" >
-		        ZERO_THREE = ZERO_THREE+1,
+		      <if test="zeroToTwo != null" >
+		        ZERO_TWO = ZERO_TWO+1,
 		      </if>
-		      <if test="threeToFive != null" >
-		        THREE_FIVE = THREE_FIVE+1,
+		      <if test="twoToFive != null" >
+		        TWO_FIVE = TWO_FIVE+1,
 		      </if>
 		      <if test="fiveToTen != null" >
 		        FIVE_TEN = FIVE_TEN+1,
@@ -249,7 +249,7 @@
  	  <!--查询每个size区间内，转换的数量  -->
  	  <select id="selectCountBySize" resultMap="PtsSummaryPOMap" >
 			select
-			sum(ZERO_THREE) ZERO_THREE,  		sum(THREE_FIVE) THREE_FIVE, 
+			sum(ZERO_TWO) ZERO_TWO,  		sum(TWO_FIVE) TWO_FIVE, 
 			sum(FIVE_TEN) FIVE_TEN, 			sum(TEN_FIFTEEN) TEN_FIFTEEN, 
 			sum(FIFTEEN_TWENTY) FIFTEEN_TWENTY, sum(TWENTY_THIRTY) TWENTY_THIRTY,
 			sum(THIRTY_FOURTY) THIRTY_FOURTY, 	sum(FOURTY_FIFTY) FOURTY_FIFTY, 
@@ -261,7 +261,7 @@
 	  <!--查询每个size区间内，每个ip每天,转换的数量  -->
 	  <select id="selectCountByIpAndDate" resultMap="PtsSummaryPOMap" parameterType="com.neo.model.qo.PtsSummaryQO">
 			select
-			sum(ZERO_THREE) ZERO_THREE,  		sum(THREE_FIVE) THREE_FIVE, 
+			sum(ZERO_TWO) ZERO_TWO,  		sum(TWO_FIVE) TWO_FIVE, 
 			sum(FIVE_TEN) FIVE_TEN, 			sum(TEN_FIFTEEN) TEN_FIFTEEN, 
 			sum(FIFTEEN_TWENTY) FIFTEEN_TWENTY, sum(TWENTY_THIRTY) TWENTY_THIRTY,
 			sum(THIRTY_FOURTY) THIRTY_FOURTY, 	sum(FOURTY_FIFTY) FOURTY_FIFTY, 
