@@ -108,10 +108,10 @@ public class PtsConvertParamService {
 		if(srcFileSize >= 0 && srcFileSize <=SizeConsts.PTS_TWO_SIZE) {
 			ptsSummaryPO.setZeroToTwo(1);
 		}
-		if(srcFileSize >SizeConsts.PTS_TWO_SIZE  && srcFileSize <=SizeConsts.PTS_FIFTY_SIZE) {
+		if(srcFileSize >SizeConsts.PTS_TWO_SIZE  && srcFileSize <=SizeConsts.PTS_FIVE_SIZE) {
 			ptsSummaryPO.setTwoToFive(1);
 		}
-		if(srcFileSize >SizeConsts.PTS_FIFTY_SIZE  && srcFileSize <=SizeConsts.PTS_TEN_SIZE) {
+		if(srcFileSize >SizeConsts.PTS_FIVE_SIZE  && srcFileSize <=SizeConsts.PTS_TEN_SIZE) {
 			ptsSummaryPO.setFiveToTen(1);
 		}
 		if(srcFileSize >SizeConsts.PTS_TEN_SIZE  && srcFileSize <=SizeConsts.PTS_FIFTEEN_SIZE) {
