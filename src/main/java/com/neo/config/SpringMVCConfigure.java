@@ -86,7 +86,7 @@ public class SpringMVCConfigure implements WebMvcConfigurer{
 	    //设置首页等
 	    @Override
 	    public void addViewControllers(ViewControllerRegistry registry) {
-	        registry.addViewController("/").setViewName("forward:/index.html");
+	        //registry.addViewController("/").setViewName("forward:/index.html");
 	    }
 
 	    @Bean

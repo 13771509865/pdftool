@@ -218,6 +218,11 @@ public class DateViewUtils {
         return getFormat(SIMPLE_DATE_FORMAT_PATTERN).format(date);
     }
     
+    public static Date getNowDate(){
+        Date date = new Date();
+        return date;
+    }
+    
     public static String getNowTime() {
         Date date = new Date();
         return getFormat(FORMAT_HHmmss).format(date);
