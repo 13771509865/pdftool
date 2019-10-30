@@ -372,11 +372,6 @@ public class DateViewUtils {
     }
     public static void main(String[] args) throws ParseException {
     	Date date = new Date();
-    	String time = formatHHmmss(date);
-    	date = parseSimpleTime(time);
-    	System.out.println(time);
-    	System.out.println(date);
-    	System.out.println(getNowTime());
-    	System.out.println(parseSimpleTime(getNow()));
+    	System.out.println(isExpiredForDays(date));
     }
 }

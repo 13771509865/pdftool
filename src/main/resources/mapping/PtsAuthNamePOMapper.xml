@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neo.dao.PtsAuthNamePOMapper">
+     <resultMap id="PtsAuthNamePOMapper" type="com.neo.model.po.PtsAuthNamePO">
+        <id column="ID" property="id" jdbcType="INTEGER"/>
+        <result column="GMT_CREATE" property="gmtCreate" jdbcType="TIMESTAMP"/>
+        <result column="GMT_MODIFIED" property="gmtModified" jdbcType="TIMESTAMP"/>
+        <result column="STATUS" property="status" jdbcType="INTEGER"/>
+        <result column="AUTH_NAME" property="authName" jdbcType="BIGINT"/>
+        <result column="AUTH_CODE" property="authCode" jdbcType="VARCHAR"/>
+        <result column="VALUE_TYPE" property="valueType" jdbcType="VARCHAR"/>
+        <result column="VALUE_UNIT" property="valueUnit" jdbcType="VARCHAR"/>
+        <result column="DEFAULT_VALUE" property="defaultVaule" jdbcType="VARCHAR"/>
+        <result column="MIN_VALUE" property="minValue" jdbcType="VARCHAR"/>
+        <result column="MAX_VALUE" property="maxValue" jdbcType="VARCHAR"/>
+        <result column="DESCRIPTION" property="description" jdbcType="VARCHAR"/>
+        <result column="OPTIONALS" property="optionals" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    
+	<insert id="insertPtsAuthNamePO" parameterType="com.neo.model.po.PtsAuthNamePO">
+	    insert into pts_vote
+	    <trim prefix="(" suffix=")" suffixOverrides=",">
+	      <if test="gmtCreate != null">
+	        GMT_CREATE,
+	      </if>
+	      <if test="gmtModified != null">
+	        GMT_MODIFIED,
+	      </if>
+	      <if test="status != null">
+	        STATUS,
+	      </if>
+	      <if test="authName != null and authName != ''">
+	        AUTH_NAME,
+	      </if>
+	       <if test="authCode != null and authCode != ''">
+	        AUTH_CODE,
+	      </if>
+	       <if test="valueType != null and valueType != ''">
+	        VALUE_TYPE,
+	      </if>
+	       <if test="valueUnit != null and valueUnit != ''">
+	        VALUE_UNIT,
+	      </if>
+	       <if test="defaultVaule != null and defaultVaule != ''">
+	        DEFAULT_VALUE,
+	      </if>
+	       <if test="minValue != null and minValue != ''">
+	        MIN_VALUE,
+	      </if>
+	       <if test="maxValue != null and maxValue != ''">
+	        MAX_VALUE,
+	      </if>
+	       <if test="description != null and description != ''">
+	        DESCRIPTION,
+	      </if>
+	       <if test="optionals != null and optionals != ''">
+	        OPTIONALS,
+	      </if>
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides=",">
+	      <if test="gmtCreate != null">
+	        #{gmtCreate,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="gmtModified != null">
+	        #{gmtModified,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="status != null">
+	        #{status,jdbcType=INTEGER},
+	      </if>
+	       <if test="authName != null and authName != ''">
+	         #{authName,jdbcType=VARCHAR},
+	      </if>
+	       <if test="authCode != null and authCode != ''">
+	        #{authCode,jdbcType=VARCHAR},
+	      </if>
+	       <if test="valueType != null and valueType != ''">
+	        #{valueType,jdbcType=VARCHAR},
+	      </if>
+	       <if test="valueUnit != null and valueUnit != ''">
+	        #{valueUnit,jdbcType=VARCHAR},
+	      </if>
+	       <if test="defaultVaule != null and defaultVaule != ''">
+	        #{defaultVaule,jdbcType=VARCHAR},
+	      </if>
+	       <if test="minValue != null and minValue != ''">
+	        #{minValue,jdbcType=VARCHAR},
+	      </if>
+	       <if test="maxValue != null and maxValue != ''">
+	        #{maxValue,jdbcType=VARCHAR},
+	      </if>
+	       <if test="description != null and description != ''">
+	         #{description,jdbcType=VARCHAR},
+	      </if>
+	       <if test="optionals != null and optionals != ''">
+	         #{optionals,jdbcType=VARCHAR},
+	      </if>
+	    </trim>
+	</insert>
+	 
+	 
+	 
+	 
+	<sql id="Base_Column_List">
+		ID,
+		GMT_CREATE,
+		GMT_MODIFIED,
+		STATUS,
+		AUTH_NAME,
+		AUTH_CODE,
+		VALUE_TYPE,
+		VALUE_UNIT,
+		DEFAULT_VALUE,
+		MIN_VALUE,
+		MAX_VALUE,
+		DESCRIPTION,
+		OPTIONALS
+  	</sql> 
+	 
+	 
+	 <select id="selectPtsAuthNamePO" resultMap="PtsAuthNamePOMapper" >
+	 	select 
+	 	<include refid="Base_Column_List" /> 
+	 	from pts_auth_name
+	 </select>
+ 	  
+    
+</mapper>

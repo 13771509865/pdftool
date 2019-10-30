@@ -11,7 +11,12 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 import com.neo.commons.helper.HttpHelper;
 
-
+/**
+ * 配置拦截器获取body后，传递给控制层
+ * @author xujun
+ * @description
+ * @create 2019年10月30日
+ */
 public class BodyReaderHttpServletRequestWrapper extends HttpServletRequestWrapper{
 	
 	private final byte[] body;

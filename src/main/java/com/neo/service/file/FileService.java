@@ -11,7 +11,7 @@ import org.springframework.util.StringUtils;
 
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
-import com.neo.commons.util.StrEncodingUtils;
+import com.neo.commons.util.StrUtils;
 import com.neo.commons.util.SysLogUtils;
 
 @Service("fileService")
@@ -144,7 +144,7 @@ public class FileService {
 			}
 			FileWriter fw = new FileWriter(filePath, true);
 			BufferedWriter bw = new BufferedWriter(fw);
-			String cnStr = StrEncodingUtils.TranEncode2CN(str);
+			String cnStr = StrUtils.TranEncode2CN(str);
 			bw.write(cnStr);
 			bw.close();
 			fw.close();

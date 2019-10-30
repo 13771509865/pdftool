@@ -27,17 +27,11 @@ import com.neo.interceptor.UploadInterceptor;
 @EnableWebMvc
 public class SpringMVCConfigure implements WebMvcConfigurer{
 	
-//	@Autowired
-//	private SecurityInterceptor securityInterceptor;
-	
 	@Autowired
 	private UploadInterceptor uploadInterceptor;
 	
 	@Autowired
 	private ConvertInterceptor convertInterceptor;
-	
-//	@Autowired
-//	private FileInterceptor fileInterceptor;
 	
 	@Autowired
 	private UaaAuthInterceptor uaaAuthInterceptor;
@@ -60,11 +54,8 @@ public class SpringMVCConfigure implements WebMvcConfigurer{
 	    @Override
 	    public void addInterceptors(InterceptorRegistry registry) {
 	        registry.addInterceptor(uaaAuthInterceptor).addPathPatterns("/**").excludePathPatterns("/manager/**/*.*");
-//	        registry.addInterceptor(securityInterceptor).addPathPatterns("/aaa").excludePathPatterns("/test1", "/*.html");
 	        registry.addInterceptor(uploadInterceptor).addPathPatterns("/file/defaultUpload");
 	        registry.addInterceptor(convertInterceptor).addPathPatterns("/composite/**");
-//	        registry.addInterceptor(fileInterceptor).addPathPatterns("/file/**", "/file/*.html");
-
 
 	    }
 

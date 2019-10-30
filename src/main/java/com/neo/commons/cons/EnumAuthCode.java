@@ -1,15 +1,28 @@
 package com.neo.commons.cons;
 
-public enum EnumUserType {
-	SYS_USER(0, "系统用户"), WX_USER(1, "微信用户");
+
+/**
+ * 对应数据库auth字段中的值
+ * @author xujun
+ * @description
+ * @create 2019年10月30日
+ */
+public enum EnumAuthCode {
+	
+	PTS_CONVERT_NUM(0, "convertNum"), 
+	PTS_UPLOAD_SIZE(1,"uploadSize");
+	
+	
 	private Integer value;
 	private String info;
-	private EnumUserType(int code, String info) {
+	
+	
+	private EnumAuthCode(int code, String info) {
 		this.value = code;
 		this.info = info;
 	}
 	public static String getTypeInfo(Integer velue) {
-        for (EnumUserType statu : values()) {
+        for (EnumAuthCode statu : values()) {
 			if(statu.getValue().equals(velue)){
 				return statu.getInfo();
 			}

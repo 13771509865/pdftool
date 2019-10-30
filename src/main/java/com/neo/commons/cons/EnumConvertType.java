@@ -1,6 +1,5 @@
 package com.neo.commons.cons;
 
-
 /**
  * 转换类型枚举封装
  */
@@ -63,12 +62,28 @@ public enum EnumConvertType {
 	OFD_OFD(48, "ofd2ofd", "ofd转ofd", "ofd", false, false, false, false),
 	OFD_MERGE(49, "ofdtoofd", "合并ofd", "ofd", false, false, false, false),
 	HTML_PDF(50, "html2pdf", "html到pdf", "pdf", false, false, false, false),
-	EPUB_HTML_TEMP(51, "epub2htmltemp", "epub到html的转换(模板)", "html", false, false, false, true),
-	DAE_HTML_TEMP(52, "dae2htmltemp", "dae到html的转换(模板)", "html", false, false, false, true),
+	EPUB_HTML_TEMP(97, "epub2htmltemp", "epub到html的转换(模板)", "html", false, false, false, true),
+	DAE_HTML_TEMP(98, "dae2htmltemp", "dae到html的转换(模板)", "html", false, false, false, true),
 
+	HTML_OFD(51,"html2ofd","html到ofd","ofd", false, false,false,false),
+	ALL_OFD_TEMP(52,"all2ofdtemp","其它格式转换到ofd格式预览(模板)","ofd", false, false,false,false),
+	OFD_CUSTOMDATAS_TXT(53,"ofdcustomdatas信息","获取ofd的元数据信息","html", false, false,false,false),
+	GET_WORDS_BOOKMARKS(54,"获取所有word的书签信息","获取所有word的书签信息","html", false, false,false,false),
+	PDF_PIC_PDFA(55,"PDF转图片再转pdfa","pdf到pdfa转换","pdf", false, false,false,false),
+	OFD_WATERMARK_OFD(56,"ofd给ofd加水印","ofd到ofd转换","ofd", false, false,false,false),
+	OFD_PDF(57,"ofdtopdf","ofd到pdf转换","pdf",false,false,false,false),
+	ALL_MS_OFDENVRY(58,"mstoofdtemp","ofd到pdf转换","yo",false,false,false,false),
+	PDF_WORD_TOWORD(59,"pdfandwordtoword","pdf和word的合并","doc",false,false,false,false),
+	IMAGE_WORD_TOWORD(60,"imageandwordtoword","图片和word的合并","doc",false,false,false,false),
+	MS_HTML_CANVAS(61,"ms2htmlcanvas","文档格式到高清html canvas的转换","",false,true,false,false),
+	PDF_TO_DOUBLE_PDF(63,"pdftodoublepdf","pdf生成双层pdf","pdf",false,false, false, false),
+	PDF_TO_OCR_WORD(64,"pdftoorcword","pdf使用ocr生成word","doc",false,false, false, false),
+	OFD_TO_OCR_WORD(65,"ofdtoorcword","ofd使用ocr生成word","doc",false,false, false, false),
+	
 	PDF_PPT(80, "pdf2ppt", "pdf到ppt的转换", "pptx", false, false, false, false),
 	PDF_EXCEL(81, "pdf2excel", "pdf到excel的转换", "xlsx", false, false, false, false),
-	PDF_SPLIT(82, "pdf2split", "pdf拆分", "pdf", true, false, true, false);
+	PDF_SPLIT(82, "pdf2split", "pdf拆分", "pdf", true, false, true, false),
+	;
 
 	
 	private final Integer value;
@@ -190,6 +205,10 @@ public enum EnumConvertType {
 			case OFD_STRING:
 			case OFD_OFD:
 			case OFD_MERGE:
+			case OFD_CUSTOMDATAS_TXT:
+			case OFD_WATERMARK_OFD:
+			case OFD_PDF:
+			case OFD_TO_OCR_WORD:
 				return true;
 			default:
 				return false;
@@ -232,6 +251,10 @@ public enum EnumConvertType {
 			case PDF_PPT:
 			case PDF_EXCEL:
 			case PDF_SPLIT:
+			case PDF_PIC_PDFA:
+			case PDF_WORD_TOWORD:
+			case PDF_TO_DOUBLE_PDF:
+			case PDF_TO_OCR_WORD:
 				return true;
 			default:
 				return false;
@@ -270,43 +293,6 @@ public enum EnumConvertType {
 		return false;
 	}
 
-	/**
-	 * 根据convertType判断用哪个jar
-	 *
-	 * @param value
-	 * @return
-	 * @author zhouf
-	 */
-//	public static String useWhichJar(Integer value) {
-//		EnumConvertType enumConvertType = getEnum(value);
-//		if (enumConvertType != null) {
-//			switch (enumConvertType) {
-//			case PDF_WORD:
-//			case PDF_PPT:
-//			case PDF_EXCEL:
-//			case PDF_SPLIT:
-//				return ConvertConsts.PDF2WORDJAR;
-//			case VIDEO_MP4:
-//			case AI_PDF:
-//			case CAD_PDF:
-//			case INDD_PDF:
-//			case CDR_PDF:
-//			case PSD_PDF:
-//			case ThreeD_DAE:
-//				return ConvertConsts.FcsOtherConvertJAR;
-//			case TIF_HTML_TEMP:
-//			case OFD_HTML_TEMP:
-//			case EPUB_HTML_TEMP:
-//			case PDF_HTML_TEMP:
-//			case DAE_HTML_TEMP:
-//			case ZIP_HTML_TEMP:
-//				return ConvertConsts.FcsOtherActionJAR;
-//			default:
-//				return ConvertConsts.DCCJAR;
-//			}
-//		}
-//		return null;
-//	}
 
 	public static boolean isMultiTarget(Integer value) {
 		EnumConvertType enumConvertType = getEnum(value);
@@ -320,6 +306,14 @@ public enum EnumConvertType {
 		EnumConvertType enumConvertType = getEnum(value);
 		if (enumConvertType != null) {
 			return enumConvertType.isNeedPack;
+		}
+		return false;
+	}
+
+	public static boolean isTemplate(Integer value) {
+		EnumConvertType enumConvertType = getEnum(value);
+		if (enumConvertType !=null) {
+			return enumConvertType.isTemplate;
 		}
 		return false;
 	}

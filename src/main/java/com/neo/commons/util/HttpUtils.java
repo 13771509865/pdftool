@@ -159,12 +159,12 @@ public class HttpUtils {
                 String resultName = values[0].getValue();
                 NameValuePair param = values[0].getParameterByName("filename");
                 if (resultName != null && !"".equals(resultName)) {
-                    filename = StrEncodingUtils.TranEncode2CN(resultName);
+                    filename = StrUtils.TranEncode2CN(resultName);
                 } else if (param != null) {
                     try {
                         String temp = URLDecoder.decode(param.getValue(), "utf-8");
-                        filename = StrEncodingUtils.TranEmilHeader(temp);
-                        filename = StrEncodingUtils.TranEncode2CN(filename);
+                        filename = StrUtils.TranEmilHeader(temp);
+                        filename = StrUtils.TranEncode2CN(filename);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
