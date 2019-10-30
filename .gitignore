@@ -1,2 +1,7 @@
 /target/
 /pdf2word.log
+
+.idea
+*.iws
+*.iml
+*.ipr
