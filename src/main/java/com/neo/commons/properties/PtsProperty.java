@@ -40,7 +40,10 @@ public class PtsProperty {
 	
 	@NotBlank
 	private String fcs_downLoad_url;
-	
-	
-	
+
+	private String features_version;
+
+	private String product_hmac_key;
+
+	private String features_insert_url;
 }
