@@ -29,5 +29,7 @@ public interface SysConstant {
 	public static final String COLON = ":";
 	
 	public static final String TRUE = "true";
+	
+	public static final String ORDER_URIKEY = "api/order/";//order相关
 
 }

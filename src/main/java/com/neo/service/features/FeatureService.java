@@ -9,6 +9,7 @@ import com.neo.commons.util.SysLogUtils;
 import com.neo.model.bo.FeatureBo;
 import com.neo.model.bo.FeatureDetailBo;
 import com.neo.model.po.PtsAuthNamePO;
+import com.neo.model.qo.PtsAuthNameQO;
 import com.neo.service.authName.IAuthNameService;
 import com.neo.service.httpclient.HttpAPIService;
 import com.yozosoft.util.SecretSignatureUtils;
@@ -76,7 +77,7 @@ public class FeatureService {
         featureBo.setName("PDF");
         featureBo.setComment("PDF 工具核心特性说明");
         featureBo.setVersion(ptsProperty.getFeatures_version());
-        List<PtsAuthNamePO> ptsAuthNamePOS = iAuthNameService.selectPtsAuthNamePO();
+        List<PtsAuthNamePO> ptsAuthNamePOS = iAuthNameService.selectPtsAuthNamePO(new PtsAuthNameQO());
         List<FeatureDetailBo> list = new ArrayList<>();
         if (!ptsAuthNamePOS.isEmpty()) {
             for (PtsAuthNamePO ptsAuthNamePO : ptsAuthNamePOS) {

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.neo.dao.PtsAuthNamePOMapper;
 import com.neo.model.po.PtsAuthNamePO;
+import com.neo.model.qo.PtsAuthNameQO;
 import com.neo.service.authName.IAuthNameService;
 
 @Service
@@ -19,9 +20,10 @@ public class AuthNameService implements IAuthNameService{
 	
 
 	@Override
-	public List<PtsAuthNamePO> selectPtsAuthNamePO(){
-		return ptsAuthNamePOMapper.selectPtsAuthNamePO();
+	public List<PtsAuthNamePO> selectPtsAuthNamePO(PtsAuthNameQO ptsAuthNameQO){
+		return ptsAuthNamePOMapper.selectPtsAuthNamePO(ptsAuthNameQO);
 	}
+	
 	
 	
 }

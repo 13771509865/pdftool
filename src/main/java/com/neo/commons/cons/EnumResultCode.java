@@ -23,8 +23,6 @@ public enum EnumResultCode {
 	E_USER_CONVERT_NUM_ERROR(26,"抱歉，普通注册用户每天可转换10个文件，成为会员后可以获取更大权限"),
 //	E_USER_CONVERT_NUM_ERROR(26,"系统正忙，请稍后再试"),
 	
-	
-
 	//投票
 	E_VOTE_NULL_ERROR(27,"抱歉，提交前请至少选择一项投票内容"),
 	E_VOTE_CONTENT_OVER_ERROR(28,"抱歉，输入的内容最多不能超过50个字符"),
@@ -32,11 +30,13 @@ public enum EnumResultCode {
 	E_VOTE_CONTENT_NULL_ERROR(30,"抱歉，选择其他选项时，请填写您需要的功能"),
 	E_VOTE_OTHER_ERROR(31,"抱歉，选择其他选项时，才能提交您填写的内容"),
 	
-	
 	E_FCS_VTOKEN_FAIL(42,"获取vToken失败"),
 	E_FCS_CONVERT_FAIL(43,"文档转换服务器通讯失败,请联系管理员"),
-	E_NOTALL_PARAM(54,"参数不完整,请检查参数");
+	E_NOTALL_PARAM(54,"参数不完整,请检查参数"),
 
+	E_GET_AUTH_ERROR(98,"解析用户权限失败"),
+	E_ORDER_AUTH_CODE_ERROR(99,"抱歉该订单缺少pdf工具集必要的AuthCode或者存在非法的AuthCode"),
+	E_ORDER_ILLEGAL(100,"非法订单信息");
 
 	private Integer value;
 	private String info;

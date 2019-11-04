@@ -118,10 +118,15 @@
   	</sql> 
 	 
 	 
-	 <select id="selectPtsAuthNamePO" resultMap="PtsAuthNamePOMapper" >
+	 <select id="selectPtsAuthNamePO" resultMap="PtsAuthNamePOMapper" parameterType="com.neo.model.qo.PtsAuthNameQO">
 	 	select 
 	 	<include refid="Base_Column_List" /> 
 	 	from pts_auth_name
+	 	<where>
+	 		<if test="authCode != null and authCode != ''">
+	 		 	AND AUTH_CODE = #{authCode,jdbcType=VARCHAR}
+	 		</if>
+	 	</where>
 	 </select>
  	  
     

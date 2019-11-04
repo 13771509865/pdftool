@@ -23,4 +23,6 @@ public interface IAuthService {
 	
 	List<PtsAuthPO> selectAuthByUserid(Long userid);
 	
+	Integer updatePtsAuthPOByUserId(PtsAuthPO ptsAuthPO);
+	
 }

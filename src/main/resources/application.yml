@@ -31,7 +31,7 @@ spring:
     druid:                          #springboot2不支持配置继承,如多数据源每个要写完整配置
       url: jdbc:mysql://localhost:3306/pts?characterEncoding=utf-8&serverTimezone=Asia/Shanghai          #数据库连接url
       username: root                            #数据库用户名
-      password: 123456                          #数据库密码
+      password: root                          #数据库密码
       driver-class-name: com.mysql.cj.jdbc.Driver
       filters: mergeStat,config,wall,stat
       max-active: 20                 # 最大连接池数量
@@ -54,9 +54,9 @@ spring:
   redis:
     database: 0 # Redis数据库索引（默认为0）
     timeout: 10000 #设置客户端超时时间，单位是毫秒，默认为2000
-    password: babel220 #密码
+    password: root #密码
     #单机版
-    host: 192.168.0.44
+    host: 127.0.0.1
     port: 6379
     #集群版
     #    cluster:
@@ -114,7 +114,8 @@ pts:
   fcs_vToken_url: http://172.18.21.30:8080/fcscloud/view/vToken
   fcs_downLoad_url: http://172.18.21.30:8080/fcscloud/view/download
 
-  features_version: 0.0.1
+  features_version: 0.0.2
   product_hmac_key: qaxet9223210^*&     #密钥
   features_insert_url: http://172.18.21.23/product/api/product/profile/insert     #特性注册地址
 
+  domain: http://192.168.60.209:8081

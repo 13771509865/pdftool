@@ -32,4 +32,6 @@ public interface IResult<T> {
 	 */
     T getData();
 
+    void setData(T obj);
+    
 }

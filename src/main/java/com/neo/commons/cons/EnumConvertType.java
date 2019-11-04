@@ -83,6 +83,9 @@ public enum EnumConvertType {
 	PDF_PPT(80, "pdf2ppt", "pdf到ppt的转换", "pptx", false, false, false, false),
 	PDF_EXCEL(81, "pdf2excel", "pdf到excel的转换", "xlsx", false, false, false, false),
 	PDF_SPLIT(82, "pdf2split", "pdf拆分", "pdf", true, false, true, false),
+	
+	IMAGE_OCR_TXT(83, "ocrImage2txt", "ocr转图片成txt", "txt", false, false, false, false),
+
 	;
 
 	
@@ -456,6 +459,7 @@ public enum EnumConvertType {
 				case PIC_PDF:
 				case IMAGE_IMAGE:
 				case IMAGE_OFD:
+				case IMAGE_OCR_TXT:
 					return value;
 				default:
 					return PIC_HTML.getValue();

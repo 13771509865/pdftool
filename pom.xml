@@ -3,7 +3,6 @@
   <groupId>com.yozo</groupId>
   <artifactId>yozo-pts</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <packaging>war</packaging>
   
   <parent>
         <groupId>org.springframework.boot</groupId>
@@ -278,7 +277,7 @@
         </plugins>
     </build>
 
-    <repositories>
+    <repositories> 
         <repository>
             <id>yozocloud-snapshots</id>
             <name>yozosoft Snapshot Repository</name>

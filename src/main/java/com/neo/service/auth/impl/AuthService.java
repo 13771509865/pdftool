@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumAuthCode;
-import com.neo.commons.cons.EnumModule;
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.RedisConsts;
@@ -49,20 +48,10 @@ public class AuthService implements IAuthService{
 	@Override
 	public IResult<EnumResultCode> checkUserAuth(ConvertParameterBO convertParameterBO,Long userID,String ipAddr){
 
-		Integer convertType = convertParameterBO.getConvertType();
-		PtsAuthPO ptsAuthPO = authManager.getPtsAuthPO(userID);
-
-		IResult<String> result = authManager.authCodeHandle(convertParameterBO);
-		String authCode;
-		if(result.isSuccess()) {
-			authCode = result.getData();
-		}else {
-			authCode = EnumModule.getAuthCode(String.valueOf(convertType));
-		}
-
-		//把权限拆分到map里面
-		Map<String,String> map = StrUtils.strToMap(ptsAuthPO.getAuth(), SysConstant.COMMA, SysConstant.COLON);
-		String booleanAuth = map.get(authCode);
+		//获取用户权限
+		IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID);
+		Map<String,Object> map = getPermissionResult.getData();
+		String booleanAuth = String.valueOf(map.get(authManager.getAuthCode(convertParameterBO)));
 
 		//检查转换类型的权限
 		if(StringUtils.isBlank(booleanAuth) && !StringUtils.equals(booleanAuth, SysConstant.TRUE)) {
@@ -70,14 +59,13 @@ public class AuthService implements IAuthService{
 		}
 
 		//获取允许转换的次数
-		Integer maxConvertTimes = Integer.valueOf(map.get(EnumAuthCode.PTS_CONVERT_NUM.getInfo()));
+		Integer maxConvertTimes = (Integer)map.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode());
 
 		//转换次数检查
 		IResult<EnumResultCode> resultCheckConvertTimes = checkConvertTimes(ipAddr, userID,maxConvertTimes);
 		if(!resultCheckConvertTimes.isSuccess()) {
-			return DefaultResult.failResult(result.getData());
+			return DefaultResult.failResult(resultCheckConvertTimes.getData());
 		}
-
 		return DefaultResult.successResult();
 	}
 
@@ -117,10 +105,10 @@ public class AuthService implements IAuthService{
 	 */
 	@Override
 	public IResult<EnumResultCode> checkUploadSize(Long userID,Long uploadSize){
-		PtsAuthPO ptsAuthPO = authManager.getPtsAuthPO(userID);
-		Map<String,String> map = StrUtils.strToMap(ptsAuthPO.getAuth(), SysConstant.COMMA, SysConstant.COLON);
-		Integer maxUploadSize = Integer.valueOf(map.get(EnumAuthCode.PTS_UPLOAD_SIZE.getInfo()));
-
+		IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID);
+		Map<String,Object> map = getPermissionResult.getData();
+		Integer maxUploadSize = (Integer)map.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode());
+		
 		if(uploadSize > (maxUploadSize*1024*1024)) {
 			if(userID == null) {
 				return DefaultResult.failResult(EnumResultCode.E_VISITOR_UPLOAD_ERROR);
@@ -156,8 +144,22 @@ public class AuthService implements IAuthService{
 	}
 
 
+	/**
+	 * 根据userid修改auth信息
+	 */
+	public Integer updatePtsAuthPOByUserId(PtsAuthPO ptsAuthPO) {
+		return ptsAuthPOMapper.updatePtsAuthPOByUserId(ptsAuthPO);
+	}
 
 
+	
+	public static void main(String[] args) {
+		PtsAuthPO ptsAuthPO = new PtsAuthPO();
+		
+		
+	}
+	
+	
 
 
 }

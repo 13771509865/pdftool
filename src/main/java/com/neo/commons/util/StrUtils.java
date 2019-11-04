@@ -56,8 +56,8 @@ public class StrUtils {
      * @param splitMap
      * @return
      */
-	public static Map<String,String> strToMap(String data ,String splitStr,String splitMap) {
-        Map<String,String> map = new HashMap<String, String>();
+	public static Map<String,Object> strToMap(String data ,String splitStr,String splitMap) {
+        Map<String,Object> map = new HashMap<String,Object>();
         if (null != data) {
             String[] param = data.split(splitStr);
             for (int i = 0; i < param.length; i++) {
@@ -75,7 +75,9 @@ public class StrUtils {
     
 
     public static void main(String[] args) {
-        System.out.println(TranEncode2CN("い地チ瓣"));
+        String a = "convert001:true,convert002:true,convert003:true,convert004:true,convert005:true,";
+        Map<String,Object> map = strToMap(a,",",":");
+        System.out.println(map.toString());
 
     }
 }
