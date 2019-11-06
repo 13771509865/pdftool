@@ -13,6 +13,8 @@ public interface CacheManager<T> {
 	T get(String key, Class<T> clazz);
 
 	boolean exists(String key);//判断指定key是否存在
+	
+	boolean orderExists(String key);//order专用，报错是也是返回true
 
 	boolean clearAll();//清空缓存
 

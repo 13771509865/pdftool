@@ -121,6 +121,22 @@ public class RedisCacheManager<T> implements CacheManager<T> {
 			return false;
 		}
 	}
+	
+	
+	
+	@Override
+	public boolean orderExists(String key) {
+		try {
+			if (StringUtils.isEmpty(key)) {
+				return false;
+			}
+			return redisTemplate.hasKey(key);
+		} catch (Exception e) {
+			e.printStackTrace();
+			SysLogUtils.error("key为" + key + ",redis判断存在失败", e);
+			return true;
+		}
+	}
 
 	@Override
 	public boolean clearAll() {

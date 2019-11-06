@@ -60,6 +60,12 @@ public class OrderService implements IOrderService{
 	public IResult<Participant> reserve(long userId, long orderId, OrderRequestDto dto, String nonce, String sign) {
 		Participant participant = new Participant();
 		try {
+			
+			//判断订单是否是已经确认过的订单
+			if(redisCacheManager.orderExists(RedisConsts.ORDERIDMP + orderId)) {
+				return buildFailResult(participant, EnumResultCode.E_ORDER_ILLEGAL.getInfo(), HttpStatus.FORBIDDEN);
+			}
+			
 			IResult<String> checkSignResult = orderManager.checkSign(dto, nonce, sign);
 			if (!checkSignResult.isSuccess()) {
 				return buildFailResult(participant, EnumResultCode.E_ORDER_ILLEGAL.getInfo(), HttpStatus.FORBIDDEN);
@@ -130,6 +136,7 @@ public class OrderService implements IOrderService{
 				//redis中删除orderId对应信息
 				Boolean delResult = redisCacheManager.delete(RedisConsts.ORDERKEY + orderId);
 				if (delResult) {
+					redisCacheManager.delete(RedisConsts.ORDERIDMP + orderId);
 					return ResponseEntity.ok(EnumResultCode.E_SUCCES.getInfo());
 				}
 				//删除失败删除幂等key

@@ -3,6 +3,12 @@ package com.neo.commons.cons;
 
 import lombok.Getter;
 
+/**
+ * pdf工具集，用户权益枚举类（包含目前线上，用户所有的权益）
+ * @author xujun
+ * @description
+ * @create 2019年11月4日
+ */
 @Getter
 public enum EnumAuthCode {
 
@@ -19,10 +25,11 @@ public enum EnumAuthCode {
 	PDF_SIGN(10,"pdf2sign","convert010","14","false"),
 	PDF_MERGE(11,"pdf2merge","convert011","31","false"),
 	PDF_SPLIT(12,"pdf2split","convert012","82","false"),
+	OCR_IMG_TXT(13,"ocrImage2txt","convert013","83","false"),
 
-	PTS_CONVERT_NUM(13,"转换数量", "convertNum",null,5), 
-	PTS_UPLOAD_SIZE(14,"文件大小","uploadSize",null,2),
-	PTS_VALIDITY_TIME(15,"权益有效期","validityTime",null,1);
+	PTS_CONVERT_NUM(15,"转换数量", "convertNum",null,5), 
+	PTS_UPLOAD_SIZE(16,"文件大小","uploadSize",null,2),
+	PTS_VALIDITY_TIME(17,"权益有效期","validityTime",null,1);
 
 
 	private Integer value;

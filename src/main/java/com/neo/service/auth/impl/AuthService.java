@@ -54,12 +54,12 @@ public class AuthService implements IAuthService{
 		String booleanAuth = String.valueOf(map.get(authManager.getAuthCode(convertParameterBO)));
 
 		//检查转换类型的权限
-		if(StringUtils.isBlank(booleanAuth) && !StringUtils.equals(booleanAuth, SysConstant.TRUE)) {
+		if(StringUtils.isBlank(booleanAuth) || !StringUtils.equals(booleanAuth, SysConstant.TRUE)) {
 			return DefaultResult.failResult(EnumResultCode.E_PERMISSION);
 		}
 
 		//获取允许转换的次数
-		Integer maxConvertTimes = (Integer)map.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode());
+		Integer maxConvertTimes = Integer.valueOf(map.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode()).toString());
 
 		//转换次数检查
 		IResult<EnumResultCode> resultCheckConvertTimes = checkConvertTimes(ipAddr, userID,maxConvertTimes);
@@ -90,7 +90,7 @@ public class AuthService implements IAuthService{
 			convertTimes = redisCacheManager.getScore(RedisConsts.IP_CONVERT_TIME_KEY,String.valueOf(ipAddr)).intValue();
 		}
 		//是否超过每日最大转换次数
-		if (convertTimes >= maxConvertTimes) { 
+		if (convertTimes >= maxConvertTimes) {
 			return DefaultResult.failResult(resultCode);
 		} 
 		return DefaultResult.successResult();
@@ -107,7 +107,7 @@ public class AuthService implements IAuthService{
 	public IResult<EnumResultCode> checkUploadSize(Long userID,Long uploadSize){
 		IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID);
 		Map<String,Object> map = getPermissionResult.getData();
-		Integer maxUploadSize = (Integer)map.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode());
+		Integer maxUploadSize = Integer.valueOf(map.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode()).toString());
 		
 		if(uploadSize > (maxUploadSize*1024*1024)) {
 			if(userID == null) {

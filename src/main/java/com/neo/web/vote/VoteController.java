@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonResultUtils;
@@ -36,11 +37,11 @@ public class VoteController {
 	@PostMapping(value = "/pdfTools")
 	@ResponseBody
 	public ResponseEntity<String> votePdfTools(HttpServletRequest request,String vote,String otherContent){
-		IResult<String> result =  iVoteService.votePdfTools(HttpUtils.getSessionUserID(request), HttpUtils.getIpAddr(request), vote, otherContent);
-		if(result.isSuccess()) {
-			return ResponseEntity.ok(JsonResultUtils.success(result.getData()));
-		}else {
-			 return new ResponseEntity<String>(JsonResultUtils.fail(result.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+		try {
+			IResult<String> result =  iVoteService.votePdfTools(HttpUtils.getSessionUserID(request), HttpUtils.getIpAddr(request), vote, otherContent);
+			return ResponseEntity.ok(result.isSuccess()?JsonResultUtils.success(null,result.getMessage()):JsonResultUtils.fail(result.getMessage()));
+		} catch (Exception e) {
+			return new ResponseEntity<String>(JsonResultUtils.fail(EnumResultCode.E_SERVER_BUSY.getInfo()), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	

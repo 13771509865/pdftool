@@ -119,7 +119,7 @@ public class AuthManager {
 		//区分pdf签批和pdf2html
 		//isSignature=1,表示签批
 		if(convertType == 14) {
-			if(convertParameterBO.getIsSignature() == 1) {
+			if(convertParameterBO.getIsSignature() !=null && convertParameterBO.getIsSignature() == 1) {
 				return DefaultResult.successResult(EnumAuthCode.PDF_SIGN.getAuthCode());
 			}else {
 				return DefaultResult.successResult(EnumAuthCode.PDF_HTML.getAuthCode());
