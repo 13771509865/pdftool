@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neo.dao.PtsVotePOMapper">
+     <resultMap id="PtsVotePOMapper" type="com.neo.model.po.PtsVotePO">
+        <id column="ID" property="id" jdbcType="INTEGER"/>
+        <result column="GMT_CREATE" property="gmtCreate" jdbcType="TIMESTAMP"/>
+        <result column="GMT_MODIFIED" property="gmtModified" jdbcType="TIMESTAMP"/>
+        <result column="STATUS" property="status" jdbcType="INTEGER"/>
+        <result column="IP_ADDRESS" property="ipAddress" jdbcType="VARCHAR"/>
+        <result column="USERID" property="userid" jdbcType="BIGINT"/>
+        <result column="VOTE" property="vote" jdbcType="VARCHAR"/>
+        <result column="OTHER_CONTENT" property="otherContent" jdbcType="VARCHAR"/>
+        <result column="REMARK" property="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+	<insert id="insertPtsVotePO" parameterType="com.neo.model.po.PtsVotePO">
+	    insert into pts_vote
+	    <trim prefix="(" suffix=")" suffixOverrides=",">
+	      <if test="gmtCreate != null">
+	        GMT_CREATE,
+	      </if>
+	      <if test="gmtModified != null">
+	        GMT_MODIFIED,
+	      </if>
+	      <if test="status != null">
+	        STATUS,
+	      </if>
+	      <if test="ipAddress != null and ipAddress !=''">
+	        IP_ADDRESS,
+	      </if>
+	      <if test="userid != null">
+	        USERID,
+	      </if>
+	      <if test="vote != null and vote != ''">
+	        VOTE,
+	      </if>
+	       <if test="otherContent != null and otherContent != ''">
+	        OTHER_CONTENT,
+	      </if>
+	       <if test="remark != null and remark != ''">
+	        REMARK,
+	      </if>
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides=",">
+	      <if test="gmtCreate != null">
+	        #{gmtCreate,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="gmtModified != null">
+	        #{gmtModified,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="status != null">
+	        #{status,jdbcType=INTEGER},
+	      </if>
+	      <if test="ipAddress != null and ipAddress !=''">
+	        #{ipAddress,jdbcType=VARCHAR},
+	      </if>
+	      <if test="userid != null">
+	        #{userid,jdbcType=BIGINT},
+	      </if>
+	       <if test="vote != null and vote != ''">
+	        #{vote,jdbcType=VARCHAR},
+	      </if>
+	       <if test="otherContent != null and otherContent != ''">
+	        #{otherContent,jdbcType=VARCHAR},
+	      </if>
+	      <if test="remark != null and remark != ''">
+	        #{remark,jdbcType=VARCHAR},
+	      </if>
+	    </trim>
+	</insert>
+	 
+	  
+ 	  
+    
+</mapper>

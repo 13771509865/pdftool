@@ -2,6 +2,7 @@ package com.neo.interceptor;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -29,9 +30,12 @@ import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.UserBO;
+import com.neo.model.po.PtsAuthPO;
 import com.neo.service.accessTimes.AccessTimesService;
+import com.neo.service.auth.IAuthService;
 import com.neo.service.cache.CacheManager;
 import com.neo.service.cache.CacheService;
+import com.neo.service.cache.impl.RedisCacheManager;
 
 /**
  * 添加游客和会员的转换权限
@@ -41,14 +45,11 @@ import com.neo.service.cache.CacheService;
 @Component
 public class ConvertInterceptor implements HandlerInterceptor {
 
+	@Autowired
+	private IAuthService iAuthService;
 
 	@Autowired
-	private CacheService<String> cacheService;
-
-	@Autowired
-	private ConfigProperty config;
-
-	private CacheManager<String> cacheManager;
+	private RedisCacheManager<String> redisCacheManager;
 
 
 	@Override
@@ -74,11 +75,13 @@ public class ConvertInterceptor implements HandlerInterceptor {
 					key = RedisConsts.ID_CONVERT_TIME_KEY;
 					value = userID.toString(); 
 				}
-				cacheManager.pushZSet(key, value);
+				redisCacheManager.pushZSet(key, value);
 			}
 		}
 	}
 
+	
+	
 	/**
 	 * 限制游客和登陆者的转换次数和转换类型
 	 */
@@ -87,23 +90,15 @@ public class ConvertInterceptor implements HandlerInterceptor {
 			throws Exception {
 		String ipAddr = HttpUtils.getIpAddr(request);
 		Long userID = HttpUtils.getSessionUserID(request);
-		//检查转换次数
-		IResult<EnumResultCode> checkConvertTimes = checkConvertTimes(ipAddr,userID,request,response);
-		if(!checkConvertTimes.isSuccess()) {
+		String body = HttpHelper.getBodyString(request);
+		ConvertParameterBO convertParameterBO = JsonUtils.json2obj(body, ConvertParameterBO.class);
+		IResult<EnumResultCode> result = iAuthService.checkUserAuth(convertParameterBO, userID,ipAddr);
+
+		if(!result.isSuccess()) {
 			response.setContentType("text/html;charset=UTF-8");
 			response.setCharacterEncoding("UTF-8");
 			PrintWriter out = response.getWriter();
-			out.write(JsonResultUtils.buildFailJsonResultByResultCode(checkConvertTimes.getData()));
-			out.flush();
-			out.close();
-			return false;
-		}
-		IResult<EnumResultCode> checkConvertType = checkConvertType(userID,request,response);
-		if(!checkConvertType.isSuccess()) {
-			response.setContentType("text/html;charset=UTF-8");
-			response.setCharacterEncoding("UTF-8");
-			PrintWriter out = response.getWriter();
-			out.write(JsonResultUtils.buildFailJsonResultByResultCode(checkConvertType.getData()));
+			out.write(JsonResultUtils.buildFailJsonResultByResultCode(result.getData()));
 			out.flush();
 			out.close();
 			return false;
@@ -112,67 +107,6 @@ public class ConvertInterceptor implements HandlerInterceptor {
 	}
 
 
-	/**
-	 * 检查用户的转换次数
-	 * @param ipAddr
-	 * @param userID
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws IOException
-	 */
-	public IResult<EnumResultCode> checkConvertTimes(String ipAddr,Long userID,HttpServletRequest request, HttpServletResponse response) throws IOException {
-		//默认为游客参数值
-		Integer maxConvertTimes = config.getVConvertTimes();//游客5个文件
-		String value = ipAddr; 
-		String key = RedisConsts.IP_CONVERT_TIME_KEY;
-		EnumResultCode resultCode = EnumResultCode.E_VISITOR_CONVERT_NUM_ERROR;
-
-		if(userID != null){
-			maxConvertTimes = config.getMConvertTimes();//会员20个文件
-			key = RedisConsts.ID_CONVERT_TIME_KEY;
-			value = userID.toString();
-			resultCode = EnumResultCode.E_USER_CONVERT_NUM_ERROR;
-		}
-		int convertTimes = cacheManager.getScore(key,value).intValue();
-		if (convertTimes >= maxConvertTimes) { // 超过每日最大转换次数
-			return DefaultResult.failResult(resultCode);
-		} 
-		return DefaultResult.successResult();
-	}
-
-
-
-	/**
-	 * 检查转换的类型
-	 * 游客：文档、图片转pdf和pdf2word
-	 * 登录用户：不限制
-	 * @param ipAddr
-	 * @param userID
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws IOException
-	 */
-	public IResult<EnumResultCode> checkConvertType(Long userID,HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
-		if(userID == null) {//没有登录
-			String body = HttpHelper.getBodyString(request);
-			ConvertParameterBO convertParameterBO = JsonUtils.json2obj(body, ConvertParameterBO.class);
-			Integer convertType = convertParameterBO.getConvertType();
-			if(convertType !=36 && convertType!= 32 && convertType!=3) {
-				return DefaultResult.failResult(EnumResultCode.E_PERMISSION);
-			}
-		}
-		return DefaultResult.successResult();
-	}
-
-
-	//redis初始化对象
-	@PostConstruct
-	private void initCache() {
-		this.cacheManager = cacheService.getCacheManager();
-	}
 
 
 

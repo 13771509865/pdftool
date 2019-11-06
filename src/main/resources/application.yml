@@ -114,3 +114,8 @@ pts:
   fcs_vToken_url: http://172.18.21.30:8080/fcscloud/view/vToken
   fcs_downLoad_url: http://172.18.21.30:8080/fcscloud/view/download
 
+  features_version: 0.0.2
+  product_hmac_key: qaxet9223210^*&     #密钥
+  features_insert_url: http://172.18.21.23/product/api/product/profile/insert     #特性注册地址
+
+  domain: http://192.168.60.209:8081

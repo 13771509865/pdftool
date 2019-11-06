@@ -264,6 +264,10 @@ public class ConvertParameterPO implements Serializable{
     @ApiModelProperty(value = "pdf拆分分隔页数，默认0不分割，如果起始页和终止页都是0默认1",example="0")
     private Integer[] splitPages;
     
+    @ApiModelProperty(value = "pdf转双层pdf时候的的调用ocr的地址")
+    private String OCRUrl;
+    
+    
     @Override
     public String toString() {
         return JSON.toJSONString(this);

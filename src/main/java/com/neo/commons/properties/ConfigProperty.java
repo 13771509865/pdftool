@@ -36,6 +36,11 @@ public class ConfigProperty{
 	@Value(value = "${vConvertTimes}")
 	private Integer vConvertTimes;
 	
+	@Value(value = "${mConvertModule}")
+	private String mConvertModule;
+	
+	@Value(value = "${vConvertModule}")
+	private String vConvertModule;
 	
 	@Value(value = "${clearDay}")
 	private Integer clearDay;

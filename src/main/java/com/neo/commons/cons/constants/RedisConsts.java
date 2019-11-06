@@ -33,6 +33,15 @@ public class RedisConsts {
 
     public static final String DYNAMIC_DOMAIN_COUNT_CACHE = "dynamicDomainCountCache";
 	
-	
+    
+    //order相关
+    public static final String IDEMPOTENT = "idempotent_";
+
+    public static final String ORDERKEY = "order_";
+
+    public static final String ORDERIDMP = "orderIdemp_";
+
+    public static final String PRODUCT_VERSION = "productVersion";
+    
 	
 }

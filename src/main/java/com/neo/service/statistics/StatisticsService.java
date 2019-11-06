@@ -63,10 +63,6 @@ public class StatisticsService {
 			Integer counNum = fcsFileInfoPOMapper.selectCountNumFcsFileInfoPOByUserID(fcsFileInfoQO);
 			map.put(SysConstant.FCS_DATA, list);
 			map.put(SysConstant.COUNT, counNum);
-			
-			if(list.isEmpty() || list == null) {
-				return DefaultResult.failResult("没有查询到三天内的转换记录");
-			}
 			return DefaultResult.successResult(map);
 		} catch (Exception e) {
 			SysLogUtils.error("查询三天内的转换记录失败，原因：", e);

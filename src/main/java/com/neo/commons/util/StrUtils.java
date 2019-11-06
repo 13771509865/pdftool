@@ -2,8 +2,10 @@ package com.neo.commons.util;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
-public class StrEncodingUtils {
+public class StrUtils {
     public static String getEncoding(String str) {
         //UTF-8包含绝大多数字符，所以放最后判断
         String[] encodes = {"ISO-8859-1", "GBK", "UTF-8", "GB2312"};
@@ -44,9 +46,38 @@ public class StrEncodingUtils {
             return str;
         }
     }
+    
+    
+    
+    /**
+     * 将字符串拆分成map
+     * @param data
+     * @param splitStr
+     * @param splitMap
+     * @return
+     */
+	public static Map<String,Object> strToMap(String data ,String splitStr,String splitMap) {
+        Map<String,Object> map = new HashMap<String,Object>();
+        if (null != data) {
+            String[] param = data.split(splitStr);
+            for (int i = 0; i < param.length; i++) {
+                int index = param[i].indexOf(splitMap);
+                map.put(param[i].substring(0,index), param[i].substring((index + 1)));
+            }
+        }
+        return map;
+	}
+    
+    
+    
+    
+    
+    
 
     public static void main(String[] args) {
-        System.out.println(TranEncode2CN("い地チ瓣"));
+        String a = "convert001:true,convert002:true,convert003:true,convert004:true,convert005:true,";
+        Map<String,Object> map = strToMap(a,",",":");
+        System.out.println(map.toString());
 
     }
 }

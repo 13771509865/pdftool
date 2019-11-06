@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neo.dao.PtsAuthPOMapper">
+	<resultMap id="PtsAuthPOMapper" type="com.neo.model.po.PtsAuthPO">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="GMT_CREATE" property="gmtCreate" jdbcType="TIMESTAMP" />
+		<result column="GMT_MODIFIED" property="gmtModified" jdbcType="TIMESTAMP" />
+		<result column="GMT_EXPIRE" property="gmtExpire" jdbcType="TIMESTAMP" />
+		<result column="STATUS" property="status" jdbcType="INTEGER" />
+		<result column="USERID" property="userid" jdbcType="BIGINT" />
+		<result column="AUTH" property="auth" jdbcType="VARCHAR" />
+		<result column="REMARK" property="remark" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<insert id="insertPtsAuthPO" parameterType="com.neo.model.po.PtsAuthPO">
+		insert into pts_auth
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="gmtCreate != null">
+				GMT_CREATE,
+			</if>
+			<if test="gmtModified != null">
+				GMT_MODIFIED,
+			</if>
+			<if test="gmtExpire != null">
+				GMT_EXPIRE,
+			</if>
+			<if test="status != null">
+				STATUS,
+			</if>
+			<if test="userid != null">
+				USERID,
+			</if>
+			<if test="auth != null and auth != ''">
+				AUTH,
+			</if>
+			<if test="remark != null and remark != ''">
+				REMARK,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="gmtCreate != null">
+				#{gmtCreate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="gmtModified != null">
+				#{gmtModified,jdbcType=TIMESTAMP},
+			</if>
+			<if test="gmtExpire != null">
+				#{gmtExpire,jdbcType=TIMESTAMP},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=INTEGER},
+			</if>
+			<if test="userid != null">
+				#{userid,jdbcType=BIGINT},
+			</if>
+			<if test="auth != null and auth != ''">
+				#{auth,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null and remark != ''">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+
+	<sql id="Base_Column_List">
+		ID,
+		GMT_CREATE,
+		GMT_MODIFIED,
+		GMT_EXPIRE,
+		STATUS,
+		USERID,
+		AUTH,
+		REMARK
+	</sql>
+
+	<!-- 根据userid查询权限表 -->
+	<select id="selectAuthByUserid" resultMap="PtsAuthPOMapper" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from pts_auth
+		where USERID = #{userid,jdbcType=BIGINT}
+		for update
+	</select>
+
+	
+	<!-- 根据userid修改用户权限 -->
+	<update id="updatePtsAuthPOByUserId" parameterType="com.neo.model.po.PtsAuthPO">
+		update pts_auth
+		<set>
+			<if test="gmtCreate != null">
+				GMT_CREATE = #{gmtCreate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="gmtModified != null">
+				GMT_MODIFIED = #{gmtModified,jdbcType=TIMESTAMP},
+			</if>
+			<if test="gmtExpire != null">
+				GMT_EXPIRE = #{gmtExpire,jdbcType=TIMESTAMP},
+			</if>
+			<if test="status != null">
+				STATUS = #{status,jdbcType=INTEGER},
+			</if>
+			<if test="auth != null and auth != ''">
+				AUTH = #{auth,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null and remark != ''">
+				REMARK = #{remark,jdbcType=VARCHAR},
+			</if>
+		</set> 
+		where USERID = #{userid,jdbcType=BIGINT}
+	</update>
+
+
+
+
+</mapper>

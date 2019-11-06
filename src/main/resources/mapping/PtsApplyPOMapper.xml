@@ -3,8 +3,8 @@
 <mapper namespace="com.neo.dao.PtsApplyPOMapper">
      <resultMap id="PtsApplyPOMapper" type="com.neo.model.po.PtsApplyPO">
         <id column="ID" property="id" jdbcType="INTEGER"/>
-        <result column="MODIFIED_DATE" property="modifiedDate" jdbcType="TIMESTAMP"/>
-        <result column="MODIFIED_TIME" property="modifiedTime" jdbcType="TIMESTAMP"/>
+        <result column="GMT_CREATE" property="gmtCreate" jdbcType="TIMESTAMP"/>
+        <result column="GMT_MODIFIED" property="gmtModified" jdbcType="TIMESTAMP"/>
         <result column="MODULE" property="module" jdbcType="INTEGER"/>
         <result column="ADDRESS" property="address" jdbcType="VARCHAR"/>
         <result column="FILE_NAME" property="fileName" jdbcType="VARCHAR"/>
