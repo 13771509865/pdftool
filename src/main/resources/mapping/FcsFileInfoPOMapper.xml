@@ -86,7 +86,7 @@
 			<include refid="Base_Column_List" />
 			from pts_convert 
 			<include refid="search_condition" />
-			<![CDATA[and  DATEDIFF(now(), GMT_CREATE)<3]]>
+			<![CDATA[and  DATEDIFF(now(), GMT_MODIFIED)<3]]>
 			<include refid="byPage"/>
 		</select>
 		
@@ -97,7 +97,7 @@
 			count(*)
 			from pts_convert 
 			<include refid="search_condition" />
-			<![CDATA[and  DATEDIFF(now(), GMT_CREATE)<3]]>
+			<![CDATA[and  DATEDIFF(now(), GMT_MODIFIED)<3]]>
 		</select>
  	  
  	  
@@ -105,8 +105,8 @@
  	   <update id="updatePtsConvert" parameterType="com.neo.model.po.FcsFileInfoPO" >
 		    update pts_convert
 		    set 
-		    GMT_CREATE = now(),
 		    GMT_MODIFIED = now(),
+		    DEST_FILE_NAME =  #{destFileName,jdbcType=VARCHAR}, 
 		    DOWNLOAD_URL = #{viewUrl,jdbcType= VARCHAR}
 		    where USERID = #{userID,jdbcType=BIGINT} 
 		    and FILE_HASH = #{fileHash,jdbcType= VARCHAR}

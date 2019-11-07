@@ -87,7 +87,7 @@ public class PtsConvertService {
 			Map<String, Object> fcsMap= JsonUtils.parseJSON2Map(httpResult.getData().getBody());
 			
 			fcsFileInfoBO = JsonUtils.json2obj(fcsMap.get(SysConstant.FCS_DATA), FcsFileInfoBO.class);
-			SysLogUtils.info("ConvertType："+convertBO.getConvertType()+"==源文件相对路径"+convertBO.getSrcRelativePath()+"==fcs转码结果："+ fcsFileInfoBO.getCode());
+			SysLogUtils.info("ConvertType："+convertBO.getConvertType()+"==源文件相对路径:"+convertBO.getSrcRelativePath()+"==fcs转码结果："+ fcsFileInfoBO.getCode());
 			if(fcsFileInfoBO.getCode() == 0) {//转换成功
 				
 				updateFcsFileInfo(convertBO,fcsFileInfoBO, userId, ipAddress);//这里只记录转换成功的pts_convert
