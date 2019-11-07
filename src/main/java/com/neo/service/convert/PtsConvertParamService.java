@@ -1,6 +1,5 @@
 package com.neo.service.convert;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,9 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.neo.commons.cons.constants.FcsParmConsts;
-import com.neo.commons.cons.constants.PathConsts;
+import com.neo.commons.cons.constants.PtsConsts;
 import com.neo.commons.cons.constants.SizeConsts;
 import com.neo.commons.properties.ConfigProperty;
+import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.CheckMobileUtils;
 import com.neo.commons.util.DateViewUtils;
 import com.neo.commons.util.HttpUtils;
@@ -32,6 +32,8 @@ public class PtsConvertParamService {
 	@Autowired
 	private ConfigProperty configProperty;
 	
+	@Autowired
+	private PtsProperty ptsProperty;
 	
 	
 	/**
@@ -75,22 +77,32 @@ public class PtsConvertParamService {
 	 * @param request
 	 * @return
 	 */
-	public FcsFileInfoPO buildFcsFileInfoParameter(FcsFileInfoBO fcsFileInfoBO,HttpServletRequest request) {
+	public FcsFileInfoPO buildFcsFileInfoParameter(ConvertParameterBO convertBO,FcsFileInfoBO fcsFileInfoBO,Long userId,String ipAddress) {
 		FcsFileInfoPO fcsFileInfoPO = new FcsFileInfoPO();
-		Long userID = HttpUtils.getSessionUserID(request);
-		if(userID != null) {//只记录登录的用户
-			fcsFileInfoPO.setIpAddress(HttpUtils.getIpAddr(request));
-			fcsFileInfoPO.setUserID(userID);
+		
+		if(userId != null) {//只记录登录的用户
+			fcsFileInfoPO.setIpAddress(ipAddress);
+			fcsFileInfoPO.setUserID(userId);
 			fcsFileInfoPO.setFileHash(fcsFileInfoBO.getFileHash());
 			fcsFileInfoPO.setResultCode(fcsFileInfoBO.getCode());
-			fcsFileInfoPO.setDestFileName(fcsFileInfoBO.getDestFileName());
 			fcsFileInfoPO.setSrcFileName(fcsFileInfoBO.getSrcFileName());
 			fcsFileInfoPO.setDestFileSize(fcsFileInfoBO.getDestFileSize());
 			fcsFileInfoPO.setSrcFileSize(fcsFileInfoBO.getSrcFileSize());
 			fcsFileInfoPO.setConvertType(fcsFileInfoBO.getConvertType());
 			fcsFileInfoPO.setSrcStoragePath(fcsFileInfoBO.getSrcStoragePath());
 			fcsFileInfoPO.setDestStoragePath(fcsFileInfoBO.getDestStoragePath());
-			fcsFileInfoPO.setViewUrl(fcsFileInfoBO.getViewUrl());
+			
+			//手写签批，做特殊处理DestFileName，需要保存上传的源文件
+			//viewUrl需要修改成download
+			if(convertBO.getConvertType() == 14 && convertBO.getIsSignature() ==1) {
+				fcsFileInfoPO.setDestFileName(fcsFileInfoBO.getSrcFileName());
+				String token = StringUtils.substringAfter(fcsFileInfoBO.getViewUrl(),PtsConsts.PREVIEW);
+				fcsFileInfoPO.setViewUrl(ptsProperty.getFcs_downLoad_url()+token);
+			}else {
+				fcsFileInfoPO.setDestFileName(fcsFileInfoBO.getDestFileName());
+				fcsFileInfoPO.setViewUrl(fcsFileInfoBO.getViewUrl());
+			}
+			
 		}
 		return fcsFileInfoPO;
 	}
@@ -157,8 +169,7 @@ public class PtsConvertParamService {
 			ptsSummaryPO.setIpAddress(String.valueOf(userId));
 		}
 		
-		System.out.println(request.getParameter(PathConsts.MODULE));
-		ptsSummaryPO.setModule(Integer.valueOf(request.getParameter(PathConsts.MODULE)));//区分模块
+		ptsSummaryPO.setModule(Integer.valueOf(request.getParameter(PtsConsts.MODULE)));//区分模块
 		
 		ptsSummaryPO.setCreateDate(DateViewUtils.parseSimple(nowDate));//时间搞一搞
 		ptsSummaryPO.setCreateTime(DateViewUtils.parseSimpleTime(nowTime));
@@ -170,5 +181,10 @@ public class PtsConvertParamService {
 	
 
 	
-	
+	public static void main(String[] args) {
+		String viewUrl= "https://pdl.yozocloud.cn/view/preview/k1-hrvUr7bTpBr5jnICu7K_onAql9n_xFKkHnwKyCauJNGvsoax6iL7hM7ivxXubTYc72pa0P6-qIOZQXwGm344FakTjd93Lz4r77DI_H_2kHYa5qxmBJSoDp4Z0wLiZYQH0ms-ucI3mDwvSpwkBe0H-Izmjd4yYl2iov6wDdJk3pvrns0vOx5W1PcP6ZHVBs5Z6Od_RVp5l3q7oz09z9S7E07CIHBS5BYeGrfxsIpz_tJrYZxfeex5_N4Vrl5xlJKGaaevyvDIvzCchdWnD9zNPrjUt0jUfzKyrHr6QTMonLLtQaCzVnzYsdDiVTUMRzxuYQMhErfI=/";
+		String a = "preview";
+		String aa = StringUtils.substringAfter(viewUrl,a);
+		System.out.println(aa);
+	}
 }

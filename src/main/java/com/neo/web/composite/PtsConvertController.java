@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.constants.PathConsts;
+import com.neo.commons.cons.constants.SysConstant;
+import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.properties.ConfigProperty;
+import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FcsFileInfoBO;
@@ -49,12 +51,15 @@ public class PtsConvertController{
 	@PostMapping(value = "/convert")
 	@ResponseBody 
 	public Map<String, Object> convert(@RequestBody ConvertParameterBO convertBO,HttpServletRequest request)  {
+		
 		if(convertBO.getSrcFileSize() == null) {
 			return JsonResultUtils.failMapResult(EnumResultCode.E_NOTALL_PARAM.getInfo());
 		}
-		IResult<FcsFileInfoBO> result = ptsConvertService.dispatchConvert(convertBO, ConfigProperty.getConvertTicketWaitTime(),request);
+		IResult<FcsFileInfoBO> result = ptsConvertService.dispatchConvert(convertBO, ConfigProperty.getConvertTicketWaitTime(),HttpUtils.getSessionUserID(request),HttpUtils.getIpAddr(request));
 		ptsConvertService.updatePtsSummay(result.getData(),convertBO,request);
 		if (result.isSuccess()) {
+			//转换成功记录一下，拦截器要用
+			request.setAttribute(SysConstant.CONVERT_RESULT, EnumResultCode.E_SUCCES.getValue());
 			return JsonResultUtils.successMapResult(result.getData());
 		} else {
 			return JsonResultUtils.buildMapResult(result.getData().getCode(), result.getData(), result.getMessage());

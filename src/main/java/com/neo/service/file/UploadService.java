@@ -5,7 +5,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.constants.PathConsts;
+import com.neo.commons.cons.constants.PtsConsts;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.PtsProperty;
@@ -117,7 +116,7 @@ public class UploadService {
 			ptsApplyPO.setAddress(String.valueOf(userId));
 		}
 		
-		ptsApplyPO.setModule(Integer.valueOf(request.getParameter(PathConsts.MODULE)));
+		ptsApplyPO.setModule(Integer.valueOf(request.getParameter(PtsConsts.MODULE)));
 		return ptsApplyPO;
 
 	}

@@ -60,7 +60,7 @@ public class PtsConvertService {
 	 * @param waitTime
 	 * @return
 	 */
-	public IResult<FcsFileInfoBO> dispatchConvert(ConvertParameterBO convertBO,Integer waitTime,HttpServletRequest request){
+	public IResult<FcsFileInfoBO> dispatchConvert(ConvertParameterBO convertBO,Integer waitTime,Long userId,String ipAddress){
 		
 		FcsFileInfoBO fcsFileInfoBO = new FcsFileInfoBO();
 		//取超时时间
@@ -87,13 +87,11 @@ public class PtsConvertService {
 			Map<String, Object> fcsMap= JsonUtils.parseJSON2Map(httpResult.getData().getBody());
 			
 			fcsFileInfoBO = JsonUtils.json2obj(fcsMap.get(SysConstant.FCS_DATA), FcsFileInfoBO.class);
-			SysLogUtils.info(convertBO.getSrcRelativePath()+"==fcs转码结果："+ fcsFileInfoBO.getCode());
+			SysLogUtils.info("ConvertType："+convertBO.getConvertType()+"==源文件相对路径"+convertBO.getSrcRelativePath()+"==fcs转码结果："+ fcsFileInfoBO.getCode());
 			if(fcsFileInfoBO.getCode() == 0) {//转换成功
 				
-				updateFcsFileInfo(fcsFileInfoBO,request);//这里只记录转换成功的pts_convert
+				updateFcsFileInfo(convertBO,fcsFileInfoBO, userId, ipAddress);//这里只记录转换成功的pts_convert
 				
-				//转换成功记录一下，拦截器要用
-				request.setAttribute(SysConstant.CONVERT_RESULT, EnumResultCode.E_SUCCES.getValue());
 				return DefaultResult.successResult(fcsFileInfoBO);
 			}else {
 				return DefaultResult.failResult(fcsMap.get(SysConstant.FCS_MESSAGE).toString(),fcsFileInfoBO);
@@ -115,12 +113,10 @@ public class PtsConvertService {
 	 * @param request
 	 * @return
 	 */
-	public IResult<String> updateFcsFileInfo(FcsFileInfoBO fcsFileInfoBO,HttpServletRequest request) {
+	public IResult<String> updateFcsFileInfo(ConvertParameterBO convertBO,FcsFileInfoBO fcsFileInfoBO,Long userId,String ipAddress) {
 		try {
-			if(HttpUtils.getSessionUserID(request) == null) {//看有没有登录
-				return DefaultResult.failResult();
-			}
-			FcsFileInfoPO fcsFileInfoPO = ptsConvertParamService.buildFcsFileInfoParameter(fcsFileInfoBO, request);
+			
+			FcsFileInfoPO fcsFileInfoPO = ptsConvertParamService.buildFcsFileInfoParameter(convertBO,fcsFileInfoBO, userId,ipAddress);
 			
 			//根据userId和fileHash去update
 			int count = fcsFileInfoBOMapper.updatePtsConvert(fcsFileInfoPO);

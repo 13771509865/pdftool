@@ -50,8 +50,7 @@ public class StatisticsService {
 	 * @param request
 	 * @return
 	 */
-	public IResult<Map<String,Object>> selectConvertByUserID(FcsFileInfoQO fcsFileInfoQO,HttpServletRequest request){
-		Long userID = HttpUtils.getSessionUserID(request);
+	public IResult<Map<String,Object>> selectConvertByUserID(FcsFileInfoQO fcsFileInfoQO,Long userID){
 		if(userID == null) {
 			return DefaultResult.failResult("请登录后，再执行此操作");
 		}else {
@@ -79,10 +78,8 @@ public class StatisticsService {
 	 * @param request
 	 * @return
 	 */
-	public IResult<String> getConvertTimes(HttpServletRequest request){
+	public IResult<String> getConvertTimes(String ipAddr,Long userID){
 		try {
-			String ipAddr = HttpUtils.getIpAddr(request);
-			Long userID = HttpUtils.getSessionUserID(request);
 			String key;
 			String value;
 			Integer maxConvertTimes;

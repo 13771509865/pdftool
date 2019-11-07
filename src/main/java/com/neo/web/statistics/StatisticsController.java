@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.SysConstant;
+import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.model.bo.FileUploadBO;
 import com.neo.model.po.FcsFileInfoPO;
@@ -45,7 +46,7 @@ public class StatisticsController {
 	@PostMapping(value = "/idConvert")
 	@ResponseBody
 	public Map<String, Object> userConvert(@RequestBody FcsFileInfoQO fcsFileInfoQO,HttpServletRequest request){
-		IResult<Map<String, Object>> result = statisticsService.selectConvertByUserID(fcsFileInfoQO,request);
+		IResult<Map<String, Object>> result = statisticsService.selectConvertByUserID(fcsFileInfoQO,HttpUtils.getSessionUserID(request));
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
 		}else {
@@ -63,7 +64,7 @@ public class StatisticsController {
 	@GetMapping(value = "/convertTimes")
 	@ResponseBody
 	public Map<String,Object> getConvertTimes( HttpServletRequest request){
-		IResult<String>  result = statisticsService.getConvertTimes(request);
+		IResult<String>  result = statisticsService.getConvertTimes(HttpUtils.getIpAddr(request),HttpUtils.getSessionUserID(request));
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
 		}else {
