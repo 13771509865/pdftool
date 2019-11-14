@@ -18,6 +18,9 @@ public enum EnumEventType {
      */
     CONVERT_EVENT(1, "yozo.yocloud.pdf.convert", new HashMap<String, Object>() {{
         put("comment", "PDF文件转换");
+    }}),
+    FEEDBACK_EVENT(1, "yozo.yocloud.pdf.feedback", new HashMap<String, Object>() {{
+        put("comment", "PDF用户反馈");
     }});
 
     private EnumEventType(Integer value, String typeId, Map<String, Object> data) {

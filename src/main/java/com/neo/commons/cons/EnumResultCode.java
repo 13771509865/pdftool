@@ -7,6 +7,7 @@ public enum EnumResultCode {
 	E_FAIL(1, "操作失败"),
 	E_PERMISSION(2, "抱歉，您还未获取该功能的权限或者权限已过期，如有疑问，请联系客服"),
 	E_TIMEOUT(3, "登录超时"),
+	E_UNLOGIN_ERROR(4,"抱歉，请先登录后再操作"),
 
 	E_UPLOAD_FILE(9,"上传失败"),
 	E_FILEMD5_HEAD_FAIL(10,"根据文件头信息获取文件Md5失败"),

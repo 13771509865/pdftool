@@ -58,4 +58,7 @@ public class PtsProperty {
 
 	@NotBlank
 	private String member_hamc_key;
+	
+	@NotBlank
+	private String feedback_url;
 }

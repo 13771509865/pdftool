@@ -20,6 +20,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neo.interceptor.ConvertInterceptor;
+import com.neo.interceptor.FeedBackInterceptor;
 import com.neo.interceptor.UaaAuthInterceptor;
 import com.neo.interceptor.UploadInterceptor;
 
@@ -35,6 +36,9 @@ public class SpringMVCConfigure implements WebMvcConfigurer{
 	
 	@Autowired
 	private UaaAuthInterceptor uaaAuthInterceptor;
+	
+	@Autowired
+	private FeedBackInterceptor feedBackInterceptor;
 	
 	
 	 @Override
@@ -56,7 +60,7 @@ public class SpringMVCConfigure implements WebMvcConfigurer{
 	        registry.addInterceptor(uaaAuthInterceptor).addPathPatterns("/**").excludePathPatterns("/manager/**/*.*");
 	        registry.addInterceptor(uploadInterceptor).addPathPatterns("/file/defaultUpload");
 	        registry.addInterceptor(convertInterceptor).addPathPatterns("/composite/**");
-
+	        registry.addInterceptor(feedBackInterceptor).addPathPatterns("/feedback");
 	    }
 
 	    /**

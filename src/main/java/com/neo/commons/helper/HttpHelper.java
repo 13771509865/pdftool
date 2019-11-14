@@ -9,8 +9,15 @@ import java.nio.charset.Charset;
 
 import javax.servlet.http.HttpServletRequest;
 
-
+/**
+ * 帮助拦截器获取请求的json参数
+ * @author xujun
+ * @description
+ * @create 2019年11月14日
+ */
 public class HttpHelper {
+	
+	
 	  public static String getBodyString(HttpServletRequest request) throws IOException {
 	        StringBuilder sb = new StringBuilder();
 	        InputStream inputStream = null;
