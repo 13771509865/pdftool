@@ -245,6 +245,11 @@ public class DateViewUtils {
 		return date;
 	}
 
+	public static Long getNowLong(){
+		Date date = new Date();
+		return date.getTime();
+	}
+
 	public static String getNowTime() {
 		Date date = new Date();
 		return getFormat(FORMAT_HHmmss).format(date);

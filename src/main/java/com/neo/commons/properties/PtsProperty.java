@@ -52,4 +52,13 @@ public class PtsProperty {
 	
 	@NotBlank
 	private String domain;
+
+	@NotBlank
+	private String membership_url;
+
+	@NotBlank
+	private String member_hamc_key;
+	
+	@NotBlank
+	private String feedback_url;
 }

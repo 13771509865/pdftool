@@ -1,41 +1,26 @@
 package com.neo.interceptor;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.lang3.StringUtils;
+import com.neo.commons.cons.EnumEventType;
+import com.neo.commons.cons.EnumResultCode;
+import com.neo.commons.cons.IResult;
+import com.neo.commons.cons.constants.RedisConsts;
+import com.neo.commons.cons.constants.SysConstant;
+import com.neo.commons.helper.HttpHelper;
+import com.neo.commons.helper.MemberShipHelper;
+import com.neo.commons.util.HttpUtils;
+import com.neo.commons.util.JsonResultUtils;
+import com.neo.commons.util.JsonUtils;
+import com.neo.model.bo.ConvertParameterBO;
+import com.neo.service.auth.IAuthService;
+import com.neo.service.cache.impl.RedisCacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.DefaultResult;
-import com.neo.commons.cons.EnumResultCode;
-import com.neo.commons.cons.constants.ConstantAdmin;
-import com.neo.commons.cons.constants.ConstantCookie;
-import com.neo.commons.cons.constants.RedisConsts;
-import com.neo.commons.cons.constants.SysConstant;
-import com.neo.commons.helper.HttpHelper;
-import com.neo.commons.properties.ConfigProperty;
-import com.neo.commons.util.HttpUtils;
-import com.neo.commons.util.JsonResultUtils;
-import com.neo.commons.util.JsonUtils;
-import com.neo.commons.util.SysLogUtils;
-import com.neo.model.bo.ConvertParameterBO;
-import com.neo.model.bo.UserBO;
-import com.neo.model.po.PtsAuthPO;
-import com.neo.service.accessTimes.AccessTimesService;
-import com.neo.service.auth.IAuthService;
-import com.neo.service.cache.CacheManager;
-import com.neo.service.cache.CacheService;
-import com.neo.service.cache.impl.RedisCacheManager;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 
 /**
  * 添加游客和会员的转换权限
@@ -50,6 +35,9 @@ public class ConvertInterceptor implements HandlerInterceptor {
 
 	@Autowired
 	private RedisCacheManager<String> redisCacheManager;
+
+	@Autowired
+	private MemberShipHelper memberShipHelper;
 
 
 	@Override
@@ -70,8 +58,9 @@ public class ConvertInterceptor implements HandlerInterceptor {
 			if (EnumResultCode.E_SUCCES.getValue() == convertResult) {
 				Long userID =HttpUtils.getSessionUserID(request);
 				String key = RedisConsts.IP_CONVERT_TIME_KEY;
-				String value = HttpUtils.getIpAddr(request); 
-				if(userID !=null) {//登录用户
+				String value = HttpUtils.getIpAddr(request);
+				//登录用户
+				if(userID !=null) {
 					key = RedisConsts.ID_CONVERT_TIME_KEY;
 					value = userID.toString(); 
 				}
@@ -103,6 +92,10 @@ public class ConvertInterceptor implements HandlerInterceptor {
 			out.close();
 			return false;
 		}
+//		if(userID!=null){
+//			//发送积分事件
+//			memberShipHelper.addMemberEvent(userID, EnumEventType.CONVERT_EVENT);
+//		}
 		return true;
 	}
 

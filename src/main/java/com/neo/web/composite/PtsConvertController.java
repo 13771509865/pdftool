@@ -51,7 +51,6 @@ public class PtsConvertController{
 	@PostMapping(value = "/convert")
 	@ResponseBody 
 	public Map<String, Object> convert(@RequestBody ConvertParameterBO convertBO,HttpServletRequest request)  {
-		
 		if(convertBO.getSrcFileSize() == null) {
 			return JsonResultUtils.failMapResult(EnumResultCode.E_NOTALL_PARAM.getInfo());
 		}
