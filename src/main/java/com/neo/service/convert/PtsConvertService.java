@@ -59,9 +59,8 @@ public class PtsConvertService {
 	 * @param convertBO
 	 * @param waitTime
 	 * @return
-	 */
+	 */ 
 	public IResult<FcsFileInfoBO> dispatchConvert(ConvertParameterBO convertBO,Integer waitTime,Long userId,String ipAddress){
-		
 		FcsFileInfoBO fcsFileInfoBO = new FcsFileInfoBO();
 		//取超时时间
 		String ticket;
