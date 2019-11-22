@@ -37,7 +37,6 @@ public class StatisticsController {
 	private StatisticsService statisticsService;
 	
 
-
 	/**
 	 * 根据userID，查询登录用户三天的转换记录
 	 * @return
