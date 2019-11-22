@@ -51,14 +51,18 @@ public class PtsConvertController{
 	@PostMapping(value = "/convert")
 	@ResponseBody 
 	public Map<String, Object> convert(@RequestBody ConvertParameterBO convertBO,HttpServletRequest request)  {
+		System.out.println("进来1");
 		if(convertBO.getSrcFileSize() == null) {
 			return JsonResultUtils.failMapResult(EnumResultCode.E_NOTALL_PARAM.getInfo());
 		}
 		IResult<FcsFileInfoBO> result = ptsConvertService.dispatchConvert(convertBO, ConfigProperty.getConvertTicketWaitTime(),HttpUtils.getSessionUserID(request),HttpUtils.getIpAddr(request));
+		System.out.println("转码结束2");
 		ptsConvertService.updatePtsSummay(result.getData(),convertBO,request);
+		System.out.println("更新玩3");
 		if (result.isSuccess()) {
 			//转换成功记录一下，拦截器要用
 			request.setAttribute(SysConstant.CONVERT_RESULT, EnumResultCode.E_SUCCES.getValue());
+			System.out.println("返回4");
 			return JsonResultUtils.successMapResult(result.getData());
 		} else {
 			return JsonResultUtils.buildMapResult(result.getData().getCode(), result.getData(), result.getMessage());
