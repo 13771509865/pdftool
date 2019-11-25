@@ -123,3 +123,7 @@ pts:
   
   membership_url: http://172.18.21.23/membership/api/member/event/add    #积分成长
   member_hamc_key: qaxet9223210^*&
+
+  fcs_srcfile_dir:                #fcs文件根目录
+  convert_fail_dir:            #转换失败源文件夹
+  report_error_dir:            #报错文件夹

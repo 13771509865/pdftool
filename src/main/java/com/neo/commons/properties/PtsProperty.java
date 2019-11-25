@@ -61,4 +61,11 @@ public class PtsProperty {
 	
 	@NotBlank
 	private String feedback_url;
+
+	@NotBlank
+	private String fcs_srcfile_dir;
+
+	private String convert_fail_dir;
+
+	private String report_error_dir;
 }
