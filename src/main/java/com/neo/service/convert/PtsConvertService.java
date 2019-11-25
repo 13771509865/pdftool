@@ -84,10 +84,11 @@ public class PtsConvertService {
 				return DefaultResult.failResult(EnumResultCode.E_FCS_CONVERT_FAIL.getInfo(),fcsFileInfoBO);
 			}
 			Map<String, Object> fcsMap= JsonUtils.parseJSON2Map(httpResult.getData().getBody());
+			Integer errorCode = Integer.valueOf((fcsMap.get(SysConstant.FCS_ERRORCODE).toString()));
 			
 			fcsFileInfoBO = JsonUtils.json2obj(fcsMap.get(SysConstant.FCS_DATA), FcsFileInfoBO.class);
 			SysLogUtils.info("ConvertType："+convertBO.getConvertType()+"==源文件相对路径:"+convertBO.getSrcRelativePath()+"==fcs转码结果："+ fcsFileInfoBO.getCode());
-			if(fcsFileInfoBO.getCode() == 0) {//转换成功
+			if(errorCode == 0) {//转换成功
 				
 				updateFcsFileInfo(convertBO,fcsFileInfoBO, userId, ipAddress);//这里只记录转换成功的pts_convert
 				
