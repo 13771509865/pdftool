@@ -115,6 +115,11 @@ public class PtsConvertService {
 	public IResult<String> updateFcsFileInfo(ConvertParameterBO convertBO,FcsFileInfoBO fcsFileInfoBO,Long userId,String ipAddress) {
 		try {
 			
+			//只记录登录用户的
+			if(userId == null) {
+				return DefaultResult.failResult();
+			}
+					
 			FcsFileInfoPO fcsFileInfoPO = ptsConvertParamService.buildFcsFileInfoParameter(convertBO,fcsFileInfoBO, userId,ipAddress);
 			
 			//根据userId和fileHash去update
@@ -124,7 +129,7 @@ public class PtsConvertService {
 			}
 			return DefaultResult.successResult();
 		} catch (Exception e) {
-			SysLogUtils.error("fcsFileInfo插入数据库失败，失败原因："+e);
+			SysLogUtils.error("fcsFileInfo插入数据库失败，失败原因："+e.getMessage());
 			return DefaultResult.failResult();
 		}
 	}
