@@ -63,7 +63,7 @@ public class PtsConvertService {
 	 * @param waitTime
 	 * @return
 	 */ 
-	public IResult<FcsFileInfoBO> dispatchConvert(ConvertParameterBO convertBO,Integer waitTime,Long userId,String ipAddress){
+	public IResult<FcsFileInfoBO> dispatchConvert(ConvertParameterBO convertBO,Integer waitTime,UserBO userBO,String ipAddress,String cookie){
 		FcsFileInfoBO fcsFileInfoBO = new FcsFileInfoBO();
 		//取超时时间
 		String ticket;
@@ -92,7 +92,7 @@ public class PtsConvertService {
 			fcsFileInfoBO = JsonUtils.json2obj(fcsMap.get(SysConstant.FCS_DATA), FcsFileInfoBO.class);
 			SysLogUtils.info("ConvertType："+convertBO.getConvertType()+"==源文件相对路径:"+convertBO.getSrcRelativePath()+"==fcs转码结果："+ fcsFileInfoBO.getCode());
 			if(errorCode == 0) {//转换成功
-				
+				Long userId = userBO==null?null:userBO.getUserId();
 				updateFcsFileInfo(convertBO,fcsFileInfoBO,userId,ipAddress);
 				return DefaultResult.successResult(fcsFileInfoBO);
 			}else {
