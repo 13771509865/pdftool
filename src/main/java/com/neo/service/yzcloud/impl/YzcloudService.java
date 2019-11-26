@@ -2,6 +2,7 @@ package com.neo.service.yzcloud.impl;
 
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
+import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.cons.constants.YzcloudConsts;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.PtsProperty;
@@ -39,14 +40,16 @@ public class YzcloudService implements IYzcloudService {
 
     @Async("uploadYcFileExecutor")
     @Override
-    public IResult<String> uploadFileToYc(String targetRelativePath, Long userId, String fileHash) {
+    public IResult<String> uploadFileToYc(String targetRelativePath, Long userId, String fileHash, String cookie) {
         File targetFile = new File(ptsProperty.getFcs_targetfile_dir(), targetRelativePath);
         if (targetFile.isFile() && targetFile.exists()) {
             String url = ptsProperty.getYzcloud_domain() + YzcloudConsts.UPLOAD_INTERFACE;
             Map<String, Object> params = new HashMap<>();
             params.put("fileName", targetFile.getName());
             params.put("typeOfSource", "application.pdf");
-            IResult<HttpResultEntity> httpResult = httpAPIService.uploadResouse(targetFile, url, params, null);
+            Map<String, Object> headers = new HashMap<>();
+            headers.put(UaaConsts.COOKIE, cookie);
+            IResult<HttpResultEntity> httpResult = httpAPIService.uploadResouse(targetFile, url, params, headers);
             if (HttpUtils.isHttpSuccess(httpResult)) {
                 try {
                     Map<String, Object> resultMap = JsonUtils.parseJSON2Map(httpResult.getData().getBody());

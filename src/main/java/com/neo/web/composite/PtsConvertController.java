@@ -3,6 +3,7 @@ package com.neo.web.composite;
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.SysConstant;
+import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonResultUtils;
@@ -49,7 +50,8 @@ public class PtsConvertController {
         if (convertBO.getSrcFileSize() == null) {
             return JsonResultUtils.failMapResult(EnumResultCode.E_NOTALL_PARAM.getInfo());
         }
-        IResult<FcsFileInfoBO> result = ptsConvertService.dispatchConvert(convertBO, ConfigProperty.getConvertTicketWaitTime(), HttpUtils.getSessionUserID(request), HttpUtils.getIpAddr(request));
+        String cookie = request.getHeader(UaaConsts.COOKIE);
+        IResult<FcsFileInfoBO> result = ptsConvertService.dispatchConvert(convertBO, ConfigProperty.getConvertTicketWaitTime(), HttpUtils.getUserBO(request), HttpUtils.getIpAddr(request), cookie);
         ptsConvertService.updatePtsSummay(result.getData(), convertBO, request);
         if (result.isSuccess()) {
         	
