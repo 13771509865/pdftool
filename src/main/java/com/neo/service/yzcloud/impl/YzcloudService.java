@@ -7,9 +7,13 @@ import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
+import com.neo.dao.FcsFileInfoPOMapper;
+import com.neo.model.po.FcsFileInfoPO;
 import com.neo.service.httpclient.HttpAPIService;
 import com.neo.service.yzcloud.IYzcloudService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -30,8 +34,12 @@ public class YzcloudService implements IYzcloudService {
     @Autowired
     private PtsProperty ptsProperty;
 
+    @Autowired
+    private FcsFileInfoPOMapper fcsFileInfoPOMapper;
+
+    @Async("uploadYcFileExecutor")
     @Override
-    public IResult<String> uploadFileToYc(String targetRelativePath) {
+    public IResult<String> uploadFileToYc(String targetRelativePath, Long userId, String fileHash) {
         File targetFile = new File(ptsProperty.getFcs_targetfile_dir(), targetRelativePath);
         if (targetFile.isFile() && targetFile.exists()) {
             String url = ptsProperty.getYzcloud_domain() + YzcloudConsts.UPLOAD_INTERFACE;
@@ -40,11 +48,22 @@ public class YzcloudService implements IYzcloudService {
             params.put("typeOfSource", "application.pdf");
             IResult<HttpResultEntity> httpResult = httpAPIService.uploadResouse(targetFile, url, params, null);
             if (HttpUtils.isHttpSuccess(httpResult)) {
-                Map<String, Object> resultMap = JsonUtils.parseJSON2Map(httpResult.getData().getBody());
-                if (!resultMap.isEmpty() && "0".equals(resultMap.get(YzcloudConsts.ERRORCODE).toString())) {
-                    Map<String, Object> result = (Map<String, Object>) resultMap.get(YzcloudConsts.RESULT);
-                    String fileId = result.get("fileId").toString();
-                    return DefaultResult.successResult(fileId);
+                try {
+                    Map<String, Object> resultMap = JsonUtils.parseJSON2Map(httpResult.getData().getBody());
+                    if (!resultMap.isEmpty() && "0".equals(resultMap.get(YzcloudConsts.ERRORCODE).toString())) {
+                        Map<String, Object> result = (Map<String, Object>) resultMap.get(YzcloudConsts.RESULT);
+                        String fileId = result.get("fileId").toString();
+                        if (StringUtils.isNotBlank(fileId)) {
+                            FcsFileInfoPO fcsFileInfoPo = new FcsFileInfoPO();
+                            fcsFileInfoPo.setUserID(userId);
+                            fcsFileInfoPo.setFileHash(fileHash);
+                            fcsFileInfoPo.setUCloudFileId(fileId);
+                            int updateResult = fcsFileInfoPOMapper.updatePtsConvert(fcsFileInfoPo);
+                            return DefaultResult.successResult(fileId);
+                        }
+                    }
+                } catch (Exception e) {
+                    return DefaultResult.failResult("保存文件至优云失败");
                 }
             }
         }

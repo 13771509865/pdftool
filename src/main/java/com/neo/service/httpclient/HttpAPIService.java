@@ -298,43 +298,54 @@ public class HttpAPIService {
         }
     }
 
-    
-    
+
     /**
      * 服务器之间文件传输
+     *
      * @param file
      * @param url
      * @return
      */
-    public  IResult<HttpResultEntity> uploadResouse(MultipartFile file,String url) {
+    public IResult<HttpResultEntity> uploadResouse(MultipartFile file, String url) {
         CloseableHttpResponse response = null;
-        try  {
-          HttpPost  httpPost  =  new  HttpPost(url);
-          MultipartEntityBuilder  builder  =  MultipartEntityBuilder.create().setMode(HttpMultipartMode.RFC6532);
-          builder.addBinaryBody("file",file.getBytes(),ContentType.create("multipart/form-data"),file.getOriginalFilename());
-          HttpEntity  entity  =  builder.build();
-          httpPost.setEntity(entity);
-
-          response  = this.httpClient.execute(httpPost);
-          HttpResultEntity httpResultEntity = new HttpResultEntity(response.getStatusLine().getStatusCode(), EntityUtils.toString(
-              response.getEntity(), SysConstant.CHARSET));
-          return DefaultResult.successResult(httpResultEntity); 
+        try {
+            response = uploadProcess(file, null, url, null, null);
+            HttpResultEntity httpResultEntity = new HttpResultEntity(response.getStatusLine().getStatusCode(), EntityUtils.toString(
+                    response.getEntity(), SysConstant.CHARSET));
+            return DefaultResult.successResult(httpResultEntity);
         } catch (Exception e) {
-          e.printStackTrace();
-          SysLogUtils.info("upload--fcs请求失败,请求URL为:" + url);
-          return DefaultResult.failResult(EnumResultCode.E_HTTP_SEND_FAIL.getInfo());
+            e.printStackTrace();
+            SysLogUtils.info("upload--fcs请求失败,请求URL为:" + url);
+            return DefaultResult.failResult(EnumResultCode.E_HTTP_SEND_FAIL.getInfo());
         } finally {
-          closeResource(response);
+            closeResource(response);
         }
+    }
 
-      }
-    
-    
-    
-    
-    
+    private CloseableHttpResponse uploadProcess(MultipartFile muFile, File file, String url, Map<String, Object> params, Map<String, Object> headers) throws Exception{
+        HttpPost httpPost = new HttpPost(url);
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create().setMode(HttpMultipartMode.RFC6532);
+        if (muFile != null) {
+            builder.addBinaryBody("file", muFile.getBytes(), ContentType.create("multipart/form-data"), muFile.getOriginalFilename());
+        }
+        if (file != null) {
+            builder.addBinaryBody("file", file, ContentType.create("multipart/form-data"), file.getName());
+        }
+        if (params != null && !params.isEmpty()) {
+            for (String key : params.keySet()) {
+                builder.addTextBody(key, params.get(key).toString());
+            }
+        }
+        HttpEntity entity = builder.build();
+        httpPost.setEntity(entity);
+        addHttpHeader(httpPost, headers);
+        CloseableHttpResponse response = this.httpClient.execute(httpPost);
+        return response;
+    }
+
     /**
      * 跨域服务器之间文件的传送
+     *
      * @param file
      * @param url
      * @return
@@ -344,18 +355,7 @@ public class HttpAPIService {
     public IResult<HttpResultEntity> uploadResouse(File file, String url, Map<String, Object> params, Map<String, Object> headers) {
         CloseableHttpResponse response = null;
         try {
-            HttpPost httpPost = new HttpPost(url);
-            MultipartEntityBuilder builder = MultipartEntityBuilder.create().setMode(HttpMultipartMode.RFC6532);
-            builder.addBinaryBody("file", file, ContentType.create("multipart/form-data"), file.getName());
-            if (params != null && !params.isEmpty()) {
-                for (String key : params.keySet()) {
-                    builder.addTextBody(key, params.get(key).toString());
-                }
-            }
-            HttpEntity entity = builder.build();
-            httpPost.setEntity(entity);
-            addHttpHeader(httpPost, headers);
-            response = this.httpClient.execute(httpPost);
+            response = uploadProcess(null, file, url, params, headers);
             HttpResultEntity httpResultEntity = new HttpResultEntity(response.getStatusLine().getStatusCode(), EntityUtils.toString(
                     response.getEntity(), SysConstant.CHARSET));
             return DefaultResult.successResult(httpResultEntity);

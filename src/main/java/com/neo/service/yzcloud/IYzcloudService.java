@@ -9,5 +9,5 @@ import com.neo.commons.cons.IResult;
  **/
 public interface IYzcloudService {
 
-    IResult<String> uploadFileToYc(String targetRelativePath);
+    IResult<String> uploadFileToYc(String targetRelativePath, Long userId, String fileHash);
 }

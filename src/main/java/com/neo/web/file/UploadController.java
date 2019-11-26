@@ -41,7 +41,6 @@ public class UploadController{
     public Map<String, Object> fileUpload(@RequestParam("file") MultipartFile  file,HttpServletRequest request){
     	IResult<FileUploadBO> result  =uploadService.upload(file,request);
     	uploadService.insertPtsApply(request, file);
-    	
     	if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
 		}else {

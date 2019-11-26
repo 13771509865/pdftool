@@ -5,6 +5,7 @@ import com.neo.commons.properties.PtsProperty;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.service.file.SaveBadFileService;
+import com.neo.service.yzcloud.IYzcloudService;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -28,6 +29,9 @@ public class PtsConvertServiceAspect {
     @Autowired
     private SaveBadFileService saveBadFileService;
 
+    @Autowired
+    private IYzcloudService iYzcloudService;
+
     @Pointcut(value = "execution(* com.neo.service.convert.PtsConvertService.dispatchConvert(..))")
     public void dispatchConvert() {
     }
@@ -38,6 +42,10 @@ public class PtsConvertServiceAspect {
         if (!result.isSuccess()) {
             String srcRelativePath = convertBO.getSrcRelativePath();
             saveBadFileService.saveBadFile(ptsProperty.getFcs_srcfile_dir(), ptsProperty.getConvert_fail_dir(), srcRelativePath);
+        } else {
+            //上传文件到优云,更新数据库
+            FcsFileInfoBO fcsFileInfoBO = result.getData();
+            iYzcloudService.uploadFileToYc(fcsFileInfoBO.getDestStoragePath(), userId, fcsFileInfoBO.getFileHash());
         }
     }
 }
