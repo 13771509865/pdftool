@@ -298,9 +298,43 @@ public class HttpAPIService {
         }
     }
 
+    
+    
+    /**
+     * 服务器之间文件传输
+     * @param file
+     * @param url
+     * @return
+     */
+    public  IResult<HttpResultEntity> uploadResouse(MultipartFile file,String url) {
+        CloseableHttpResponse response = null;
+        try  {
+          HttpPost  httpPost  =  new  HttpPost(url);
+          MultipartEntityBuilder  builder  =  MultipartEntityBuilder.create().setMode(HttpMultipartMode.RFC6532);
+          builder.addBinaryBody("file",file.getBytes(),ContentType.create("multipart/form-data"),file.getOriginalFilename());
+          HttpEntity  entity  =  builder.build();
+          httpPost.setEntity(entity);
+
+          response  = this.httpClient.execute(httpPost);
+          HttpResultEntity httpResultEntity = new HttpResultEntity(response.getStatusLine().getStatusCode(), EntityUtils.toString(
+              response.getEntity(), SysConstant.CHARSET));
+          return DefaultResult.successResult(httpResultEntity); 
+        } catch (Exception e) {
+          e.printStackTrace();
+          SysLogUtils.info("upload--fcs请求失败,请求URL为:" + url);
+          return DefaultResult.failResult(EnumResultCode.E_HTTP_SEND_FAIL.getInfo());
+        } finally {
+          closeResource(response);
+        }
+
+      }
+    
+    
+    
+    
+    
     /**
      * 跨域服务器之间文件的传送
-     *
      * @param file
      * @param url
      * @return
