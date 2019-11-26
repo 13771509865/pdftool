@@ -115,8 +115,9 @@ public class UploadService {
 		}else {
 			ptsApplyPO.setAddress(String.valueOf(userId));
 		}
-		
-		ptsApplyPO.setModule(Integer.valueOf(request.getParameter(PtsConsts.MODULE)));
+		if(request.getParameter(PtsConsts.MODULE)!=null) {
+			ptsApplyPO.setModule(Integer.valueOf(request.getParameter(PtsConsts.MODULE)));
+		}
 		return ptsApplyPO;
 
 	}
