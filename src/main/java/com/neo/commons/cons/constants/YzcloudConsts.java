@@ -7,7 +7,7 @@ package com.neo.commons.cons.constants;
  **/
 public class YzcloudConsts {
 
-    public static final String UPLOAD_INTERFACE = "/staticA/uploadSourceTypeFile.do";
+    public static final String UPLOAD_INTERFACE = "/exteral/uploadSourceTypeFile.do";
 
     public static final String ERRORCODE = "errorCode";
 
