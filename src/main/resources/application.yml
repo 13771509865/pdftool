@@ -125,5 +125,8 @@ pts:
   member_hamc_key: qaxet9223210^*&
 
   fcs_srcfile_dir:                #fcs文件根目录
+  fcs_targetfile_dir:             #fcs生产文件目录
   convert_fail_dir:            #转换失败源文件夹
   report_error_dir:            #报错文件夹
+
+  yzcloud_domain:              #优云域名

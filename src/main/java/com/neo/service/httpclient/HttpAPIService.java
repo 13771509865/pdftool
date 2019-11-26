@@ -1,41 +1,6 @@
 package com.neo.service.httpclient;
 
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSONObject;
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumResultCode;
@@ -45,6 +10,29 @@ import com.neo.commons.cons.entity.FileHeaderEntity;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.SysLogUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.*;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 @Service("httpApiService")
 public class HttpAPIService {
@@ -273,8 +261,8 @@ public class HttpAPIService {
             List<NameValuePair> list = new ArrayList<>();
             for (Map.Entry<String, Object> entry : params.entrySet()) {
                 if (entry.getValue() != null) {
-                	Object v=entry.getValue();
-                	if(v  instanceof ArrayList) {
+                    Object v = entry.getValue();
+                    if (v instanceof ArrayList) {
                         try {
                             Iterator<Object> it = ((ArrayList) v).iterator();
                             while (it.hasNext()) {
@@ -284,14 +272,13 @@ public class HttpAPIService {
                         } catch (Exception e) {
                             Iterator<Object> it = ((ArrayList) v).iterator();
                             while (it.hasNext()) {
-                            	Object jsonObj = (Object) it.next();
+                                Object jsonObj = (Object) it.next();
                                 list.add(new BasicNameValuePair(entry.getKey(), jsonObj.toString()));
                             }
                         }
-                	}
-                	else {
-                    list.add(new BasicNameValuePair(entry.getKey(), entry.getValue().toString()));
-                	}
+                    } else {
+                        list.add(new BasicNameValuePair(entry.getKey(), entry.getValue().toString()));
+                    }
                 }
             }
             UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(list, "UTF-8");
@@ -310,53 +297,50 @@ public class HttpAPIService {
         } catch (IOException e) {
         }
     }
-    
-    
-    
-       
+
     /**
-	 * 跨域服务器之间文件的传送
-	 * @param file
-	 * @param url
-	 * @param filename
-	 * @author xujun
-	 * @date 2019-07-19
-	 * @return
-	 */
-	public  IResult<HttpResultEntity> uploadResouse(MultipartFile file,String url) {
-		CloseableHttpResponse response = null;
-		try  {
-			HttpPost  httpPost  =  new  HttpPost(url);
-			MultipartEntityBuilder  builder  =  MultipartEntityBuilder.create().setMode(HttpMultipartMode.RFC6532);
-			builder.addBinaryBody("file",file.getBytes(),ContentType.create("multipart/form-data"),file.getOriginalFilename());
-			HttpEntity  entity  =  builder.build();
-			httpPost.setEntity(entity);
+     * 跨域服务器之间文件的传送
+     *
+     * @param file
+     * @param url
+     * @return
+     * @author xujun
+     * @date 2019-07-19
+     */
+    public IResult<HttpResultEntity> uploadResouse(File file, String url, Map<String, Object> params, Map<String, Object> headers) {
+        CloseableHttpResponse response = null;
+        try {
+            HttpPost httpPost = new HttpPost(url);
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create().setMode(HttpMultipartMode.RFC6532);
+            builder.addBinaryBody("file", file, ContentType.create("multipart/form-data"), file.getName());
+            if (params != null && !params.isEmpty()) {
+                for (String key : params.keySet()) {
+                    builder.addTextBody(key, params.get(key).toString());
+                }
+            }
+            HttpEntity entity = builder.build();
+            httpPost.setEntity(entity);
+            addHttpHeader(httpPost, headers);
+            response = this.httpClient.execute(httpPost);
+            HttpResultEntity httpResultEntity = new HttpResultEntity(response.getStatusLine().getStatusCode(), EntityUtils.toString(
+                    response.getEntity(), SysConstant.CHARSET));
+            return DefaultResult.successResult(httpResultEntity);
+        } catch (Exception e) {
+            e.printStackTrace();
+            SysLogUtils.info("upload--fcs请求失败,请求URL为:" + url);
+            return DefaultResult.failResult(EnumResultCode.E_HTTP_SEND_FAIL.getInfo());
+        } finally {
+            closeResource(response);
+        }
 
-			response  = this.httpClient.execute(httpPost);
-			HttpResultEntity httpResultEntity = new HttpResultEntity(response.getStatusLine().getStatusCode(), EntityUtils.toString(
-					response.getEntity(), SysConstant.CHARSET));
-			return DefaultResult.successResult(httpResultEntity); 
-		} catch (Exception e) {
-			e.printStackTrace();
-			SysLogUtils.info("upload--fcs请求失败,请求URL为:" + url);
-			return DefaultResult.failResult(EnumResultCode.E_HTTP_SEND_FAIL.getInfo());
-		} finally {
-			closeResource(response);
-		}
+    }
 
-	}
-    
-    
-    
     public static void main(String[] args) {
-    	HttpAPIService h = new HttpAPIService();
-    	String url = "http://172.18.21.30:8080/fcscloud/view/download/s8mSvTjKia8LKgyJoI_cTCz0TwesMEEwjn6OgahAEWzSByUclpymeFWJ3B5U_mBQuhbASnaZRpbGSvkVCucUI_0v1bi9FLQbky9GsETZTWzYsxaHf6MdmagNd1IfYJmTDq4SpmWk4QxZ872PFmJsD2Tu6MeiT9oUJ0bPQh5WXKjFo4489bi3cXtRLE69ySrj-6EkWyuKEwnW5dWjQ_tUeiComggFvBCKVQ4kUSAXvISYFbBRKiHhxpfQ0DwZeuBepcOudGl7tgF58mcPGB5-d4Wc01FpYEf7FZyDc6_7Qzw";
-    	IResult<HttpResultEntity> r = h.doGet(url);
-    	System.out.println(r.getData().toString());
-	}
-    
-    
-    
-    
-    
+        HttpAPIService h = new HttpAPIService();
+        String url = "http://172.18.21.30:8080/fcscloud/view/download/s8mSvTjKia8LKgyJoI_cTCz0TwesMEEwjn6OgahAEWzSByUclpymeFWJ3B5U_mBQuhbASnaZRpbGSvkVCucUI_0v1bi9FLQbky9GsETZTWzYsxaHf6MdmagNd1IfYJmTDq4SpmWk4QxZ872PFmJsD2Tu6MeiT9oUJ0bPQh5WXKjFo4489bi3cXtRLE69ySrj-6EkWyuKEwnW5dWjQ_tUeiComggFvBCKVQ4kUSAXvISYFbBRKiHhxpfQ0DwZeuBepcOudGl7tgF58mcPGB5-d4Wc01FpYEf7FZyDc6_7Qzw";
+        IResult<HttpResultEntity> r = h.doGet(url);
+        System.out.println(r.getData().toString());
+    }
+
+
 }
