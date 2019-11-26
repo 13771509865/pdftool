@@ -6,11 +6,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.neo.commons.cons.DefaultResult;
-import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.EnumResultCode;
+import com.neo.commons.cons.EnumUaaRoleType;
+import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.PtsProperty;
@@ -21,6 +23,7 @@ import com.neo.dao.FcsFileInfoPOMapper;
 import com.neo.dao.PtsSummaryPOMapper;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FcsFileInfoBO;
+import com.neo.model.bo.UserBO;
 import com.neo.model.po.ConvertParameterPO;
 import com.neo.model.po.FcsFileInfoPO;
 import com.neo.model.po.PtsSummaryPO;
@@ -90,8 +93,7 @@ public class PtsConvertService {
 			SysLogUtils.info("ConvertType："+convertBO.getConvertType()+"==源文件相对路径:"+convertBO.getSrcRelativePath()+"==fcs转码结果："+ fcsFileInfoBO.getCode());
 			if(errorCode == 0) {//转换成功
 				
-				updateFcsFileInfo(convertBO,fcsFileInfoBO, userId, ipAddress);//这里只记录转换成功的pts_convert
-				
+				updateFcsFileInfo(convertBO,fcsFileInfoBO,userId,ipAddress);
 				return DefaultResult.successResult(fcsFileInfoBO);
 			}else {
 				return DefaultResult.failResult(fcsMap.get(SysConstant.FCS_MESSAGE).toString(),fcsFileInfoBO);
@@ -115,7 +117,6 @@ public class PtsConvertService {
 	 */
 	public IResult<String> updateFcsFileInfo(ConvertParameterBO convertBO,FcsFileInfoBO fcsFileInfoBO,Long userId,String ipAddress) {
 		try {
-			
 			//只记录登录用户的
 			if(userId == null) {
 				return DefaultResult.failResult();
@@ -143,6 +144,7 @@ public class PtsConvertService {
 	 * @param request
 	 * @return
 	 */
+	@Async("asynConvertExecutor")
 	public IResult<String> updatePtsSummay(FcsFileInfoBO fcsFileInfoBO, ConvertParameterBO convertBO,HttpServletRequest request){
 		try {
 			PtsSummaryPO ptsSummaryPO = ptsConvertParamService.buildPtsSummaryPOParameter(fcsFileInfoBO,convertBO, request);

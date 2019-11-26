@@ -27,6 +27,7 @@ public class FcsFileInfoPO {
 	private String srcStoragePath;
 	private String destStoragePath;
 	private String viewUrl;
+	private String uCloudFileId;
 	private Date gmtCreate;
 	private Date gmtModified;
     

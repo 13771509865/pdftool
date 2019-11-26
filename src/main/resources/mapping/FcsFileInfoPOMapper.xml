@@ -15,6 +15,7 @@
         <result column="SRC_STORAGE_PATH" property="srcStoragePath" jdbcType="VARCHAR"/>
         <result column="DEST_STORAGE_PATH" property="destStoragePath" jdbcType="VARCHAR"/>
         <result column="DOWNLOAD_URL" property="viewUrl" jdbcType="VARCHAR"/>
+        <result column="UCLOUD_FILE_ID" property="uCloudFileId" jdbcType="VARCHAR"/>
         <result column="GMT_CREATE" property="gmtCreate" jdbcType="TIMESTAMP"/>
         <result column="GMT_MODIFIED" property="gmtModified" jdbcType="TIMESTAMP"/>
     </resultMap>
@@ -22,7 +23,7 @@
     <sql id="Base_Column_List">
 		ID,IP_ADDRESS, USERID,FILE_HASH, RESULT_CODE,
 		DEST_FILE_NAME, SRC_FILE_NAME, DEST_FILE_SIZE, SRC_FILE_SIZE,
-		CONVERT_TYPE, SRC_STORAGE_PATH, DEST_STORAGE_PATH, DOWNLOAD_URL,
+		CONVERT_TYPE, SRC_STORAGE_PATH, DEST_STORAGE_PATH, DOWNLOAD_URL,UCLOUD_FILE_ID,
 		GMT_CREATE, GMT_MODIFIED
   	</sql>
     
@@ -66,6 +67,7 @@
 	   	 	IP_ADDRESS, USERID,FILE_HASH, RESULT_CODE,
 			DEST_FILE_NAME, SRC_FILE_NAME, DEST_FILE_SIZE, SRC_FILE_SIZE,
 			CONVERT_TYPE, SRC_STORAGE_PATH, DEST_STORAGE_PATH, DOWNLOAD_URL,
+			UCLOUD_FILE_ID,
 			GMT_CREATE, GMT_MODIFIED
 			)
 	 	values (
@@ -75,6 +77,7 @@
 	      #{srcFileSize,jdbcType=BIGINT}, 		#{destFileSize,jdbcType=BIGINT}, 
 	      #{convertType,jdbcType=INTEGER},  	#{srcStoragePath,jdbcType=VARCHAR},
 	      #{destStoragePath,jdbcType=VARCHAR}, 	#{viewUrl,jdbcType=VARCHAR}, 
+	      #{uCloudFileId,jdbcType=VARCHAR}, 
 	      now(),now()
 	      )
  	  </insert>
@@ -104,12 +107,26 @@
  	  <!-- 转换相同文件时，修改转换时间和下载地址 -->
  	   <update id="updatePtsConvert" parameterType="com.neo.model.po.FcsFileInfoPO" >
 		    update pts_convert
-		    set 
+		   <set>
 		    GMT_MODIFIED = now(),
-		    DEST_FILE_NAME =  #{destFileName,jdbcType=VARCHAR}, 
-		    DOWNLOAD_URL = #{viewUrl,jdbcType= VARCHAR}
-		    where USERID = #{userID,jdbcType=BIGINT} 
-		    and FILE_HASH = #{fileHash,jdbcType= VARCHAR}
+		    <if test="destFileName != null and destFileName != ''">
+				 DEST_FILE_NAME = #{destFileName,jdbcType=VARCHAR},
+			</if>
+			<if test="viewUrl != null and viewUrl != ''">
+				DOWNLOAD_URL = #{viewUrl,jdbcType= VARCHAR},
+			</if>
+			<if test="uCloudFileId != null and uCloudFileId != ''">
+				UCLOUD_FILE_ID = #{uCloudFileId,jdbcType= VARCHAR},
+			</if>
+		    </set> 
+		    <where>
+		    	<if test="userID != null">
+					and USERID = #{userID,jdbcType=BIGINT} 
+				</if>
+				<if test="fileHash != null and fileHash != ''">
+					and FILE_HASH = #{fileHash,jdbcType= VARCHAR}
+				</if>
+		    </where>
  		</update>
  	  
  	  

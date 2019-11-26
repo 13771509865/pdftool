@@ -53,24 +53,16 @@ public class ConvertInterceptor implements HandlerInterceptor {
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView arg3)
 			throws Exception {
 		Object convertResult = request.getAttribute(SysConstant.CONVERT_RESULT);
-
-		if (convertResult != null && convertResult instanceof Integer) {
-			if (EnumResultCode.E_SUCCES.getValue() == convertResult) {
-				Long userID =HttpUtils.getSessionUserID(request);
-				String key = RedisConsts.IP_CONVERT_TIME_KEY;
-				String value = HttpUtils.getIpAddr(request);
-				//登录用户
-				if(userID !=null) {
-					key = RedisConsts.ID_CONVERT_TIME_KEY;
-					value = userID.toString(); 
-				}
-				redisCacheManager.pushZSet(key, value);
-			}
+		if (convertResult != null && convertResult instanceof Integer && EnumResultCode.E_SUCCES.getValue() == convertResult) {
+			Long userID =HttpUtils.getSessionUserID(request);
+			String key =userID !=null?RedisConsts.ID_CONVERT_TIME_KEY:RedisConsts.IP_CONVERT_TIME_KEY;
+			String value =userID !=null?userID.toString():HttpUtils.getIpAddr(request);
+			redisCacheManager.pushZSet(key, value);
 		}
 	}
 
-	
-	
+
+
 	/**
 	 * 限制游客和登陆者的转换次数和转换类型
 	 */
@@ -92,10 +84,10 @@ public class ConvertInterceptor implements HandlerInterceptor {
 			out.close();
 			return false;
 		}
-//		if(userID!=null){
-//			//发送积分事件
-//			memberShipHelper.addMemberEvent(userID, EnumEventType.CONVERT_EVENT);
-//		}
+		//		if(userID!=null){
+		//			//发送积分事件
+		//			memberShipHelper.addMemberEvent(userID, EnumEventType.CONVERT_EVENT);
+		//		}
 		return true;
 	}
 

@@ -52,7 +52,8 @@ public class PtsConvertController {
         IResult<FcsFileInfoBO> result = ptsConvertService.dispatchConvert(convertBO, ConfigProperty.getConvertTicketWaitTime(), HttpUtils.getSessionUserID(request), HttpUtils.getIpAddr(request));
         ptsConvertService.updatePtsSummay(result.getData(), convertBO, request);
         if (result.isSuccess()) {
-            //转换成功记录一下，拦截器要用
+        	
+        	 //转换成功记录一下，拦截器要用
             request.setAttribute(SysConstant.CONVERT_RESULT, EnumResultCode.E_SUCCES.getValue());
             return JsonResultUtils.successMapResult(result.getData());
         } else {
