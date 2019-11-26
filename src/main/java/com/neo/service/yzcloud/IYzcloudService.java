@@ -1,6 +1,7 @@
 package com.neo.service.yzcloud;
 
 import com.neo.commons.cons.IResult;
+import com.neo.model.bo.FcsFileInfoBO;
 
 /**
  * @author zhoufeng
@@ -9,5 +10,5 @@ import com.neo.commons.cons.IResult;
  **/
 public interface IYzcloudService {
 
-    IResult<String> uploadFileToYc(String targetRelativePath, Long userId, String fileHash, String cookie);
+    IResult<String> uploadFileToYc(FcsFileInfoBO fcsFileInfoBO, Long userId, String cookie);
 }

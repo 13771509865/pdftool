@@ -1,17 +1,22 @@
 package com.neo.service.yzcloud.impl;
 
 import com.neo.commons.cons.DefaultResult;
+import com.neo.commons.cons.EnumConvertType;
 import com.neo.commons.cons.IResult;
+import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.cons.constants.YzcloudConsts;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
+import com.neo.commons.util.ZipUtils;
 import com.neo.dao.FcsFileInfoPOMapper;
+import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.model.po.FcsFileInfoPO;
 import com.neo.service.httpclient.HttpAPIService;
 import com.neo.service.yzcloud.IYzcloudService;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -40,12 +45,22 @@ public class YzcloudService implements IYzcloudService {
 
     @Async("uploadYcFileExecutor")
     @Override
-    public IResult<String> uploadFileToYc(String targetRelativePath, Long userId, String fileHash, String cookie) {
-        File targetFile = new File(ptsProperty.getFcs_targetfile_dir(), targetRelativePath);
-        if (targetFile.isFile() && targetFile.exists()) {
+    public IResult<String> uploadFileToYc(FcsFileInfoBO fcsFileInfoBO, Long userId, String cookie) {
+        File targetFile = new File(ptsProperty.getFcs_targetfile_dir(), fcsFileInfoBO.getDestStoragePath());
+        String finalFileName = targetFile.getName();
+        if (targetFile.exists()) {
+            if (EnumConvertType.isNeedPack(fcsFileInfoBO.getConvertType())) {
+                // 需要打包
+                String zipFilePath = getZipFilePath(fcsFileInfoBO);
+                if(StringUtils.isBlank(zipFilePath)){
+                    return DefaultResult.failResult("打包压缩包失败");
+                }
+                targetFile = new File(ptsProperty.getFcs_targetfile_dir(), zipFilePath);
+                finalFileName = FilenameUtils.getBaseName(fcsFileInfoBO.getSrcFileName())+".zip";
+            }
             String url = ptsProperty.getYzcloud_domain() + YzcloudConsts.UPLOAD_INTERFACE;
             Map<String, Object> params = new HashMap<>();
-            params.put("fileName", targetFile.getName());
+            params.put("fileName", finalFileName);
             params.put("typeOfSource", "application.pdf");
             Map<String, Object> headers = new HashMap<>();
             headers.put(UaaConsts.COOKIE, cookie);
@@ -59,7 +74,7 @@ public class YzcloudService implements IYzcloudService {
                         if (StringUtils.isNotBlank(fileId)) {
                             FcsFileInfoPO fcsFileInfoPo = new FcsFileInfoPO();
                             fcsFileInfoPo.setUserID(userId);
-                            fcsFileInfoPo.setFileHash(fileHash);
+                            fcsFileInfoPo.setFileHash(fcsFileInfoBO.getFileHash());
                             fcsFileInfoPo.setUCloudFileId(fileId);
                             int updateResult = fcsFileInfoPOMapper.updatePtsConvert(fcsFileInfoPo);
                             return DefaultResult.successResult(fileId);
@@ -71,5 +86,33 @@ public class YzcloudService implements IYzcloudService {
             }
         }
         return DefaultResult.failResult("保存文件至优云失败");
+    }
+
+    private String getZipFilePath(FcsFileInfoBO fcsFileInfoBO) {
+        String finalPath = null;
+        String zipRelativePath = SysConstant.ZIP_TEMP + File.separator + fcsFileInfoBO.getFileHash() + File.separator
+                + SysConstant.ZIP_NAME;
+        File zipFile = new File(ptsProperty.getFcs_targetfile_dir(), zipRelativePath);
+        // zip存在
+        if (zipFile.isFile()) {
+            finalPath = zipRelativePath;
+        } else { // 不存在打包
+            File parentFile = getParentFile(fcsFileInfoBO.getDestStoragePath());
+            IResult<String> zipResult = ZipUtils.zipFile(zipFile, parentFile);
+            if (zipResult.isSuccess()) {
+                finalPath = zipRelativePath;
+            }
+        }
+        return finalPath;
+    }
+
+    private File getParentFile(String childPath) {
+        File destFile = new File(ptsProperty.getFcs_targetfile_dir(), childPath);
+        if (destFile.isFile()) {
+            // html文件
+            return destFile.getParentFile();
+        } else {
+            return destFile;
+        }
     }
 }

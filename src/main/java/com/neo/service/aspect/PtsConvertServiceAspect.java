@@ -48,7 +48,7 @@ public class PtsConvertServiceAspect {
             if (userBO != null && EnumUaaRoleType.canUploadYc(userBO.getRole())) {
                 //上传文件到优云,更新数据库,未登录用户和企业用户不上传
                 FcsFileInfoBO fcsFileInfoBO = result.getData();
-                iYzcloudService.uploadFileToYc(fcsFileInfoBO.getDestStoragePath(), userBO.getUserId(), fcsFileInfoBO.getFileHash(), cookie);
+                iYzcloudService.uploadFileToYc(fcsFileInfoBO, userBO.getUserId(), cookie);
             }
         }
     }
