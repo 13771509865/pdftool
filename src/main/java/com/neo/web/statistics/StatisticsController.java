@@ -6,6 +6,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.neo.service.convert.PtsConvertService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +38,9 @@ public class StatisticsController {
 	
 	@Autowired
 	private StatisticsService statisticsService;
-	
+
+	@Autowired
+	private PtsConvertService ptsConvertService;
 
 
 	/**
@@ -156,8 +161,6 @@ public class StatisticsController {
 	
 	/**
 	 * 查询上传记录
-	 * @param ptsSummaryQO
-	 * @param request
 	 * @return
 	 */
 	@ApiOperation(value = "查询上传记录")
@@ -171,7 +174,27 @@ public class StatisticsController {
 			return JsonResultUtils.failMapResult(result.getMessage());
 		}
 	}
-	
 
+	/**
+	 * 根据fileHash查询UCloudFileId
+	 * @param fcsFileInfoQO
+	 * @return
+	 */
+	@ApiOperation(value = "查询UCloudFileId")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "fileHash", value = "fileHash", required = true, dataType = "String"),
+			@ApiImplicitParam(name = "userId", value = "userId", required = true, dataType = "Long")
+
+	})
+	@GetMapping(value = "/findUCloudFileId")
+	@ResponseBody
+	public Map<String,Object> findUCloudFileId(FcsFileInfoQO fcsFileInfoQO){
+		IResult<String> result = ptsConvertService.selectFcsFileInfoPOByFileHash(fcsFileInfoQO);
+		if(result.isSuccess()) {
+			return JsonResultUtils.successMapResult(result.getData());
+		}else {
+			return JsonResultUtils.failMapResult(result.getMessage());
+		}
+	}
 
 }

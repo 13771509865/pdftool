@@ -102,7 +102,13 @@
 			<include refid="search_condition" />
 			<![CDATA[and  DATEDIFF(now(), GMT_MODIFIED)<3]]>
 		</select>
- 	  
+
+		<select id="selectFcsFileInfoPOByFileHash" resultType="com.neo.model.po.FcsFileInfoPO">
+			select
+			<include refid="Base_Column_List" />
+			from pts_convert
+			<include refid="search_condition" />
+		</select>
  	  
  	  <!-- 转换相同文件时，修改转换时间和下载地址 -->
  	   <update id="updatePtsConvert" parameterType="com.neo.model.po.FcsFileInfoPO" >

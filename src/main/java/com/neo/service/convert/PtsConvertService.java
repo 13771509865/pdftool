@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.neo.model.qo.FcsFileInfoQO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -112,7 +113,7 @@ public class PtsConvertService {
 	/**
 	 * pts_convert插入成功的转换数据，只更新登录用户并且转换成功的
 	 * @param fcsFileInfoBO
-	 * @param request
+	 * @param convertBO
 	 * @return
 	 */
 	public IResult<String> updateFcsFileInfo(ConvertParameterBO convertBO,FcsFileInfoBO fcsFileInfoBO,Long userId,String ipAddress) {
@@ -157,6 +158,17 @@ public class PtsConvertService {
 		}
 		return DefaultResult.successResult();
 	}
-	
 
+	/**
+	 * 根据fileHash查询fcsFile信息
+	 * @param fcsFileInfoQO
+	 * @return
+	 */
+	public IResult<String> selectFcsFileInfoPOByFileHash(FcsFileInfoQO fcsFileInfoQO){
+		FcsFileInfoPO fcsFileInfoPO = fcsFileInfoBOMapper.selectFcsFileInfoPOByFileHash(fcsFileInfoQO);
+		if(fcsFileInfoPO.getUCloudFileId()==null){
+			return DefaultResult.failResult(EnumResultCode.E_UCLOUDFILEID_NULL.getInfo());
+		}
+		return DefaultResult.successResult(fcsFileInfoPO.getUCloudFileId());
+	}
 }
