@@ -2,6 +2,7 @@ package com.neo.service.yzcloud.impl;
 
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumConvertType;
+import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.constants.UaaConsts;
@@ -53,7 +54,7 @@ public class YzcloudService implements IYzcloudService {
                 // 需要打包
                 String zipFilePath = getZipFilePath(fcsFileInfoBO);
                 if(StringUtils.isBlank(zipFilePath)){
-                    return DefaultResult.failResult("打包压缩包失败");
+                    return DefaultResult.failResult(EnumResultCode.E_ZIP_PACKAGE_ERROR.getInfo());
                 }
                 targetFile = new File(ptsProperty.getFcs_targetfile_dir(), zipFilePath);
                 finalFileName = FilenameUtils.getBaseName(fcsFileInfoBO.getSrcFileName())+".zip";
@@ -81,11 +82,11 @@ public class YzcloudService implements IYzcloudService {
                         }
                     }
                 } catch (Exception e) {
-                    return DefaultResult.failResult("保存文件至优云失败");
+                    return DefaultResult.failResult(EnumResultCode.E_SAVE_YCFILE_ERROR.getInfo());
                 }
             }
         }
-        return DefaultResult.failResult("保存文件至优云失败");
+        return DefaultResult.failResult(EnumResultCode.E_SAVE_YCFILE_ERROR.getInfo());
     }
 
     private String getZipFilePath(FcsFileInfoBO fcsFileInfoBO) {

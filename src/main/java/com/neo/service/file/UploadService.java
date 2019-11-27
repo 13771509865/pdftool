@@ -1,10 +1,14 @@
 package com.neo.service.file;
 
 
+import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +18,7 @@ import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.PtsConsts;
 import com.neo.commons.cons.constants.SysConstant;
+import com.neo.commons.cons.constants.YzcloudConsts;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.HttpUtils;
@@ -73,6 +78,58 @@ public class UploadService {
 			return DefaultResult.failResult(EnumResultCode.E_UPLOAD_FILE.getInfo());
 		}
 	}
+
+
+
+
+	/**
+	 * 优云上传文件接口
+	 * @param ycFileId
+	 * @return
+	 */
+	public IResult<FileUploadBO> fileUploadFromYc(String ycFileId){
+		Map<String, Object> params = new HashMap<>();
+		params.put("fileId", ycFileId);
+		
+		//根据fileid去优云获取文件的下载路径
+		IResult<HttpResultEntity> ycResult = httpAPIService.doGet(ptsProperty.getYzcloud_domain()+YzcloudConsts.DOWNLOAD_INTERFACE, params);
+		if (!HttpUtils.isHttpSuccess(ycResult)) {
+			return DefaultResult.failResult(EnumResultCode.E_YCSERVICE_UPLOAD_ERROR.getInfo());
+		}
+		
+		Map<String, Object> ycParams = JsonUtils.parseJSON2Map(ycResult.getData().getBody());
+		if(!ycParams.isEmpty() && "0".equals(ycParams.get(YzcloudConsts.CODE).toString()) 
+			&& StringUtils.isNotBlank(ycParams.get(YzcloudConsts.URL).toString())) {
+			Map<String, Object> fcsParams = new HashMap<>();
+			fcsParams.put("fileUrl", ycParams.get(YzcloudConsts.URL).toString());
+			
+			//根据优云提供的下载路径，给fcs下载
+			IResult<HttpResultEntity> fcsResult = httpAPIService.doPost(ptsProperty.getFcs_http_download_url(), ycParams); 
+			if (!HttpUtils.isHttpSuccess(fcsResult)) {
+				return DefaultResult.failResult(EnumResultCode.E_UPLOAD_FILE.getInfo());
+			}
+			
+			Map<String, Object> map = JsonUtils.parseJSON2Map(fcsResult.getData().getBody());
+			String message = EnumResultCode.getTypeInfo(Integer.valueOf(map.get(SysConstant.FCS_ERRORCODE).toString()));
+			if (!EnumResultCode.E_SUCCES.getValue().equals(Integer.valueOf(map.get(SysConstant.FCS_ERRORCODE).toString()))) {
+				SysLogUtils.error("fcs上传文件失败:" + map.toString() + ",失败错误信息为:" + message);
+				return DefaultResult.failResult(EnumResultCode.E_UPLOAD_FILE.getInfo());
+			}
+			
+			FileUploadBO fileUploadBO = JsonUtils.json2obj(map.get(SysConstant.FCS_DATA), FileUploadBO.class);
+//			fileUploadBO.setSrcFileSize(file.getSize());
+			return DefaultResult.successResult(message,fileUploadBO);
+			
+			
+		}
+		return DefaultResult.failResult(EnumResultCode.E_YCUPLOAD_ERROR.getInfo());
+		
+	}
+
+
+
+
+
 
 
 	/**

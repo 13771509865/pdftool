@@ -10,6 +10,7 @@ import com.neo.commons.cons.entity.FileHeaderEntity;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.SysLogUtils;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
@@ -368,6 +369,21 @@ public class HttpAPIService {
         }
 
     }
+    
+    
+    
+    
+    
+    
+    public static Boolean isHttpSuccess(Integer code) {
+        if (code != null) {
+            if (code >= 200 && code < 300) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 
     public static void main(String[] args) {
         HttpAPIService h = new HttpAPIService();

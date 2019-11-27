@@ -1,6 +1,7 @@
 package com.neo.service.file;
 
 import com.neo.commons.cons.DefaultResult;
+import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.util.DateViewUtils;
 import com.neo.commons.util.SysLogUtils;
@@ -31,10 +32,10 @@ public class SaveBadFileService {
                 FileUtils.copyFile(srcFile, errorFile);
                 return DefaultResult.successResult();
             }
-            return DefaultResult.failResult("错误文件不存在");
+            return DefaultResult.failResult(EnumResultCode.E_ERROR_FILE_NULL.getInfo());
         } catch (Exception e) {
             SysLogUtils.error("拷贝转码失败文件异常", e);
-            return DefaultResult.failResult("记录错误文件失败");
+            return DefaultResult.failResult(EnumResultCode.E_RECORD_FILE_ERROR.getInfo());
         }
     }
 }

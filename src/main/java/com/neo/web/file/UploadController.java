@@ -48,4 +48,20 @@ public class UploadController{
 		}
 
     }
+	
+	
+	
+//	@ApiOperation(value = "优云文件上传接口")
+//    @PostMapping(value = "/uploadYc")
+//    @ResponseBody
+//	public Map<String, Object> fileUploadFromYc(String ycFileId){
+//		
+//	}
+	
+	
+	
+	
+	
+	
+	
 }

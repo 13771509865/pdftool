@@ -13,6 +13,13 @@ public enum EnumResultCode {
 	E_FILEMD5_HEAD_FAIL(10,"根据文件头信息获取文件Md5失败"),
 	E_DOWNLOAD_FILE_FAIL(11,"下载文件失败"),
 	E_HTTP_SEND_FAIL(12,"http请求失败"),
+	E_YCSERVICE_UPLOAD_ERROR(13,"优云服务器连接失败"),
+	E_YCUPLOAD_ERROR(13,"获取优云文件失败"),
+	E_ERROR_FILE_NULL(14,"错误文件不存在"),
+	E_RECORD_FILE_ERROR(15,"记录错误文件失败"),
+	E_ZIP_PACKAGE_ERROR(16,"打包压缩包失败"),
+	E_SAVE_YCFILE_ERROR(17,"保存文件至优云失败"),
+	
 	E_SERVER_BUSY(19,"服务器正忙，请稍后再试"),
 	E_FILESERVICE_FAIL(20,"文件操作失败,请联系管理员检查服务器"),
 	E_SERVER_UNKNOW_ERROR(22,"服务器未知错误^_^"),
