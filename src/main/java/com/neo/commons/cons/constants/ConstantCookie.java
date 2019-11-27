@@ -31,6 +31,7 @@ public final class ConstantCookie {
     
     public static final String REFRESH_TOKEN = "refresh_token";
     
+    
     /**
      * 设置cookie名字
      */

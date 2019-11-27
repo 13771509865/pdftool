@@ -19,6 +19,7 @@ import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.PtsConsts;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.constants.YzcloudConsts;
+import com.neo.commons.cons.entity.FileHeaderEntity;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.HttpUtils;
@@ -87,48 +88,53 @@ public class UploadService {
 	 * @param ycFileId
 	 * @return
 	 */
-	public IResult<FileUploadBO> fileUploadFromYc(String ycFileId){
+	public IResult<FileUploadBO> fileUploadFromYc(String ycFileId,FileHeaderEntity fileHeaderEntity){
+		Map<String, Object> fcsParams = new HashMap<>();
+		fcsParams.put("fileUrl", fileHeaderEntity.getUrl());
+
+		//根据优云提供的下载路径，给fcs下载
+		IResult<HttpResultEntity> fcsResult = httpAPIService.doPost(ptsProperty.getFcs_http_download_url(), fcsParams); 
+		if (!HttpUtils.isHttpSuccess(fcsResult)) {
+			return DefaultResult.failResult(EnumResultCode.E_UPLOAD_FILE.getInfo());
+		}
+
+		Map<String, Object> map = JsonUtils.parseJSON2Map(fcsResult.getData().getBody());
+		String message = EnumResultCode.getTypeInfo(Integer.valueOf(map.get(SysConstant.FCS_ERRORCODE).toString()));
+		if (!EnumResultCode.E_SUCCES.getValue().equals(Integer.valueOf(map.get(SysConstant.FCS_ERRORCODE).toString()))) {
+			SysLogUtils.error("优云文件上传fcs失败:" + map.toString() + ",失败错误信息为:" + message);
+			return DefaultResult.failResult(EnumResultCode.E_UPLOAD_FILE.getInfo());
+		}
+
+		FileUploadBO fileUploadBO = JsonUtils.json2obj(map.get(SysConstant.FCS_DATA), FileUploadBO.class);
+		fileUploadBO.setSrcFileSize(fileHeaderEntity.getContentLength());
+		return DefaultResult.successResult(message,fileUploadBO);
+	}
+
+
+
+	/**
+	 * 根据优云的fileid获取优云文件信息
+	 * @param ycFileId
+	 * @return
+	 */
+	public IResult<FileHeaderEntity> getFileHeaderEntity(String ycFileId){
 		Map<String, Object> params = new HashMap<>();
 		params.put("fileId", ycFileId);
-		
+
 		//根据fileid去优云获取文件的下载路径
 		IResult<HttpResultEntity> ycResult = httpAPIService.doGet(ptsProperty.getYzcloud_domain()+YzcloudConsts.DOWNLOAD_INTERFACE, params);
 		if (!HttpUtils.isHttpSuccess(ycResult)) {
 			return DefaultResult.failResult(EnumResultCode.E_YCSERVICE_UPLOAD_ERROR.getInfo());
 		}
-		
+
 		Map<String, Object> ycParams = JsonUtils.parseJSON2Map(ycResult.getData().getBody());
 		if(!ycParams.isEmpty() && "0".equals(ycParams.get(YzcloudConsts.CODE).toString()) 
-			&& StringUtils.isNotBlank(ycParams.get(YzcloudConsts.URL).toString())) {
-			Map<String, Object> fcsParams = new HashMap<>();
-			fcsParams.put("fileUrl", ycParams.get(YzcloudConsts.URL).toString());
-			
-			//根据优云提供的下载路径，给fcs下载
-			IResult<HttpResultEntity> fcsResult = httpAPIService.doPost(ptsProperty.getFcs_http_download_url(), ycParams); 
-			if (!HttpUtils.isHttpSuccess(fcsResult)) {
-				return DefaultResult.failResult(EnumResultCode.E_UPLOAD_FILE.getInfo());
-			}
-			
-			Map<String, Object> map = JsonUtils.parseJSON2Map(fcsResult.getData().getBody());
-			String message = EnumResultCode.getTypeInfo(Integer.valueOf(map.get(SysConstant.FCS_ERRORCODE).toString()));
-			if (!EnumResultCode.E_SUCCES.getValue().equals(Integer.valueOf(map.get(SysConstant.FCS_ERRORCODE).toString()))) {
-				SysLogUtils.error("fcs上传文件失败:" + map.toString() + ",失败错误信息为:" + message);
-				return DefaultResult.failResult(EnumResultCode.E_UPLOAD_FILE.getInfo());
-			}
-			
-			FileUploadBO fileUploadBO = JsonUtils.json2obj(map.get(SysConstant.FCS_DATA), FileUploadBO.class);
-//			fileUploadBO.setSrcFileSize(file.getSize());
-			return DefaultResult.successResult(message,fileUploadBO);
-			
-			
+				&& StringUtils.isNotBlank(ycParams.get(YzcloudConsts.URL).toString())) {
+			String url = ycParams.get(YzcloudConsts.URL).toString();
+			return httpAPIService.getFileHeaderBOByHead(url);
 		}
-		return DefaultResult.failResult(EnumResultCode.E_YCUPLOAD_ERROR.getInfo());
-		
+		return DefaultResult.failResult(EnumResultCode.E_YCSERVICE_UPLOAD_ERROR.getInfo());
 	}
-
-
-
-
 
 
 
@@ -138,9 +144,9 @@ public class UploadService {
 	 * @param file
 	 * @return
 	 */
-	public IResult<String> insertPtsApply(HttpServletRequest request,MultipartFile  file){
+	public IResult<String> insertPtsApply(Long userId,String ipAddress,String fileName,Long fileSize,String module){
 		try {
-			PtsApplyPO ptsApplyPO = buildPtsApplyPO(request,file);
+			PtsApplyPO ptsApplyPO = buildPtsApplyPO(userId, ipAddress, fileName, fileSize, module);
 			boolean insertPtsApply = ptsApplyPOMapper.insertPtsApply(ptsApplyPO)>0;
 			if(insertPtsApply) {
 				return DefaultResult.successResult();
@@ -161,19 +167,18 @@ public class UploadService {
 	 * @param file
 	 * @return
 	 */
-	public PtsApplyPO buildPtsApplyPO(HttpServletRequest request,MultipartFile  file) {
+	public PtsApplyPO buildPtsApplyPO(Long userId,String ipAddress,String fileName,Long fileSize,String module) {
 		PtsApplyPO ptsApplyPO = new PtsApplyPO();
-		ptsApplyPO.setFileName(file.getOriginalFilename());
-		ptsApplyPO.setFileSize(file.getSize());
+		ptsApplyPO.setFileName(fileName);
+		ptsApplyPO.setFileSize(fileSize);
 
-		Long userId = HttpUtils.getSessionUserID(request);
 		if(userId ==null) {
-			ptsApplyPO.setAddress(HttpUtils.getIpAddr(request));
+			ptsApplyPO.setAddress(ipAddress);
 		}else {
 			ptsApplyPO.setAddress(String.valueOf(userId));
 		}
-		if(request.getParameter(PtsConsts.MODULE)!=null) {
-			ptsApplyPO.setModule(Integer.valueOf(request.getParameter(PtsConsts.MODULE)));
+		if(StringUtils.isNotBlank(module)) {
+			ptsApplyPO.setModule(Integer.valueOf(module));
 		}
 		return ptsApplyPO;
 

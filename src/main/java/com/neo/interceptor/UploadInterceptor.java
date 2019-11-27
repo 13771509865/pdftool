@@ -2,26 +2,25 @@ package com.neo.interceptor;
 
 import java.io.PrintWriter;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletRequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.constants.ConstantCookie;
+import com.neo.commons.cons.constants.PtsConsts;
+import com.neo.commons.cons.constants.SessionConstant;
+import com.neo.commons.cons.entity.FileHeaderEntity;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.service.auth.IAuthService;
+import com.neo.service.file.UploadService;
 
 /**
  * 
@@ -36,6 +35,9 @@ public class UploadInterceptor implements HandlerInterceptor {
 
 	@Autowired
 	private IAuthService iAuthService;
+	
+	@Autowired
+	private UploadService uploadService;
 	
 
 	@Override
@@ -59,8 +61,28 @@ public class UploadInterceptor implements HandlerInterceptor {
 		
 		Long userID = HttpUtils.getSessionUserID(request);
 		ServletRequestContext ctx = new ServletRequestContext(request);
-		Long uploadSize = ctx.contentLength();
+		Long uploadSize = null;
 		
+		//判断是普通上传还是优云上传
+		if(StringUtils.isNotBlank(request.getParameter(PtsConsts.YCFILEID))) {
+			IResult<FileHeaderEntity> fileHeaderEntity= uploadService.getFileHeaderEntity(request.getParameter(PtsConsts.YCFILEID));
+			if(fileHeaderEntity.isSuccess()) {
+				uploadSize = fileHeaderEntity.getData().getContentLength();
+				request.setAttribute(SessionConstant.FILE_HEADER_ENTITY, fileHeaderEntity.getData());
+			}else {
+				response.setContentType("text/html;charset=UTF-8");
+				response.setCharacterEncoding("UTF-8");
+				PrintWriter out = response.getWriter();
+				out.write(JsonResultUtils.fail((fileHeaderEntity.getMessage())));
+				out.flush();
+				out.close();
+				return false;
+			}
+		}else {
+			uploadSize = ctx.contentLength();
+		}
+		
+		//验证上传文件大小权限
 		IResult<EnumResultCode> result = iAuthService.checkUploadSize(userID, uploadSize);
 		if(!result.isSuccess()) {
 			response.setContentType("text/html;charset=UTF-8");
