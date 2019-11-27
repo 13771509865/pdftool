@@ -41,6 +41,7 @@ public enum EnumResultCode {
 	E_FCS_VTOKEN_FAIL(42,"获取vToken失败"),
 	E_FCS_CONVERT_FAIL(43,"文档转换服务器通讯失败,请联系管理员"),
 	E_NOTALL_PARAM(54,"参数不完整,请检查参数"),
+	E_UCLOUDFILEID_NULL(55,"UCLOUDFILEID为空"),
 
 	E_GET_AUTH_ERROR(98,"解析用户权限失败"),
 	E_ORDER_AUTH_CODE_ERROR(99,"抱歉该订单缺少pdf工具集必要的AuthCode或者存在非法的AuthCode"),
