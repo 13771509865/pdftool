@@ -113,7 +113,7 @@ pts:
   fcs_convert_url: http://172.18.21.30:8080/fcscloud/composite/convert
   fcs_vToken_url: http://172.18.21.30:8080/fcscloud/view/vToken
   fcs_downLoad_url: http://172.18.21.30:8080/fcscloud/view/download
-  fcs_http_download_url : http://172.18.21.30:8080/fcscloud/file/http
+  fcs_http_download_url: http://172.18.21.30:8080/fcscloud/file/http
 
   features_version: 0.0.2
   product_hmac_key: qaxet9223210^*&     #密钥

@@ -1,5 +1,8 @@
 package com.neo.commons.cons.constants;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author zhoufeng
  * @description

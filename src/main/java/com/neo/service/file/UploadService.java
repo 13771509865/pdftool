@@ -129,7 +129,7 @@ public class UploadService {
 
 		Map<String, Object> ycParams = JsonUtils.parseJSON2Map(ycResult.getData().getBody());
 		if(!ycParams.isEmpty() && "0".equals(ycParams.get(YzcloudConsts.CODE).toString()) 
-				&& StringUtils.isNotBlank(ycParams.get(YzcloudConsts.URL).toString())) {
+				&& ycParams.get(YzcloudConsts.URL) != null) {
 			String url = ycParams.get(YzcloudConsts.URL).toString();
 			return httpAPIService.getFileHeaderBOByHead(url);
 		}
@@ -183,6 +183,5 @@ public class UploadService {
 		return ptsApplyPO;
 
 	}
-
 
 }

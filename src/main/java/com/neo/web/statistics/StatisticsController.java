@@ -80,6 +80,29 @@ public class StatisticsController {
 	
 
 	
+	/**
+	 * 根据fileHash查询UCloudFileId
+	 * @param fcsFileInfoQO
+	 * @return
+	 */
+	@ApiOperation(value = "查询UCloudFileId")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "fileHash", value = "fileHash", required = true, dataType = "String"),
+			@ApiImplicitParam(name = "userId", value = "userId", required = true, dataType = "Long")
+
+	})
+	@GetMapping(value = "/findUCloudFileId")
+	@ResponseBody
+	public Map<String,Object> findUCloudFileId(FcsFileInfoQO fcsFileInfoQO){
+		IResult<String> result = ptsConvertService.selectFcsFileInfoPOByFileHash(fcsFileInfoQO);
+		if(result.isSuccess()) {
+			return JsonResultUtils.successMapResult(result.getData());
+		}else {
+			return JsonResultUtils.failMapResult(result.getMessage());
+		}
+	}
+	
+	
 	
 	/**
 	 * 删除用户的转换记录
@@ -175,26 +198,6 @@ public class StatisticsController {
 		}
 	}
 
-	/**
-	 * 根据fileHash查询UCloudFileId
-	 * @param fcsFileInfoQO
-	 * @return
-	 */
-	@ApiOperation(value = "查询UCloudFileId")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "fileHash", value = "fileHash", required = true, dataType = "String"),
-			@ApiImplicitParam(name = "userId", value = "userId", required = true, dataType = "Long")
 
-	})
-	@GetMapping(value = "/findUCloudFileId")
-	@ResponseBody
-	public Map<String,Object> findUCloudFileId(FcsFileInfoQO fcsFileInfoQO){
-		IResult<String> result = ptsConvertService.selectFcsFileInfoPOByFileHash(fcsFileInfoQO);
-		if(result.isSuccess()) {
-			return JsonResultUtils.successMapResult(result.getData());
-		}else {
-			return JsonResultUtils.failMapResult(result.getMessage());
-		}
-	}
 
 }
