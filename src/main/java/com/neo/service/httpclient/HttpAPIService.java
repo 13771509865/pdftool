@@ -10,7 +10,6 @@ import com.neo.commons.cons.entity.FileHeaderEntity;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.SysLogUtils;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
@@ -325,12 +324,12 @@ public class HttpAPIService {
 
     private CloseableHttpResponse uploadProcess(MultipartFile muFile, File file, String url, Map<String, Object> params, Map<String, Object> headers) throws Exception{
         HttpPost httpPost = new HttpPost(url);
-        MultipartEntityBuilder builder = MultipartEntityBuilder.create().setMode(HttpMultipartMode.RFC6532);
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create().setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
         if (muFile != null) {
-            builder.addBinaryBody("file", muFile.getBytes(), ContentType.create("multipart/form-data"), muFile.getOriginalFilename());
+            builder.addBinaryBody("file", muFile.getBytes(), ContentType.MULTIPART_FORM_DATA, muFile.getOriginalFilename());
         }
         if (file != null) {
-            builder.addBinaryBody("file", file, ContentType.create("multipart/form-data"), file.getName());
+            builder.addBinaryBody("file", file, ContentType.MULTIPART_FORM_DATA, file.getName());
         }
         if (params != null && !params.isEmpty()) {
             for (String key : params.keySet()) {
