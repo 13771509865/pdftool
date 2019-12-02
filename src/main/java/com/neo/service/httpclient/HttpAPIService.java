@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.*;
 
 @Service("httpApiService")
@@ -329,11 +330,11 @@ public class HttpAPIService {
             builder.addBinaryBody("file", muFile.getBytes(), ContentType.MULTIPART_FORM_DATA, muFile.getOriginalFilename());
         }
         if (file != null) {
-            builder.addBinaryBody("file", file, ContentType.MULTIPART_FORM_DATA, file.getName());
+            builder.addBinaryBody("file", file);
         }
         if (params != null && !params.isEmpty()) {
             for (String key : params.keySet()) {
-                builder.addTextBody(key, params.get(key).toString());
+                builder.addTextBody(key, params.get(key).toString(), ContentType.create("text/plain", Charset.forName("UTF-8")));
             }
         }
         HttpEntity entity = builder.build();
