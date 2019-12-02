@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class FcsFileInfoPO {
 	
 	private Integer id;
+	private Integer status;
 	private String ipAddress;
 	private Long userID;
 	private String fileHash;

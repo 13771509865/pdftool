@@ -3,6 +3,7 @@
 <mapper namespace="com.neo.dao.FcsFileInfoPOMapper">
     <resultMap id="FcsFileInfoPOResultMap" type="com.neo.model.po.FcsFileInfoPO">
         <id column="ID" property="id" jdbcType="INTEGER"/>
+        <result column="STATUS" property="status" jdbcType="INTEGER"/>
         <result column="IP_ADDRESS" property="ipAddress" jdbcType="INTEGER"/>
         <result column="USERID" property="userID" jdbcType="BIGINT"/>
         <result column="FILE_HASH" property="fileHash" jdbcType="VARCHAR"/>
@@ -21,7 +22,7 @@
     </resultMap>
     
     <sql id="Base_Column_List">
-		ID,IP_ADDRESS, USERID,FILE_HASH, RESULT_CODE,
+		ID,STATUS,IP_ADDRESS, USERID,FILE_HASH, RESULT_CODE,
 		DEST_FILE_NAME, SRC_FILE_NAME, DEST_FILE_SIZE, SRC_FILE_SIZE,
 		CONVERT_TYPE, SRC_STORAGE_PATH, DEST_STORAGE_PATH, DOWNLOAD_URL,UCLOUD_FILE_ID,
 		GMT_CREATE, GMT_MODIFIED
@@ -64,13 +65,14 @@
    	  <!-- 插入登录用户转换成功的数据 -->
       <insert id="insertPtsConvert" parameterType="com.neo.model.po.FcsFileInfoPO">
 	    insert into pts_convert (
-	   	 	IP_ADDRESS, USERID,FILE_HASH, RESULT_CODE,
+	   	 	STATUS,IP_ADDRESS, USERID,FILE_HASH, RESULT_CODE,
 			DEST_FILE_NAME, SRC_FILE_NAME, DEST_FILE_SIZE, SRC_FILE_SIZE,
 			CONVERT_TYPE, SRC_STORAGE_PATH, DEST_STORAGE_PATH, DOWNLOAD_URL,
 			UCLOUD_FILE_ID,
 			GMT_CREATE, GMT_MODIFIED
 			)
 	 	values (
+	 	  #{status,jdbcType=INTEGER}, 
 	      #{ipAddress,jdbcType=VARCHAR}, 		#{userID,jdbcType=BIGINT}, 
 	      #{fileHash,jdbcType=VARCHAR}, 		#{resultCode,jdbcType=INTEGER}, 
 	      #{destFileName,jdbcType=VARCHAR}, 	#{srcFileName,jdbcType=VARCHAR},
@@ -115,6 +117,9 @@
 		    update pts_convert
 		   <set>
 		    GMT_MODIFIED = now(),
+		     <if test="status != null ">
+				 STATUS = #{status,jdbcType=INTEGER},
+			</if>
 		    <if test="destFileName != null and destFileName != ''">
 				 DEST_FILE_NAME = #{destFileName,jdbcType=VARCHAR},
 			</if>

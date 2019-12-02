@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.EnumResultCode;
+import com.neo.commons.cons.EnumStatus;
 import com.neo.commons.cons.constants.RedisConsts;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.properties.ConfigProperty;
@@ -55,6 +56,7 @@ public class StatisticsService {
 			return DefaultResult.failResult("请登录后，再执行此操作");
 		}else {
 			fcsFileInfoQO.setUserID(userID);
+			fcsFileInfoQO.setStatus(EnumStatus.ENABLE.getValue());
 		}
 		try {
 			Map<String,Object> map = new HashMap<>();

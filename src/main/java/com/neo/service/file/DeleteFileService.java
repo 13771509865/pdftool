@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.neo.commons.cons.DefaultResult;
+import com.neo.commons.cons.EnumStatus;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.dao.FcsFileInfoPOMapper;
+import com.neo.model.po.FcsFileInfoPO;
 import com.neo.model.qo.FcsFileInfoQO;
 
 
@@ -27,15 +29,18 @@ public class DeleteFileService {
 	 * @param request
 	 * @return
 	 */
-	public IResult<String> deleteConvert(FcsFileInfoQO fcsFileInfoQO,HttpServletRequest request){
-		Long userID = HttpUtils.getSessionUserID(request);
+	public IResult<String> deleteConvert(String fileHash,Long userID){
+		FcsFileInfoPO fcsFileInfoPO =new FcsFileInfoPO();
+		
 		if(userID == null) {
 			return DefaultResult.failResult("请登录后，再执行此操作");
 		}else {
-			fcsFileInfoQO.setUserID(userID);
+			fcsFileInfoPO.setUserID(userID);
+			
+			fcsFileInfoPO.setStatus(EnumStatus.DISABLE.getValue());
 		}
 		try {
-			int count = fcsFileInfoPOMapper.deletePtsConvert(fcsFileInfoQO);
+			int count = fcsFileInfoPOMapper.updatePtsConvert(fcsFileInfoPO);
 			if(count < 1) {
 				return DefaultResult.failResult("删除用户转换记录失败");
 			}

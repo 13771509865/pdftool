@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.neo.commons.cons.EnumStatus;
 import com.neo.commons.cons.constants.FcsParmConsts;
 import com.neo.commons.cons.constants.PtsConsts;
 import com.neo.commons.cons.constants.SizeConsts;
@@ -89,6 +90,7 @@ public class PtsConvertParamService {
 		fcsFileInfoPO.setConvertType(fcsFileInfoBO.getConvertType());
 		fcsFileInfoPO.setSrcStoragePath(fcsFileInfoBO.getSrcStoragePath());
 		fcsFileInfoPO.setDestStoragePath(fcsFileInfoBO.getDestStoragePath());
+		fcsFileInfoPO.setStatus(EnumStatus.ENABLE.getValue());
 
 		//手写签批，做特殊处理DestFileName，需要保存上传的源文件
 		//viewUrl需要修改成download
