@@ -10,10 +10,10 @@ import com.neo.commons.cons.entity.FileHeaderEntity;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.SysLogUtils;
+import com.neo.commons.util.UUIDHelper;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
@@ -32,7 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Service("httpApiService")
@@ -323,22 +323,23 @@ public class HttpAPIService {
         }
     }
 
-    private CloseableHttpResponse uploadProcess(MultipartFile muFile, File file, String url, Map<String, Object> params, Map<String, Object> headers) throws Exception{
+    private CloseableHttpResponse uploadProcess(MultipartFile muFile, File file, String url, Map<String, Object> params, Map<String, Object> headers) throws Exception {
         HttpPost httpPost = new HttpPost(url);
-        MultipartEntityBuilder builder = MultipartEntityBuilder.create().setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create().setMode(HttpMultipartMode.RFC6532);
+        //不自定义分隔符,struts2有上传问题
+        builder.setBoundary("--------------------------"+ UUIDHelper.generateUUID());
         if (muFile != null) {
             builder.addBinaryBody("file", muFile.getBytes(), ContentType.MULTIPART_FORM_DATA, muFile.getOriginalFilename());
         }
         if (file != null) {
-            builder.addBinaryBody("file", file);
+            builder.addBinaryBody("file", file, ContentType.MULTIPART_FORM_DATA, file.getName());
         }
         if (params != null && !params.isEmpty()) {
             for (String key : params.keySet()) {
-                builder.addTextBody(key, params.get(key).toString(), ContentType.create("text/plain", Charset.forName("UTF-8")));
+                builder.addTextBody(key, params.get(key).toString(), ContentType.create("text/plain", StandardCharsets.UTF_8));
             }
         }
-        HttpEntity entity = builder.build();
-        httpPost.setEntity(entity);
+        httpPost.setEntity(builder.build());
         addHttpHeader(httpPost, headers);
         CloseableHttpResponse response = this.httpClient.execute(httpPost);
         return response;
@@ -369,12 +370,8 @@ public class HttpAPIService {
         }
 
     }
-    
-    
-    
-    
-    
-    
+
+
     public static Boolean isHttpSuccess(Integer code) {
         if (code != null) {
             if (code >= 200 && code < 300) {
@@ -383,7 +380,7 @@ public class HttpAPIService {
         }
         return false;
     }
-    
+
 
     public static void main(String[] args) {
         HttpAPIService h = new HttpAPIService();
