@@ -66,6 +66,7 @@ public class YzcloudService implements IYzcloudService {
             Map<String, Object> headers = new HashMap<>();
             headers.put(UaaConsts.COOKIE, cookie);
             IResult<HttpResultEntity> httpResult = httpAPIService.uploadResouse(targetFile, url, params, headers);
+           
             if (HttpUtils.isHttpSuccess(httpResult)) {
                 try {
                     Map<String, Object> resultMap = JsonUtils.parseJSON2Map(httpResult.getData().getBody());

@@ -18,6 +18,7 @@ import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.PtsConsts;
 import com.neo.commons.cons.constants.SysConstant;
+import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.cons.constants.YzcloudConsts;
 import com.neo.commons.cons.entity.FileHeaderEntity;
 import com.neo.commons.cons.entity.HttpResultEntity;
@@ -117,12 +118,17 @@ public class UploadService {
 	 * @param ycFileId
 	 * @return
 	 */
-	public IResult<FileHeaderEntity> getFileHeaderEntity(String ycFileId){
+	public IResult<FileHeaderEntity> getFileHeaderEntity(String ycFileId,String cookie){
 		Map<String, Object> params = new HashMap<>();
 		params.put("fileId", ycFileId);
+		
+		Map<String, Object> headers = new HashMap<>();
+        headers.put(UaaConsts.COOKIE, cookie);
 
 		//根据fileid去优云获取文件的下载路径
-		IResult<HttpResultEntity> ycResult = httpAPIService.doGet(ptsProperty.getYzcloud_domain()+YzcloudConsts.DOWNLOAD_INTERFACE, params);
+		IResult<HttpResultEntity> ycResult = httpAPIService.doGet(ptsProperty.getYzcloud_domain()+YzcloudConsts.DOWNLOAD_INTERFACE, params,headers);
+		
+		
 		if (!HttpUtils.isHttpSuccess(ycResult)) {
 			return DefaultResult.failResult(EnumResultCode.E_YCSERVICE_UPLOAD_ERROR.getInfo());
 		}
@@ -133,7 +139,7 @@ public class UploadService {
 			String url = ycParams.get(YzcloudConsts.URL).toString();
 			return httpAPIService.getFileHeaderBOByHead(url);
 		}
-		return DefaultResult.failResult(EnumResultCode.E_YCSERVICE_UPLOAD_ERROR.getInfo());
+		return DefaultResult.failResult(ycParams.get(YzcloudConsts.MSG).toString());
 	}
 
 
@@ -184,4 +190,5 @@ public class UploadService {
 
 	}
 
+	
 }

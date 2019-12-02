@@ -16,6 +16,7 @@ import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.PtsConsts;
 import com.neo.commons.cons.constants.SessionConstant;
+import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.cons.entity.FileHeaderEntity;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonResultUtils;
@@ -65,7 +66,8 @@ public class UploadInterceptor implements HandlerInterceptor {
 		
 		//判断是普通上传还是优云上传
 		if(StringUtils.isNotBlank(request.getParameter(PtsConsts.YCFILEID))) {
-			IResult<FileHeaderEntity> fileHeaderEntity= uploadService.getFileHeaderEntity(request.getParameter(PtsConsts.YCFILEID));
+			String cookie = request.getHeader(UaaConsts.COOKIE);
+			IResult<FileHeaderEntity> fileHeaderEntity= uploadService.getFileHeaderEntity(request.getParameter(PtsConsts.YCFILEID),cookie);
 			if(fileHeaderEntity.isSuccess()) {
 				uploadSize = fileHeaderEntity.getData().getContentLength();
 				request.setAttribute(SessionConstant.FILE_HEADER_ENTITY, fileHeaderEntity.getData());

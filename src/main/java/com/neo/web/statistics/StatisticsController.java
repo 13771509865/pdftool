@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neo.commons.cons.IResult;
@@ -28,6 +29,7 @@ import com.neo.model.qo.FcsFileInfoQO;
 import com.neo.model.qo.PtsSummaryQO;
 import com.neo.service.statistics.StatisticsService;
 
+import io.lettuce.core.dynamic.annotation.Param;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -93,7 +95,10 @@ public class StatisticsController {
 	})
 	@GetMapping(value = "/findUCloudFileId")
 	@ResponseBody
-	public Map<String,Object> findUCloudFileId(FcsFileInfoQO fcsFileInfoQO){
+	public Map<String,Object> findUCloudFileId(@RequestParam Long userId ,@RequestParam String fileHash){
+		FcsFileInfoQO fcsFileInfoQO = new FcsFileInfoQO();
+		fcsFileInfoQO.setFileHash(fileHash);
+		fcsFileInfoQO.setUserID(userId);
 		IResult<String> result = ptsConvertService.selectFcsFileInfoPOByFileHash(fcsFileInfoQO);
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
