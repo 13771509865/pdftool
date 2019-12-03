@@ -88,12 +88,7 @@ public class StatisticsController {
 	 * @return
 	 */
 	@ApiOperation(value = "查询UCloudFileId")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "fileHash", value = "fileHash", required = true, dataType = "String"),
-			@ApiImplicitParam(name = "userId", value = "userId", required = true, dataType = "Long")
-
-	})
-	@GetMapping(value = "/findUCloudFileId")
+	@PostMapping(value = "/findUCloudFileId")
 	@ResponseBody
 	public Map<String,Object> findUCloudFileId(@RequestParam Long userId ,@RequestParam String fileHash){
 		FcsFileInfoQO fcsFileInfoQO = new FcsFileInfoQO();

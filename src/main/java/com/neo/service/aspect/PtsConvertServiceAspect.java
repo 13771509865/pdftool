@@ -3,6 +3,7 @@ package com.neo.service.aspect;
 import com.neo.commons.cons.EnumUaaRoleType;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.properties.PtsProperty;
+import com.neo.commons.util.SysLogUtils;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.model.bo.UserBO;
@@ -48,7 +49,8 @@ public class PtsConvertServiceAspect {
             if (userBO != null && EnumUaaRoleType.canUploadYc(userBO.getRole())) {
                 //上传文件到优云,更新数据库,未登录用户和企业用户不上传
                 FcsFileInfoBO fcsFileInfoBO = result.getData();
-                iYzcloudService.uploadFileToYc(fcsFileInfoBO, userBO.getUserId(), cookie);
+                IResult<String> uploadFileToYc = iYzcloudService.uploadFileToYc(fcsFileInfoBO, userBO.getUserId(), cookie);
+                SysLogUtils.info("============上传优云，用户："+userBO.getUserId()+uploadFileToYc.getMessage()+"============");
             }
         }
     }

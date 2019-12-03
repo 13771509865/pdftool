@@ -34,6 +34,9 @@
             <if test="id != null">
                 AND ID = #{id}
             </if>
+            <if test="status != null">
+                AND STATUS = #{status}
+            </if>
             <if test="ipAddress != null and ipAddress!=''">
                 AND IP_ADDRESS = #{ipAddress}
             </if>
@@ -105,7 +108,7 @@
 			<![CDATA[and  DATEDIFF(now(), GMT_MODIFIED)<3]]>
 		</select>
 
-		<select id="selectFcsFileInfoPOByFileHash" resultType="com.neo.model.po.FcsFileInfoPO">
+		<select id="selectFcsFileInfoPOByFileHash" parameterType="com.neo.model.qo.FcsFileInfoQO" resultMap="FcsFileInfoPOResultMap">
 			select
 			<include refid="Base_Column_List" />
 			from pts_convert
