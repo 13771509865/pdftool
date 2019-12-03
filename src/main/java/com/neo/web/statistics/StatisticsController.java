@@ -84,11 +84,11 @@ public class StatisticsController {
 	
 	/**
 	 * 根据fileHash查询UCloudFileId
-	 * @param fcsFileInfoQO
+	 * @param
 	 * @return
 	 */
 	@ApiOperation(value = "查询UCloudFileId")
-	@PostMapping(value = "/findUCloudFileId")
+	@GetMapping(value = "/findUCloudFileId")
 	@ResponseBody
 	public Map<String,Object> findUCloudFileId(@RequestParam Long userId ,@RequestParam String fileHash){
 		FcsFileInfoQO fcsFileInfoQO = new FcsFileInfoQO();
