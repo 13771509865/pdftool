@@ -26,8 +26,8 @@ import com.neo.commons.util.JsonResultUtils;
  * @author xujun
  *
  */
-@Order(11)//顺序,越小越优先
-@WebFilter(filterName = "visitFilter", urlPatterns = "/composite/*")
+//@Order(11)//顺序,越小越优先
+//@WebFilter(filterName = "visitFilter", urlPatterns = "/composite/*")
 public class VisitFilter implements Filter{
 
 	@Override

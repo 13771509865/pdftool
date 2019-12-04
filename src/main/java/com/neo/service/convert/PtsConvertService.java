@@ -1,6 +1,7 @@
 package com.neo.service.convert;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -165,11 +166,18 @@ public class PtsConvertService {
 	 * @param fcsFileInfoQO
 	 * @return
 	 */
-	public IResult<String> selectFcsFileInfoPOByFileHash(FcsFileInfoQO fcsFileInfoQO){
-		FcsFileInfoPO fcsFileInfoPO = fcsFileInfoBOMapper.selectFcsFileInfoPOByFileHash(fcsFileInfoQO);
-		if(fcsFileInfoPO.getUCloudFileId()==null){
+	public IResult<String> selectFcsFileInfoPOByFileHash(String fileHash,Long userId){
+		if(userId == null) {
+			return DefaultResult.failResult("请登录后，再执行此操作");
+		}
+		FcsFileInfoQO fcsFileInfoQO = new FcsFileInfoQO();
+		fcsFileInfoQO.setFileHash(fileHash);
+		fcsFileInfoQO.setUserID(userId);
+		
+		List<FcsFileInfoPO> list = fcsFileInfoBOMapper.selectFcsFileInfoPOByFileHash(fcsFileInfoQO);
+		if(list.size() < 1 || list.isEmpty() ||StringUtils.isBlank(list.get(0).getUCloudFileId())){
 			return DefaultResult.failResult(EnumResultCode.E_UCLOUDFILEID_NULL.getInfo());
 		}
-		return DefaultResult.successResult(fcsFileInfoPO.getUCloudFileId());
+		return DefaultResult.successResult(list.get(0).getUCloudFileId());
 	}
 }
