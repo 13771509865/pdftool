@@ -19,6 +19,7 @@ public enum EnumResultCode {
 	E_RECORD_FILE_ERROR(15,"记录错误文件失败"),
 	E_ZIP_PACKAGE_ERROR(16,"打包压缩包失败"),
 	E_SAVE_YCFILE_ERROR(17,"保存文件至优云失败"),
+	E_GET_UCLOUD_ID_ERROR(18,"获取优云fileId失败"),
 	
 	E_SERVER_BUSY(19,"服务器正忙，请稍后再试"),
 	E_FILESERVICE_FAIL(20,"文件操作失败,请联系管理员检查服务器"),
@@ -42,7 +43,10 @@ public enum EnumResultCode {
 	E_FCS_CONVERT_FAIL(43,"文档转换服务器通讯失败,请联系管理员"),
 	E_NOTALL_PARAM(54,"参数不完整,请检查参数"),
 	E_UCLOUDFILEID_NULL(55,"UCLOUDFILEID为空"),
-	E_YCUPLOAD_SAVE_FAIL(56,"上传优云文件失败信息保存失败"),
+	E_YCUPLOAD_SAVE_FAIL(56,"优云文件上传失败信息保存失败"),
+	E_YCUPLOAD_UPDATE_FAIL(57,"优云文件上传失败信息更新失败"),
+	E_YCUPLOAD_NULL(58,"未查到优云文件上传失败信息"),
+	E_YCUPLOAD_RETRY_NULL(59,"重试成功0条数据"),
 
 	E_GET_AUTH_ERROR(98,"解析用户权限失败"),
 	E_ORDER_AUTH_CODE_ERROR(99,"抱歉该订单缺少pdf工具集必要的AuthCode或者存在非法的AuthCode"),

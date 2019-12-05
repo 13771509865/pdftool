@@ -4,22 +4,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.neo.commons.cons.DefaultResult;
-import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.EnumStatus;
+import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.RedisConsts;
 import com.neo.commons.cons.constants.SysConstant;
+import com.neo.commons.cons.constants.UaaConsts;
+import com.neo.commons.cons.constants.YzcloudConsts;
+import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.ConfigProperty;
+import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.HttpUtils;
-import com.neo.commons.util.JsonResultUtils;
+import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.dao.FcsFileInfoPOMapper;
 import com.neo.dao.PtsSummaryPOMapper;
@@ -29,6 +30,7 @@ import com.neo.model.po.PtsSummaryPO;
 import com.neo.model.qo.FcsFileInfoQO;
 import com.neo.model.qo.PtsSummaryQO;
 import com.neo.service.cache.impl.RedisCacheManager;
+import com.neo.service.httpclient.HttpAPIService;
 
 @Service("statisticsService")
 public class StatisticsService {
@@ -45,6 +47,11 @@ public class StatisticsService {
 	@Autowired
 	private RedisCacheManager<String> redisCacheManager;
 
+	@Autowired
+	private PtsProperty ptsProperty;
+
+	@Autowired
+	private HttpAPIService httpAPIService;
 
 	/**
 	 * 根据userID查询三天内的转换记录
@@ -98,31 +105,40 @@ public class StatisticsService {
 
 
 
-
 	/**
-	 * 根据fileHash和userID删除用户的转换记录
-	 * @param fcsFileInfoPO
-	 * @param request
+	 * 查询跳转优云文件夹的id
+	 * @param cookie
 	 * @return
 	 */
-	//	public IResult<String> deleteConvert(FcsFileInfoQO fcsFileInfoQO,HttpServletRequest request){
-	//		Long userID = HttpUtils.getSessionUserID(request);
-	//		if(userID == null) {
-	//			return DefaultResult.failResult("请登录后，再执行此操作");
-	//		}else {
-	//			fcsFileInfoQO.setUserID(userID);
-	//		}
-	//		try {
-	//			int count = fcsFileInfoPOMapper.deletePtsConvert(fcsFileInfoQO);
-	//			if(count < 1) {
-	//				return DefaultResult.failResult("删除用户转换记录失败");
-	//			}
-	//			return DefaultResult.successResult();
-	//		} catch (Exception e) {
-	//			SysLogUtils.error("删除用户转换记录失败，原因：", e);
-	//			return DefaultResult.failResult("删除用户转换记录失败");
-	//		}
-	//	}
+	public IResult<String> findUCloudFolderId(String cookie){
+		if(StringUtils.isBlank(cookie)) {
+			return DefaultResult.failResult(EnumResultCode.E_UNLOGIN_ERROR.getInfo());
+		}
+		String url = ptsProperty.getYzcloud_domain() + YzcloudConsts.FOLDERID_INTERFACE;
+		Map<String, Object> params = new HashMap<>();
+		params.put("typeOfSource", "application.pdf");
+		Map<String, Object> headers = new HashMap<>();
+		headers.put(UaaConsts.COOKIE, cookie);
+		IResult<HttpResultEntity> httpResult = httpAPIService.doGet(url, params, headers);
+		if(HttpUtils.isHttpSuccess(httpResult)) {
+			 try {
+                 Map<String, Object> resultMap = JsonUtils.parseJSON2Map(httpResult.getData().getBody());
+                 if (!resultMap.isEmpty() && "0".equals(resultMap.get(YzcloudConsts.ERRORCODE).toString())) {
+                     Map<String, Object> result = (Map<String, Object>) resultMap.get(YzcloudConsts.RESULT);
+                     String fileId = result.get("fileId").toString();
+                     if (StringUtils.isNotBlank(fileId)) {
+                         return DefaultResult.successResult(fileId);
+                     }
+                 }
+             } catch (Exception e) {
+                 return DefaultResult.failResult(EnumResultCode.E_GET_UCLOUD_ID_ERROR.getInfo());
+             }
+		}
+		return DefaultResult.failResult(EnumResultCode.E_GET_UCLOUD_ID_ERROR.getInfo());
+
+	}
+
+
 
 
 

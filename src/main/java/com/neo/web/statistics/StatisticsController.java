@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.SysConstant;
+import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.model.bo.FileUploadBO;
@@ -102,99 +103,28 @@ public class StatisticsController {
 	
 	
 	
-	/**
-	 * 删除用户的转换记录
-	 * @param filehash
-	 * @param request
-	 * @return
-	 */
-//	@ApiOperation(value = "删除用户的转换记录")
-//	@PostMapping(value = "/delete")
-//	@ResponseBody
-//	public Map<String, Object> deleteConvert(@RequestBody FcsFileInfoQO fcsFileInfoQO ,HttpServletRequest request){
-//		IResult<String> result = statisticsService.deleteConvert(fcsFileInfoQO, request);
-//		if(result.isSuccess()) {
-//			return JsonResultUtils.successMapResult();
-//		}else {
-//			return JsonResultUtils.failMapResult(result.getMessage());
-//		}
-//	}
 	
 	
-/**==================================运营统计数据============================================ */	
-	
-	
-	/**
-	 * 根据文档大小，查询转换的数量
-	 * @param request
-	 * @return
-	 */
-	@ApiOperation(value = "根据文档大小查询转换的数量")
-	@GetMapping(value = "/convertBySize")
+	@ApiOperation(value = "查询跳转优云文件夹的Id")
+	@PostMapping(value = "/findUCloudFolderId")
 	@ResponseBody
-	public Map<String, Object> convertBySize(HttpServletRequest request){
-		IResult<PtsSummaryPO> result =  statisticsService.selectCountBySize();
+	public Map<String,Object> findUCloudFolderId(HttpServletRequest request){
+		String cookie = request.getHeader(UaaConsts.COOKIE);
+		IResult<String> result =  statisticsService.findUCloudFolderId(cookie);
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
 		}else {
 			return JsonResultUtils.failMapResult(result.getMessage());
 		}
 	}
+	
+	
+	
+	
 	
 
-	/**
-	 * 查询每个ip每天的转换量
-	 * @param request
-	 * @return
-	 */
-	@ApiOperation(value = "查询每个ip每天的转换量")
-	@PostMapping(value = "/ipConvert")
-	@ResponseBody
-	public Map<String, Object> ipConvert( PtsSummaryQO ptsSummaryQO,HttpServletRequest request){
-		IResult<List<PtsSummaryPO>> result = statisticsService.selectCountByIpAndDate(ptsSummaryQO);
-		if(result.isSuccess()) {
-			return JsonResultUtils.successMapResult(result.getData());
-		}else {
-			return JsonResultUtils.failMapResult(result.getMessage());
-		}
-	}
 	
-	
-	/**
-	 * 查询每天的转换量
-	 * @param ptsSummaryQO
-	 * @param request
-	 * @return
-	 */
-	@ApiOperation(value = "查询每天的转换量")
-	@PostMapping(value = "/convertByDay")
-	@ResponseBody
-	public Map<String, Object> ConvertByDay( PtsSummaryQO ptsSummaryQO,HttpServletRequest request){
-		IResult<List<PtsSummaryPO>> result = statisticsService.selectConvertByDay(ptsSummaryQO);
-		if(result.isSuccess()) {
-			return JsonResultUtils.successMapResult(result.getData());
-		}else {
-			return JsonResultUtils.failMapResult(result.getMessage());
-		}
-	}
-	
-	
-	
-	/**
-	 * 查询上传记录
-	 * @return
-	 */
-	@ApiOperation(value = "查询上传记录")
-	@PostMapping(value = "/uploadTimes")
-	@ResponseBody
-	public Map<String,Object> uploadTimes(){
-		IResult<FileUploadBO> result = statisticsService.getUploadTimes();
-		if(result.isSuccess()) {
-			return JsonResultUtils.successMapResult(result.getData());
-		}else {
-			return JsonResultUtils.failMapResult(result.getMessage());
-		}
-	}
+
 
 
 
