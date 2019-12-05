@@ -11,4 +11,6 @@ import com.neo.model.bo.FcsFileInfoBO;
 public interface IYzcloudService {
 
     IResult<String> uploadFileToYc(FcsFileInfoBO fcsFileInfoBO, Long userId, String cookie);
+
+    String getZipFilePath(FcsFileInfoBO fcsFileInfoBO);
 }

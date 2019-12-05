@@ -13,8 +13,12 @@ import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.ZipUtils;
 import com.neo.dao.FcsFileInfoPOMapper;
+import com.neo.dao.PtsYcUploadPOMapper;
 import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.model.po.FcsFileInfoPO;
+import com.neo.model.po.PtsYcUploadPO;
+import com.neo.model.qo.PtsYcUploadQO;
+import com.neo.service.convert.PtsYcUploadService;
 import com.neo.service.httpclient.HttpAPIService;
 import com.neo.service.yzcloud.IYzcloudService;
 import org.apache.commons.io.FilenameUtils;
@@ -43,6 +47,9 @@ public class YzcloudService implements IYzcloudService {
 
     @Autowired
     private FcsFileInfoPOMapper fcsFileInfoPOMapper;
+
+    @Autowired
+    private PtsYcUploadPOMapper ptsYcUploadPOMapper;
 
     @Async("uploadYcFileExecutor")
     @Override
@@ -86,11 +93,23 @@ public class YzcloudService implements IYzcloudService {
                     return DefaultResult.failResult(EnumResultCode.E_SAVE_YCFILE_ERROR.getInfo());
                 }
             }
+            PtsYcUploadPO ptsYcUploadPO = new PtsYcUploadPO();
+            ptsYcUploadPO.setConvertType(fcsFileInfoBO.getConvertType());
+            ptsYcUploadPO.setDestStoragePath(fcsFileInfoBO.getDestStoragePath());
+            ptsYcUploadPO.setFileHash(fcsFileInfoBO.getFileHash());
+            ptsYcUploadPO.setCookie(cookie);
+            ptsYcUploadPO.setUserId(userId);
+            ptsYcUploadPO.setSrcFileName(fcsFileInfoBO.getSrcFileName());
+            int num = ptsYcUploadPOMapper.insertPtsYcUpload(ptsYcUploadPO);
+            if(num < 1){
+                return DefaultResult.failResult(EnumResultCode.E_YCUPLOAD_SAVE_FAIL.getInfo());
+            }
         }
         return DefaultResult.failResult(EnumResultCode.E_SAVE_YCFILE_ERROR.getInfo());
     }
 
-    private String getZipFilePath(FcsFileInfoBO fcsFileInfoBO) {
+    @Override
+    public String getZipFilePath(FcsFileInfoBO fcsFileInfoBO) {
         String finalPath = null;
         String zipRelativePath = SysConstant.ZIP_TEMP + File.separator + fcsFileInfoBO.getFileHash() + File.separator
                 + SysConstant.ZIP_NAME;
