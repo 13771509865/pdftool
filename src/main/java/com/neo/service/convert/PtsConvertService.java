@@ -31,6 +31,7 @@ import com.neo.model.po.ConvertParameterPO;
 import com.neo.model.po.FcsFileInfoPO;
 import com.neo.model.po.PtsSummaryPO;
 import com.neo.service.httpclient.HttpAPIService;
+import com.neo.service.ticket.RedisTicketManager;
 import com.neo.service.ticket.TicketManager;
 
 
@@ -44,6 +45,9 @@ public class PtsConvertService {
 
 	@Autowired
 	private TicketManager ticketManager;
+	
+	@Autowired 
+	private RedisTicketManager redisTicketManager;
 	
 	@Autowired
 	private HttpAPIService httpAPIService;

@@ -19,6 +19,7 @@ public enum EnumResultCode {
 	E_RECORD_FILE_ERROR(15,"记录错误文件失败"),
 	E_ZIP_PACKAGE_ERROR(16,"打包压缩包失败"),
 	E_SAVE_YCFILE_ERROR(17,"保存文件至优云失败"),
+	E_GET_UCLOUD_ID_ERROR(18,"获取优云fileId失败"),
 	
 	E_SERVER_BUSY(19,"服务器正忙，请稍后再试"),
 	E_FILESERVICE_FAIL(20,"文件操作失败,请联系管理员检查服务器"),

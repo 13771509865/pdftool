@@ -1,6 +1,9 @@
 package com.neo.service.cache.impl;
 
+import com.neo.commons.cons.constants.RedisConsts;
+import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.SysLogUtils;
+import com.neo.commons.util.UUIDHelper;
 import com.neo.config.RedisConfig;
 import com.neo.service.cache.CacheManager;
 
@@ -31,12 +34,21 @@ import java.util.concurrent.TimeUnit;
 @Service("redisCacheManager")
 public class RedisCacheManager<T> implements CacheManager<T> {
 
+	
+	@Autowired
+    @Qualifier("initPriorityQueueScript")
+    private DefaultRedisScript initPriorityQueueScript;
+	
     @Autowired
     @Qualifier("htbRateLimiterScript")
     private DefaultRedisScript<Number> htbRateLimiterScript;
-
+    
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+    
+    @Autowired
+    private ConfigProperty configProperty;
+    
 
     @Override
     public boolean set(String key, T value) {
@@ -380,11 +392,11 @@ public class RedisCacheManager<T> implements CacheManager<T> {
      * @author zhoufeng
      * @date 2019/10/21
      */
-//    public void initPriorityQueue() {
-//        List<String> keys = new ArrayList<>();
-//        keys.add(RedisConstant.LowPriorityQueueKey);
-//        redisTemplate.execute(initPriorityQueueScript, keys, eicProperty.getLowPriorityQueueSize(), eicProperty.getMiddlePriorityQueueSize(), eicProperty.getHighPriorityQueueSize(), RedisConstant.LowTicketName, RedisConstant.MiddleTicketName, RedisConstant.HighTicketName, UUIDHelper.generateUUID());
-//    }
+    public void initPriorityQueue() {
+        List<String> keys = new ArrayList<>();
+        keys.add(RedisConsts.CONVERT_QUEUE_KEY);
+        redisTemplate.execute(initPriorityQueueScript, keys,configProperty.getConvertPoolSize(), RedisConsts.CONVERT_TICKET,UUIDHelper.generateUUID());
+    }
     
     
     

@@ -23,6 +23,13 @@ import org.springframework.scripting.support.ResourceScriptSource;
 @Configuration
 @AutoConfigureAfter(RedisAutoConfiguration.class)
 public class RedisConfig {
+	
+    @Bean(name = "initPriorityQueueScript")
+    public DefaultRedisScript initPriorityQueue() {
+        DefaultRedisScript redisScript = new DefaultRedisScript();
+        redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource("luaScripts/initPriorityQueue.lua")));
+        return redisScript;
+    }
 
     @Bean(name = "htbRateLimiterScript")
     public DefaultRedisScript<Number> htbRateLimiter() {
