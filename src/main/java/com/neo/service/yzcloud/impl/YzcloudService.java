@@ -65,8 +65,9 @@ public class YzcloudService implements IYzcloudService {
             params.put("typeOfSource", "application.pdf");
             Map<String, Object> headers = new HashMap<>();
             headers.put(UaaConsts.COOKIE, cookie);
+            System.out.println("开始发送信息给优云。。。。");
             IResult<HttpResultEntity> httpResult = httpAPIService.uploadResouse(targetFile, url, params, headers);
-           
+           System.out.println(httpResult.getData().getBody());
             if (HttpUtils.isHttpSuccess(httpResult)) {
                 try {
                     Map<String, Object> resultMap = JsonUtils.parseJSON2Map(httpResult.getData().getBody());
