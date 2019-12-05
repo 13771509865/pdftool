@@ -6,14 +6,19 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.neo.service.convert.PtsConvertService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.util.HttpUtils;
@@ -25,6 +30,7 @@ import com.neo.model.qo.FcsFileInfoQO;
 import com.neo.model.qo.PtsSummaryQO;
 import com.neo.service.statistics.StatisticsService;
 
+import io.lettuce.core.dynamic.annotation.Param;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -35,7 +41,9 @@ public class StatisticsController {
 	
 	@Autowired
 	private StatisticsService statisticsService;
-	
+
+	@Autowired
+	private PtsConvertService ptsConvertService;
 
 	/**
 	 * 根据userID，查询登录用户三天的转换记录
@@ -62,7 +70,7 @@ public class StatisticsController {
 	@ApiOperation(value = "查询当天剩余转换次数")
 	@GetMapping(value = "/convertTimes")
 	@ResponseBody
-	public Map<String,Object> getConvertTimes( HttpServletRequest request){
+	public Map<String,Object> getConvertTimes(HttpServletRequest request){
 		IResult<String>  result = statisticsService.getConvertTimes(HttpUtils.getIpAddr(request),HttpUtils.getSessionUserID(request));
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
@@ -73,6 +81,25 @@ public class StatisticsController {
 	
 	
 
+	
+	/**
+	 * 根据fileHash查询UCloudFileId
+	 * @param
+	 * @return
+	 */
+	@ApiOperation(value = "查询UCloudFileId")
+	@PostMapping(value = "/findUCloudFileId")
+	@ResponseBody
+	public Map<String,Object> findUCloudFileId(@RequestParam String fileHash,HttpServletRequest request){
+	
+		IResult<String> result = ptsConvertService.selectFcsFileInfoPOByFileHash(fileHash,HttpUtils.getSessionUserID(request));
+		if(result.isSuccess()) {
+			return JsonResultUtils.successMapResult(result.getData());
+		}else {
+			return JsonResultUtils.failMapResult(result.getMessage());
+		}
+	}
+	
 	
 	
 	/**
@@ -155,8 +182,6 @@ public class StatisticsController {
 	
 	/**
 	 * 查询上传记录
-	 * @param ptsSummaryQO
-	 * @param request
 	 * @return
 	 */
 	@ApiOperation(value = "查询上传记录")
@@ -170,7 +195,7 @@ public class StatisticsController {
 			return JsonResultUtils.failMapResult(result.getMessage());
 		}
 	}
-	
+
 
 
 }

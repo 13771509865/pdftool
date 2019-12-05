@@ -40,6 +40,9 @@ public class PtsProperty {
 	
 	@NotBlank
 	private String fcs_downLoad_url;
+	
+	@NotBlank
+	private String fcs_http_download_url;
 
 	@NotBlank
 	private String features_version;
@@ -61,4 +64,17 @@ public class PtsProperty {
 	
 	@NotBlank
 	private String feedback_url;
+
+	@NotBlank
+	private String fcs_srcfile_dir;
+
+	private String fcs_targetfile_dir;
+
+	private String convert_fail_dir;
+
+	private String report_error_dir;
+
+	private String yzcloud_domain;
+	
+
 }

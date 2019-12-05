@@ -58,7 +58,7 @@ public class SpringMVCConfigure implements WebMvcConfigurer{
 	    @Override
 	    public void addInterceptors(InterceptorRegistry registry) {
 	        registry.addInterceptor(uaaAuthInterceptor).addPathPatterns("/**").excludePathPatterns("/manager/**/*.*");
-	        registry.addInterceptor(uploadInterceptor).addPathPatterns("/file/defaultUpload");
+	        registry.addInterceptor(uploadInterceptor).addPathPatterns("/file/defaultUpload","/file/uploadYc");
 	        registry.addInterceptor(convertInterceptor).addPathPatterns("/composite/**");
 	        registry.addInterceptor(feedBackInterceptor).addPathPatterns("/feedback");
 	    }

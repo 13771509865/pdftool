@@ -33,8 +33,9 @@
         <jna.version>3.0.9</jna.version>
         <exec.version>1.3</exec.version>
         <fileupload.version>1.2.2</fileupload.version>
-        <httpmime.version>4.5.9</httpmime.version>
+        <httpmime.version>4.5.8</httpmime.version>
         <yozo-saas-common.version>0.0.1-SNAPSHOT</yozo-saas-common.version>
+        <ant.version>1.10.7</ant.version>
     </properties>
 
     <dependencies>
@@ -259,6 +260,12 @@
             <groupId>com.yozosoft</groupId>
             <artifactId>yozo-saas-common</artifactId>
             <version>${yozo-saas-common.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>${ant.version}</version>
         </dependency>
         
     </dependencies>

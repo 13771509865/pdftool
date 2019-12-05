@@ -229,6 +229,17 @@ public class HttpUtils {
 		}
 		return null;
 	}
+	
+	
+	public static UserBO getUserBO(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		String userInfo = (String)session.getAttribute(ConstantCookie.SESSION_USER);
+		if(StringUtils.isNotBlank(userInfo)) {
+			UserBO userBO = JsonUtils.json2obj(userInfo, UserBO.class);
+			return userBO;
+		}
+		return null;
+	}
 
 	
 	
