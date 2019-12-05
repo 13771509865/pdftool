@@ -3,6 +3,7 @@ package com.neo.service.cache.impl;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.config.RedisConfig;
 import com.neo.service.cache.CacheManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -14,6 +15,7 @@ import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -370,5 +372,22 @@ public class RedisCacheManager<T> implements CacheManager<T> {
         Number number = redisTemplate.execute(htbRateLimiterScript, keys, max_permits, permits_per_second, required_permits, timeout_micros);
         return number.longValue() > 0;
     }
+    
+    
+    
+    /**
+     * @description 初始化redis
+     * @author zhoufeng
+     * @date 2019/10/21
+     */
+//    public void initPriorityQueue() {
+//        List<String> keys = new ArrayList<>();
+//        keys.add(RedisConstant.LowPriorityQueueKey);
+//        redisTemplate.execute(initPriorityQueueScript, keys, eicProperty.getLowPriorityQueueSize(), eicProperty.getMiddlePriorityQueueSize(), eicProperty.getHighPriorityQueueSize(), RedisConstant.LowTicketName, RedisConstant.MiddleTicketName, RedisConstant.HighTicketName, UUIDHelper.generateUUID());
+//    }
+    
+    
+    
+    
 
 }

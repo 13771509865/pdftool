@@ -130,4 +130,4 @@ pts:
   convert_fail_dir:                     #转换失败源文件夹
   report_error_dir:                     #报错文件夹
 
-  yzcloud_domain: http://192.168.0.85:19090       #优云域名
+  yzcloud_domain: http://www.yozodocs.com       #优云域名

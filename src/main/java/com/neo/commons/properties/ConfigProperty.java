@@ -18,11 +18,17 @@ import lombok.Getter;
 public class ConfigProperty{
 
 
+	@Value(value = "${ticketMaster}")
+	private Boolean ticketMaster;
+	
 	@Value(value = "${convertPoolSize}")
 	private Integer convertPoolSize;
 
 	@Value(value = "${convertTimeout}")
 	private Long convertTimeout;
+	
+	@Value(value = "${ticketLimiter}")
+	private Integer ticketLimiter;
 
 	@Value(value = "${mUploadSize}")
 	private Integer mUploadSize;

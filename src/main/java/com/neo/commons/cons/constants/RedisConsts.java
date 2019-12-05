@@ -44,4 +44,9 @@ public class RedisConsts {
     public static final String PRODUCT_VERSION = "productVersion";
     
 	
+    //会员优先级
+    public static final String CONVERT_TICKET = "convertTicket";
+    
+    public static final String CONVERT_QUEUE_KEY = "convertQueue";
+    
 }
