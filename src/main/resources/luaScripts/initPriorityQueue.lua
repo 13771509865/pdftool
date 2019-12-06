@@ -1,8 +1,8 @@
 local convert_queue_key = KEYS[1]
 
 local convert_ticket_num = tonumber(ARGV[1])
-local convert_ticket_name = string.gsub(ARGV[4],"\"","")
-local uuid = string.gsub(ARGV[7],"\"","")
+local convert_ticket_name = string.gsub(ARGV[2],"\"","")
+local uuid = string.gsub(ARGV[3],"\"","")
 
 redis.call("SELECT", 3)
 redis.call("DEL",convert_queue_key)
