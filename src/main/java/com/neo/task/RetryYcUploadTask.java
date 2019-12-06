@@ -4,6 +4,7 @@ import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.RedisConsts;
 import com.neo.commons.cons.constants.TimeConsts;
 import com.neo.commons.properties.PtsProperty;
+import com.neo.commons.util.DateViewUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.model.qo.PtsYcUploadQO;
 import com.neo.service.cache.CacheManager;
@@ -34,7 +35,7 @@ public class RetryYcUploadTask {
 
     @Scheduled(cron = "0 0 * * * ?")
     public void retryYcUpload(){
-        if(cacheManager.setScheduler(RedisConsts.RETRY_YC_KEY,1, TimeConsts.SECOND_OF_HALFHOUR)) {
+        if(cacheManager.setScheduler(RedisConsts.RETRY_YC_KEY, RedisConsts.RETRY_YC_KEY+"___"+DateViewUtils.getNowFull(), TimeConsts.SECOND_OF_HALFHOUR)) {
             if ("true".equals(ptsProperty.getRetryFlag())) {
                 SysLogUtils.info("=======================================开始重试YcUpload=======================================");
                 IResult<String> result = ptsYcUploadService.retryYCUpload();
