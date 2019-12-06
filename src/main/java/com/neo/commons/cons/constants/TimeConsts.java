@@ -42,6 +42,11 @@ public final class TimeConsts {
      */
     public static final long SECOND_OF_HOUR = 3600L;
 
+
+    /**
+     * 半小时秒数
+     */
+    public static final long SECOND_OF_HALFHOUR = 1800L;
     /**
      * 一分钟秒数
      */
