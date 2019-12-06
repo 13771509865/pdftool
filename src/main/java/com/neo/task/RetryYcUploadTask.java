@@ -6,8 +6,8 @@ import com.neo.commons.cons.constants.TimeConsts;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.model.qo.PtsYcUploadQO;
+import com.neo.service.cache.CacheManager;
 import com.neo.service.convert.PtsYcUploadService;
-import com.neo.service.redis.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -30,11 +30,11 @@ public class RetryYcUploadTask {
     private PtsProperty ptsProperty;
 
     @Autowired
-    private RedisService redisService;
+    private CacheManager cacheManager;
 
     @Scheduled(cron = "0 0 * * * ?")
     public void retryYcUpload(){
-        if(redisService.setScheduler(RedisConsts.RETRY_YC_KEY,1, TimeConsts.SECOND_OF_HALFHOUR)) {
+        if(cacheManager.setScheduler(RedisConsts.RETRY_YC_KEY,1, TimeConsts.SECOND_OF_HALFHOUR)) {
             if ("true".equals(ptsProperty.getRetryFlag())) {
                 SysLogUtils.info("=======================================开始重试YcUpload=======================================");
                 IResult<String> result = ptsYcUploadService.retryYCUpload();
