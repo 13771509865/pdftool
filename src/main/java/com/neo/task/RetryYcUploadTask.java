@@ -35,7 +35,7 @@ public class RetryYcUploadTask {
 
     @Scheduled(cron = "0 0 * * * ?")
     public void retryYcUpload(){
-        if(cacheManager.setScheduler(RedisConsts.RETRY_YC_KEY, RedisConsts.RETRY_YC_KEY+"___"+DateViewUtils.getNowFull(), TimeConsts.SECOND_OF_HALFHOUR)) {
+        if(cacheManager.setnx(RedisConsts.RETRY_YC_KEY, RedisConsts.RETRY_YC_KEY+"___"+DateViewUtils.getNowFull(), TimeConsts.SECOND_OF_HALFHOUR)) {
             if ("true".equals(ptsProperty.getRetryFlag())) {
                 SysLogUtils.info("=======================================开始重试YcUpload=======================================");
                 IResult<String> result = ptsYcUploadService.retryYCUpload();
