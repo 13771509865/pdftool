@@ -43,8 +43,6 @@ import com.neo.service.ticket.TicketManager;
 @Service("ptsConvertService")
 public class PtsConvertService {
 
-	@Autowired
-	private TicketManager ticketManager;
 	
 	@Autowired 
 	private RedisTicketManager redisTicketManager;
@@ -70,10 +68,10 @@ public class PtsConvertService {
 	 * @param waitTime
 	 * @return
 	 */ 
-	public IResult<FcsFileInfoBO> dispatchConvert(ConvertParameterBO convertBO,Integer waitTime,UserBO userBO,String ipAddress,String cookie){
+	public IResult<FcsFileInfoBO> dispatchConvert(ConvertParameterBO convertBO,UserBO userBO,String ipAddress,String cookie){
 		FcsFileInfoBO fcsFileInfoBO = new FcsFileInfoBO();
 		//取超时时间
-		String ticket = redisTicketManager.getConverTicket(userBO.getMembership());
+		String ticket = redisTicketManager.getConverTicket(userBO);
 		
 		if (StringUtils.isEmpty(ticket)) {
 			fcsFileInfoBO.setCode(EnumResultCode.E_SERVER_BUSY.getValue());

@@ -51,7 +51,7 @@ public class PtsConvertController {
             return JsonResultUtils.failMapResult(EnumResultCode.E_NOTALL_PARAM.getInfo());
         }
         String cookie = request.getHeader(UaaConsts.COOKIE);
-        IResult<FcsFileInfoBO> result = ptsConvertService.dispatchConvert(convertBO, ConfigProperty.getConvertTicketWaitTime(), HttpUtils.getUserBO(request), HttpUtils.getIpAddr(request), cookie);
+        IResult<FcsFileInfoBO> result = ptsConvertService.dispatchConvert(convertBO, HttpUtils.getUserBO(request), HttpUtils.getIpAddr(request), cookie);
         ptsConvertService.updatePtsSummay(result.getData(), convertBO, request);
         if (result.isSuccess()) {
         	

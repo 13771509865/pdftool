@@ -29,6 +29,9 @@ public class ConfigProperty{
 	
 	@Value(value = "${ticketLimiter}")
 	private Integer ticketLimiter;
+	
+	@Value(value = "${ticketWaitTime}")
+	private Integer ticketWaitTime;
 
 	@Value(value = "${mUploadSize}")
 	private Integer mUploadSize;

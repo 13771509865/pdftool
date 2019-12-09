@@ -11,30 +11,34 @@ import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.RedisConsts;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.SysLogUtils;
+import com.neo.model.bo.UserBO;
 import com.neo.service.cache.impl.RedisCacheManager;
 
 @Service("redisTicketManager")
 public class RedisTicketManager {
 
 	@Autowired
-	private ConfigProperty config;
+	private ConfigProperty configProperty;
 
 	@Autowired
 	private RedisCacheManager<String> redisCacheManager;
 
 
 
-//	@PostConstruct
+	@PostConstruct
 	public void init() {
-		if (config.getTicketMaster()) {
-			initPriorityQueue();
+		if (configProperty.getTicketMaster()) {
+			initPriorityQueue(); 
 		}
 	}
 
 
 
+	/**
+	 * 初始化队列
+	 */
 	public void initPriorityQueue() {
-		Integer convertTicket = config.getConvertPoolSize();
+		Integer convertTicket = configProperty.getConvertPoolSize();
 		Boolean check1 = convertTicket!=null && convertTicket>0;
 		if(check1) {
 			redisCacheManager.initPriorityQueue();
@@ -51,14 +55,14 @@ public class RedisTicketManager {
 	 * @param membership
 	 * @return
 	 */
-	public String getConverTicket(String membership){
-		if(EnumMemberType.isMember(membership)) {//会员
+	public String getConverTicket(UserBO userBO){
+		if(EnumMemberType.isMember(userBO.getMembership())) {//会员
 			return redisCacheManager.pop(RedisConsts.CONVERT_QUEUE_KEY);
 		}else {//非会员
 			Long ticketNum = redisCacheManager.getListLen(RedisConsts.CONVERT_QUEUE_KEY);
-			if(ticketNum >0 && ticketNum <=config.getTicketLimiter()) {
+			if(ticketNum >0 && ticketNum <= configProperty.getTicketLimiter()) {
 				try {
-					Thread.currentThread().sleep(2000);
+					Thread.currentThread().sleep(configProperty.getTicketWaitTime()*1000);
 				} catch (InterruptedException e) {
 					return null;
 				}
