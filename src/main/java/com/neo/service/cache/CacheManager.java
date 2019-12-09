@@ -40,6 +40,5 @@ public interface CacheManager<T> {
 
 	Boolean deleteHashKey(String key,String hashKey);
 
-	boolean setScheduler(final String key, Object value,Long time);
 
 }

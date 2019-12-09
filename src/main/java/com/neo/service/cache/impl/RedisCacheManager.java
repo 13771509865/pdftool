@@ -39,10 +39,6 @@ public class RedisCacheManager<T> implements CacheManager<T> {
     @Qualifier("initPriorityQueueScript")
     private DefaultRedisScript initPriorityQueueScript;
 	
-//    @Autowired
-//    @Qualifier("getPriorityTicketScript")
-//    private DefaultRedisScript<String> getPriorityTicketScript;
-	
     @Autowired
     @Qualifier("htbRateLimiterScript")
     private DefaultRedisScript<Number> htbRateLimiterScript;
@@ -402,34 +398,7 @@ public class RedisCacheManager<T> implements CacheManager<T> {
         redisTemplate.execute(initPriorityQueueScript, keys,configProperty.getConvertPoolSize(), RedisConsts.CONVERT_TICKET,UUIDHelper.generateUUID());
     }
 
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * 定时任务锁
-     * @param key
-     * @param value
-     * @param time
-     * @return
-     */
-    @Override
-    public boolean setScheduler(final String key, Object value,Long time) {
-        boolean result = false;
-        try {
-            if(org.apache.commons.lang3.StringUtils.isEmpty(key)){
-                return false;
-            }
-            result =  redisTemplate.opsForValue().setIfAbsent(key, value,time, TimeUnit.SECONDS);
-            SysLogUtils.info("--------------"+redisTemplate.opsForValue().get(key));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
+
     
     
 
