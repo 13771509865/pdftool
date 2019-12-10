@@ -56,7 +56,7 @@ public class RedisTicketManager {
 	 * @return
 	 */
 	public String getConverTicket(UserBO userBO){
-		if(EnumMemberType.isMember(userBO.getMembership())) {//会员
+		if(userBO!=null && EnumMemberType.isMember(userBO.getMembership())) {//会员
 			return redisCacheManager.pop(RedisConsts.CONVERT_QUEUE_KEY);
 		}else {//非会员
 			Long ticketNum = redisCacheManager.getListLen(RedisConsts.CONVERT_QUEUE_KEY);
