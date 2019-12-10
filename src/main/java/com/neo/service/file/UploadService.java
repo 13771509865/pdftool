@@ -183,7 +183,7 @@ public class UploadService {
 		}else {
 			ptsApplyPO.setAddress(String.valueOf(userId));
 		}
-		if(StringUtils.isNotBlank(module)) {
+		if(module !=null ) {
 			ptsApplyPO.setModule(Integer.valueOf(module));
 		}
 		return ptsApplyPO;
