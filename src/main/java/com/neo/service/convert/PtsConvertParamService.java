@@ -168,7 +168,7 @@ public class PtsConvertParamService {
 			ptsSummaryPO.setIpAddress(String.valueOf(userId));
 		}
 
-		if(StringUtils.isNotBlank(request.getParameter(PtsConsts.MODULE))) {
+		if(request.getParameter(PtsConsts.MODULE) !=null) {
 			ptsSummaryPO.setModule(Integer.valueOf(request.getParameter(PtsConsts.MODULE)));//区分模块
 		}
 		

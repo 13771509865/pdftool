@@ -30,6 +30,8 @@ public class RedisConfig {
         redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource("luaScripts/initPriorityQueue.lua")));
         return redisScript;
     }
+    
+    
 
     @Bean(name = "htbRateLimiterScript")
     public DefaultRedisScript<Number> htbRateLimiter() {

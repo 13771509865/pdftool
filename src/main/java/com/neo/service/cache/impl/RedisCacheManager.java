@@ -397,8 +397,8 @@ public class RedisCacheManager<T> implements CacheManager<T> {
         keys.add(RedisConsts.CONVERT_QUEUE_KEY);
         redisTemplate.execute(initPriorityQueueScript, keys,configProperty.getConvertPoolSize(), RedisConsts.CONVERT_TICKET,UUIDHelper.generateUUID());
     }
-    
-    
+
+
     
     
 

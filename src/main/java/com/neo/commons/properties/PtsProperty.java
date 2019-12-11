@@ -76,5 +76,5 @@ public class PtsProperty {
 
 	private String yzcloud_domain;
 	
-
+	private String retryFlag;
 }
