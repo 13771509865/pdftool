@@ -15,7 +15,7 @@ import lombok.Getter;
 @Component
 @PropertySource(value={"classpath:config.properties"},ignoreResourceNotFound=true)
 @Getter
-public class ConfigProperty{
+public class ConfigProperty{ 
 
 
 	@Value(value = "${ticketMaster}")
