@@ -400,20 +400,28 @@ public class DateViewUtils {
 
 
 
+	/**
+	 * mouth个月后，当天的23:59:59
+	 * @param sourceDate
+	 * @param month
+	 * @return
+	 */
 	public static Date stepMonth(Date sourceDate, int month) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(sourceDate);
 		c.add(Calendar.MONTH, month);
-		return c.getTime();
+		c.add(Calendar.DATE,1);
+		c.set(c.get(Calendar.YEAR),c.get(Calendar.MONTH),c.get(Calendar.DAY_OF_MONTH));
+		c.set(Calendar.HOUR_OF_DAY, 0);
+		c.set(Calendar.MINUTE, 0);
+		c.set(Calendar.SECOND, 0);
+		c.add(Calendar.SECOND,-1);
+		return c.getTime(); 
 	}
 
-
-
-
 	public static void main(String[] args) throws ParseException {
-		String a = "2019-11-01 12:26:00";
-		Date date = parseFull(a);
-		System.out.println(isExpiredForTimes(date));
+		Date date = DateViewUtils.stepMonth(DateViewUtils.getNowDate(), 2);
+		System.out.println(DateViewUtils.formatFullDate(date)); 
 		
 	}
 }
