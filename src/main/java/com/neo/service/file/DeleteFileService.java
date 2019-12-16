@@ -36,7 +36,7 @@ public class DeleteFileService {
 			return DefaultResult.failResult("请登录后，再执行此操作");
 		}else {
 			fcsFileInfoPO.setUserID(userID);
-			
+			fcsFileInfoPO.setFileHash(fileHash);
 			fcsFileInfoPO.setStatus(EnumStatus.DISABLE.getValue());
 		}
 		try {
