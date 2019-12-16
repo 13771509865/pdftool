@@ -5,6 +5,8 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class StrUtils {
     public static String getEncoding(String str) {
         //UTF-8包含绝大多数字符，所以放最后判断
@@ -69,15 +71,25 @@ public class StrUtils {
 	}
     
     
-    
-    
+    /**
+     * 字符串去掉空格
+     * @param str
+     * @return
+     */
+	public static String replaceSpace(String str){
+		if(StringUtils.isNotBlank(str)) {
+			return str.replace(" ",""); 
+		}
+		return str;
+	}
     
     
 
     public static void main(String[] args) {
-        String a = "convert001:true,convert002:true,convert003:true,convert004:true,convert005:true,";
-        Map<String,Object> map = strToMap(a,",",":");
-        System.out.println(map.toString());
-
+//        String a = "convert001:true,convert002:true,convert003:true,convert004:true,convert005:true,";
+//        Map<String,Object> map = strToMap(a,",",":");
+//        System.out.println(map.toString());
+    	String a = replaceSpace("fewf  分为（2 ）90 2.docx");
+    	System.out.println(a);
     }
 }
