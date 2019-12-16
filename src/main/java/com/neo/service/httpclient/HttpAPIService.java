@@ -9,6 +9,7 @@ import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.entity.FileHeaderEntity;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.util.HttpUtils;
+import com.neo.commons.util.StrUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.commons.util.UUIDHelper;
 import org.apache.commons.io.FileUtils;
@@ -329,7 +330,7 @@ public class HttpAPIService {
         //不自定义分隔符,struts2有上传问题
         builder.setBoundary("--------------------------"+ UUIDHelper.generateUUID());
         if (muFile != null) {
-            builder.addBinaryBody("file", muFile.getBytes(), ContentType.MULTIPART_FORM_DATA, muFile.getOriginalFilename());
+            builder.addBinaryBody("file", muFile.getBytes(), ContentType.MULTIPART_FORM_DATA, StrUtils.replaceSpace(muFile.getOriginalFilename()));
         }
         if (file != null) {
             builder.addBinaryBody("file", file, ContentType.MULTIPART_FORM_DATA, file.getName());
