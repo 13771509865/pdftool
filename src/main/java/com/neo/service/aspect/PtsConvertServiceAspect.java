@@ -46,6 +46,7 @@ public class PtsConvertServiceAspect {
             String srcRelativePath = convertBO.getSrcRelativePath();
             saveBadFileService.saveBadFile(ptsProperty.getFcs_srcfile_dir(), ptsProperty.getConvert_fail_dir(), srcRelativePath);
         } else {
+        	System.out.println("进入切面："+userBO.toString());
             if (userBO != null && EnumUaaRoleType.canUploadYc(userBO.getRole())) {
             	System.out.println(userBO.toString());
                 //上传文件到优云,更新数据库,未登录用户和企业用户不上传 
