@@ -39,8 +39,8 @@ public class PtsConvertServiceAspect {
     public void dispatchConvert() {
     }
 
-    @AfterReturning(value = "dispatchConvert()&& args(convertBO,waitTime,userBO,ipAddress,cookie)", returning = "result")
-    public void dispatchConvertAfter(ConvertParameterBO convertBO, Integer waitTime, UserBO userBO, String ipAddress, String cookie, IResult<FcsFileInfoBO> result) {
+    @AfterReturning(value = "dispatchConvert()&& args(convertBO,userBO,ipAddress,cookie)", returning = "result")
+    public void dispatchConvertAfter(ConvertParameterBO convertBO, UserBO userBO, String ipAddress, String cookie, IResult<FcsFileInfoBO> result) {
         //转换失败则放入指定文件夹中
         if (!result.isSuccess()) {
             String srcRelativePath = convertBO.getSrcRelativePath();
