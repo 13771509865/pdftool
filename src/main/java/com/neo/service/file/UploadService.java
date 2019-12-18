@@ -71,6 +71,7 @@ public class UploadService {
 
 				FileUploadBO fileUploadBO = JsonUtils.json2obj(map.get(SysConstant.FCS_DATA), FileUploadBO.class);
 				fileUploadBO.setSrcFileSize(file.getSize());
+				fileUploadBO.setSrcFileName(file.getOriginalFilename());
 				//				request.setAttribute(SysConstant.UPLOAD_RESULT, EnumResultCode.E_SUCCES.getValue());
 				return DefaultResult.successResult(message,fileUploadBO);
 
@@ -108,6 +109,8 @@ public class UploadService {
 
 		FileUploadBO fileUploadBO = JsonUtils.json2obj(map.get(SysConstant.FCS_DATA), FileUploadBO.class);
 		fileUploadBO.setSrcFileSize(fileHeaderEntity.getContentLength());
+		String srcFileName = fileUploadBO.getData().substring(fileUploadBO.getData().indexOf("/")+1);
+		fileUploadBO.setSrcFileName(srcFileName);
 		return DefaultResult.successResult(message,fileUploadBO);
 	}
 
@@ -188,6 +191,14 @@ public class UploadService {
 		}
 		return ptsApplyPO;
 
+	}
+	
+	
+	public static void main(String[] args) {
+		String a = "d656aac07d474180b7c6dfa525a42192/fcsFile.pdf";
+		int s = a.lastIndexOf("/");
+		System.out.println(a.substring(s+1));
+		
 	}
 
 	

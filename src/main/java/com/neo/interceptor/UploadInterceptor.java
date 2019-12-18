@@ -67,17 +67,18 @@ public class UploadInterceptor implements HandlerInterceptor {
 		//判断是普通上传还是优云上传
 		if(StringUtils.isNotBlank(request.getParameter(PtsConsts.YCFILEID))) {
 			String cookie = request.getHeader(UaaConsts.COOKIE);
+			if(StringUtils.isBlank(cookie)) {
+				HttpUtils.sendResponse(request, response, JsonResultUtils.buildFailJsonResultByResultCode(EnumResultCode.E_UNLOGIN_ERROR));
+				return false;
+			}
+			
+			//拿优云的文件链接
 			IResult<FileHeaderEntity> fileHeaderEntity= uploadService.getFileHeaderEntity(request.getParameter(PtsConsts.YCFILEID),cookie);
 			if(fileHeaderEntity.isSuccess()) {
 				uploadSize = fileHeaderEntity.getData().getContentLength();
 				request.setAttribute(SessionConstant.FILE_HEADER_ENTITY, fileHeaderEntity.getData());
 			}else {
-				response.setContentType("text/html;charset=UTF-8");
-				response.setCharacterEncoding("UTF-8");
-				PrintWriter out = response.getWriter();
-				out.write(JsonResultUtils.fail((fileHeaderEntity.getMessage())));
-				out.flush();
-				out.close();
+				HttpUtils.sendResponse(request, response, JsonResultUtils.fail((fileHeaderEntity.getMessage())));
 				return false;
 			}
 		}else {
@@ -87,12 +88,7 @@ public class UploadInterceptor implements HandlerInterceptor {
 		//验证上传文件大小权限
 		IResult<EnumResultCode> result = iAuthService.checkUploadSize(userID, uploadSize);
 		if(!result.isSuccess()) {
-			response.setContentType("text/html;charset=UTF-8");
-			response.setCharacterEncoding("UTF-8");
-			PrintWriter out = response.getWriter();
-			out.write(JsonResultUtils.buildFailJsonResultByResultCode(result.getData()));
-			out.flush();
-			out.close();
+			HttpUtils.sendResponse(request, response, JsonResultUtils.buildFailJsonResultByResultCode(result.getData()));
 			return false;
 		}
 		return true;
