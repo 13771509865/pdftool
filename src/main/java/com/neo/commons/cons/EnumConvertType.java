@@ -1,5 +1,6 @@
 package com.neo.commons.cons;
 
+
 /**
  * 转换类型枚举封装
  */
@@ -76,6 +77,7 @@ public enum EnumConvertType {
 	PDF_WORD_TOWORD(59,"pdfandwordtoword","pdf和word的合并","doc",false,false,false,false),
 	IMAGE_WORD_TOWORD(60,"imageandwordtoword","图片和word的合并","doc",false,false,false,false),
 	MS_HTML_CANVAS(61,"ms2htmlcanvas","文档格式到高清html canvas的转换","",false,true,false,false),
+	PDF_TO_WORD(62,"pdftoword","pdf生成word格式","doc",false,false, false, false),
 	PDF_TO_DOUBLE_PDF(63,"pdftodoublepdf","pdf生成双层pdf","pdf",false,false, false, false),
 	PDF_TO_OCR_WORD(64,"pdftoorcword","pdf使用ocr生成word","doc",false,false, false, false),
 	OFD_TO_OCR_WORD(65,"ofdtoorcword","ofd使用ocr生成word","doc",false,false, false, false),
@@ -85,6 +87,10 @@ public enum EnumConvertType {
 	PDF_SPLIT(82, "pdf2split", "pdf拆分", "pdf", true, false, true, false),
 	
 	IMAGE_OCR_TXT(83, "ocrImage2txt", "ocr转图片成txt", "txt", false, false, false, false),
+
+	MS_HTML_ENCRYPTED(100, "ms2htmlEncrypted", "加密文档格式到加密html的转换", "html", false, false, true, false),
+	MS_HTML_HD_ENCRYPTED(101, "ms2htmlHdEncrypted", "加密文档格式到高清加密html的转换", "html", false, false, true, false),
+	PDF_HTML_ENCRYPTED(102, "pdf2htmlEncrypted", "加密pdf格式到加密html的转换", "html", false, false, true, false),
 
 	;
 
@@ -255,6 +261,7 @@ public enum EnumConvertType {
 			case PDF_EXCEL:
 			case PDF_SPLIT:
 			case PDF_PIC_PDFA:
+			case PDF_TO_WORD:
 			case PDF_WORD_TOWORD:
 			case PDF_TO_DOUBLE_PDF:
 			case PDF_TO_OCR_WORD:
@@ -288,6 +295,10 @@ public enum EnumConvertType {
 			case TIF_HTML_TEMP:
 			case EPUB_HTML_TEMP:
 			case DAE_HTML_TEMP:
+			case MS_HTML_ENCRYPTED:
+			case MS_HTML_HD_ENCRYPTED:
+			case PDF_HTML_ENCRYPTED:
+
 				return true;
 			default:
 				return false;
@@ -650,4 +661,36 @@ public enum EnumConvertType {
 		return null;
 	}
 
+	
+	// 是否是加密文件操作
+	public static boolean isENCRYPTED(Integer value) {
+		EnumConvertType enumConvertType = getEnum(value);
+		if (enumConvertType != null) {
+			switch (enumConvertType) {
+			case MS_HTML_ENCRYPTED:
+			case MS_HTML_HD_ENCRYPTED:
+			case PDF_HTML_ENCRYPTED:
+				return true;
+			default:
+				return false;
+			}
+		}
+		return false;
+	}
+	
+	// 是否是加密文件操作
+	public static boolean isOcr(Integer value) {
+		EnumConvertType enumConvertType = getEnum(value);
+		if (enumConvertType != null) {
+			switch (enumConvertType) {
+			case PDF_TO_DOUBLE_PDF:
+			case PDF_TO_OCR_WORD:
+			case OFD_TO_OCR_WORD:
+				return true;
+			default:
+				return false;
+			}
+		}
+		return false;
+	}
 }

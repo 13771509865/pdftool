@@ -13,12 +13,12 @@ import lombok.Getter;
 public enum EnumAuthCode {
 
 
-	PDF_WORD(1,"pdf2word","convert001","36","false"),
-	WORD_PDF(2,"word2pdf","convert002","3","false"),
+	PDF_WORD(1,"pdf2word","convert001","36","true"),
+	WORD_PDF(2,"word2pdf","convert002","3","true"),
 	PDF_PPT(3,"pdf2ppt","convert003","80","false"),
-	PPT_PDF(4,"ppt2pdf","convert004","3","false"),
+	PPT_PDF(4,"ppt2pdf","convert004","3","true"),
 	PDF_EXCEL(5,"pdf2excel","convert005","81","false"),
-	EXCEL_PDF(6,"excel2pdf","convert006","3","false"),
+	EXCEL_PDF(6,"excel2pdf","convert006","3","true"),
 	PDF_IMG(7,"pdf2img","convert007","9,10,11,12,13","false"),
 	PDF_HTML(8,"pdf2html","convert008","14","false"),
 	PDF_MARK(9,"pdf2watermark","convert009","34","false"),
@@ -26,6 +26,7 @@ public enum EnumAuthCode {
 	PDF_MERGE(11,"pdf2merge","convert011","31","false"),
 	PDF_SPLIT(12,"pdf2split","convert012","82","false"),
 	OCR_IMG_TXT(13,"ocrImage2txt","convert013","83","false"),
+	PDF_ORC_WORD(14,"pdftoorcword","convert014","64","false"),
 
 	PTS_CONVERT_NUM(15,"转换数量", "convertNum",null,5), 
 	PTS_UPLOAD_SIZE(16,"文件大小","uploadSize",null,2),
