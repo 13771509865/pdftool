@@ -19,6 +19,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.neo.interceptor.ConvertInterceptor;
 import com.neo.interceptor.FeedBackInterceptor;
 import com.neo.interceptor.UaaAuthInterceptor;
@@ -90,12 +92,21 @@ public class SpringMVCConfigure implements WebMvcConfigurer{
 	        return converter;
 	    }
 
-	    //TODO 返回值如果为null不返回
-	    @Bean
+	    
+		/**
+		 * Long类型返回前端处理
+		 * @return
+		 */
+		@Bean
 	    public ObjectMapper getObjectMapper() {
-	        return new ObjectMapper().setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
+			SimpleModule simpleModule = new SimpleModule();
+	        simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
+	        simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
+	        return new ObjectMapper().setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL).registerModule(simpleModule);
 	    }
 
+		
+		
 	    @Bean
 	    public MappingJackson2HttpMessageConverter messageConverter() {
 	        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
