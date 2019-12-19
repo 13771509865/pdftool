@@ -44,7 +44,7 @@ public class FeatureService {
      * @author zhoufeng
      * @date 2019/10/30
      */
-//    @PostConstruct
+    @PostConstruct
     public void initFeatures() {
         registerFeatures();
     }
