@@ -84,12 +84,7 @@ public class ConvertInterceptor implements HandlerInterceptor {
 		IResult<EnumResultCode> result = iAuthService.checkUserAuth(convertParameterBO, userID,ipAddr);
 
 		if(!result.isSuccess()) {
-			response.setContentType("text/html;charset=UTF-8");
-			response.setCharacterEncoding("UTF-8");
-			PrintWriter out = response.getWriter();
-			out.write(JsonResultUtils.buildFailJsonResultByResultCode(result.getData()));
-			out.flush();
-			out.close();
+			HttpUtils.sendResponse(request, response, JsonResultUtils.buildFailJsonResultByResultCode(result.getData()));
 			return false;
 		}
 //		if(userID!=null){

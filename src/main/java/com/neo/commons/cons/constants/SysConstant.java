@@ -30,6 +30,10 @@ public interface SysConstant {
 	
 	public static final String TRUE = "true";
 	
-	public static final String ORDER_URIKEY = "api/order/";//order相关
+	public static final String ORDER_URIKEY = "api/api/order/";//order相关
+
+	public static final String ZIP_TEMP = "zipTemp";
+
+	public static final String ZIP_NAME = "fcs.zip";
 
 }

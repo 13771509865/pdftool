@@ -2,6 +2,7 @@ package com.neo.commons.util;
 
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URLDecoder;
@@ -215,22 +216,6 @@ public class HttpUtils {
     
     
 	
-    /**
-     * 获取session中的userID
-     * @param request
-     * @return
-     */
-	public static Long getSessionUserID(HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		String userInfo = (String)session.getAttribute(ConstantCookie.SESSION_USER);
-		if(StringUtils.isNotBlank(userInfo)) {
-			UserBO userBO = JsonUtils.json2obj(userInfo, UserBO.class);
-			return userBO.getUserId();
-		}
-		return null;
-	}
-
-	
 	
     
 	/**
@@ -301,6 +286,46 @@ public class HttpUtils {
 
 
 
+	
+    /**
+     * 获取session中的userID
+     * @param request
+     * @return
+     */
+	public static Long getSessionUserID(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		String userInfo = (String)session.getAttribute(ConstantCookie.SESSION_USER);
+		if(StringUtils.isNotBlank(userInfo)) {
+			UserBO userBO = JsonUtils.json2obj(userInfo, UserBO.class);
+			return userBO.getUserId();
+		}
+		return null;
+	}
+	
+	
+	public static UserBO getUserBO(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		String userInfo = (String)session.getAttribute(ConstantCookie.SESSION_USER);
+		if(StringUtils.isNotBlank(userInfo)) {
+			UserBO userBO = JsonUtils.json2obj(userInfo, UserBO.class);
+			return userBO;
+		}
+		return null;
+	}
+
+	
+	
+	
+	public static void sendResponse(HttpServletRequest request, HttpServletResponse response,String message) throws Exception{
+		response.setContentType("text/html;charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		PrintWriter out = response.getWriter();
+		out.write(message);
+		out.flush();
+		out.close();
+	}
+	
+	
 	
     
 }

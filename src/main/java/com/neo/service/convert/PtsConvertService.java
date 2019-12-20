@@ -1,16 +1,21 @@
 package com.neo.service.convert;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.neo.model.qo.FcsFileInfoQO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.neo.commons.cons.DefaultResult;
-import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.EnumResultCode;
+import com.neo.commons.cons.EnumUaaRoleType;
+import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.PtsProperty;
@@ -21,10 +26,12 @@ import com.neo.dao.FcsFileInfoPOMapper;
 import com.neo.dao.PtsSummaryPOMapper;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FcsFileInfoBO;
+import com.neo.model.bo.UserBO;
 import com.neo.model.po.ConvertParameterPO;
 import com.neo.model.po.FcsFileInfoPO;
 import com.neo.model.po.PtsSummaryPO;
 import com.neo.service.httpclient.HttpAPIService;
+import com.neo.service.ticket.RedisTicketManager;
 import com.neo.service.ticket.TicketManager;
 
 
@@ -36,8 +43,9 @@ import com.neo.service.ticket.TicketManager;
 @Service("ptsConvertService")
 public class PtsConvertService {
 
-	@Autowired
-	private TicketManager ticketManager;
+	
+	@Autowired 
+	private RedisTicketManager redisTicketManager;
 	
 	@Autowired
 	private HttpAPIService httpAPIService;
@@ -60,15 +68,11 @@ public class PtsConvertService {
 	 * @param waitTime
 	 * @return
 	 */ 
-	public IResult<FcsFileInfoBO> dispatchConvert(ConvertParameterBO convertBO,Integer waitTime,Long userId,String ipAddress){
+	public IResult<FcsFileInfoBO> dispatchConvert(ConvertParameterBO convertBO,UserBO userBO,String ipAddress,String cookie){
 		FcsFileInfoBO fcsFileInfoBO = new FcsFileInfoBO();
 		//取超时时间
-		String ticket;
-		if (waitTime >= 0) { //超过waitTime时间返回null
-			ticket = ticketManager.poll(waitTime);
-		} else { //waitTime小于0时表示等待直到取到票
-			ticket = ticketManager.take();
-		}
+		String ticket = redisTicketManager.getConverTicket(userBO);
+		
 		if (StringUtils.isEmpty(ticket)) {
 			fcsFileInfoBO.setCode(EnumResultCode.E_SERVER_BUSY.getValue());
 			return DefaultResult.failResult(EnumResultCode.E_SERVER_BUSY.getInfo(), fcsFileInfoBO);
@@ -84,13 +88,13 @@ public class PtsConvertService {
 				return DefaultResult.failResult(EnumResultCode.E_FCS_CONVERT_FAIL.getInfo(),fcsFileInfoBO);
 			}
 			Map<String, Object> fcsMap= JsonUtils.parseJSON2Map(httpResult.getData().getBody());
+			Integer errorCode = Integer.valueOf((fcsMap.get(SysConstant.FCS_ERRORCODE).toString()));
 			
 			fcsFileInfoBO = JsonUtils.json2obj(fcsMap.get(SysConstant.FCS_DATA), FcsFileInfoBO.class);
 			SysLogUtils.info("ConvertType："+convertBO.getConvertType()+"==源文件相对路径:"+convertBO.getSrcRelativePath()+"==fcs转码结果："+ fcsFileInfoBO.getCode());
-			if(fcsFileInfoBO.getCode() == 0) {//转换成功
-				
-				updateFcsFileInfo(convertBO,fcsFileInfoBO, userId, ipAddress);//这里只记录转换成功的pts_convert
-				
+			if(errorCode == 0) {//转换成功
+				Long userId = userBO==null?null:userBO.getUserId();
+				updateFcsFileInfo(convertBO,fcsFileInfoBO,userId,ipAddress);
 				return DefaultResult.successResult(fcsFileInfoBO);
 			}else {
 				return DefaultResult.failResult(fcsMap.get(SysConstant.FCS_MESSAGE).toString(),fcsFileInfoBO);
@@ -101,7 +105,7 @@ public class PtsConvertService {
             SysLogUtils.error(convertBO.getSrcPath() + "文件转换未知错误", e);
             return DefaultResult.failResult(EnumResultCode.E_SERVER_UNKNOW_ERROR.getInfo(), fcsFileInfoBO);
 		}finally {
-			 ticketManager.put(ticket);
+			redisTicketManager.returnPriorityTicket(ticket);
 		}
 
 	}
@@ -109,12 +113,11 @@ public class PtsConvertService {
 	/**
 	 * pts_convert插入成功的转换数据，只更新登录用户并且转换成功的
 	 * @param fcsFileInfoBO
-	 * @param request
+	 * @param convertBO
 	 * @return
 	 */
 	public IResult<String> updateFcsFileInfo(ConvertParameterBO convertBO,FcsFileInfoBO fcsFileInfoBO,Long userId,String ipAddress) {
 		try {
-			
 			//只记录登录用户的
 			if(userId == null) {
 				return DefaultResult.failResult();
@@ -142,6 +145,7 @@ public class PtsConvertService {
 	 * @param request
 	 * @return
 	 */
+	@Async("asynConvertExecutor")
 	public IResult<String> updatePtsSummay(FcsFileInfoBO fcsFileInfoBO, ConvertParameterBO convertBO,HttpServletRequest request){
 		try {
 			PtsSummaryPO ptsSummaryPO = ptsConvertParamService.buildPtsSummaryPOParameter(fcsFileInfoBO,convertBO, request);
@@ -154,6 +158,24 @@ public class PtsConvertService {
 		}
 		return DefaultResult.successResult();
 	}
-	
 
+	/**
+	 * 根据fileHash查询fcsFile信息
+	 * @param fcsFileInfoQO
+	 * @return
+	 */
+	public IResult<String> selectFcsFileInfoPOByFileHash(String fileHash,Long userId){
+		if(userId == null) {
+			return DefaultResult.failResult("请登录后，再执行此操作");
+		}
+		FcsFileInfoQO fcsFileInfoQO = new FcsFileInfoQO();
+		fcsFileInfoQO.setFileHash(fileHash);
+		fcsFileInfoQO.setUserID(userId);
+		
+		List<FcsFileInfoPO> list = fcsFileInfoBOMapper.selectFcsFileInfoPOByFileHash(fcsFileInfoQO);
+		if(list.size() < 1 || list.isEmpty() ||StringUtils.isBlank(list.get(0).getUCloudFileId())){
+			return DefaultResult.failResult(EnumResultCode.E_UCLOUDFILEID_NULL.getInfo());
+		}
+		return DefaultResult.successResult(list.get(0).getUCloudFileId());
+	}
 }

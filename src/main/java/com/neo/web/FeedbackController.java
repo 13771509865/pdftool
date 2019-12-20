@@ -45,7 +45,7 @@ public class FeedbackController{
 	
 	@Autowired
 	private HttpAPIService httpAPIService;
-	
+
 	@ApiOperation(value = "用户反馈")
 	@PostMapping(value = "/feedback")
 	@ResponseBody

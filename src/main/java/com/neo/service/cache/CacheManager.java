@@ -40,4 +40,5 @@ public interface CacheManager<T> {
 
 	Boolean deleteHashKey(String key,String hashKey);
 
+
 }

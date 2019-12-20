@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.neo.commons.cons.EnumStatus;
 import com.neo.commons.cons.constants.FcsParmConsts;
 import com.neo.commons.cons.constants.PtsConsts;
 import com.neo.commons.cons.constants.SizeConsts;
@@ -57,6 +58,7 @@ public class PtsConvertParamService {
 		if(convertBO.getConvertTimeOut() == null) {
 			convertBO.setConvertTimeOut(configProperty.getConvertTimeout());
 		} 
+		
 		Map<String,Object> map = JsonUtils.parseJSON2Map(convertBO.toString());
 		for(String param : FcsParmConsts.FCS_PARMS) {
 			if(map.containsKey(param)) {
@@ -89,6 +91,7 @@ public class PtsConvertParamService {
 		fcsFileInfoPO.setConvertType(fcsFileInfoBO.getConvertType());
 		fcsFileInfoPO.setSrcStoragePath(fcsFileInfoBO.getSrcStoragePath());
 		fcsFileInfoPO.setDestStoragePath(fcsFileInfoBO.getDestStoragePath());
+		fcsFileInfoPO.setStatus(EnumStatus.ENABLE.getValue());
 
 		//手写签批，做特殊处理DestFileName，需要保存上传的源文件
 		//viewUrl需要修改成download
@@ -166,8 +169,10 @@ public class PtsConvertParamService {
 			ptsSummaryPO.setIpAddress(String.valueOf(userId));
 		}
 
-		ptsSummaryPO.setModule(Integer.valueOf(request.getParameter(PtsConsts.MODULE)));//区分模块
-
+		if(request.getParameter(PtsConsts.MODULE) !=null) {
+			ptsSummaryPO.setModule(Integer.valueOf(request.getParameter(PtsConsts.MODULE)));//区分模块
+		}
+		
 		ptsSummaryPO.setCreateDate(DateViewUtils.parseSimple(nowDate));//时间搞一搞
 		ptsSummaryPO.setCreateTime(DateViewUtils.parseSimpleTime(nowTime));
 		ptsSummaryPO.setModifiedDate(DateViewUtils.parseSimple(nowDate));
