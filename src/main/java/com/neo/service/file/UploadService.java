@@ -71,7 +71,7 @@ public class UploadService {
 
 				FileUploadBO fileUploadBO = JsonUtils.json2obj(map.get(SysConstant.FCS_DATA), FileUploadBO.class);
 				fileUploadBO.setSrcFileSize(file.getSize());
-				fileUploadBO.setSrcFileName(file.getOriginalFilename());
+				fileUploadBO.setDestinationName(file.getOriginalFilename());
 				//				request.setAttribute(SysConstant.UPLOAD_RESULT, EnumResultCode.E_SUCCES.getValue());
 				return DefaultResult.successResult(message,fileUploadBO);
 
@@ -109,8 +109,8 @@ public class UploadService {
 
 		FileUploadBO fileUploadBO = JsonUtils.json2obj(map.get(SysConstant.FCS_DATA), FileUploadBO.class);
 		fileUploadBO.setSrcFileSize(fileHeaderEntity.getContentLength());
-		String srcFileName = fileUploadBO.getData().substring(fileUploadBO.getData().indexOf("/")+1);
-		fileUploadBO.setSrcFileName(srcFileName);
+		String destinationName = fileUploadBO.getData().substring(fileUploadBO.getData().indexOf("/")+1);
+		fileUploadBO.setDestinationName(destinationName);
 		return DefaultResult.successResult(message,fileUploadBO);
 	}
 
