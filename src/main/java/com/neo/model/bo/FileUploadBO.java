@@ -13,7 +13,7 @@ public class FileUploadBO {
 	
 	private Long srcFileSize;
 	
-	private String srcFileName;
+	private String destinationName;
 	
 	private Integer successNum;
 	
