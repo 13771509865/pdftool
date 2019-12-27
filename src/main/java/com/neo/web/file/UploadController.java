@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,9 +44,14 @@ public class UploadController{
 	@ApiOperation(value = "文件上传")
 	@PostMapping(value = "/defaultUpload")
 	@ResponseBody
-	public Map<String, Object> fileUpload(@RequestParam("file") MultipartFile  file,HttpServletRequest request){
-		IResult<FileUploadBO> result  =uploadService.upload(file,request);
-		uploadService.insertPtsApply(HttpUtils.getSessionUserID(request),HttpUtils.getIpAddr(request),file.getOriginalFilename(),file.getSize(),request.getParameter(PtsConsts.MODULE));
+	public Map<String, Object> fileUpload(@RequestParam("file") MultipartFile  file,
+			String originalFilename ,HttpServletRequest request){
+		
+		//处理微信小程序临时文件名问题
+		originalFilename = StringUtils.isBlank(originalFilename)?file.getOriginalFilename():originalFilename;
+		
+		IResult<FileUploadBO> result  =uploadService.upload(file,originalFilename,request);
+		uploadService.insertPtsApply(HttpUtils.getSessionUserID(request),HttpUtils.getIpAddr(request),originalFilename,file.getSize(),request.getParameter(PtsConsts.MODULE));
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
 		}else {

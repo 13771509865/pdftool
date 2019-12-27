@@ -51,7 +51,7 @@ public class UploadService {
 	 * @date 2019-07-19
 	 * @return
 	 */
-	public IResult<FileUploadBO> upload(MultipartFile  file,HttpServletRequest request) {
+	public IResult<FileUploadBO> upload(MultipartFile  file,String originalFilename,HttpServletRequest request) {
 		try {
 			if(file != null) {
 				String  url  =  String.format(ptsProperty.getFcs_upload_url());
@@ -71,7 +71,7 @@ public class UploadService {
 
 				FileUploadBO fileUploadBO = JsonUtils.json2obj(map.get(SysConstant.FCS_DATA), FileUploadBO.class);
 				fileUploadBO.setSrcFileSize(file.getSize());
-				fileUploadBO.setDestinationName(file.getOriginalFilename());
+				fileUploadBO.setDestinationName(originalFilename);
 				//				request.setAttribute(SysConstant.UPLOAD_RESULT, EnumResultCode.E_SUCCES.getValue());
 				return DefaultResult.successResult(message,fileUploadBO);
 
