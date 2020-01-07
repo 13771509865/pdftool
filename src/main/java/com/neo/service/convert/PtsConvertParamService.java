@@ -95,7 +95,7 @@ public class PtsConvertParamService {
 
 		//手写签批，做特殊处理DestFileName，需要保存上传的源文件
 		//viewUrl需要修改成download
-		if(convertBO.getConvertType() == 14 && convertBO.getIsSignature() ==1) {
+		if(convertBO.getConvertType() == 14 && convertBO.getIsSignature()!=null && convertBO.getIsSignature() ==1) {
 			fcsFileInfoPO.setDestFileName(fcsFileInfoBO.getSrcFileName());
 			String token = StringUtils.substringAfter(fcsFileInfoBO.getViewUrl(),PtsConsts.PREVIEW);
 			fcsFileInfoPO.setViewUrl(ptsProperty.getFcs_downLoad_url()+token);

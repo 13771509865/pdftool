@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.neo.commons.cons.DefaultResult;
+import com.neo.commons.cons.EnumAuthCode;
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.EnumStatus;
 import com.neo.commons.cons.IResult;
@@ -19,16 +20,20 @@ import com.neo.commons.cons.constants.YzcloudConsts;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.properties.PtsProperty;
+import com.neo.commons.util.DateViewUtils;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
+import com.neo.commons.util.StrUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.dao.FcsFileInfoPOMapper;
 import com.neo.dao.PtsSummaryPOMapper;
 import com.neo.model.bo.FileUploadBO;
 import com.neo.model.po.FcsFileInfoPO;
+import com.neo.model.po.PtsAuthPO;
 import com.neo.model.po.PtsSummaryPO;
 import com.neo.model.qo.FcsFileInfoQO;
 import com.neo.model.qo.PtsSummaryQO;
+import com.neo.service.auth.IAuthService;
 import com.neo.service.cache.impl.RedisCacheManager;
 import com.neo.service.httpclient.HttpAPIService;
 
@@ -52,6 +57,9 @@ public class StatisticsService {
 
 	@Autowired
 	private HttpAPIService httpAPIService;
+	
+	@Autowired
+	private IAuthService iAuthService;
 
 	/**
 	 * 根据userID查询三天内的转换记录
@@ -91,8 +99,25 @@ public class StatisticsService {
 		try {
 			String key = userID != null?RedisConsts.ID_CONVERT_TIME_KEY:RedisConsts.IP_CONVERT_TIME_KEY;
 			String value = userID != null?String.valueOf(userID):ipAddr;
-			Integer maxConvertTimes = userID != null?config.getMConvertTimes():config.getVConvertTimes();//登录用户20个
-
+			
+			//判断是登录用户还是游客的最大转化次数
+			Integer maxConvertTimes = userID != null?config.getMConvertTimes():config.getVConvertTimes();
+			
+			if(userID != null) {
+				List<PtsAuthPO> list = iAuthService.selectAuthByUserid(userID);
+				if(!list.isEmpty() && list.size()>0) {//没有购买过会员
+					PtsAuthPO ptsAuthPO = list.get(0);
+					if(!DateViewUtils.isExpiredForDays(ptsAuthPO.getGmtExpire())) {//没有过期
+						//会员注册的权限转map
+						Map<String,Object> ptsAuthPOAuthMap = StrUtils.strToMap(ptsAuthPO.getAuth(), SysConstant.COMMA, SysConstant.COLON);
+						
+						//会员最大转换次数
+						maxConvertTimes = Integer.valueOf(ptsAuthPOAuthMap.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode()).toString());
+					}
+				}
+			}
+			
+			
 			int convertTimes = redisCacheManager.getScore(key,value).intValue();
 			String otherTimes = String.valueOf(maxConvertTimes - convertTimes);
 			return DefaultResult.successResult(otherTimes);

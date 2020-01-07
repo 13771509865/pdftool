@@ -132,6 +132,7 @@ public class PtsConvertService {
 			}
 			return DefaultResult.successResult();
 		} catch (Exception e) {
+			e.printStackTrace();
 			SysLogUtils.error("fcsFileInfo插入数据库失败，失败原因："+e.getMessage());
 			return DefaultResult.failResult();
 		}
