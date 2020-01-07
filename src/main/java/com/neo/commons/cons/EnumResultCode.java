@@ -30,7 +30,6 @@ public enum EnumResultCode {
 	E_VISITOR_CONVERT_NUM_ERROR(24,"游客每日可转换5个文件，获取更大权限，请注册登录"),
 	E_USER_UPLOAD_ERROR(25,"抱歉，文件大小超出10M，暂不支持，成为会员后可以获取更大权限"),
 	E_USER_CONVERT_NUM_ERROR(26,"抱歉，普通注册用户每天可转换10个文件，成为会员后可以获取更大权限"),
-//	E_USER_CONVERT_NUM_ERROR(26,"系统正忙，请稍后再试"),
 	
 	//投票
 	E_VOTE_NULL_ERROR(27,"抱歉，提交前请至少选择一项投票内容"),
