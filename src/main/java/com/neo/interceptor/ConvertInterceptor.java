@@ -87,10 +87,10 @@ public class ConvertInterceptor implements HandlerInterceptor {
 			HttpUtils.sendResponse(request, response, JsonResultUtils.buildFailJsonResultByResultCode(result.getData()));
 			return false;
 		}
-//		if(userID!=null){
-//			//发送积分事件
-//			memberShipHelper.addMemberEvent(userID, EnumEventType.CONVERT_EVENT);
-//		}
+		if(userID!=null){
+			//发送积分事件
+			memberShipHelper.addMemberEvent(userID, EnumEventType.CONVERT_EVENT);
+		}
 		return true;
 	}
 
