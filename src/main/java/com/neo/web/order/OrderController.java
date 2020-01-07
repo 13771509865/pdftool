@@ -44,7 +44,7 @@ public class OrderController {
 			IResult<Participant> reserveResult = iOrderService.reserve(userId, orderId, dto, nonce, sign);
 			SysLogUtils.info("[订单号："+orderId+"预留],预留结果："+reserveResult.getData());
 			return ResponseEntity.ok(reserveResult.getData());
-		} catch (Exception e) {
+		} catch (Exception e) { 
 			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
