@@ -22,7 +22,7 @@ public enum EnumResultCode {
 	E_GET_UCLOUD_ID_ERROR(18,"获取优云fileId失败"),
 	
 	E_SERVER_BUSY(19,"服务器正忙，请稍后再试"),
-	E_FILESERVICE_FAIL(20,"文件操作失败,请联系管理员检查服务器"),
+	E_FILESERVICE_FAIL(20,"抱歉防盗措施生效，文件操作失败"),
 	E_SERVER_UNKNOW_ERROR(22,"服务器未知错误^_^"),
 
 	//用户权限
@@ -39,7 +39,7 @@ public enum EnumResultCode {
 	E_VOTE_OTHER_ERROR(31,"抱歉，选择其他选项时，才能提交您填写的内容"),
 	
 	E_FCS_VTOKEN_FAIL(42,"获取vToken失败"),
-	E_FCS_CONVERT_FAIL(43,"文档转换服务器通讯失败,请联系管理员"),
+	E_FCS_CONVERT_FAIL(43,"抱歉网络有点忙，请您稍后再尝试"),
 	E_NOTALL_PARAM(54,"参数不完整,请检查参数"),
 	E_UCLOUDFILEID_NULL(55,"UCLOUDFILEID为空"),
 	E_YCUPLOAD_SAVE_FAIL(56,"优云文件上传失败信息保存失败"),
