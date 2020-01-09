@@ -50,6 +50,7 @@ public class UaaService {
 	public String getUserInfoUaa(HttpServletRequest request) {
 		String userInfo;
 		try {
+			System.out.println(request.getHeader(UaaConsts.COOKIE));
 			headers.put(UaaConsts.COOKIE, request.getHeader(UaaConsts.COOKIE));
 			IResult<HttpResultEntity> result = httpAPIService.doGet(ptsProperty.getUaa_userinfo_url(),params, headers);
 			userInfo = result.getData().getBody();
