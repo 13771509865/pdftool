@@ -62,7 +62,7 @@ public class SpringMVCConfigure implements WebMvcConfigurer{
 	        registry.addInterceptor(uaaAuthInterceptor)
 	        .addPathPatterns("/**")
 	        .excludePathPatterns("/vote/**")
-	        .excludePathPatterns("/api/**")
+	        .excludePathPatterns("/api/**")//订单
 	        .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");;
 	        
 	        registry.addInterceptor(uploadInterceptor).addPathPatterns("/file/defaultUpload","/file/uploadYc");
