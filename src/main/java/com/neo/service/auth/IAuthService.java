@@ -13,9 +13,9 @@ import com.neo.model.po.PtsAuthPO;
 
 public interface IAuthService {
 	
-	IResult<EnumResultCode> checkUserAuth(ConvertParameterBO convertParameterBO,Long userID,String ipAddr);
+	IResult<EnumResultCode> checkUserAuth(ConvertParameterBO convertParameterBO,Long userID);
 	
-	IResult<EnumResultCode> checkConvertTimes(String ipAddr,Long userID,Integer maxConvertTimes);
+	IResult<EnumResultCode> checkConvertTimes(Long userID,Integer maxConvertTimes);
 	
 	IResult<EnumResultCode> checkUploadSize(Long userID,Long uploadSize);
 	

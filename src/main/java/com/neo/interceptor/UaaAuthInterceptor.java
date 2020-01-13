@@ -23,10 +23,12 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.neo.commons.cons.DefaultResult;
+import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.ConstantCookie;
 import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.util.CookieUtils;
+import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.service.uaa.UaaService;
@@ -74,13 +76,15 @@ public class UaaAuthInterceptor implements HandlerInterceptor{
 			if(StringUtils.isNotBlank(userInfo)) {//确保uaa登出后，同步登出
 				 session.removeAttribute(ConstantCookie.SESSION_USER);
 			}
+			HttpUtils.sendResponse(request, response, JsonResultUtils.buildFailJsonResultByResultCode(EnumResultCode.E_UNLOGIN_ERROR));
+			return false;
 		}else {
 			String userInfo = uaaService.getUserInfoUaa(request);
 			if(StringUtils.isNotBlank(userInfo)) {
 				session.setAttribute(ConstantCookie.SESSION_USER, userInfo);
 			}
+			return true;
 		}
-		return true;
 	}
 
 

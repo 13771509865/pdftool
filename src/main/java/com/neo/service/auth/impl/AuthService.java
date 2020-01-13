@@ -46,7 +46,7 @@ public class AuthService implements IAuthService{
 	 * @return
 	 */
 	@Override
-	public IResult<EnumResultCode> checkUserAuth(ConvertParameterBO convertParameterBO,Long userID,String ipAddr){
+	public IResult<EnumResultCode> checkUserAuth(ConvertParameterBO convertParameterBO,Long userID){
 
 		//获取用户权限
 		IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID);
@@ -62,7 +62,7 @@ public class AuthService implements IAuthService{
 		Integer maxConvertTimes = Integer.valueOf(map.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode()).toString());
 
 		//转换次数检查
-		IResult<EnumResultCode> resultCheckConvertTimes = checkConvertTimes(ipAddr, userID,maxConvertTimes);
+		IResult<EnumResultCode> resultCheckConvertTimes = checkConvertTimes(userID,maxConvertTimes);
 		if(!resultCheckConvertTimes.isSuccess()) {
 			return DefaultResult.failResult(resultCheckConvertTimes.getData());
 		}
@@ -79,16 +79,11 @@ public class AuthService implements IAuthService{
 	 * @return
 	 */
 	@Override
-	public IResult<EnumResultCode> checkConvertTimes(String ipAddr,Long userID,Integer maxConvertTimes) {
-		Integer convertTimes;
-		EnumResultCode resultCode;
-		if(userID != null){
-			resultCode = EnumResultCode.E_USER_CONVERT_NUM_ERROR;
-			convertTimes = redisCacheManager.getScore(RedisConsts.ID_CONVERT_TIME_KEY,String.valueOf(userID)).intValue();
-		}else {
-			resultCode = EnumResultCode.E_VISITOR_CONVERT_NUM_ERROR;
-			convertTimes = redisCacheManager.getScore(RedisConsts.IP_CONVERT_TIME_KEY,String.valueOf(ipAddr)).intValue();
-		}
+	public IResult<EnumResultCode> checkConvertTimes(Long userID,Integer maxConvertTimes) {
+
+		EnumResultCode	resultCode = EnumResultCode.E_USER_CONVERT_NUM_ERROR;
+		Integer	convertTimes = redisCacheManager.getScore(RedisConsts.ID_CONVERT_TIME_KEY,String.valueOf(userID)).intValue();
+
 		//是否超过每日最大转换次数
 		if (convertTimes >= maxConvertTimes) {
 			return DefaultResult.failResult(resultCode);
@@ -108,7 +103,7 @@ public class AuthService implements IAuthService{
 		IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID);
 		Map<String,Object> map = getPermissionResult.getData();
 		Integer maxUploadSize = Integer.valueOf(map.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode()).toString());
-		
+
 		if(uploadSize > (maxUploadSize*1024*1024)) {
 			if(userID == null) {
 				return DefaultResult.failResult(EnumResultCode.E_VISITOR_UPLOAD_ERROR);
@@ -152,14 +147,14 @@ public class AuthService implements IAuthService{
 	}
 
 
-	
+
 	public static void main(String[] args) {
 		PtsAuthPO ptsAuthPO = new PtsAuthPO();
-		
-		
+
+
 	}
-	
-	
+
+
 
 
 }

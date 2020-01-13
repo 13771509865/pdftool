@@ -57,7 +57,7 @@ public class StatisticsService {
 
 	@Autowired
 	private HttpAPIService httpAPIService;
-	
+
 	@Autowired
 	private IAuthService iAuthService;
 
@@ -95,29 +95,26 @@ public class StatisticsService {
 	 * @param request
 	 * @return
 	 */
-	public IResult<String> getConvertTimes(String ipAddr,Long userID){
+	public IResult<String> getConvertTimes(Long userID){
 		try {
-			String key = userID != null?RedisConsts.ID_CONVERT_TIME_KEY:RedisConsts.IP_CONVERT_TIME_KEY;
-			String value = userID != null?String.valueOf(userID):ipAddr;
-			
+			String key = RedisConsts.ID_CONVERT_TIME_KEY;
+			String value = String.valueOf(userID);
+
 			//判断是登录用户还是游客的最大转化次数
-			Integer maxConvertTimes = userID != null?config.getMConvertTimes():config.getVConvertTimes();
-			
-			if(userID != null) {
-				List<PtsAuthPO> list = iAuthService.selectAuthByUserid(userID);
-				if(!list.isEmpty() && list.size()>0) {//没有购买过会员
-					PtsAuthPO ptsAuthPO = list.get(0);
-					if(!DateViewUtils.isExpiredForDays(ptsAuthPO.getGmtExpire())) {//没有过期
-						//会员注册的权限转map
-						Map<String,Object> ptsAuthPOAuthMap = StrUtils.strToMap(ptsAuthPO.getAuth(), SysConstant.COMMA, SysConstant.COLON);
-						
-						//会员最大转换次数
-						maxConvertTimes = Integer.valueOf(ptsAuthPOAuthMap.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode()).toString());
-					}
+			Integer maxConvertTimes = config.getMConvertTimes();
+
+			List<PtsAuthPO> list = iAuthService.selectAuthByUserid(userID);
+			if(!list.isEmpty() && list.size()>0) {//没有购买过会员
+				PtsAuthPO ptsAuthPO = list.get(0);
+				if(!DateViewUtils.isExpiredForDays(ptsAuthPO.getGmtExpire())) {//没有过期
+					//会员注册的权限转map
+					Map<String,Object> ptsAuthPOAuthMap = StrUtils.strToMap(ptsAuthPO.getAuth(), SysConstant.COMMA, SysConstant.COLON);
+
+					//会员最大转换次数
+					maxConvertTimes = Integer.valueOf(ptsAuthPOAuthMap.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode()).toString());
 				}
 			}
-			
-			
+
 			int convertTimes = redisCacheManager.getScore(key,value).intValue();
 			String otherTimes = String.valueOf(maxConvertTimes - convertTimes);
 			return DefaultResult.successResult(otherTimes);
@@ -146,18 +143,18 @@ public class StatisticsService {
 		headers.put(UaaConsts.COOKIE, cookie);
 		IResult<HttpResultEntity> httpResult = httpAPIService.doGet(url, params, headers);
 		if(HttpUtils.isHttpSuccess(httpResult)) {
-			 try {
-                 Map<String, Object> resultMap = JsonUtils.parseJSON2Map(httpResult.getData().getBody());
-                 if (!resultMap.isEmpty() && "0".equals(resultMap.get(YzcloudConsts.ERRORCODE).toString())) {
-                     Map<String, Object> result = (Map<String, Object>) resultMap.get(YzcloudConsts.RESULT);
-                     String fileId = result.get("fileId").toString();
-                     if (StringUtils.isNotBlank(fileId)) {
-                         return DefaultResult.successResult(fileId);
-                     }
-                 }
-             } catch (Exception e) {
-                 return DefaultResult.failResult(EnumResultCode.E_GET_UCLOUD_ID_ERROR.getInfo());
-             }
+			try {
+				Map<String, Object> resultMap = JsonUtils.parseJSON2Map(httpResult.getData().getBody());
+				if (!resultMap.isEmpty() && "0".equals(resultMap.get(YzcloudConsts.ERRORCODE).toString())) {
+					Map<String, Object> result = (Map<String, Object>) resultMap.get(YzcloudConsts.RESULT);
+					String fileId = result.get("fileId").toString();
+					if (StringUtils.isNotBlank(fileId)) {
+						return DefaultResult.successResult(fileId);
+					}
+				}
+			} catch (Exception e) {
+				return DefaultResult.failResult(EnumResultCode.E_GET_UCLOUD_ID_ERROR.getInfo());
+			}
 		}
 		return DefaultResult.failResult(EnumResultCode.E_GET_UCLOUD_ID_ERROR.getInfo());
 
