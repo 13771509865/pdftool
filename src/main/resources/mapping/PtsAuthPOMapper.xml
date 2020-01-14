@@ -111,20 +111,4 @@
 
 
 
-
-<!-- yong wan jiu shan diao -->
-
-	<select id="selectInfoByUserId" parameterType="java.lang.Long" resultType="java.lang.String">
-		select info from yz_order_item
-		where user_id = #{userid,jdbcType=BIGINT}
-	</select>
-	
-	
-	<select id="selectAuthWrong" resultMap="PtsAuthPOMapper">
-		select
-		<include refid="Base_Column_List" />
-		from pts_auth
-	</select>
-
-
 </mapper>

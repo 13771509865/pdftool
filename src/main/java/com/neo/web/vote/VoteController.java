@@ -55,41 +55,4 @@ public class VoteController {
 	}
 	
 	
-	
-	@ApiOperation(value = "pdf工具集投票")
-	@GetMapping(value = "/change/rong")
-	@ResponseBody
-	public ResponseEntity<String> changeRong(){
-		List<PtsAuthPO> listWrong = ptsAuthPOMapper.selectAuthWrong();
-		int a = 0;
-		for(PtsAuthPO ptsAuth : listWrong) {
-			if(ptsAuth.getId() < 206) {
-				List<String> infoList = ptsAuthPOMapper.selectInfoByUserId(ptsAuth.getUserid());
-				if(infoList.size() == 1) {
-					int date = Integer.valueOf(StringUtils.substring(infoList.get(0), 4, 5));
-					Date expireDate = DateViewUtils.stepMonth(ptsAuth.getGmtCreate(),date,5);
-					PtsAuthPO po = new PtsAuthPO();
-					po.setUserid(ptsAuth.getUserid());
-					po.setGmtExpire(expireDate);
-					boolean flag = ptsAuthPOMapper.updatePtsAuthPOByUserId(po) > 0 ;
-					if(flag) {
-						a++;
-					}
-				}
-			}
-		}
-		return ResponseEntity.ok("成功："+a);
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }
