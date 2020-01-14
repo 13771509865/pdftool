@@ -60,15 +60,12 @@ public class SpringMVCConfigure implements WebMvcConfigurer{
 	    @Override
 	    public void addInterceptors(InterceptorRegistry registry) {
 	        registry.addInterceptor(uaaAuthInterceptor)
-	        .addPathPatterns("/composite/**")
-	        .addPathPatterns("/file/**")
-	        .addPathPatterns("/statistics/**")
-	        .addPathPatterns("/uaa/**")
-	        .addPathPatterns("/feedback")
-	        .excludePathPatterns("/uaa/setCookie");
-//	        .excludePathPatterns("/vote/**")
-//	        .excludePathPatterns("/api/**")//订单
-//	        .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**")
+	        .addPathPatterns("/**")
+	        .excludePathPatterns("/uaa/setCookie")
+	        .excludePathPatterns("/vote/**")
+	        .excludePathPatterns("/api/**")
+	        .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");;
+	        
 	        registry.addInterceptor(uploadInterceptor).addPathPatterns("/file/defaultUpload","/file/uploadYc");
 	        registry.addInterceptor(convertInterceptor).addPathPatterns("/composite/**");
 	    }
