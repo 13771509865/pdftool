@@ -22,6 +22,11 @@ import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.CookieUtils;
 import com.neo.service.httpclient.HttpAPIService;
 import com.yozosoft.auth.client.config.YozoCloudProperties;
+import com.yozosoft.auth.client.security.JwtAuthenticator;
+import com.yozosoft.auth.client.security.OAuth2AccessToken;
+import com.yozosoft.auth.client.security.OAuth2RequestTokenHelper;
+import com.yozosoft.auth.client.security.UaaToken;
+import com.yozosoft.auth.client.security.refresh.UaaTokenRefreshClient;
 
 
 @Service("uaaService")
@@ -32,13 +37,46 @@ public class UaaService {
 
 	@Autowired
 	private HttpAPIService httpAPIService;
-	
+
 	@Autowired
 	private PtsProperty ptsProperty;
+
+	@Autowired
+	private OAuth2RequestTokenHelper oAuth2RequestTokenHelper;
+
+	@Autowired
+	private UaaTokenRefreshClient uaaTokenRefreshClient;
+
+	@Autowired
+	private JwtAuthenticator jwtAuthenticator;
+
 
 	private Map<String, Object> params;
 
 	private Map<String, Object> headers =  new HashMap<>();
+
+
+	/**
+	 * uaa验证用户是否登录
+	 * @param request
+	 * @return
+	 */
+	public IResult<OAuth2AccessToken> checkSecurity(HttpServletRequest request) { 
+		OAuth2AccessToken oAuth2AccessToken = null;
+		try {
+			request = oAuth2RequestTokenHelper.detectTokenInHeaderOrParams(request);
+			oAuth2AccessToken = oAuth2RequestTokenHelper.extractToken(request);
+			oAuth2AccessToken = uaaTokenRefreshClient.refreshAccessToken(oAuth2AccessToken, oAuth2AccessToken.getRefreshToken());
+			UaaToken token = jwtAuthenticator.authenticate(oAuth2AccessToken.getValue());
+			if (token == null) {
+				return DefaultResult.failResult("无用户信息请重新登陆！");
+			}
+		} catch (Exception e) {
+			return DefaultResult.failResult("用户信息错误");
+		}
+		return DefaultResult.successResult(oAuth2AccessToken);
+	}
+
 
 
 

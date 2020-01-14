@@ -59,12 +59,11 @@ public class AuthManager {
 						return DefaultResult.successResult(permissionDtoAuthMap);
 					}
 				}
-				//注册用户
-				return DefaultResult.successResult(getPermissionByConfig(true,permissionDtoAuthMap));
-			}else {//游客
-				return DefaultResult.successResult(getPermissionByConfig(false,permissionDtoAuthMap));
 			}
+			//注册用户
+			return DefaultResult.successResult(getPermissionByConfig(permissionDtoAuthMap));
 		} catch (Exception e) {
+			//aop会做处理
 			SysLogUtils.error("解析用户权限失败,原因："+e.getMessage());
 			return DefaultResult.failResult(EnumResultCode.E_GET_AUTH_ERROR.getInfo());
 		}
@@ -72,24 +71,15 @@ public class AuthManager {
 
 
 	/**
-	 * 获取注册用户或者游客的权限
-	 * @param isLoginUser 是否注册/游客
+	 * 获取注册用户的权限
 	 * @return
 	 */
-	public Map<String,Object> getPermissionByConfig(Boolean isLoginUser,Map<String,Object> permissionDtoAuthMap) {
-		String[] convertCode;
-		Integer convertTimes;
-		Integer convertSize;
+	public Map<String,Object> getPermissionByConfig(Map<String,Object> permissionDtoAuthMap) {
 
-		if(isLoginUser) {//注册用户
-			convertCode = config.getMConvertModule().split(SysConstant.COMMA);
-			convertTimes = config.getMConvertTimes();
-			convertSize = config.getMUploadSize();
-		}else {//游客
-			convertCode = config.getVConvertModule().split(SysConstant.COMMA);
-			convertTimes = config.getVConvertTimes();
-			convertSize = config.getVUploadSize();
-		}
+		String[] convertCode = config.getMConvertModule().split(SysConstant.COMMA);
+		Integer	convertTimes = config.getMConvertTimes();
+		Integer	convertSize = config.getMUploadSize();
+		
 		for(String code : convertCode) {
 			String authCode = EnumAuthCode.getAuthCode(Integer.valueOf(code));
 			permissionDtoAuthMap.put(authCode, SysConstant.TRUE);
@@ -161,11 +151,5 @@ public class AuthManager {
 		}
 		return authCode;
 	}
-
-
-
-
-
-
 
 }

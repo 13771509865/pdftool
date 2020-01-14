@@ -11,4 +11,11 @@ public interface PtsAuthPOMapper {
 	List<PtsAuthPO> selectAuthByUserid(Long userid);
 	
 	Integer updatePtsAuthPOByUserId(PtsAuthPO ptsAuthPO);
+	
+	
+	//shan diao 
+	List<String> selectInfoByUserId(Long userid);
+	
+	List<PtsAuthPO> selectAuthWrong();
+	
 }

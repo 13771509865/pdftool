@@ -57,13 +57,9 @@ public class ConvertInterceptor implements HandlerInterceptor {
 		if (convertResult != null && convertResult instanceof Integer) {
 			if (EnumResultCode.E_SUCCES.getValue() == convertResult) {
 				Long userID =HttpUtils.getSessionUserID(request);
-				String key = RedisConsts.IP_CONVERT_TIME_KEY;
-				String value = HttpUtils.getIpAddr(request);
-				//登录用户
-				if(userID !=null) {
-					key = RedisConsts.ID_CONVERT_TIME_KEY;
-					value = userID.toString(); 
-				}
+				
+				String	key = RedisConsts.ID_CONVERT_TIME_KEY;
+				String	value =userID!=null? userID.toString() : null; 
 				redisCacheManager.pushZSet(key, value);
 			}
 		}
@@ -77,11 +73,10 @@ public class ConvertInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		String ipAddr = HttpUtils.getIpAddr(request);
 		Long userID = HttpUtils.getSessionUserID(request);
 		String body = HttpHelper.getBodyString(request);
 		ConvertParameterBO convertParameterBO = JsonUtils.json2obj(body, ConvertParameterBO.class);
-		IResult<EnumResultCode> result = iAuthService.checkUserAuth(convertParameterBO, userID,ipAddr);
+		IResult<EnumResultCode> result = iAuthService.checkUserAuth(convertParameterBO, userID);
 
 		if(!result.isSuccess()) {
 			HttpUtils.sendResponse(request, response, JsonResultUtils.buildFailJsonResultByResultCode(result.getData()));

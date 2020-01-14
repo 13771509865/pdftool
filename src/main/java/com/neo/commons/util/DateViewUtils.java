@@ -401,6 +401,7 @@ public class DateViewUtils {
 
 
 	/**
+	 * 设置过期时间，精确到月
 	 * mouth个月后，当天的23:59:59
 	 * @param sourceDate
 	 * @param month
@@ -415,12 +416,36 @@ public class DateViewUtils {
 		c.set(Calendar.HOUR_OF_DAY, 0);
 		c.set(Calendar.MINUTE, 0);
 		c.set(Calendar.SECOND, 0);
+		c.set(Calendar.MILLISECOND, 0);
+		c.add(Calendar.SECOND,-1);
+		return c.getTime(); 
+	}
+	
+	
+	/**
+	 * 设置过期时间，精确到日
+	 * @param sourceDate
+	 * @param month
+	 * @param date
+	 * @return
+	 */
+	public static Date stepMonth(Date sourceDate, int month,int date) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(sourceDate);
+		c.add(Calendar.MONTH, month);
+		c.add(Calendar.DATE,date);
+		c.set(c.get(Calendar.YEAR),c.get(Calendar.MONTH),c.get(Calendar.DAY_OF_MONTH));
+		c.set(Calendar.HOUR_OF_DAY, 0);
+		c.set(Calendar.MINUTE, 0);
+		c.set(Calendar.SECOND, 0);
+		c.set(Calendar.MILLISECOND, 0);
 		c.add(Calendar.SECOND,-1);
 		return c.getTime(); 
 	}
 
 	public static void main(String[] args) throws ParseException {
-		Date date = DateViewUtils.stepMonth(DateViewUtils.getNowDate(), 2);
+		Date date = DateViewUtils.stepMonth(DateViewUtils.getNowDate(), -1);
+		System.out.println(date);
 		System.out.println(DateViewUtils.formatFullDate(date)); 
 		
 	}
