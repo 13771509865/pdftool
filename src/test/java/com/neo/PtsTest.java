@@ -44,23 +44,23 @@ public class PtsTest {
 
 
 
-	@Test
-	public void test() {
-		List<PtsAuthPO> listWrong = ptsAuthPOMapper.selectAuthWrong();
-		for(PtsAuthPO ptsAuth : listWrong) {
-			if(ptsAuth.getId() < 206) {
-				List<String> infoList = ptsAuthPOMapper.selectInfoByUserId(ptsAuth.getUserid());
-				if(infoList.size() == 1) {
-					int date = Integer.valueOf(StringUtils.substring(infoList.get(0), 4, 5));
-					Date expireDate = DateViewUtils.stepMonth(ptsAuth.getGmtCreate(),date,5);
-					PtsAuthPO po = new PtsAuthPO();
-					po.setUserid(ptsAuth.getUserid());
-					po.setGmtExpire(expireDate);
-					ptsAuthPOMapper.updatePtsAuthPOByUserId(po);
-				}
-			}
-		}
-	}
+//	@Test
+//	public void test() {
+//		List<PtsAuthPO> listWrong = ptsAuthPOMapper.selectAuthWrong();
+//		for(PtsAuthPO ptsAuth : listWrong) {
+//			if(ptsAuth.getId() < 206) {
+//				List<String> infoList = ptsAuthPOMapper.selectInfoByUserId(ptsAuth.getUserid());
+//				if(infoList.size() == 1) {
+//					int date = Integer.valueOf(StringUtils.substring(infoList.get(0), 4, 5));
+//					Date expireDate = DateViewUtils.stepMonth(ptsAuth.getGmtCreate(),date,5);
+//					PtsAuthPO po = new PtsAuthPO();
+//					po.setUserid(ptsAuth.getUserid());
+//					po.setGmtExpire(expireDate);
+//					ptsAuthPOMapper.updatePtsAuthPOByUserId(po);
+//				}
+//			}
+//		}
+//	}
 
 
 
