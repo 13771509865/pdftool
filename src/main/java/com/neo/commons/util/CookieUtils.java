@@ -1,15 +1,16 @@
 package com.neo.commons.util;
 
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.List;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.neo.commons.cons.constants.ConstantCookie;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 
 public class CookieUtils {
 
@@ -108,6 +109,22 @@ public class CookieUtils {
         cookie.setPath(getPath(request));
         response.addCookie(cookie);
     }
+    
+    
+    
+    /**
+     * 设置Cookie
+     * @param response
+     * @param list    Cookie集合
+     */
+    public static void setCookie(HttpServletResponse response,List<Cookie> list) {
+    	if(!list.isEmpty() && list.size() > 0) {
+    		for(Cookie cookie : list) {
+        		response.addCookie(cookie);
+        	}
+    	}
+    }
+    
     
     
     /**

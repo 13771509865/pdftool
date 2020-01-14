@@ -43,14 +43,6 @@ import com.yozosoft.auth.client.security.refresh.UaaTokenRefreshClient;
 public class UaaAuthInterceptor implements HandlerInterceptor{
 
 
-	@Autowired
-	private OAuth2RequestTokenHelper oAuth2RequestTokenHelper;
-
-	@Autowired
-	private UaaTokenRefreshClient uaaTokenRefreshClient;
-
-	@Autowired
-	private JwtAuthenticator jwtAuthenticator;
 
 	@Autowired
 	private UaaService uaaService;	
@@ -69,7 +61,7 @@ public class UaaAuthInterceptor implements HandlerInterceptor{
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object arg2) throws Exception {
 		
-		IResult<Object> result = checkSecurity(request);
+		IResult<OAuth2AccessToken> result = uaaService.checkSecurity(request);
 		HttpSession session = request.getSession();
 		if(!result.isSuccess()) {
 			String userInfo = (String)session.getAttribute(ConstantCookie.SESSION_USER);
@@ -88,21 +80,6 @@ public class UaaAuthInterceptor implements HandlerInterceptor{
 	}
 
 
-	//uaa验证用户是否登录
-	private IResult<Object> checkSecurity(HttpServletRequest request) { 
-		try {
-			request = oAuth2RequestTokenHelper.detectTokenInHeaderOrParams(request);
-			OAuth2AccessToken oAuth2AccessToken = oAuth2RequestTokenHelper.extractToken(request);
-			OAuth2AccessToken accessToken = uaaTokenRefreshClient.refreshAccessToken(oAuth2AccessToken, oAuth2AccessToken.getRefreshToken());
-			UaaToken token = jwtAuthenticator.authenticate(accessToken.getValue());
-			if (token == null) {
-				return DefaultResult.failResult("无用户信息请重新登陆！");
-			}
-		} catch (Exception e) {
-			return DefaultResult.failResult("用户信息错误");
-		}
-		return DefaultResult.successResult();
-	}
 }	
 
 
