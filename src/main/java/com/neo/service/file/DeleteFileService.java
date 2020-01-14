@@ -2,6 +2,7 @@ package com.neo.service.file;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +51,10 @@ public class DeleteFileService {
 			return DefaultResult.failResult("删除用户转换记录失败");
 		}
 	}
-	
+	public static void main(String[] args) {
+		String a = "abc12r";
+		String newa = StringUtils.substring(a, 4, 5);
+		System.out.println(newa);
+	}
 
 }
