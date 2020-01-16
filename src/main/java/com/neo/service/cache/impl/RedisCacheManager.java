@@ -382,6 +382,7 @@ public class RedisCacheManager<T> implements CacheManager<T> {
     public Boolean htbRateLimiter(String key, Integer max_permits, Float permits_per_second, Integer required_permits, Long timeout_micros) {
         List<String> keys = Collections.singletonList("htbRateLimiter_" + key);
         Number number = redisTemplate.execute(htbRateLimiterScript, keys, max_permits, permits_per_second, required_permits, timeout_micros);
+        System.out.println("等待："+number.longValue()/1000000);
         return number.longValue() > 0;
     }
     
