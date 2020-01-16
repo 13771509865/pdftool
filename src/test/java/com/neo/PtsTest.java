@@ -42,25 +42,49 @@ public class PtsTest {
 	@Autowired
 	private PtsAuthPOMapper ptsAuthPOMapper;
 
+	@Test
+	public void test() throws InterruptedException {
+		while(true) {
+		A a = new A();
+		Thread t1 = new Thread(a);
+		Thread t2 = new Thread(a);
+			t1.start();
+			t2.start();
+			Thread.currentThread().sleep(1000);
+		}
+		
+	}
+
+	class A implements Runnable{
+		@Override
+		public void run() {
+			float a = 1;
+			System.out.println(redisCacheManager.htbRateLimiter("test",5,a,1,System.currentTimeMillis()));
+		}
+	}
+	
+	
 
 
-//	@Test
-//	public void test() {
-//		List<PtsAuthPO> listWrong = ptsAuthPOMapper.selectAuthWrong();
-//		for(PtsAuthPO ptsAuth : listWrong) {
-//			if(ptsAuth.getId() < 206) {
-//				List<String> infoList = ptsAuthPOMapper.selectInfoByUserId(ptsAuth.getUserid());
-//				if(infoList.size() == 1) {
-//					int date = Integer.valueOf(StringUtils.substring(infoList.get(0), 4, 5));
-//					Date expireDate = DateViewUtils.stepMonth(ptsAuth.getGmtCreate(),date,5);
-//					PtsAuthPO po = new PtsAuthPO();
-//					po.setUserid(ptsAuth.getUserid());
-//					po.setGmtExpire(expireDate);
-//					ptsAuthPOMapper.updatePtsAuthPOByUserId(po);
-//				}
-//			}
-//		}
-//	}
+
+
+	//	@Test
+	//	public void test() {
+	//		List<PtsAuthPO> listWrong = ptsAuthPOMapper.selectAuthWrong();
+	//		for(PtsAuthPO ptsAuth : listWrong) {
+	//			if(ptsAuth.getId() < 206) {
+	//				List<String> infoList = ptsAuthPOMapper.selectInfoByUserId(ptsAuth.getUserid());
+	//				if(infoList.size() == 1) {
+	//					int date = Integer.valueOf(StringUtils.substring(infoList.get(0), 4, 5));
+	//					Date expireDate = DateViewUtils.stepMonth(ptsAuth.getGmtCreate(),date,5);
+	//					PtsAuthPO po = new PtsAuthPO();
+	//					po.setUserid(ptsAuth.getUserid());
+	//					po.setGmtExpire(expireDate);
+	//					ptsAuthPOMapper.updatePtsAuthPOByUserId(po);
+	//				}
+	//			}
+	//		}
+	//	}
 
 
 
