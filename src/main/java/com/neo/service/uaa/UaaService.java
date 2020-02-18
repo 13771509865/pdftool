@@ -92,6 +92,7 @@ public class UaaService {
 			headers.put(UaaConsts.COOKIE, request.getHeader(UaaConsts.COOKIE));
 			IResult<HttpResultEntity> result = httpAPIService.doGet(ptsProperty.getUaa_userinfo_url(),params, headers);
 			userInfo = result.getData().getBody();
+			System.out.println("单点用户信息："+userInfo);
 			return userInfo;
 		} catch (Exception e) {
 			return null;

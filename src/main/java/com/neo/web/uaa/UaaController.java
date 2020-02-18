@@ -59,6 +59,7 @@ public class UaaController {
 			return JsonResultUtils.failMapResult();
 		}
 		userBO = JsonUtils.json2obj(userInfo, UserBO.class);
+		System.out.println("userBO=="+userBO);
 		return JsonResultUtils.successMapResult(userBO);
 	}
 	
