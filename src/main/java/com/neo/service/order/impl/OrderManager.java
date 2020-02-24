@@ -18,6 +18,7 @@ import com.neo.commons.cons.EnumAuthCode;
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.EnumStatus;
 import com.neo.commons.cons.IResult;
+import com.neo.commons.cons.UnitType;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.entity.OrderSpecsEntity;
 import com.neo.commons.properties.PtsProperty;
@@ -99,7 +100,7 @@ public class OrderManager {
 					PtsAuthPO ptsAuthPO = new PtsAuthPO();
 					if(list.isEmpty() || list.size() < 1) {
 						//当前时间+权益有效期
-						Date expireDate = DateViewUtils.stepMonth(DateViewUtils.getNowDate(),orderSpecsEntity.getValidityTime());
+						Date expireDate = DateViewUtils.getTimeDay(DateViewUtils.getNowDate(),orderSpecsEntity.getValidityTime(),orderSpecsEntity.getUnitType());
 						ptsAuthPO.setAuth(orderSpecsEntity.getAuth());
 						ptsAuthPO.setGmtCreate(DateViewUtils.getNowDate());
 						ptsAuthPO.setGmtModified(DateViewUtils.getNowDate());
@@ -116,10 +117,10 @@ public class OrderManager {
 						Date newExpireDate;
 						if(DateViewUtils.isExpiredForTimes(expireDate)) {//精确到秒
 							//过期了：当前时间+权限给的月数
-							newExpireDate = DateViewUtils.stepMonth(DateViewUtils.getNowDate(),orderSpecsEntity.getValidityTime());
+							newExpireDate = DateViewUtils.getTimeDay(DateViewUtils.getNowDate(),orderSpecsEntity.getValidityTime(),orderSpecsEntity.getUnitType());
 						}else {
 							//没过期：数据库时间+权限给的月数
-							newExpireDate = DateViewUtils.stepMonth(expireDate,orderSpecsEntity.getValidityTime());
+							newExpireDate = DateViewUtils.getTimeDay(expireDate,orderSpecsEntity.getValidityTime(),orderSpecsEntity.getUnitType());
 						}
 						ptsAuthPO.setGmtModified(DateViewUtils.getNowDate());
 						ptsAuthPO.setAuth(orderSpecsEntity.getAuth());
@@ -150,13 +151,18 @@ public class OrderManager {
 		try {
 			StringBuilder build = new StringBuilder();
 			Map<String, String[]> specs = osa.getSpecs();
+			
+			//过期时间值
 			Integer validityTime = Integer.valueOf(specs.get(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())[0]);
+			//过期时间单位
+			UnitType unitType = UnitType.getUnit(specs.get(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())[1]);
+			
 			for (Map.Entry<String, String[]> m : specs.entrySet()) {
 				if(!StringUtils.equals(m.getKey(), EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())) {
 					build.append(m.getKey()).append(SysConstant.COLON).append(m.getValue()[0]).append(SysConstant.COMMA);
 				}
 			}
-			orderSpecsEntity = new OrderSpecsEntity(build.toString(), validityTime);
+			orderSpecsEntity = new OrderSpecsEntity(build.toString(), validityTime,unitType);
 		} catch (Exception e) {
 			SysLogUtils.error("解析order商品详情错误，原因："+e.getMessage());
 		}
