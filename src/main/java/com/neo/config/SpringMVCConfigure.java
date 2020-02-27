@@ -65,7 +65,8 @@ public class SpringMVCConfigure implements WebMvcConfigurer{
 	        .addPathPatterns("/statistics/**")
 	        .addPathPatterns("/uaa/**")
 	        .addPathPatterns("/feedback")
-	        .excludePathPatterns("/uaa/setCookie");
+	        .excludePathPatterns("/uaa/setCookie")
+	        .excludePathPatterns("/statistics/auth");
 	        registry.addInterceptor(uploadInterceptor).addPathPatterns("/file/defaultUpload","/file/uploadYc");
 	        registry.addInterceptor(convertInterceptor).addPathPatterns("/composite/**");
 	    }
