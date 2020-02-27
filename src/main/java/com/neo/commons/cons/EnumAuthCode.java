@@ -26,7 +26,7 @@ public enum EnumAuthCode {
 	PDF_MERGE(11,"pdf2merge","convert011","31","false","Pdfmerge"),
 	PDF_SPLIT(12,"pdf2split","convert012","82","false","Pdfsplit"),
 	OCR_IMG_TXT(13,"ocrImage2txt","convert013","83","false","Ocr"),
-	PDF_ORC_WORD(14,"pdftoorcword","convert014","64","false","Pdftoorcword"),
+	PDF_ORC_WORD(14,"pdftoorcword","convert014","64","false","Pdftoocrword"),
 
 	PTS_CONVERT_NUM(15,"转换数量", "convertNum",null,5,null), 
 	PTS_UPLOAD_SIZE(16,"文件大小","uploadSize",null,2,null),
