@@ -12,5 +12,7 @@ public interface PtsAuthPOMapper {
 	
 	Integer updatePtsAuthPOByUserId(PtsAuthPO ptsAuthPO);
 	
+	Integer deletePtsAuth(PtsAuthPO ptsAuthPO);
+	
 	
 }

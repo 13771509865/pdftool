@@ -46,7 +46,11 @@ public enum EnumResultCode {
 	E_YCUPLOAD_UPDATE_FAIL(57,"优云文件上传失败信息更新失败"),
 	E_YCUPLOAD_NULL(58,"未查到优云文件上传失败信息"),
 	E_YCUPLOAD_RETRY_NULL(59,"重试成功0条数据"),
-
+	
+	E_USER_CLEAR_ILLEGAL(60, "非法删除操作"),
+	E_USER_CLEAR_FAIL(61, "用户删除失败"),
+	 
+	 
 	E_GET_AUTH_ERROR(98,"解析用户权限失败"),
 	E_ORDER_AUTH_CODE_ERROR(99,"抱歉该订单缺少pdf工具集必要的AuthCode或者存在非法的AuthCode"),
 	E_ORDER_ILLEGAL(100,"非法订单信息");

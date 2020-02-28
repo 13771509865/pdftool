@@ -1,30 +1,16 @@
 package com.neo;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.neo.commons.cons.EnumAuthCode;
-import com.neo.commons.cons.IResult;
-import com.neo.commons.util.DateViewUtils;
 import com.neo.dao.PtsAuthPOMapper;
-import com.neo.model.dto.RedisOrderDto;
-import com.neo.model.po.PtsAuthPO;
 import com.neo.service.auth.IAuthService;
 import com.neo.service.cache.impl.RedisCacheManager;
+import com.neo.service.clear.IClearService;
 import com.neo.service.order.impl.OrderManager;
-import com.yozosoft.api.order.dto.OrderRequestDto;
-import com.yozosoft.api.order.dto.OrderServiceAppSpec;
-import com.yozosoft.saas.YozoServiceApp;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -41,19 +27,31 @@ public class PtsTest {
 
 	@Autowired
 	private PtsAuthPOMapper ptsAuthPOMapper;
-
+	
+	@Autowired
+	private IClearService iClearService;
+	
+	
+	
 	@Test
-	public void test() throws InterruptedException {
-		while(true) {
-		A a = new A();
-		Thread t1 = new Thread(a);
-		Thread t2 = new Thread(a);
-			t1.start();
-			t2.start();
-			Thread.currentThread().sleep(1000);
-		}
-		
+	public void clearTest() throws InterruptedException {
+		String id = "34766674116739072";
+		iClearService.clearUserData(id);
 	}
+	
+
+//	@Test
+//	public void test() throws InterruptedException {
+//		while(true) {
+//		A a = new A();
+//		Thread t1 = new Thread(a);
+//		Thread t2 = new Thread(a);
+//			t1.start();
+//			t2.start();
+//			Thread.currentThread().sleep(1000);
+//		}
+//		
+//	}
 
 	class A implements Runnable{
 		@Override

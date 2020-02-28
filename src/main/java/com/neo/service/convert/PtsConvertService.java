@@ -179,4 +179,23 @@ public class PtsConvertService {
 		}
 		return DefaultResult.successResult(list.get(0).getUCloudFileId());
 	}
+	
+	
+	/**
+	 * 删除用户转换记录
+	 * @param fcsFileInfoQO
+	 * @return
+	 */
+	public int deletePtsConvert(FcsFileInfoQO fcsFileInfoQO){
+		return fcsFileInfoBOMapper.deletePtsConvert(fcsFileInfoQO);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

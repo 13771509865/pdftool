@@ -25,4 +25,6 @@ public interface IAuthService {
 	
 	Integer updatePtsAuthPOByUserId(PtsAuthPO ptsAuthPO);
 	
+	Integer deletePtsAuth(PtsAuthPO ptsAuthPO);
+	
 }

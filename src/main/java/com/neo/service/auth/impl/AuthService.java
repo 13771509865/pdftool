@@ -145,6 +145,16 @@ public class AuthService implements IAuthService{
 	public Integer updatePtsAuthPOByUserId(PtsAuthPO ptsAuthPO) {
 		return ptsAuthPOMapper.updatePtsAuthPOByUserId(ptsAuthPO);
 	}
+	
+	
+	/**
+	 * 删除用户权限
+	 * @param ptsAuthPO
+	 * @return
+	 */
+	public Integer deletePtsAuth(PtsAuthPO ptsAuthPO) {
+		return ptsAuthPOMapper.deletePtsAuth(ptsAuthPO);
+	}
 
 
 
