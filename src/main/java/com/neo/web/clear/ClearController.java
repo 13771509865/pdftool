@@ -79,7 +79,7 @@ public class ClearController {
 		}
 
 		try {
-			IResult<Integer>  clearResult= iClearService.clearUserData(userClearRequestDto.getId());
+			IResult<Integer>  clearResult= iClearService.clearUserData(userClearRequestDto);
 			return ResponseEntity.ok(buildClearResult(EnumResultCode.E_SUCCES.getValue(), EnumResultCode.E_SUCCES.getInfo()));
 
 		} catch (Exception e) {

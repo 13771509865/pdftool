@@ -1,4 +1,6 @@
 package com.neo.model.dto;
+import com.alibaba.fastjson.JSON;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,4 +18,5 @@ public class UserClearRequestDto {
     private String role;
 
     private UserClearDto[] members;
+    
 }

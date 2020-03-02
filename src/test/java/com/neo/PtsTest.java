@@ -7,6 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.neo.dao.PtsAuthPOMapper;
+import com.neo.model.dto.UserClearDto;
+import com.neo.model.dto.UserClearRequestDto;
 import com.neo.service.auth.IAuthService;
 import com.neo.service.cache.impl.RedisCacheManager;
 import com.neo.service.clear.IClearService;
@@ -35,8 +37,18 @@ public class PtsTest {
 	
 	@Test
 	public void clearTest() throws InterruptedException {
-		String id = "34766674116739072";
-		iClearService.clearUserData(id);
+		UserClearRequestDto userClearRequestDto = new UserClearRequestDto();
+		UserClearDto[] userClearDto = new UserClearDto[2];
+		userClearRequestDto.setId("423844151126130689");
+		UserClearDto userClearDto1 = new UserClearDto();
+		UserClearDto userClearDto2 = new UserClearDto();
+		userClearDto1.setId("423837533986619393");
+		userClearDto2.setId("423813009295540225");
+		userClearDto[0] = userClearDto1;
+		userClearDto[1] = userClearDto2;
+		
+		userClearRequestDto.setMembers(userClearDto);
+		iClearService.clearUserData(userClearRequestDto);
 	}
 	
 
