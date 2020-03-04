@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+
+import com.neo.commons.cons.UnitType;
 /**
  * 处理日期的格式化
  */
@@ -401,7 +403,7 @@ public class DateViewUtils {
 
 
 	/**
-	 * 设置过期时间，精确到月
+	 * 订单设置过期时间，精确到月
 	 * mouth个月后，当天的23:59:59
 	 * @param sourceDate
 	 * @param month
@@ -423,7 +425,7 @@ public class DateViewUtils {
 	
 	
 	/**
-	 * 设置过期时间，精确到日
+	 * 订单设置过期时间，精确到日
 	 * @param sourceDate
 	 * @param month
 	 * @param date
@@ -442,10 +444,37 @@ public class DateViewUtils {
 		c.add(Calendar.SECOND,-1);
 		return c.getTime(); 
 	}
+	
+	
+	/**
+	 * 订单设置过期时间，精确到日
+	 * @param date
+	 * @param index
+	 * @param unitType
+	 * @return
+	 */
+	public static Date getTimeDay(Date date, int index, UnitType unitType) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        if (unitType == UnitType.Day) {
+            calendar.add(Calendar.DATE, index);
+        } else if (unitType == UnitType.Year) {
+            calendar.add(Calendar.YEAR, index);
+        } else {
+            calendar.add(Calendar.MONTH, index);
+        }
+        calendar.add(Calendar.DATE, 1);
+        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+                0, 0, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.add(Calendar.SECOND, -1);
+        return calendar.getTime();
+    }
+	
 
 	public static void main(String[] args) throws ParseException {
-		Date date = DateViewUtils.stepMonth(DateViewUtils.getNowDate(), -1);
-		System.out.println(date);
+		Date date = DateViewUtils.getTimeDay(DateViewUtils.getNowDate(), -1,UnitType.getUnit("日"));
+		System.out.println(date); 
 		System.out.println(DateViewUtils.formatFullDate(date)); 
 		
 	}

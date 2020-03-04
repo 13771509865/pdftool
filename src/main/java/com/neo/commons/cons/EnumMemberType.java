@@ -13,7 +13,8 @@ import lombok.Getter;
 @Getter
 public enum EnumMemberType {
 
-	MEMBER(1,"Member","注册会员"),
+	VISITOR(0,"visitor","游客"),
+	MEMBER(1,"Member","注册用户"),
 	MEMBER_YOZOCLOUD(2,"MemberYozocloud","永中会员"),
 	MEMBER_YOMOER(3,"MemberYomoer","柚墨会员"),
 	MEMBER_VIP(4,"MemberVip","超级会员");
