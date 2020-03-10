@@ -32,24 +32,12 @@ public class ConfigProperty{
 	
 	@Value(value = "${ticketWaitTime}")
 	private Integer ticketWaitTime;
-
-	@Value(value = "${mUploadSize}")
-	private Integer mUploadSize;
-
-	@Value(value = "${vUploadSize}")
-	private Integer vUploadSize;
-
-	@Value(value = "${mConvertTimes}")
-	private Integer mConvertTimes;
-
-	@Value(value = "${vConvertTimes}")
-	private Integer vConvertTimes;
 	
-	@Value(value = "${mConvertModule}")
-	private String mConvertModule;
+	@Value(value = "${convertModule}")
+	private String convertModule;
 	
-	@Value(value = "${vConvertModule}")
-	private String vConvertModule;
+	@Value(value = "${uploadSize}")
+	private Integer uploadSize;
 	
 	@Value(value = "${clearDay}")
 	private Integer clearDay;

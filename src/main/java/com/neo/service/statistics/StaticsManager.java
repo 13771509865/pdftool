@@ -50,7 +50,7 @@ public class StaticsManager {
 
 		//注册用户允许使用的模块
 		if(memberValue == EnumMemberType.MEMBER.getValue()) {
-			String[] convertCode = configProperty.getMConvertModule().split(SysConstant.COMMA);
+			String[] convertCode = configProperty.getConvertModule().split(SysConstant.COMMA);
 			for(String code : convertCode) {
 				String module = EnumAuthCode.getModule(Integer.valueOf(code));
 				list.add(module);

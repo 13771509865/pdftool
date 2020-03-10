@@ -12,6 +12,7 @@ import com.neo.commons.cons.IResult;
 import com.neo.commons.helper.PermissionHelper;
 import com.neo.commons.util.JsonUtils;
 import com.neo.model.dto.PermissionDto;
+import com.neo.service.auth.impl.AuthManager;
 
 /**
  * @author xujun
@@ -25,6 +26,9 @@ public class AuthServiceAspect {
     @Autowired
     private PermissionHelper permissionHelper;
     
+    @Autowired
+    private AuthManager authManager;
+    
     @Pointcut(value = "execution(* com.neo.service.auth.impl.AuthManager.getPermission(..))")
     public void getPermission() {
     }
@@ -35,7 +39,7 @@ public class AuthServiceAspect {
         	System.out.println("验证权限有问题，进入aop进行权限默认值设定");
         	PermissionDto permissionDto =  permissionHelper.buildDefaultPermission();
         	Map<String,Object> permissionDtoAuthMap = JsonUtils.parseJSON2Map(permissionDto);
-        	result.setData(permissionDtoAuthMap);
+        	result.setData(authManager.getPermission(permissionDtoAuthMap));
         }
     }
 }

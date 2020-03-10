@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.neo.commons.util.DateViewUtils;
 import com.neo.dao.PtsAuthPOMapper;
-import com.neo.model.dto.UserClearDto;
-import com.neo.model.dto.UserClearRequestDto;
+import com.neo.dao.PtsConvertRecordPOMapper;
+import com.neo.model.po.PtsConvertRecordPO;
+import com.neo.model.qo.PtsConvertRecordQO;
 import com.neo.service.auth.IAuthService;
 import com.neo.service.cache.impl.RedisCacheManager;
 import com.neo.service.clear.IClearService;
@@ -33,24 +35,49 @@ public class PtsTest {
 	@Autowired
 	private IClearService iClearService;
 	
+	@Autowired
+	private PtsConvertRecordPOMapper ptsConvertRecordPOMapper;
 	
 	
 	@Test
 	public void clearTest() throws InterruptedException {
-		UserClearRequestDto userClearRequestDto = new UserClearRequestDto();
-		UserClearDto[] userClearDto = new UserClearDto[2];
-		userClearRequestDto.setId("423844151126130689");
-		UserClearDto userClearDto1 = new UserClearDto();
-		UserClearDto userClearDto2 = new UserClearDto();
-		userClearDto1.setId("423837533986619393");
-		userClearDto2.setId("423813009295540225");
-		userClearDto[0] = userClearDto1;
-		userClearDto[1] = userClearDto2;
+		String nowDate = DateViewUtils.getNow();
+		String nowTime = DateViewUtils.getNowTime();
+		 
+		PtsConvertRecordPO ptsConvertRecordPO = new PtsConvertRecordPO();
+		ptsConvertRecordPO.setConvertNum(1);
+		ptsConvertRecordPO.setCreateDate(DateViewUtils.getNowDate());//时间搞一搞
+		ptsConvertRecordPO.setCreateTime(DateViewUtils.getNowDate());
+		ptsConvertRecordPO.setModifiedDate(DateViewUtils.getNowDate());
+		ptsConvertRecordPO.setModifiedTime(DateViewUtils.getNowDate());
+		ptsConvertRecordPO.setModule(2);
+		ptsConvertRecordPO.setStatus(1);
+		ptsConvertRecordPO.setUserID(13L);
 		
-		userClearRequestDto.setMembers(userClearDto);
-		iClearService.clearUserData(userClearRequestDto);
+		PtsConvertRecordQO ptsConvertRecordQO = new PtsConvertRecordQO();
+		ptsConvertRecordQO.setConvertNum(5);
+		
+		int num = ptsConvertRecordPOMapper.insertOrUpdatePtsConvertRecord(ptsConvertRecordPO, ptsConvertRecordQO);
+		System.out.println(num);
 	}
 	
+	
+//	@Test
+//	public void clearTest() throws InterruptedException {
+//		UserClearRequestDto userClearRequestDto = new UserClearRequestDto();
+//		UserClearDto[] userClearDto = new UserClearDto[2];
+//		userClearRequestDto.setId("423844151126130689");
+//		UserClearDto userClearDto1 = new UserClearDto();
+//		UserClearDto userClearDto2 = new UserClearDto();
+//		userClearDto1.setId("423837533986619393");
+//		userClearDto2.setId("423813009295540225");
+//		userClearDto[0] = userClearDto1;
+//		userClearDto[1] = userClearDto2;
+//		
+//		userClearRequestDto.setMembers(userClearDto);
+//		iClearService.clearUserData(userClearRequestDto);
+//	}
+//	
 
 //	@Test
 //	public void test() throws InterruptedException {
