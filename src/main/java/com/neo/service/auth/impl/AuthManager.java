@@ -49,10 +49,10 @@ public class AuthManager {
 	 */
 	public IResult<Map<String,Object>> getPermission(Long userID) {
 		try {
-//			PermissionDto permissionDto = permissionHelper.buildDefaultPermission();
+			PermissionDto permissionDto = permissionHelper.buildDefaultPermission();
 			//默认权限map
-//			Map<String,Object> permissionDtoAuthMap = JsonUtils.parseJSON2Map(permissionDto);
-			Map<String,Object> permissionDtoAuthMap = new HashMap<>();
+			Map<String,Object> permissionDtoAuthMap = JsonUtils.parseJSON2Map(permissionDto);
+//			Map<String,Object> permissionDtoAuthMap = new HashMap<>();
 			if(userID !=null) {//登录用户或者会员
 				List<PtsAuthPO> list = iAuthService.selectAuthByUserid(userID);
 				if(!list.isEmpty() && list.size()>0) {//没有购买过会员

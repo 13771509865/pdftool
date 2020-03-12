@@ -19,7 +19,7 @@ public class ConvertRecordService implements IConvertRecordService{
 	
 	
 	/**
-	 * 进来转换就加一次
+	 * 每次转换前就加一次记录
 	 */
 	public int insertOrUpdatePtsConvertRecord(PtsConvertRecordPO ptsConvertRecordPO,PtsConvertRecordQO ptsConvertRecordQO) {
 		return ptsConvertRecordPOMapper.insertOrUpdatePtsConvertRecord(ptsConvertRecordPO, ptsConvertRecordQO);
@@ -41,6 +41,13 @@ public class ConvertRecordService implements IConvertRecordService{
 		return ptsConvertRecordPOMapper.selectPtsConvertRecord(ptsConvertRecordPO);
 	}
 	
+	
+	/**
+	 * 删除指定天数之前的转换记录
+	 */
+	public int deletePtsConvertRecord(PtsConvertRecordPO ptsConvertRecordPO) {
+		return ptsConvertRecordPOMapper.deletePtsConvertRecord(ptsConvertRecordPO);
+	}
 	
 	
 }

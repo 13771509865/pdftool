@@ -135,4 +135,16 @@
 
 
 
+	 <!-- 删除用户相应的转换记录  -->
+ 	 <delete id="deletePtsConvertRecord" parameterType="com.neo.model.po.PtsConvertRecordPO">
+	        delete from pts_convert_record
+	      	<where>
+	      		<if test="modifiedDate != null">
+				AND MODIFIED_DATE &lt;=  #{modifiedDate,jdbcType=DATE}
+			</if>
+	      	</where>
+   	 </delete>
+ 	  
+
+
 </mapper>

@@ -80,10 +80,6 @@ public class AuthService implements IAuthService{
 	@Override
 	public IResult<EnumResultCode> checkConvertTimes(Long userID,Integer maxConvertTimes,Integer module) {
 
-		//次数为-1，直接返回true
-		if(maxConvertTimes == -1) {
-			return DefaultResult.successResult();
-		}
 		PtsConvertRecordPO ptsConvertRecordPO = new PtsConvertRecordPO();
 		String nowDate = DateViewUtils.getNow();
 		String nowTime = DateViewUtils.getNowTime();
@@ -97,7 +93,7 @@ public class AuthService implements IAuthService{
 		ptsConvertRecordPO.setStatus(EnumStatus.ENABLE.getValue());
 		
 		PtsConvertRecordQO ptsConvertRecordQO = new PtsConvertRecordQO();
-		ptsConvertRecordQO.setConvertNum(maxConvertTimes);
+		ptsConvertRecordQO.setConvertNum(maxConvertTimes==-1?9999:maxConvertTimes);
 		
 		boolean insertOrUpdatePtsConvertRecord = iConvertRecordService.insertOrUpdatePtsConvertRecord(ptsConvertRecordPO, ptsConvertRecordQO)>0;
 		if(insertOrUpdatePtsConvertRecord) {

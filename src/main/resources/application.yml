@@ -29,7 +29,7 @@ spring:
   datasource:
 #    type: com.alibaba.druid.pool.DruidDataSource
     druid:                          #springboot2不支持配置继承,如多数据源每个要写完整配置
-      url: jdbc:mysql://localhost:3306/pts?characterEncoding=utf-8&serverTimezone=Asia/Shanghai          #数据库连接url
+      url: jdbc:mysql://localhost:3306/pts?characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useAffectedRows=true          #数据库连接url,必须要加useAffectedRows=true,否则权限判断会有问题
       username: root                            #数据库用户名
       password: root                      #数据库密码
       driver-class-name: com.mysql.cj.jdbc.Driver

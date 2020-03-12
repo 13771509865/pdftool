@@ -15,4 +15,6 @@ public interface PtsConvertRecordPOMapper {
 	
 	List<PtsConvertRecordPO> selectPtsConvertRecord(PtsConvertRecordPO ptsConvertRecordPO);
 	
+	int deletePtsConvertRecord(PtsConvertRecordPO ptsConvertRecordPO);
+	
 }

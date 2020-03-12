@@ -12,4 +12,6 @@ public interface IConvertRecordService {
 	int updateConvertNum(PtsConvertRecordPO ptsConvertRecordPO);
 	
 	List<PtsConvertRecordPO> selectPtsConvertRecord(PtsConvertRecordPO ptsConvertRecordPO);
+	
+	int deletePtsConvertRecord(PtsConvertRecordPO ptsConvertRecordPO);
 }

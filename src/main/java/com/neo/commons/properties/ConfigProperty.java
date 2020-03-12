@@ -45,15 +45,6 @@ public class ConfigProperty{
 	@Value(value = "${clearMaster}")
 	private Boolean clearMaster;
 	
-	@Value(value = "${clearInputDir}")
-	private Boolean clearInputDir;
-	
-	@Value(value = "${clearOutputDir}")
-	private Boolean clearOutputDir;
-	
-	@Value(value = "${folderFormat}")
-    private String folderFormat = "yyyy/MM";
-	
 	@Value(value = "${convertTicketWaitTime}")
 	private Integer convertTicketWaitTime;
 	
