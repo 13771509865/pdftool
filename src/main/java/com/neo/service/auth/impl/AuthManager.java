@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -99,13 +100,25 @@ public class AuthManager {
 	 * @return
 	 */
 	public Map<String,Object> getPermission(Map<String,Object> permissionDtoAuthMap) {
+		
+		//转换次数初始值
 		Map<String,Object> numMap = JsonUtils.parseJSON2Map(convertNumProperty);
 
 		//这个判断现在暂时这么搞
 		//如果convertNum值不为空，则认为是会员
 		if(permissionDtoAuthMap.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode())!=null) {
 			 for (Map.Entry<String, Object> numEntry : numMap.entrySet()) {
-				 numEntry.setValue(permissionDtoAuthMap.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode()));
+				 
+				 String permissionKey = EnumAuthCode.getAuthCodeByModuleNum(numEntry.getKey());
+				 Object permissionValue = permissionDtoAuthMap.get(permissionKey);
+				 
+				 //如果convert001等等为true，就修改numMap里面的转换次数
+				 if(permissionValue!=null && StringUtils.equals(permissionValue.toString(), SysConstant.TRUE)) {
+					 Integer num = Integer.valueOf(permissionDtoAuthMap.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode()).toString());
+					 num = num>999?-1:num;
+					 numEntry.setValue(num);
+				 }
+				
 			 }
 		}
 		permissionDtoAuthMap.putAll(numMap);

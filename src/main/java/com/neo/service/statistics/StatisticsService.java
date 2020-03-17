@@ -36,6 +36,7 @@ import com.neo.model.po.PtsSummaryPO;
 import com.neo.model.qo.FcsFileInfoQO;
 import com.neo.model.qo.PtsSummaryQO;
 import com.neo.service.auth.IAuthService;
+import com.neo.service.auth.impl.AuthManager;
 import com.neo.service.cache.impl.RedisCacheManager;
 import com.neo.service.convertRecord.IConvertRecordService;
 import com.neo.service.httpclient.HttpAPIService;
@@ -69,6 +70,9 @@ public class StatisticsService {
 
 	@Autowired
 	private IConvertRecordService iConvertRecordService;
+	
+	@Autowired
+	private AuthManager authManager;
 
 	/**
 	 * 根据userID查询三天内的转换记录
@@ -107,20 +111,24 @@ public class StatisticsService {
 	public IResult<Map<String,Object>> getConvertTimes(Long userID){
 		try {
 
-			Map<String,Object> numMap = JsonUtils.parseJSON2Map(convertNumProperty);
+//			Map<String,Object> numMap = JsonUtils.parseJSON2Map(convertNumProperty);
+//			Map<String,Object> newMap = new HashMap<>();
+//
+//			List<PtsAuthPO> list = iAuthService.selectAuthByUserid(userID);
+//			if(!list.isEmpty() && list.size()>0) {//没有购买过会员
+//				PtsAuthPO ptsAuthPO = list.get(0);
+//				if(!DateViewUtils.isExpiredForDays(ptsAuthPO.getGmtExpire())) {//没有过期
+//					for (Map.Entry<String, Object> numEntry : numMap.entrySet()) {
+//						//会员的剩余次数暂时都设为-1
+//						newMap.put(EnumAuthCode.getModuleByModuleNum(numEntry.getKey()), -1);
+//					}
+//					return DefaultResult.successResult(newMap); 
+//				}
+//			}
+			
+			IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID);
+			Map<String,Object> map = getPermissionResult.getData();
 			Map<String,Object> newMap = new HashMap<>();
-
-			List<PtsAuthPO> list = iAuthService.selectAuthByUserid(userID);
-			if(!list.isEmpty() && list.size()>0) {//没有购买过会员
-				PtsAuthPO ptsAuthPO = list.get(0);
-				if(!DateViewUtils.isExpiredForDays(ptsAuthPO.getGmtExpire())) {//没有过期
-					for (Map.Entry<String, Object> numEntry : numMap.entrySet()) {
-						//会员的剩余次数暂时都设为-1
-						newMap.put(EnumAuthCode.getModuleByModuleNum(numEntry.getKey()), -1);
-					}
-					return DefaultResult.successResult(newMap); 
-				}
-			}
 
 			//注册用户剩余次数
 			PtsConvertRecordPO ptsConvertRecordPO = new PtsConvertRecordPO();
@@ -136,17 +144,19 @@ public class StatisticsService {
 					Integer convertNum = po.getConvertNum();//转了多少次
 					String moduleNum = EnumAuthCode.getModuleNum(po.getModule());
 
-					Integer allowConvertNum = (Integer)numMap.get(moduleNum);//允许转多少次
+					Integer allowConvertNum = (Integer)map.get(moduleNum);//允许转多少次
 					if(allowConvertNum != -1) {
-						Integer newNum = allowConvertNum - convertNum;
-						numMap.put(moduleNum, newNum);
+						Integer newNum = allowConvertNum - convertNum;//剩余多少次
+						map.put(moduleNum, newNum);
 					}
 				}
 			}
-
+			
 			//转换成前端想要的字符
-			for (Map.Entry<String, Object> numEntry : numMap.entrySet()) {
-				newMap.put(EnumAuthCode.getModuleByModuleNum(numEntry.getKey()), numEntry.getValue());
+			for (Map.Entry<String, Object> numEntry : map.entrySet()) {
+				if(EnumAuthCode.getModuleByModuleNum(numEntry.getKey()) != null) {
+					newMap.put(EnumAuthCode.getModuleByModuleNum(numEntry.getKey()), numEntry.getValue());
+				}
 			}
 
 			return DefaultResult.successResult(newMap);
