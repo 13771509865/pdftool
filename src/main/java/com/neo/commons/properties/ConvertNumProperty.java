@@ -32,46 +32,46 @@ import lombok.NoArgsConstructor;
 public class ConvertNumProperty {
 	
 	@NotBlank
-	private Integer convert001Num;
+	private Integer convert001Num = -1;
 	
 	@NotBlank
-	private Integer convert002Num;
+	private Integer convert002Num = -1;
 	
 	@NotBlank
-	private Integer convert003Num;
+	private Integer convert003Num = 5;
 	
 	@NotBlank
-	private Integer convert004Num;
+	private Integer convert004Num = -1;
 	
 	@NotBlank
-	private Integer convert005Num;
+	private Integer convert005Num = 5;
 	
 	@NotBlank
-	private Integer convert006Num;
+	private Integer convert006Num = -1;
 	
 	@NotBlank
-	private Integer convert007Num;
+	private Integer convert007Num = 5;
 	
 	@NotBlank
-	private Integer convert008Num;
+	private Integer convert008Num = 5;
 	
 	@NotBlank
-	private Integer convert009Num;
+	private Integer convert009Num = 5;
 	
 	@NotBlank
-	private Integer convert010Num;
+	private Integer convert010Num = 5;
 	
 	@NotBlank
-	private Integer convert011Num;
+	private Integer convert011Num = 5;
 	
 	@NotBlank
-	private Integer convert012Num;
+	private Integer convert012Num = 5;
 	
 	@NotBlank
-	private Integer convert013Num;
+	private Integer convert013Num = 5;
 	
 	@NotBlank
-	private Integer convert014Num;
+	private Integer convert014Num = 5;
 	
 	
 	@Override
