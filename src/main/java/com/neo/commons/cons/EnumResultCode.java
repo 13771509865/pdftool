@@ -49,6 +49,7 @@ public enum EnumResultCode {
 	
 	E_USER_CLEAR_ILLEGAL(60, "非法删除操作"),
 	E_USER_CLEAR_FAIL(61, "用户删除失败"),
+	E_MERGE_FILE_NAME_ERROR(62,"亲爱的用户您好，您的文件名填写有误，请确认后使用。"),
 	 
 	 
 	E_GET_AUTH_ERROR(98,"解析用户权限失败"),
