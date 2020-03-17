@@ -13,20 +13,20 @@ import lombok.Getter;
 public enum EnumAuthCode {
 
 
-	PDF_WORD(1,"pdf2word","convert001","36","true","Pdf2word","convert001Num"),
-	WORD_PDF(2,"word2pdf","convert002","3","true","Word2pdf","convert002Num"),
-	PDF_PPT(3,"pdf2ppt","convert003","80","true","Pdf2ppt","convert003Num"),
-	PPT_PDF(4,"ppt2pdf","convert004","3","true","Ppt2pdf","convert004Num"),
-	PDF_EXCEL(5,"pdf2excel","convert005","81","true","Pdf2excel","convert005Num"),
-	EXCEL_PDF(6,"excel2pdf","convert006","3","true","Excel2pdf","convert006Num"),
-	PDF_IMG(7,"pdf2img","convert007","9,10,11,12,13","true","Pdf2pic","convert007Num"),
-	PDF_HTML(8,"pdf2html","convert008","14","true","Pdf2html","convert008Num"),
-	PDF_MARK(9,"pdf2watermark","convert009","34","true","Pdfaddstain","convert009Num"),
-	PDF_SIGN(10,"pdf2sign","convert010","14","true","Pdfaddsign","convert010Num"),
-	PDF_MERGE(11,"pdf2merge","convert011","31","true","Pdfmerge","convert011Num"),
-	PDF_SPLIT(12,"pdf2split","convert012","82","true","Pdfsplit","convert012Num"),
-	OCR_IMG_TXT(13,"ocrImage2txt","convert013","83","true","Ocr","convert013Num"),
-	PDF_ORC_WORD(14,"pdftoorcword","convert014","64","true","Pdftoocrword","convert014Num"),
+	PDF_WORD(1,"pdf2word","convert001","36","false","Pdf2word","convert001Num"),
+	WORD_PDF(2,"word2pdf","convert002","3","false","Word2pdf","convert002Num"),
+	PDF_PPT(3,"pdf2ppt","convert003","80","false","Pdf2ppt","convert003Num"),
+	PPT_PDF(4,"ppt2pdf","convert004","3","false","Ppt2pdf","convert004Num"),
+	PDF_EXCEL(5,"pdf2excel","convert005","81","false","Pdf2excel","convert005Num"),
+	EXCEL_PDF(6,"excel2pdf","convert006","3","false","Excel2pdf","convert006Num"),
+	PDF_IMG(7,"pdf2img","convert007","9,10,11,12,13","false","Pdf2pic","convert007Num"),
+	PDF_HTML(8,"pdf2html","convert008","14","false","Pdf2html","convert008Num"),
+	PDF_MARK(9,"pdf2watermark","convert009","34","false","Pdfaddstain","convert009Num"),
+	PDF_SIGN(10,"pdf2sign","convert010","14","false","Pdfaddsign","convert010Num"),
+	PDF_MERGE(11,"pdf2merge","convert011","31","false","Pdfmerge","convert011Num"),
+	PDF_SPLIT(12,"pdf2split","convert012","82","false","Pdfsplit","convert012Num"),
+	OCR_IMG_TXT(13,"ocrImage2txt","convert013","83","false","Ocr","convert013Num"),
+	PDF_ORC_WORD(14,"pdftoorcword","convert014","64","false","Pdftoocrword","convert014Num"),
 
 	PTS_CONVERT_NUM(15,"转换数量", "convertNum",null,5,null,null), 
 	PTS_UPLOAD_SIZE(16,"文件大小","uploadSize",null,3,null,null),
@@ -78,7 +78,17 @@ public enum EnumAuthCode {
 
 	public static String getAuthCode(String type) {
 		for (EnumAuthCode statu : values()) {
-			if(statu.getType().equals(type)){
+			if(statu.getType()!=null && statu.getType().equals(type)){
+				return statu.getAuthCode();
+			}
+		}
+		return null;
+	}
+	
+	
+	public static String getAuthCodeByModuleNum(String moduleNum) {
+		for (EnumAuthCode statu : values()) {
+			if(statu.getModuleNum()!=null && statu.getModuleNum().equals(moduleNum)){
 				return statu.getAuthCode();
 			}
 		}
@@ -88,7 +98,7 @@ public enum EnumAuthCode {
 
 	public static Object getDefaultValue(String authCode) {
 		for (EnumAuthCode statu : values()) {
-			if(statu.getAuthCode().equals(authCode)){
+			if(statu.getAuthCode()!=null && statu.getAuthCode().equals(authCode)){
 				return statu.getDefaultVaule();
 			}
 		}
@@ -98,7 +108,7 @@ public enum EnumAuthCode {
 	
 	public static Integer getValue(String authCode) {
 		for (EnumAuthCode code : values()) {
-			if(code.getAuthCode().equals(authCode)){
+			if(code.getAuthCode()!=null && code.getAuthCode().equals(authCode)){
 				return code.getValue();
 			}
 		}
@@ -108,15 +118,16 @@ public enum EnumAuthCode {
 
 	public static EnumAuthCode getEnum(Integer value) {
 		for (EnumAuthCode code : values()) {
-			if (value == code.getValue())
+			if (value == code.getValue()) {
 				return code;
+			}
 		}
 		return null;
 	}
 
 	public static EnumAuthCode getEnum(String authCode) {
 		for (EnumAuthCode code : values()) {
-			if (code.getAuthCode().equals(authCode)) {
+			if (code.getAuthCode()!=null && code.getAuthCode().equals(authCode)) {
 				return code;
 			}
 		}
@@ -138,7 +149,7 @@ public enum EnumAuthCode {
 	
 	public static String getModule(String authCode) {
 		for (EnumAuthCode code : values()) {
-			if (code.getAuthCode().equals(authCode)) {
+			if (code.getAuthCode() !=null && code.getAuthCode().equals(authCode)) {
 				return code.getModule();
 			}
 		}
@@ -148,7 +159,7 @@ public enum EnumAuthCode {
 
 	public static String getModuleNum(String authCode) {
 		for (EnumAuthCode code : values()) {
-			if (code.getAuthCode().equals(authCode)) {
+			if (code.getAuthCode() !=null && code.getAuthCode().equals(authCode)) {
 				return code.getModuleNum();
 			}
 		}
@@ -159,7 +170,7 @@ public enum EnumAuthCode {
 	
 	public static String getModuleByModuleNum(String moduleNum) {
 		for (EnumAuthCode code : values()) {
-			if (code.getModuleNum().equals(moduleNum)) {
+			if (code.getModuleNum() !=null && code.getModuleNum().equals(moduleNum)) {
 				return code.getModule();
 			}
 		}
@@ -175,6 +186,8 @@ public enum EnumAuthCode {
 		}
 		return null;
 	}
+	
+	
 	
 
 }
