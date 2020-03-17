@@ -97,7 +97,10 @@ public class PtsConvertService {
 				updateFcsFileInfo(convertBO,fcsFileInfoBO,userId,ipAddress);
 				return DefaultResult.successResult(fcsFileInfoBO);
 			}else {
-				return DefaultResult.failResult(fcsMap.get(SysConstant.FCS_MESSAGE).toString(),fcsFileInfoBO);
+				
+				//code=24，message做特殊处理
+				String message = fcsFileInfoBO.getCode() == 24?EnumResultCode.E_MERGE_FILE_NAME_ERROR.getInfo():fcsMap.get(SysConstant.FCS_MESSAGE).toString();
+				return DefaultResult.failResult(message,fcsFileInfoBO);
 			}
 			
 		} catch (Exception e) {
