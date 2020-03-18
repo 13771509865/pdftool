@@ -126,6 +126,11 @@ public class AuthManager {
 				}
 			}
 		}
+		
+		//会员允许转换的大小
+		if(permissionDtoAuthMap.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode())!=null) {
+			defaultMap.put(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode(), permissionDtoAuthMap.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode()));
+		}
 		return defaultMap;
 	}
 

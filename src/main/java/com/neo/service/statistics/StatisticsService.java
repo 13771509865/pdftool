@@ -110,27 +110,12 @@ public class StatisticsService {
 	 */
 	public IResult<Map<String,Object>> getConvertTimes(Long userID){
 		try {
-
-//			Map<String,Object> numMap = JsonUtils.parseJSON2Map(convertNumProperty);
-//			Map<String,Object> newMap = new HashMap<>();
-//
-//			List<PtsAuthPO> list = iAuthService.selectAuthByUserid(userID);
-//			if(!list.isEmpty() && list.size()>0) {//没有购买过会员
-//				PtsAuthPO ptsAuthPO = list.get(0);
-//				if(!DateViewUtils.isExpiredForDays(ptsAuthPO.getGmtExpire())) {//没有过期
-//					for (Map.Entry<String, Object> numEntry : numMap.entrySet()) {
-//						//会员的剩余次数暂时都设为-1
-//						newMap.put(EnumAuthCode.getModuleByModuleNum(numEntry.getKey()), -1);
-//					}
-//					return DefaultResult.successResult(newMap); 
-//				}
-//			}
 			
+			//获取所有的用户权限
 			IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID);
 			Map<String,Object> map = getPermissionResult.getData();
 			Map<String,Object> newMap = new HashMap<>();
 
-			//注册用户剩余次数
 			PtsConvertRecordPO ptsConvertRecordPO = new PtsConvertRecordPO();
 			ptsConvertRecordPO.setUserID(userID);
 			String nowDate = DateViewUtils.getNow();
