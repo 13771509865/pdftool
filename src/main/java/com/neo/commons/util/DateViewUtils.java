@@ -477,5 +477,9 @@ public class DateViewUtils {
 		System.out.println(date); 
 		System.out.println(DateViewUtils.formatFullDate(date)); 
 		
+		String d = DateViewUtils.getDayBefore(5);
+		System.out.println(d);
+		System.out.println(DateViewUtils.parseSimpleDate(d));
+		
 	}
 }

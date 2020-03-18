@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.helper.PermissionHelper;
 import com.neo.commons.properties.ConfigProperty;
+import com.neo.commons.properties.ConvertNumProperty;
 import com.neo.commons.util.DateViewUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.StrUtils;
@@ -36,6 +38,9 @@ public class AuthManager {
 	@Autowired
 	private PermissionHelper permissionHelper;
 
+	@Autowired
+	private ConvertNumProperty convertNumProperty;
+
 
 
 	/**
@@ -45,9 +50,17 @@ public class AuthManager {
 	 */
 	public IResult<Map<String,Object>> getPermission(Long userID) {
 		try {
-			PermissionDto permissionDto = permissionHelper.buildDefaultPermission();
-			//默认权限map
-			Map<String,Object> permissionDtoAuthMap = JsonUtils.parseJSON2Map(permissionDto);
+			Map<String,Object> defaultMap = new HashMap<>();
+
+			//拿到配置文件里面，注册用户的权限
+			defaultMap = getPermissionByConfig(defaultMap);
+
+			//拿到配置文件里面，注册用户的转换次数的权限
+			Map<String,Object> numMap = JsonUtils.parseJSON2Map(convertNumProperty);
+
+			//defaultMap里面是所有的默认权限
+			defaultMap.putAll(numMap);
+
 			if(userID !=null) {//登录用户或者会员
 				List<PtsAuthPO> list = iAuthService.selectAuthByUserid(userID);
 				if(!list.isEmpty() && list.size()>0) {//没有购买过会员
@@ -55,13 +68,12 @@ public class AuthManager {
 					if(!DateViewUtils.isExpiredForDays(ptsAuthPO.getGmtExpire())) {//没有过期
 						//会员注册的权限转map
 						Map<String,Object> ptsAuthPOAuthMap = StrUtils.strToMap(ptsAuthPO.getAuth(), SysConstant.COMMA, SysConstant.COLON);
-						permissionDtoAuthMap.putAll(ptsAuthPOAuthMap);
-						return DefaultResult.successResult(permissionDtoAuthMap);
+						return DefaultResult.successResult(getPermission(defaultMap,ptsAuthPOAuthMap));
 					}
 				}
 			}
 			//注册用户
-			return DefaultResult.successResult(getPermissionByConfig(permissionDtoAuthMap));
+			return DefaultResult.successResult(defaultMap);
 		} catch (Exception e) {
 			//aop会做处理
 			SysLogUtils.error("解析用户权限失败,原因："+e.getMessage());
@@ -76,20 +88,51 @@ public class AuthManager {
 	 */
 	public Map<String,Object> getPermissionByConfig(Map<String,Object> permissionDtoAuthMap) {
 
-		String[] convertCode = config.getMConvertModule().split(SysConstant.COMMA);
-		Integer	convertTimes = config.getMConvertTimes();
-		Integer	convertSize = config.getMUploadSize();
-		
+		String[] convertCode = config.getConvertModule().split(SysConstant.COMMA);
 		for(String code : convertCode) {
 			String authCode = EnumAuthCode.getAuthCode(Integer.valueOf(code));
 			permissionDtoAuthMap.put(authCode, SysConstant.TRUE);
 		}
 
-		permissionDtoAuthMap.put(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode(), convertTimes);
-		permissionDtoAuthMap.put(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode(), convertSize);
+		permissionDtoAuthMap.put(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode(), config.getUploadSize());
 		return permissionDtoAuthMap;
 	}
 
+
+
+	/**
+	 * 获取会员每个模块的次数和大小权限
+	 * @param permissionDtoAuthMap
+	 * @return
+	 * @throws Exception 
+	 */
+	public Map<String,Object> getPermission(Map<String,Object> defaultMap,Map<String,Object> permissionDtoAuthMap){
+
+		//如果convertNum值不为空，则认为是会员
+		if(permissionDtoAuthMap.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode())!=null) {
+			Integer num = Integer.valueOf(permissionDtoAuthMap.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode()).toString());
+			num = num>999?-1:num;
+
+			//数据库auth的值循环
+			for (Map.Entry<String, Object> permissionEntry : permissionDtoAuthMap.entrySet()) {
+				Object obj = permissionEntry.getValue();
+				if(obj!=null && StringUtils.equals(obj.toString(), SysConstant.TRUE)) {
+					
+					//根据authCode拿moduleNum
+					String mouldeNum =  EnumAuthCode.getModuleNum(permissionEntry.getKey());
+					if(StringUtils.isNotBlank(mouldeNum)) {
+						defaultMap.put(mouldeNum, num);
+					}
+				}
+			}
+		}
+		
+		//会员允许转换的大小
+		if(permissionDtoAuthMap.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode())!=null) {
+			defaultMap.put(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode(), permissionDtoAuthMap.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode()));
+		}
+		return defaultMap;
+	}
 
 
 

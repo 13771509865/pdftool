@@ -28,8 +28,8 @@ public enum EnumResultCode {
 	//用户权限
 	E_VISITOR_UPLOAD_ERROR(23,"游客仅可上传2M以内文档，获取更大权限，请注册登录"),
 	E_VISITOR_CONVERT_NUM_ERROR(24,"游客每日可转换5个文件，获取更大权限，请注册登录"),
-	E_USER_UPLOAD_ERROR(25,"抱歉，文件大小超出10M，暂不支持，成为会员后可以获取更大权限"),
-	E_USER_CONVERT_NUM_ERROR(26,"抱歉，普通注册用户每天可转换10个文件，成为会员后可以获取更大权限"),
+	E_USER_UPLOAD_ERROR(25,"抱歉，文件大小超出3M，暂不支持，成为会员后可以获取更大权限"),
+	E_USER_CONVERT_NUM_ERROR(26,"抱歉，转换次数已经超出每日限额，成为会员后可以获取更大权限"),
 	
 	//投票
 	E_VOTE_NULL_ERROR(27,"抱歉，提交前请至少选择一项投票内容"),
@@ -46,7 +46,12 @@ public enum EnumResultCode {
 	E_YCUPLOAD_UPDATE_FAIL(57,"优云文件上传失败信息更新失败"),
 	E_YCUPLOAD_NULL(58,"未查到优云文件上传失败信息"),
 	E_YCUPLOAD_RETRY_NULL(59,"重试成功0条数据"),
-
+	
+	E_USER_CLEAR_ILLEGAL(60, "非法删除操作"),
+	E_USER_CLEAR_FAIL(61, "用户删除失败"),
+	E_MERGE_FILE_NAME_ERROR(62,"亲爱的用户您好，您的文件名填写有误，请确认后使用。"),
+	 
+	 
 	E_GET_AUTH_ERROR(98,"解析用户权限失败"),
 	E_ORDER_AUTH_CODE_ERROR(99,"抱歉该订单缺少pdf工具集必要的AuthCode或者存在非法的AuthCode"),
 	E_ORDER_ILLEGAL(100,"非法订单信息");

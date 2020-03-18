@@ -1,0 +1,18 @@
+#每个模块允许转换的次数  
+convert-num:
+  convert001Num: -1
+  convert002Num: -1
+  convert003Num: 5
+  convert004Num: -1
+  convert005Num: 5
+  convert006Num: -1
+  convert007Num: 5
+  convert008Num: 5
+  convert009Num: 5
+  convert010Num: 5
+  convert011Num: 5
+  convert012Num: 5
+  convert013Num: 5
+  convert014Num: 5
+
+

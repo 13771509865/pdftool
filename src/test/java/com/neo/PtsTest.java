@@ -1,30 +1,20 @@
 package com.neo;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.neo.commons.cons.EnumAuthCode;
-import com.neo.commons.cons.IResult;
 import com.neo.commons.util.DateViewUtils;
 import com.neo.dao.PtsAuthPOMapper;
-import com.neo.model.dto.RedisOrderDto;
-import com.neo.model.po.PtsAuthPO;
+import com.neo.dao.PtsConvertRecordPOMapper;
+import com.neo.model.po.PtsConvertRecordPO;
+import com.neo.model.qo.PtsConvertRecordQO;
 import com.neo.service.auth.IAuthService;
 import com.neo.service.cache.impl.RedisCacheManager;
+import com.neo.service.clear.IClearService;
 import com.neo.service.order.impl.OrderManager;
-import com.yozosoft.api.order.dto.OrderRequestDto;
-import com.yozosoft.api.order.dto.OrderServiceAppSpec;
-import com.yozosoft.saas.YozoServiceApp;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -41,19 +31,66 @@ public class PtsTest {
 
 	@Autowired
 	private PtsAuthPOMapper ptsAuthPOMapper;
-
+	
+	@Autowired
+	private IClearService iClearService;
+	
+	@Autowired
+	private PtsConvertRecordPOMapper ptsConvertRecordPOMapper;
+	
+	
 	@Test
-	public void test() throws InterruptedException {
-		while(true) {
-		A a = new A();
-		Thread t1 = new Thread(a);
-		Thread t2 = new Thread(a);
-			t1.start();
-			t2.start();
-			Thread.currentThread().sleep(1000);
-		}
+	public void clearTest() throws InterruptedException {
+		String nowDate = DateViewUtils.getNow();
+		String nowTime = DateViewUtils.getNowTime();
+		 
+		PtsConvertRecordPO ptsConvertRecordPO = new PtsConvertRecordPO();
+		ptsConvertRecordPO.setConvertNum(1);
+		ptsConvertRecordPO.setCreateDate(DateViewUtils.getNowDate());//时间搞一搞
+		ptsConvertRecordPO.setCreateTime(DateViewUtils.getNowDate());
+		ptsConvertRecordPO.setModifiedDate(DateViewUtils.getNowDate());
+		ptsConvertRecordPO.setModifiedTime(DateViewUtils.getNowDate());
+		ptsConvertRecordPO.setModule(2);
+		ptsConvertRecordPO.setStatus(1);
+		ptsConvertRecordPO.setUserID(13L);
 		
+		PtsConvertRecordQO ptsConvertRecordQO = new PtsConvertRecordQO();
+		ptsConvertRecordQO.setConvertNum(5);
+		
+		int num = ptsConvertRecordPOMapper.insertOrUpdatePtsConvertRecord(ptsConvertRecordPO, ptsConvertRecordQO);
+		System.out.println(num);
 	}
+	
+	
+//	@Test
+//	public void clearTest() throws InterruptedException {
+//		UserClearRequestDto userClearRequestDto = new UserClearRequestDto();
+//		UserClearDto[] userClearDto = new UserClearDto[2];
+//		userClearRequestDto.setId("423844151126130689");
+//		UserClearDto userClearDto1 = new UserClearDto();
+//		UserClearDto userClearDto2 = new UserClearDto();
+//		userClearDto1.setId("423837533986619393");
+//		userClearDto2.setId("423813009295540225");
+//		userClearDto[0] = userClearDto1;
+//		userClearDto[1] = userClearDto2;
+//		
+//		userClearRequestDto.setMembers(userClearDto);
+//		iClearService.clearUserData(userClearRequestDto);
+//	}
+//	
+
+//	@Test
+//	public void test() throws InterruptedException {
+//		while(true) {
+//		A a = new A();
+//		Thread t1 = new Thread(a);
+//		Thread t2 = new Thread(a);
+//			t1.start();
+//			t2.start();
+//			Thread.currentThread().sleep(1000);
+//		}
+//		
+//	}
 
 	class A implements Runnable{
 		@Override

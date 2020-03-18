@@ -1,17 +1,9 @@
 package com.neo.web.composite;
 
-import com.neo.commons.cons.EnumResultCode;
-import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.constants.SysConstant;
-import com.neo.commons.cons.constants.UaaConsts;
-import com.neo.commons.properties.ConfigProperty;
-import com.neo.commons.util.HttpUtils;
-import com.neo.commons.util.JsonResultUtils;
-import com.neo.model.bo.ConvertParameterBO;
-import com.neo.model.bo.FcsFileInfoBO;
-import com.neo.service.convert.PtsConvertService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,8 +11,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
+import com.neo.commons.cons.EnumAuthCode;
+import com.neo.commons.cons.EnumResultCode;
+import com.neo.commons.cons.IResult;
+import com.neo.commons.cons.constants.SysConstant;
+import com.neo.commons.cons.constants.UaaConsts;
+import com.neo.commons.properties.ConfigProperty;
+import com.neo.commons.util.DateViewUtils;
+import com.neo.commons.util.HttpUtils;
+import com.neo.commons.util.JsonResultUtils;
+import com.neo.model.bo.ConvertParameterBO;
+import com.neo.model.bo.FcsFileInfoBO;
+import com.neo.model.bo.UserBO;
+import com.neo.model.po.PtsConvertRecordPO;
+import com.neo.service.auth.impl.AuthManager;
+import com.neo.service.convert.PtsConvertService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 转码控制器
@@ -34,8 +42,8 @@ import java.util.Map;
 @RequestMapping(value = "/composite")
 public class PtsConvertController {
 
-//	@Autowired
-//	private RedisMQConvertService redisMQConvertService;
+	@Autowired
+	private AuthManager authManager;
 
     @Autowired
     private PtsConvertService ptsConvertService;
@@ -50,19 +58,24 @@ public class PtsConvertController {
         if (convertBO.getSrcFileSize() == null) {
             return JsonResultUtils.failMapResult(EnumResultCode.E_NOTALL_PARAM.getInfo());
         }
-        String cookie = request.getHeader(UaaConsts.COOKIE);
-        IResult<FcsFileInfoBO> result = ptsConvertService.dispatchConvert(convertBO, HttpUtils.getUserBO(request), HttpUtils.getIpAddr(request), cookie);
+        String cookie = request.getHeader(UaaConsts.COOKIE);//文件上传给优云要用到
+        UserBO userBO = HttpUtils.getUserBO(request);
+        IResult<FcsFileInfoBO> result = ptsConvertService.dispatchConvert(convertBO, userBO, HttpUtils.getIpAddr(request), cookie);
         ptsConvertService.updatePtsSummay(result.getData(), convertBO, request);
         if (result.isSuccess()) {
-        	
-        	 //转换成功记录一下，拦截器要用
-            request.setAttribute(SysConstant.CONVERT_RESULT, EnumResultCode.E_SUCCES.getValue());
             return JsonResultUtils.successMapResult(result.getData());
         } else {
+        	//转换失败记录一下，拦截器要用
+        	String authCode = authManager.getAuthCode(convertBO);
+        	String nowDate = DateViewUtils.getNow();
+            request.setAttribute(SysConstant.CONVERT_RESULT, new PtsConvertRecordPO(userBO.getUserId(), EnumAuthCode.getValue(authCode), DateViewUtils.parseSimple(nowDate)));
             return JsonResultUtils.buildMapResult(result.getData().getCode(), result.getData(), result.getMessage());
         }
     }
 
+    
+    
+    
 //	@ApiOperation(value = "MQ转换")
 //	@PostMapping(value = "/mqconvert")
 //	@ResponseBody

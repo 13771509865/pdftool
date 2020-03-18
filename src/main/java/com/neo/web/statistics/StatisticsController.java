@@ -72,7 +72,7 @@ public class StatisticsController {
 	@GetMapping(value = "/convertTimes")
 	@ResponseBody
 	public Map<String,Object> getConvertTimes(HttpServletRequest request){
-		IResult<String>  result = statisticsService.getConvertTimes(HttpUtils.getSessionUserID(request));
+		IResult<Map<String,Object>>  result = statisticsService.getConvertTimes(HttpUtils.getSessionUserID(request));
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
 		}else {

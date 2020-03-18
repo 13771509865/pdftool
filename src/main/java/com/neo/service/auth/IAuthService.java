@@ -15,7 +15,7 @@ public interface IAuthService {
 	
 	IResult<EnumResultCode> checkUserAuth(ConvertParameterBO convertParameterBO,Long userID);
 	
-	IResult<EnumResultCode> checkConvertTimes(Long userID,Integer maxConvertTimes);
+	IResult<EnumResultCode> checkConvertTimes(Long userID,Integer maxConvertTimes,Integer module);
 	
 	IResult<EnumResultCode> checkUploadSize(Long userID,Long uploadSize);
 	
@@ -24,5 +24,7 @@ public interface IAuthService {
 	List<PtsAuthPO> selectAuthByUserid(Long userid);
 	
 	Integer updatePtsAuthPOByUserId(PtsAuthPO ptsAuthPO);
+	
+	Integer deletePtsAuth(PtsAuthPO ptsAuthPO);
 	
 }

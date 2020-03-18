@@ -97,7 +97,10 @@ public class PtsConvertService {
 				updateFcsFileInfo(convertBO,fcsFileInfoBO,userId,ipAddress);
 				return DefaultResult.successResult(fcsFileInfoBO);
 			}else {
-				return DefaultResult.failResult(fcsMap.get(SysConstant.FCS_MESSAGE).toString(),fcsFileInfoBO);
+				
+				//code=24，message做特殊处理
+				String message = fcsFileInfoBO.getCode() == 24?EnumResultCode.E_MERGE_FILE_NAME_ERROR.getInfo():fcsMap.get(SysConstant.FCS_MESSAGE).toString();
+				return DefaultResult.failResult(message,fcsFileInfoBO);
 			}
 			
 		} catch (Exception e) {
@@ -179,4 +182,23 @@ public class PtsConvertService {
 		}
 		return DefaultResult.successResult(list.get(0).getUCloudFileId());
 	}
+	
+	
+	/**
+	 * 删除用户转换记录
+	 * @param fcsFileInfoQO
+	 * @return
+	 */
+	public int deletePtsConvert(FcsFileInfoQO fcsFileInfoQO){
+		return fcsFileInfoBOMapper.deletePtsConvert(fcsFileInfoQO);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

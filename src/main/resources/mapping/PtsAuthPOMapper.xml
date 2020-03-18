@@ -111,4 +111,14 @@
 
 
 
+
+	 <!-- 删除用户会员权限信息 -->
+ 	 <delete id="deletePtsAuth" parameterType="com.neo.model.po.PtsAuthPO">
+        delete from pts_auth
+      	where 
+      	USERID = #{userid,jdbcType=BIGINT}
+   	 </delete>
+	
+	
+
 </mapper>

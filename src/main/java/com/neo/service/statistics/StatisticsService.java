@@ -19,12 +19,11 @@ import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.cons.constants.YzcloudConsts;
 import com.neo.commons.cons.entity.HttpResultEntity;
-import com.neo.commons.properties.ConfigProperty;
+import com.neo.commons.properties.ConvertNumProperty;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.DateViewUtils;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
-import com.neo.commons.util.StrUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.dao.FcsFileInfoPOMapper;
 import com.neo.dao.PtsSummaryPOMapper;
@@ -32,11 +31,14 @@ import com.neo.model.bo.FileUploadBO;
 import com.neo.model.bo.UserBO;
 import com.neo.model.po.FcsFileInfoPO;
 import com.neo.model.po.PtsAuthPO;
+import com.neo.model.po.PtsConvertRecordPO;
 import com.neo.model.po.PtsSummaryPO;
 import com.neo.model.qo.FcsFileInfoQO;
 import com.neo.model.qo.PtsSummaryQO;
 import com.neo.service.auth.IAuthService;
+import com.neo.service.auth.impl.AuthManager;
 import com.neo.service.cache.impl.RedisCacheManager;
+import com.neo.service.convertRecord.IConvertRecordService;
 import com.neo.service.httpclient.HttpAPIService;
 
 @Service("statisticsService")
@@ -49,7 +51,7 @@ public class StatisticsService {
 	private PtsSummaryPOMapper ptsSummaryPOMapper;
 
 	@Autowired
-	private ConfigProperty config;
+	private ConvertNumProperty convertNumProperty;
 
 	@Autowired
 	private RedisCacheManager<String> redisCacheManager;
@@ -62,9 +64,15 @@ public class StatisticsService {
 
 	@Autowired
 	private IAuthService iAuthService;
-	
+
 	@Autowired
 	private StaticsManager staticsManager;
+
+	@Autowired
+	private IConvertRecordService iConvertRecordService;
+	
+	@Autowired
+	private AuthManager authManager;
 
 	/**
 	 * 根据userID查询三天内的转换记录
@@ -100,31 +108,45 @@ public class StatisticsService {
 	 * @param request
 	 * @return
 	 */
-	public IResult<String> getConvertTimes(Long userID){
+	public IResult<Map<String,Object>> getConvertTimes(Long userID){
 		try {
-			String key = RedisConsts.ID_CONVERT_TIME_KEY;
-			String value = String.valueOf(userID);
+			
+			//获取所有的用户权限
+			IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID);
+			Map<String,Object> map = getPermissionResult.getData();
+			Map<String,Object> newMap = new HashMap<>();
 
-			//判断是登录用户还是游客的最大转化次数
-			Integer maxConvertTimes = config.getMConvertTimes();
+			PtsConvertRecordPO ptsConvertRecordPO = new PtsConvertRecordPO();
+			ptsConvertRecordPO.setUserID(userID);
+			String nowDate = DateViewUtils.getNow();
+			ptsConvertRecordPO.setModifiedDate(DateViewUtils.parseSimple(nowDate));
 
-			List<PtsAuthPO> list = iAuthService.selectAuthByUserid(userID);
-			if(!list.isEmpty() && list.size()>0) {//没有购买过会员
-				PtsAuthPO ptsAuthPO = list.get(0);
-				if(!DateViewUtils.isExpiredForDays(ptsAuthPO.getGmtExpire())) {//没有过期
-					//会员注册的权限转map
-					Map<String,Object> ptsAuthPOAuthMap = StrUtils.strToMap(ptsAuthPO.getAuth(), SysConstant.COMMA, SysConstant.COLON);
+			//查询当天的转换记录
+			List<PtsConvertRecordPO> recordList = iConvertRecordService.selectPtsConvertRecord(ptsConvertRecordPO);
 
-					//会员最大转换次数
-					maxConvertTimes = Integer.valueOf(ptsAuthPOAuthMap.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode()).toString());
+			if(!recordList.isEmpty() && recordList.size()>0) {
+				for(PtsConvertRecordPO po : recordList) {
+					Integer convertNum = po.getConvertNum();//转了多少次
+					String moduleNum = EnumAuthCode.getModuleNum(po.getModule());
+
+					Integer allowConvertNum = (Integer)map.get(moduleNum);//允许转多少次
+					if(allowConvertNum != -1) {
+						Integer newNum = allowConvertNum - convertNum;//剩余多少次
+						map.put(moduleNum, newNum);
+					}
+				}
+			}
+			
+			//转换成前端想要的字符
+			for (Map.Entry<String, Object> numEntry : map.entrySet()) {
+				if(EnumAuthCode.getModuleByModuleNum(numEntry.getKey()) != null) {
+					newMap.put(EnumAuthCode.getModuleByModuleNum(numEntry.getKey()), numEntry.getValue());
 				}
 			}
 
-			int convertTimes = redisCacheManager.getScore(key,value).intValue();
-			String otherTimes = String.valueOf(maxConvertTimes - convertTimes);
-			return DefaultResult.successResult(otherTimes);
-
+			return DefaultResult.successResult(newMap);
 		} catch (Exception e) {
+			e.printStackTrace();
 			SysLogUtils.error("查询每天的转换记录失败，原因：", e);
 			return DefaultResult.failResult("查询每日转换记录失败");
 		}
@@ -165,30 +187,30 @@ public class StatisticsService {
 
 	}
 
-	
-	
+
+
 	/**
 	 * 查询用户的权限
 	 * @param userBO
 	 * @return
 	 */
 	public IResult<List<String>> findModulePermissions(UserBO userBO){
-		
+
 		//未登录用户所有模块都不能使用
 		if(userBO == null) {
 			return DefaultResult.successResult(staticsManager.getModules(EnumMemberType.VISITOR.getValue(), null));
 		}
 		List<PtsAuthPO> list = iAuthService.selectAuthByUserid(userBO.getUserId());
-		
+
 		//会员用户，并且没有过期
 		if(!list.isEmpty() && list.size() >0 && !DateViewUtils.isExpiredForTimes(list.get(0).getGmtExpire())) {
 			return DefaultResult.successResult(staticsManager.getModules(EnumMemberType.MEMBER_YOZOCLOUD.getValue(), list.get(0).getAuth()));
 		}
-		
+
 		//普通注册用户
 		return DefaultResult.successResult(staticsManager.getModules(EnumMemberType.MEMBER.getValue(), null));
 	}
-	
+
 
 
 
