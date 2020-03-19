@@ -55,7 +55,7 @@ public class YzcloudService implements IYzcloudService {
     @Override
     public IResult<String> uploadFileToYc(FcsFileInfoBO fcsFileInfoBO, Long userId, String cookie) {
         File targetFile = new File(ptsProperty.getFcs_targetfile_dir(), fcsFileInfoBO.getDestStoragePath());
-        System.out.println(targetFile.getAbsolutePath());
+        System.out.println("fcs文件路径"+targetFile.getAbsolutePath());
         String finalFileName = targetFile.getName();
         if (targetFile.exists()) {
             if (EnumConvertType.isNeedPack(fcsFileInfoBO.getConvertType())) {
