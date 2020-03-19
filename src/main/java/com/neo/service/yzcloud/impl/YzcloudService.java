@@ -36,7 +36,7 @@ import java.util.Map;
  * @description
  * @create 2019-11-26 09:07
  **/
-@Service("yzcloudService")
+@Service("yzcloudService") 
 public class YzcloudService implements IYzcloudService {
 
     @Autowired
