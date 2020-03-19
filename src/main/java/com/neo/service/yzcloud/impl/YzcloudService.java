@@ -57,6 +57,7 @@ public class YzcloudService implements IYzcloudService {
         File targetFile = new File(ptsProperty.getFcs_targetfile_dir(), fcsFileInfoBO.getDestStoragePath());
         System.out.println(targetFile.getAbsolutePath());
         String finalFileName = targetFile.getName();
+        System.out.println("生成文件路径："+targetFile.exists());
         if (targetFile.exists()) {
             if (EnumConvertType.isNeedPack(fcsFileInfoBO.getConvertType())) {
                 // 需要打包
