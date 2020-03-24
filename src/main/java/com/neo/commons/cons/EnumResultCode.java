@@ -50,7 +50,7 @@ public enum EnumResultCode {
 	E_USER_CLEAR_ILLEGAL(60, "非法删除操作"),
 	E_USER_CLEAR_FAIL(61, "用户删除失败"),
 	E_MERGE_FILE_NAME_ERROR(62,"亲爱的用户您好，您的文件名填写有误，请确认后使用。"),
-	 
+	E_USER_INVALID(63,"无用户信息,请重新登录!"),
 	 
 	E_GET_AUTH_ERROR(98,"解析用户权限失败"),
 	E_ORDER_AUTH_CODE_ERROR(99,"抱歉该订单缺少pdf工具集必要的AuthCode或者存在非法的AuthCode"),
