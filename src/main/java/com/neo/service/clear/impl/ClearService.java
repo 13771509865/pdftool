@@ -69,7 +69,7 @@ public class ClearService implements IClearService{
         	iAuthService.deletePtsAuth(ptsAuthPO);
         	
         	//删企业成员记录
-        	if(userClearRequestDto.getMembers().length > 0) {
+        	if(userClearRequestDto.getMembers()!=null && userClearRequestDto.getMembers().length > 0) {
         		for(UserClearDto userClearDto : userClearRequestDto.getMembers()) {
         			if(StringUtils.isNotBlank(userClearRequestDto.getId())) {
         				userId = Long.valueOf(userClearDto.getId());
