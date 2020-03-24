@@ -1,8 +1,6 @@
 package com.neo.service.uaa;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -14,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.neo.commons.cons.DefaultResult;
+import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.ConstantCookie;
 import com.neo.commons.cons.constants.UaaConsts;
@@ -26,6 +25,7 @@ import com.yozosoft.auth.client.security.JwtAuthenticator;
 import com.yozosoft.auth.client.security.OAuth2AccessToken;
 import com.yozosoft.auth.client.security.OAuth2RequestTokenHelper;
 import com.yozosoft.auth.client.security.UaaToken;
+import com.yozosoft.auth.client.security.UaaUserRole;
 import com.yozosoft.auth.client.security.refresh.UaaTokenRefreshClient;
 
 
@@ -63,17 +63,22 @@ public class UaaService {
 	 */
 	public IResult<OAuth2AccessToken> checkSecurity(HttpServletRequest request) { 
 		OAuth2AccessToken oAuth2AccessToken = null;
+		UaaToken token = null;
 		try {
 			request = oAuth2RequestTokenHelper.detectTokenInHeaderOrParams(request);
 			oAuth2AccessToken = oAuth2RequestTokenHelper.extractToken(request);
 			oAuth2AccessToken = uaaTokenRefreshClient.refreshAccessToken(oAuth2AccessToken, oAuth2AccessToken.getRefreshToken());
-			UaaToken token = jwtAuthenticator.authenticate(oAuth2AccessToken.getValue());
+			token = jwtAuthenticator.authenticate(oAuth2AccessToken.getValue());
 			if (token == null) {
-				return DefaultResult.failResult("无用户信息请重新登陆！");
+				return DefaultResult.failResult(EnumResultCode.E_USER_INVALID.getInfo());
 			}
 		} catch (Exception e) {
-			return DefaultResult.failResult("用户信息错误");
+			return DefaultResult.failResult(EnumResultCode.E_USER_INVALID.getInfo());
 		}
+		//管理员不允许登录
+        if(token.getRole()!=null && UaaUserRole.Admin==token.getRole()){
+            return DefaultResult.failResult(EnumResultCode.E_USER_INVALID.getInfo());
+        }
 		return DefaultResult.successResult(oAuth2AccessToken);
 	}
 
