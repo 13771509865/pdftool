@@ -75,7 +75,7 @@ public class UaaService {
 		} catch (Exception e) {
 			return DefaultResult.failResult(EnumResultCode.E_USER_INVALID.getInfo());
 		}
-		//管理员不允许登录 
+		//管理员不允许登录
         if(token.getRole()!=null && UaaUserRole.Admin==token.getRole()){
             return DefaultResult.failResult(EnumResultCode.E_USER_INVALID.getInfo());
         }
