@@ -7,7 +7,7 @@ public enum EnumResultCode {
 	E_FAIL(1, "操作失败"),
 	E_PERMISSION(2, "抱歉，您还未获取该功能的权限或者权限已过期，如有疑问，请联系客服"),
 	E_TIMEOUT(3, "登录超时"),
-	E_UNLOGIN_ERROR(4,"请立即登录，登陆后可解锁功能"),
+	E_UNLOGIN_ERROR(4,"请立即登录，登录后可解锁功能"),
 
 	E_UPLOAD_FILE(9,"上传失败"),
 	E_FILEMD5_HEAD_FAIL(10,"根据文件头信息获取文件Md5失败"),
@@ -51,6 +51,8 @@ public enum EnumResultCode {
 	E_USER_CLEAR_FAIL(61, "用户删除失败"),
 	E_MERGE_FILE_NAME_ERROR(62,"亲爱的用户您好，您的文件名填写有误，请确认后使用。"),
 	E_USER_INVALID(63,"无用户信息,请重新登录!"),
+	E_DELETE_CONVERT_RECORD_NULL(64,"抱歉，没有找到对应的转换记录"),
+	E_DELETE_CONVERT_RECORD_ERROR(65,"抱歉，删除转换记录失败，请稍后再试"),
 	 
 	E_GET_AUTH_ERROR(98,"解析用户权限失败"),
 	E_ORDER_AUTH_CODE_ERROR(99,"抱歉该订单缺少pdf工具集必要的AuthCode或者存在非法的AuthCode"),
