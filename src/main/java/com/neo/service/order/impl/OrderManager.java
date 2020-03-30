@@ -15,6 +15,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import com.alibaba.fastjson.JSON;
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumAuthCode;
+import com.neo.commons.cons.EnumMemberType;
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.EnumStatus;
 import com.neo.commons.cons.IResult;
@@ -23,6 +24,7 @@ import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.entity.OrderSpecsEntity;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.DateViewUtils;
+import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.model.dto.RedisOrderDto;
 import com.neo.model.po.PtsAuthNamePO;
@@ -89,6 +91,11 @@ public class OrderManager {
 	public IResult<String> modifyOrderEffective(RedisOrderDto dto){
 		try {
 			for(OrderServiceAppSpec osa : dto.getOrderRequestDto().getSpecs()) {
+				
+				//当前订单的商品id
+				String productId = dto.getOrderRequestDto().getProductId();
+				
+				//获取pdf的会员权益
 				if(YozoServiceApp.PdfTools.getApp().equalsIgnoreCase(osa.getApp().getApp())) {
 
 					OrderSpecsEntity orderSpecsEntity = getFeatureDetails(osa);
@@ -115,11 +122,14 @@ public class OrderManager {
 					}else {
 						Date expireDate = list.get(0).getGmtExpire();
 						Date newExpireDate;
-						if(DateViewUtils.isExpiredForTimes(expireDate)) {//精确到秒
-							//过期了：当前时间+权限给的月数
+						
+						//精确到秒
+						//如果已经过期了，或者订单和pdf的productId不一样
+						//当前时间+权限给的月数
+						if(DateViewUtils.isExpiredForTimes(expireDate) || !StringUtils.equals(list.get(0).getProductId(), productId)) {
 							newExpireDate = DateViewUtils.getTimeDay(DateViewUtils.getNowDate(),orderSpecsEntity.getValidityTime(),orderSpecsEntity.getUnitType());
 						}else {
-							//没过期：数据库时间+权限给的月数
+							//续费：数据库时间+权限给的月数
 							newExpireDate = DateViewUtils.getTimeDay(expireDate,orderSpecsEntity.getValidityTime(),orderSpecsEntity.getUnitType());
 						}
 						ptsAuthPO.setGmtModified(DateViewUtils.getNowDate());
@@ -187,19 +197,13 @@ public class OrderManager {
 
 
 	public static void main(String[] args) {
-		StringBuilder build = new StringBuilder();
-		String[] a = {"0"};
+		String[] a = {"1","Month"};
+		String memberType = null;
 
-		Map<String, String[]> specs =  new HashMap<>();
-		specs.put("connvrt", a);
-		specs.put("validityTime", a);
-		Integer validityTime = Integer.valueOf(specs.get(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())[0]);
-		for (Map.Entry<String, String[]> m : specs.entrySet()) {
-			build.append(m.getKey()).append(SysConstant.COLON).append(m.getValue()[0]).append(SysConstant.COMMA);
-		}
-		System.out.println(validityTime);
-		System.out.println(build.toString());
-
+		Map<String, String[]> specs = new HashMap<>();
+		specs.put("MemberYomoer", a);
+		memberType =  EnumMemberType.getEnumMemberInfo(specs);
+		System.out.println(memberType);
 	}
 
 
