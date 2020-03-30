@@ -286,11 +286,11 @@
     </build>
 
     <repositories> 
-        <!-- <repository>
+        <repository>
             <id>yozocloud-snapshots</id>
             <name>yozosoft Snapshot Repository</name>
             <url>http://nexus.yozocloud.cn/repository/maven-snapshots/</url>
-        </repository> -->
+        </repository>
 
         <repository>
             <id>local.public</id>
