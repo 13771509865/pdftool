@@ -45,8 +45,8 @@ public class DeleteFileController {
 	@ApiOperation(value = "删除用户的转换记录")
 	@PostMapping(value = "/delete")
 	@ResponseBody
-	public Map<String, Object> deleteConvert(String fileHash ,HttpServletRequest request){
-		IResult<String> result = deleteFileService.deleteConvert(fileHash,HttpUtils.getSessionUserID(request));
+	public Map<String, Object> deleteConvert(String fileHash,String uCloudFileId, HttpServletRequest request){
+		IResult<String> result = deleteFileService.deleteConvert(fileHash,uCloudFileId,HttpUtils.getSessionUserID(request));
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult();
 		}else {

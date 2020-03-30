@@ -1,5 +1,7 @@
 package com.neo.commons.cons;
 
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.Getter;
@@ -47,6 +49,22 @@ public enum EnumMemberType {
             }
         }
         return null;
+    }
+    
+    
+    
+    /**
+     * 根据订单中的auth节点，提取的map获取info
+     * @param specs
+     * @return
+     */
+    public static String  getEnumMemberInfo(Map<String, String[]> specs) {
+    	 for (EnumMemberType type : values()) {
+             if (specs.get(type.getInfo()) != null ) {
+                 return type.getInfo();
+             }
+         }
+    	 return null;
     }
 	
     

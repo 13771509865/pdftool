@@ -194,6 +194,14 @@ public class PtsConvertService {
 	}
 	
 	
+	/**
+	 * 修改转换记录状态（假删除）
+	 * @param fcsFileInfoPO
+	 * @return
+	 */
+	public int updatePtsConvert(FcsFileInfoPO fcsFileInfoPO){
+		return fcsFileInfoBOMapper.updatePtsConvert(fcsFileInfoPO);
+	}
 	
 	
 	

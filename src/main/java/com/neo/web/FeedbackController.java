@@ -1,6 +1,7 @@
 package com.neo.web;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neo.commons.cons.EnumResultCode;
@@ -24,6 +26,8 @@ import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.BindingResultUtils;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.commons.util.JsonUtils;
+import com.neo.dao.PtsAuthPOMapper;
+import com.neo.model.po.PtsAuthPO;
 import com.neo.model.vo.FeedbackVO;
 import com.neo.service.httpclient.HttpAPIService;
 
@@ -45,6 +49,9 @@ public class FeedbackController{
 	
 	@Autowired
 	private HttpAPIService httpAPIService;
+	
+	@Autowired
+	private PtsAuthPOMapper ptsAuthPOMapper;
 
 	@ApiOperation(value = "用户反馈")
 	@PostMapping(value = "/feedback")
@@ -68,4 +75,19 @@ public class FeedbackController{
 		FeedbackVO feedbackVO = JsonUtils.json2obj(result.getData().getBody(), FeedbackVO.class);
 		return JsonResultUtils.buildMapResult(feedbackVO.getCode(), feedbackVO.getAskId(), feedbackVO.getMsg());
 	}
+	
+	
+	
+
+
+	
+	public static void main(String[] args) {
+		Map<String, Object> map = new HashMap<>();
+		String a = "{\"id\":400688408357240832,\"phone\":\"13065123410\",\"email\":null,\"name\":\"云客 ☆ 云客 ☆ 云客 ☆ 云客 ☆\",\"role\":\"User\",\"membership\":\"Member\",\"duetime\":1581495010000}";
+		map = JsonUtils.parseJSON2Map(a);
+		System.out.println( map.get("membership").toString());
+		
+	}
+	
+	
 }
