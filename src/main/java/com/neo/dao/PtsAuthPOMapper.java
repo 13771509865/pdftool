@@ -14,5 +14,5 @@ public interface PtsAuthPOMapper {
 	
 	Integer deletePtsAuth(PtsAuthPO ptsAuthPO);
 	
-	
+	List<PtsAuthPO> selectAuth();//脚本
 }

@@ -6,11 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.neo.commons.util.DateViewUtils;
 import com.neo.dao.PtsAuthPOMapper;
 import com.neo.dao.PtsConvertRecordPOMapper;
-import com.neo.model.po.PtsConvertRecordPO;
-import com.neo.model.qo.PtsConvertRecordQO;
+import com.neo.model.po.PtsAuthPO;
 import com.neo.service.auth.IAuthService;
 import com.neo.service.cache.impl.RedisCacheManager;
 import com.neo.service.clear.IClearService;
@@ -38,28 +36,36 @@ public class PtsTest {
 	@Autowired
 	private PtsConvertRecordPOMapper ptsConvertRecordPOMapper;
 	
-	
 	@Test
-	public void clearTest() throws InterruptedException {
-		String nowDate = DateViewUtils.getNow();
-		String nowTime = DateViewUtils.getNowTime();
-		 
-		PtsConvertRecordPO ptsConvertRecordPO = new PtsConvertRecordPO();
-		ptsConvertRecordPO.setConvertNum(1);
-		ptsConvertRecordPO.setCreateDate(DateViewUtils.getNowDate());//时间搞一搞
-		ptsConvertRecordPO.setCreateTime(DateViewUtils.getNowDate());
-		ptsConvertRecordPO.setModifiedDate(DateViewUtils.getNowDate());
-		ptsConvertRecordPO.setModifiedTime(DateViewUtils.getNowDate());
-		ptsConvertRecordPO.setModule(2);
-		ptsConvertRecordPO.setStatus(1);
-		ptsConvertRecordPO.setUserID(13L);
-		
-		PtsConvertRecordQO ptsConvertRecordQO = new PtsConvertRecordQO();
-		ptsConvertRecordQO.setConvertNum(5);
-		
-		int num = ptsConvertRecordPOMapper.insertOrUpdatePtsConvertRecord(ptsConvertRecordPO, ptsConvertRecordQO);
-		System.out.println(num);
+	public void test() {
+		PtsAuthPO ptsAuthPO =new PtsAuthPO();
+		ptsAuthPO.setUserid(3678L);
+		ptsAuthPO.setMemberType("MemberVip");
+		System.out.println(ptsAuthPOMapper.updatePtsAuthPOByUserId(ptsAuthPO));
 	}
+	
+	
+//	@Test
+//	public void clearTest() throws InterruptedException {
+//		String nowDate = DateViewUtils.getNow();
+//		String nowTime = DateViewUtils.getNowTime();
+//		 
+//		PtsConvertRecordPO ptsConvertRecordPO = new PtsConvertRecordPO();
+//		ptsConvertRecordPO.setConvertNum(1);
+//		ptsConvertRecordPO.setCreateDate(DateViewUtils.getNowDate());//时间搞一搞
+//		ptsConvertRecordPO.setCreateTime(DateViewUtils.getNowDate());
+//		ptsConvertRecordPO.setModifiedDate(DateViewUtils.getNowDate());
+//		ptsConvertRecordPO.setModifiedTime(DateViewUtils.getNowDate());
+//		ptsConvertRecordPO.setModule(2);
+//		ptsConvertRecordPO.setStatus(1);
+//		ptsConvertRecordPO.setUserID(13L);
+//		
+//		PtsConvertRecordQO ptsConvertRecordQO = new PtsConvertRecordQO();
+//		ptsConvertRecordQO.setConvertNum(5);
+//		
+//		int num = ptsConvertRecordPOMapper.insertOrUpdatePtsConvertRecord(ptsConvertRecordPO, ptsConvertRecordQO);
+//		System.out.println(num);
+//	}
 	
 	
 //	@Test
