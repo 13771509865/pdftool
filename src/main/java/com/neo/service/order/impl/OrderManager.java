@@ -114,6 +114,7 @@ public class OrderManager {
 						ptsAuthPO.setStatus(EnumStatus.ENABLE.getValue());
 						ptsAuthPO.setUserid(dto.getUserId());
 						ptsAuthPO.setGmtExpire(expireDate);
+						ptsAuthPO.setProductId(productId);
 						boolean insertPtsAuthPO = iAuthService.insertPtsAuthPO(ptsAuthPO)>0;
 						if(!insertPtsAuthPO) {
 							SysLogUtils.error("插入用户商品权限失败");
