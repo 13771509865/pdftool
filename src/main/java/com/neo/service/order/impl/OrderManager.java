@@ -137,6 +137,7 @@ public class OrderManager {
 						ptsAuthPO.setAuth(orderSpecsEntity.getAuth());
 						ptsAuthPO.setUserid(dto.getUserId());
 						ptsAuthPO.setGmtExpire(newExpireDate);
+						ptsAuthPO.setProductId(productId);
 						boolean updatePtsAuthPOByUserId = iAuthService.updatePtsAuthPOByUserId(ptsAuthPO)>0;
 						if(!updatePtsAuthPOByUserId) {
 							SysLogUtils.error("修改用户商品权限失败");
