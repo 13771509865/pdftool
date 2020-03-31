@@ -89,9 +89,9 @@ public class StatisticsService {
 		try {
 			Map<String,Object> map = new HashMap<>();
 			List<FcsFileInfoPO> list = fcsFileInfoPOMapper.selectFcsFileInfoPOByUserID(fcsFileInfoQO);
-			Integer counNum = fcsFileInfoPOMapper.selectCountNumFcsFileInfoPOByUserID(fcsFileInfoQO);
+//			Integer counNum = fcsFileInfoPOMapper.selectCountNumFcsFileInfoPOByUserID(fcsFileInfoQO);
 			map.put(SysConstant.FCS_DATA, list);
-			map.put(SysConstant.COUNT, counNum);
+			map.put(SysConstant.COUNT, list.size());
 			return DefaultResult.successResult(map);
 		} catch (Exception e) {
 			SysLogUtils.error("查询三天内的转换记录失败，原因：", e);
