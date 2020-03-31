@@ -129,9 +129,9 @@ public class PtsConvertService {
 			FcsFileInfoPO fcsFileInfoPO = ptsConvertParamService.buildFcsFileInfoParameter(convertBO,fcsFileInfoBO, userId,ipAddress);
 			
 			//根据userId和fileHash去update
-			int count = fcsFileInfoBOMapper.updatePtsConvert(fcsFileInfoPO);
+			int count = updatePtsConvert(fcsFileInfoPO);
 			if(count < 1) {
-				int a = fcsFileInfoBOMapper.insertPtsConvert(fcsFileInfoPO);
+				int a = insertPtsConvert(fcsFileInfoPO);
 			}
 			return DefaultResult.successResult();
 		} catch (Exception e) {
@@ -205,7 +205,9 @@ public class PtsConvertService {
 	
 	
 	
-	
+	public int insertPtsConvert(FcsFileInfoPO fcsFileInfoPO){
+		return fcsFileInfoBOMapper.insertPtsConvert(fcsFileInfoPO);
+	}
 	
 	
 	
