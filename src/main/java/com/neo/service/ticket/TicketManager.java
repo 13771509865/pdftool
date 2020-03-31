@@ -24,7 +24,7 @@ public class TicketManager {
 	
 	private ArrayBlockingQueue<String> pool;
 
-	@PostConstruct
+//	@PostConstruct
 	public void init() {
 		totalSize = config.getConvertPoolSize();
 		this.pool = new ArrayBlockingQueue<String>(totalSize);

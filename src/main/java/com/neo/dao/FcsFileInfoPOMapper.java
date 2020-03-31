@@ -17,4 +17,6 @@ public interface FcsFileInfoPOMapper {
 	
 	int deletePtsConvert(FcsFileInfoQO fcsFileInfoQO);
 
+	List<FcsFileInfoPO> selectFcsFileInfoPOByFileHash(FcsFileInfoQO fcsFileInfoQO);
+	
 }

@@ -1,8 +1,6 @@
 package com.neo.service.uaa;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -14,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.neo.commons.cons.DefaultResult;
+import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.ConstantCookie;
 import com.neo.commons.cons.constants.UaaConsts;
@@ -22,6 +21,12 @@ import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.CookieUtils;
 import com.neo.service.httpclient.HttpAPIService;
 import com.yozosoft.auth.client.config.YozoCloudProperties;
+import com.yozosoft.auth.client.security.JwtAuthenticator;
+import com.yozosoft.auth.client.security.OAuth2AccessToken;
+import com.yozosoft.auth.client.security.OAuth2RequestTokenHelper;
+import com.yozosoft.auth.client.security.UaaToken;
+import com.yozosoft.auth.client.security.UaaUserRole;
+import com.yozosoft.auth.client.security.refresh.UaaTokenRefreshClient;
 
 
 @Service("uaaService")
@@ -32,13 +37,51 @@ public class UaaService {
 
 	@Autowired
 	private HttpAPIService httpAPIService;
-	
+
 	@Autowired
 	private PtsProperty ptsProperty;
+
+	@Autowired
+	private OAuth2RequestTokenHelper oAuth2RequestTokenHelper;
+
+	@Autowired
+	private UaaTokenRefreshClient uaaTokenRefreshClient;
+
+	@Autowired
+	private JwtAuthenticator jwtAuthenticator;
+
 
 	private Map<String, Object> params;
 
 	private Map<String, Object> headers =  new HashMap<>();
+
+
+	/**
+	 * uaa验证用户是否登录
+	 * @param request
+	 * @return
+	 */
+	public IResult<OAuth2AccessToken> checkSecurity(HttpServletRequest request) { 
+		OAuth2AccessToken oAuth2AccessToken = null;
+		UaaToken token = null;
+		try {
+			request = oAuth2RequestTokenHelper.detectTokenInHeaderOrParams(request);
+			oAuth2AccessToken = oAuth2RequestTokenHelper.extractToken(request);
+			oAuth2AccessToken = uaaTokenRefreshClient.refreshAccessToken(oAuth2AccessToken, oAuth2AccessToken.getRefreshToken());
+			token = jwtAuthenticator.authenticate(oAuth2AccessToken.getValue());
+			if (token == null) {
+				return DefaultResult.failResult(EnumResultCode.E_USER_INVALID.getInfo());
+			}
+		} catch (Exception e) {
+			return DefaultResult.failResult(EnumResultCode.E_USER_INVALID.getInfo());
+		}
+		//管理员不允许登录
+        if(token.getRole()!=null && UaaUserRole.Admin==token.getRole()){
+            return DefaultResult.failResult(EnumResultCode.E_USER_INVALID.getInfo());
+        }
+		return DefaultResult.successResult(oAuth2AccessToken);
+	}
+
 
 
 
@@ -50,9 +93,11 @@ public class UaaService {
 	public String getUserInfoUaa(HttpServletRequest request) {
 		String userInfo;
 		try {
+			System.out.println(request.getHeader(UaaConsts.COOKIE));
 			headers.put(UaaConsts.COOKIE, request.getHeader(UaaConsts.COOKIE));
 			IResult<HttpResultEntity> result = httpAPIService.doGet(ptsProperty.getUaa_userinfo_url(),params, headers);
 			userInfo = result.getData().getBody();
+			System.out.println("单点用户信息："+userInfo);
 			return userInfo;
 		} catch (Exception e) {
 			return null;

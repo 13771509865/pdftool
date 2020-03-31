@@ -23,6 +23,9 @@ public class PtsAuthPO {
 	private Long userid;
 	private String auth;
 	private String remark;
+	private String productId;
+	private Integer priority;
+	
 
 	@Override
 	public String toString() {

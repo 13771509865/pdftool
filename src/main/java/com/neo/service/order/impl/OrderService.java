@@ -14,6 +14,7 @@ import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumAuthCode;
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
+import com.neo.commons.cons.UnitType;
 import com.neo.commons.cons.constants.RedisConsts;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.constants.TimeConsts;
@@ -82,9 +83,13 @@ public class OrderService implements IOrderService{
 					if(osa.getSpecs().isEmpty()) {
 						flag = false;//如果map为空，改成不合法
 					}
+					
+					//有效期的值
 					Object obj = osa.getSpecs().get(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())[0];
-
-					if(obj == null ||  Integer.valueOf(obj.toString()) <=0) {
+					//有效期的单位
+					Object unitType = osa.getSpecs().get(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())[1];
+					
+					if(obj == null || unitType==null || Integer.valueOf(obj.toString()) <=0 || UnitType.getUnit(unitType.toString()) == null) {
 						flag = false;//有效期为空，改成不合法
 					}
 					Iterator<String> it = osa.getSpecs().keySet().iterator();

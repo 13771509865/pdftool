@@ -3,6 +3,7 @@
 <mapper namespace="com.neo.dao.FcsFileInfoPOMapper">
     <resultMap id="FcsFileInfoPOResultMap" type="com.neo.model.po.FcsFileInfoPO">
         <id column="ID" property="id" jdbcType="INTEGER"/>
+        <result column="STATUS" property="status" jdbcType="INTEGER"/>
         <result column="IP_ADDRESS" property="ipAddress" jdbcType="INTEGER"/>
         <result column="USERID" property="userID" jdbcType="BIGINT"/>
         <result column="FILE_HASH" property="fileHash" jdbcType="VARCHAR"/>
@@ -15,14 +16,15 @@
         <result column="SRC_STORAGE_PATH" property="srcStoragePath" jdbcType="VARCHAR"/>
         <result column="DEST_STORAGE_PATH" property="destStoragePath" jdbcType="VARCHAR"/>
         <result column="DOWNLOAD_URL" property="viewUrl" jdbcType="VARCHAR"/>
+        <result column="UCLOUD_FILE_ID" property="uCloudFileId" jdbcType="VARCHAR"/>
         <result column="GMT_CREATE" property="gmtCreate" jdbcType="TIMESTAMP"/>
         <result column="GMT_MODIFIED" property="gmtModified" jdbcType="TIMESTAMP"/>
     </resultMap>
     
     <sql id="Base_Column_List">
-		ID,IP_ADDRESS, USERID,FILE_HASH, RESULT_CODE,
+		ID,STATUS,IP_ADDRESS, USERID,FILE_HASH, RESULT_CODE,
 		DEST_FILE_NAME, SRC_FILE_NAME, DEST_FILE_SIZE, SRC_FILE_SIZE,
-		CONVERT_TYPE, SRC_STORAGE_PATH, DEST_STORAGE_PATH, DOWNLOAD_URL,
+		CONVERT_TYPE, SRC_STORAGE_PATH, DEST_STORAGE_PATH, DOWNLOAD_URL,UCLOUD_FILE_ID,
 		GMT_CREATE, GMT_MODIFIED
   	</sql>
     
@@ -31,6 +33,9 @@
         <where>
             <if test="id != null">
                 AND ID = #{id}
+            </if>
+            <if test="status != null">
+                AND STATUS = #{status}
             </if>
             <if test="ipAddress != null and ipAddress!=''">
                 AND IP_ADDRESS = #{ipAddress}
@@ -63,18 +68,21 @@
    	  <!-- 插入登录用户转换成功的数据 -->
       <insert id="insertPtsConvert" parameterType="com.neo.model.po.FcsFileInfoPO">
 	    insert into pts_convert (
-	   	 	IP_ADDRESS, USERID,FILE_HASH, RESULT_CODE,
+	   	 	STATUS,IP_ADDRESS, USERID,FILE_HASH, RESULT_CODE,
 			DEST_FILE_NAME, SRC_FILE_NAME, DEST_FILE_SIZE, SRC_FILE_SIZE,
 			CONVERT_TYPE, SRC_STORAGE_PATH, DEST_STORAGE_PATH, DOWNLOAD_URL,
+			UCLOUD_FILE_ID,
 			GMT_CREATE, GMT_MODIFIED
 			)
 	 	values (
+	 	  #{status,jdbcType=INTEGER}, 
 	      #{ipAddress,jdbcType=VARCHAR}, 		#{userID,jdbcType=BIGINT}, 
 	      #{fileHash,jdbcType=VARCHAR}, 		#{resultCode,jdbcType=INTEGER}, 
 	      #{destFileName,jdbcType=VARCHAR}, 	#{srcFileName,jdbcType=VARCHAR},
 	      #{srcFileSize,jdbcType=BIGINT}, 		#{destFileSize,jdbcType=BIGINT}, 
 	      #{convertType,jdbcType=INTEGER},  	#{srcStoragePath,jdbcType=VARCHAR},
 	      #{destStoragePath,jdbcType=VARCHAR}, 	#{viewUrl,jdbcType=VARCHAR}, 
+	      #{uCloudFileId,jdbcType=VARCHAR}, 
 	      now(),now()
 	      )
  	  </insert>
@@ -87,6 +95,7 @@
 			from pts_convert 
 			<include refid="search_condition" />
 			<![CDATA[and  DATEDIFF(now(), GMT_MODIFIED)<3]]>
+			ORDER BY GMT_MODIFIED DESC
 			<include refid="byPage"/>
 		</select>
 		
@@ -99,17 +108,40 @@
 			<include refid="search_condition" />
 			<![CDATA[and  DATEDIFF(now(), GMT_MODIFIED)<3]]>
 		</select>
- 	  
+
+		<select id="selectFcsFileInfoPOByFileHash" parameterType="com.neo.model.qo.FcsFileInfoQO" resultMap="FcsFileInfoPOResultMap">
+			select
+			<include refid="Base_Column_List" />
+			from pts_convert
+			<include refid="search_condition" />
+		</select>
  	  
  	  <!-- 转换相同文件时，修改转换时间和下载地址 -->
  	   <update id="updatePtsConvert" parameterType="com.neo.model.po.FcsFileInfoPO" >
 		    update pts_convert
-		    set 
+		   <set>
 		    GMT_MODIFIED = now(),
-		    DEST_FILE_NAME =  #{destFileName,jdbcType=VARCHAR}, 
-		    DOWNLOAD_URL = #{viewUrl,jdbcType= VARCHAR}
-		    where USERID = #{userID,jdbcType=BIGINT} 
-		    and FILE_HASH = #{fileHash,jdbcType= VARCHAR}
+		     <if test="status != null ">
+				 STATUS = #{status,jdbcType=INTEGER},
+			</if>
+		    <if test="destFileName != null and destFileName != ''">
+				 DEST_FILE_NAME = #{destFileName,jdbcType=VARCHAR},
+			</if>
+			<if test="viewUrl != null and viewUrl != ''">
+				DOWNLOAD_URL = #{viewUrl,jdbcType= VARCHAR},
+			</if>
+			<if test="uCloudFileId != null and uCloudFileId != ''">
+				UCLOUD_FILE_ID = #{uCloudFileId,jdbcType= VARCHAR},
+			</if>
+		    </set> 
+		    <where>
+		    	<if test="userID != null">
+					and USERID = #{userID,jdbcType=BIGINT} 
+				</if>
+				<if test="fileHash != null and fileHash != ''">
+					and FILE_HASH = #{fileHash,jdbcType= VARCHAR}
+				</if>
+		    </where>
  		</update>
  	  
  	  

@@ -11,4 +11,8 @@ public interface PtsAuthPOMapper {
 	List<PtsAuthPO> selectAuthByUserid(Long userid);
 	
 	Integer updatePtsAuthPOByUserId(PtsAuthPO ptsAuthPO);
+	
+	Integer deletePtsAuth(PtsAuthPO ptsAuthPO);
+	
+	List<PtsAuthPO> selectAuth();//脚本
 }

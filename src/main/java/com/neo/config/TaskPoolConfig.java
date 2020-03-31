@@ -37,6 +37,11 @@ public class TaskPoolConfig {
 ////        return buildExecutor(sysConfig.getCorePoolSize(),sysConfig.getMaxPoolSize(),sysConfig.getQueueCapacity(),sysConfig.getKeepAliveSeconds(),"httpclientExecutor-",sysConfig.getWaitForTasksToCompleteOnShutdown(),sysConfig.getAwaitTerminationSeconds(),new ThreadPoolExecutor.AbortPolicy());
 //    }
 
+    @Bean("uploadYcFileExecutor")
+    public Executor uploadYzFileExecutor(){
+        return buildExecutor(sysConfig.getCorePoolSize(), sysConfig.getMaxPoolSize(), Integer.MAX_VALUE, sysConfig.getKeepAliveSeconds(), "uploadYcFileExecutor-",sysConfig.getWaitForTasksToCompleteOnShutdown(),sysConfig.getAwaitTerminationSeconds(),new ThreadPoolExecutor.AbortPolicy());
+    }
+
     private ThreadPoolTaskExecutor buildExecutor(Integer corePoolSize, Integer maxPoolSize, Integer queueCapacity, Integer keepAliveSeconds, String threadNamePrefix, Boolean waitForTasksToCompleteOnShutdown, Integer awaitTerminationSeconds, RejectedExecutionHandler rejectedExecutionHandler){
     	 ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
          //线程池创建时候初始化的线程数

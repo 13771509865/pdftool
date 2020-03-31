@@ -24,6 +24,8 @@ public class UserBO {
 	private String	chPasswd;
 	private String	binds;
 	private String	canUnbind;
+	private String  membership;
+	
 	
 
 	

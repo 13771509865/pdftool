@@ -44,4 +44,13 @@ public class RedisConsts {
     public static final String PRODUCT_VERSION = "productVersion";
     
 	
+    //会员优先级
+    public static final String CONVERT_TICKET = "convertTicket";
+    
+    public static final String CONVERT_QUEUE_KEY = "convertQueueKey";
+
+    public static final String CLEAR_IP_KEY = "clearIpTimes";
+
+    public static final String RETRY_YC_KEY = "retryYcUpload";
+
 }

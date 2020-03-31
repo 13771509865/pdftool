@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+
+import com.neo.commons.cons.UnitType;
 /**
  * 处理日期的格式化
  */
@@ -400,20 +402,84 @@ public class DateViewUtils {
 
 
 
+	/**
+	 * 订单设置过期时间，精确到月
+	 * mouth个月后，当天的23:59:59
+	 * @param sourceDate
+	 * @param month
+	 * @return
+	 */
 	public static Date stepMonth(Date sourceDate, int month) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(sourceDate);
 		c.add(Calendar.MONTH, month);
-		return c.getTime();
+		c.add(Calendar.DATE,1);
+		c.set(c.get(Calendar.YEAR),c.get(Calendar.MONTH),c.get(Calendar.DAY_OF_MONTH));
+		c.set(Calendar.HOUR_OF_DAY, 0);
+		c.set(Calendar.MINUTE, 0);
+		c.set(Calendar.SECOND, 0);
+		c.set(Calendar.MILLISECOND, 0);
+		c.add(Calendar.SECOND,-1);
+		return c.getTime(); 
 	}
-
-
-
+	
+	
+	/**
+	 * 订单设置过期时间，精确到日
+	 * @param sourceDate
+	 * @param month
+	 * @param date
+	 * @return
+	 */
+	public static Date stepMonth(Date sourceDate, int month,int date) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(sourceDate);
+		c.add(Calendar.MONTH, month);
+		c.add(Calendar.DATE,date);
+		c.set(c.get(Calendar.YEAR),c.get(Calendar.MONTH),c.get(Calendar.DAY_OF_MONTH));
+		c.set(Calendar.HOUR_OF_DAY, 0);
+		c.set(Calendar.MINUTE, 0);
+		c.set(Calendar.SECOND, 0);
+		c.set(Calendar.MILLISECOND, 0);
+		c.add(Calendar.SECOND,-1);
+		return c.getTime(); 
+	}
+	
+	
+	/**
+	 * 订单设置过期时间，精确到日
+	 * @param date
+	 * @param index
+	 * @param unitType
+	 * @return
+	 */
+	public static Date getTimeDay(Date date, int index, UnitType unitType) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        if (unitType == UnitType.Day) {
+            calendar.add(Calendar.DATE, index);
+        } else if (unitType == UnitType.Year) {
+            calendar.add(Calendar.YEAR, index);
+        } else {
+            calendar.add(Calendar.MONTH, index);
+        }
+        calendar.add(Calendar.DATE, 1);
+        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+                0, 0, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.add(Calendar.SECOND, -1);
+        return calendar.getTime();
+    }
+	
 
 	public static void main(String[] args) throws ParseException {
-		String a = "2019-11-01 12:26:00";
-		Date date = parseFull(a);
-		System.out.println(isExpiredForTimes(date));
+		Date date = DateViewUtils.getTimeDay(DateViewUtils.getNowDate(), -1,UnitType.getUnit("日"));
+		System.out.println(date); 
+		System.out.println(DateViewUtils.formatFullDate(date)); 
+		
+		String d = DateViewUtils.getDayBefore(5);
+		System.out.println(d);
+		System.out.println(DateViewUtils.parseSimpleDate(d));
 		
 	}
 }

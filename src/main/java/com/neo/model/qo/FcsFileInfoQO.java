@@ -18,6 +18,7 @@ public class FcsFileInfoQO extends PageQO{
 	private Long userID;
 	private Date showDateStart;
     private Date showDateEnd;
+    private Integer status;
 	
 
 

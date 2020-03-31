@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.neo.commons.cons.EnumStatus;
 import com.neo.commons.cons.constants.FcsParmConsts;
 import com.neo.commons.cons.constants.PtsConsts;
 import com.neo.commons.cons.constants.SizeConsts;
@@ -57,6 +58,7 @@ public class PtsConvertParamService {
 		if(convertBO.getConvertTimeOut() == null) {
 			convertBO.setConvertTimeOut(configProperty.getConvertTimeout());
 		} 
+		
 		Map<String,Object> map = JsonUtils.parseJSON2Map(convertBO.toString());
 		for(String param : FcsParmConsts.FCS_PARMS) {
 			if(map.containsKey(param)) {
@@ -89,13 +91,15 @@ public class PtsConvertParamService {
 		fcsFileInfoPO.setConvertType(fcsFileInfoBO.getConvertType());
 		fcsFileInfoPO.setSrcStoragePath(fcsFileInfoBO.getSrcStoragePath());
 		fcsFileInfoPO.setDestStoragePath(fcsFileInfoBO.getDestStoragePath());
+		fcsFileInfoPO.setStatus(EnumStatus.ENABLE.getValue());
 
 		//手写签批，做特殊处理DestFileName，需要保存上传的源文件
 		//viewUrl需要修改成download
-		if(convertBO.getConvertType() == 14 && convertBO.getIsSignature() ==1) {
+		if(convertBO.getConvertType() == 14 && convertBO.getIsSignature()!=null && convertBO.getIsSignature() ==1) {
 			fcsFileInfoPO.setDestFileName(fcsFileInfoBO.getSrcFileName());
-			String token = StringUtils.substringAfter(fcsFileInfoBO.getViewUrl(),PtsConsts.PREVIEW);
-			fcsFileInfoPO.setViewUrl(ptsProperty.getFcs_downLoad_url()+token);
+			
+			String downloadUrl = StringUtils.replace(fcsFileInfoBO.getViewUrl(), PtsConsts.VIEW_PREVIEW, PtsConsts.VIEW_DOWNLOAD);
+			fcsFileInfoPO.setViewUrl(downloadUrl);
 		}else {
 			fcsFileInfoPO.setDestFileName(fcsFileInfoBO.getDestFileName());
 			fcsFileInfoPO.setViewUrl(fcsFileInfoBO.getViewUrl());
@@ -166,8 +170,10 @@ public class PtsConvertParamService {
 			ptsSummaryPO.setIpAddress(String.valueOf(userId));
 		}
 
-		ptsSummaryPO.setModule(Integer.valueOf(request.getParameter(PtsConsts.MODULE)));//区分模块
-
+		if(request.getParameter(PtsConsts.MODULE) !=null) {
+			ptsSummaryPO.setModule(Integer.valueOf(request.getParameter(PtsConsts.MODULE)));//区分模块
+		}
+		
 		ptsSummaryPO.setCreateDate(DateViewUtils.parseSimple(nowDate));//时间搞一搞
 		ptsSummaryPO.setCreateTime(DateViewUtils.parseSimpleTime(nowTime));
 		ptsSummaryPO.setModifiedDate(DateViewUtils.parseSimple(nowDate));
@@ -179,9 +185,13 @@ public class PtsConvertParamService {
 
 
 	public static void main(String[] args) {
-		String viewUrl= "https://pdl.yozocloud.cn/view/preview/k1-hrvUr7bTpBr5jnICu7K_onAql9n_xFKkHnwKyCauJNGvsoax6iL7hM7ivxXubTYc72pa0P6-qIOZQXwGm344FakTjd93Lz4r77DI_H_2kHYa5qxmBJSoDp4Z0wLiZYQH0ms-ucI3mDwvSpwkBe0H-Izmjd4yYl2iov6wDdJk3pvrns0vOx5W1PcP6ZHVBs5Z6Od_RVp5l3q7oz09z9S7E07CIHBS5BYeGrfxsIpz_tJrYZxfeex5_N4Vrl5xlJKGaaevyvDIvzCchdWnD9zNPrjUt0jUfzKyrHr6QTMonLLtQaCzVnzYsdDiVTUMRzxuYQMhErfI=/";
-		String a = "preview";
+		
+
+		String viewUrl= "https://pdl.yozodocs.com/view/preview/Qc1lqUEgoeEThAS5Lhz_BHh4sXHecv5ApmY_Dn7OOrs73uXHsMrSrhI9Gjgo6U8EKQSkBZebVZXRulQvmbj_Qf2IL5h5ZqM8JSK9GUGeUJ79cu3sAQCN28SdcBFfBOw4fwkMbj5CxtHUOY-zyrovboFAN1zT4Ly3L-YcCU_r9pZkIA-5gwaEbBnr2fUPN6RyprOKQpIUCo-FzmTegd2AFF4J-ylSzHdjM0L9ouhUawFQbAsi16oS_qRywKBK9RVB6rXHbrwxZwCZ8XlULFdFCBwBujKFadQpKELVciwCQ0Me4lQqpdzyjpEXdfr-yVTNFsjUTTCqgEs=/";
+		String a = "/view/preview";
+		String b = "/view/download";
 		String aa = StringUtils.substringAfter(viewUrl,a);
-		System.out.println(aa);
+		String  c = StringUtils.replace(viewUrl, a, b);
+		System.out.println(c);
 	}
 }

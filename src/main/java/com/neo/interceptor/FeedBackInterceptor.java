@@ -36,15 +36,9 @@ public class FeedBackInterceptor implements HandlerInterceptor{
 		
 		//登录后才能反馈
 		if(userID == null) {
-			response.setContentType("text/html;charset=UTF-8");
-			response.setCharacterEncoding("UTF-8");
-			PrintWriter out = response.getWriter();
-			out.write(JsonResultUtils.buildFailJsonResultByResultCode(EnumResultCode.E_UNLOGIN_ERROR));
-			out.flush();
-			out.close();
+			HttpUtils.sendResponse(request, response, JsonResultUtils.buildFailJsonResultByResultCode(EnumResultCode.E_UNLOGIN_ERROR));
 			return false;
 		}
-		
 		return true;
 		
 	}
