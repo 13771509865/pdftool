@@ -48,7 +48,7 @@ public class PtsYcUploadService {
     private PtsProperty ptsProperty;
 
     @Autowired
-    private FcsFileInfoPOMapper fcsFileInfoPOMapper;
+    private PtsConvertService ptsConvertService;
 
     @Autowired
     private IYzcloudService iYzcloudService;
@@ -126,7 +126,7 @@ public class PtsYcUploadService {
                                 fcsFileInfoPo.setUserID(userId);
                                 fcsFileInfoPo.setFileHash(fcsFileInfoBO.getFileHash());
                                 fcsFileInfoPo.setUCloudFileId(fileId);
-                                int updateResult = fcsFileInfoPOMapper.updatePtsConvert(fcsFileInfoPo);
+                                int updateResult = ptsConvertService.updatePtsConvert(fcsFileInfoPo);
                             }
                         }
                     } catch (Exception e) {

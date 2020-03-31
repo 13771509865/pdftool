@@ -141,9 +141,6 @@
 				<if test="fileHash != null and fileHash != ''">
 					and FILE_HASH = #{fileHash,jdbcType= VARCHAR}
 				</if>
-				<if test="uCloudFileId != null and uCloudFileId != ''">
-					and UCLOUD_FILE_ID = #{uCloudFileId,jdbcType= VARCHAR}
-				</if>
 		    </where>
  		</update>
  	  

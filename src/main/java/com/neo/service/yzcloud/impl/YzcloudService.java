@@ -18,6 +18,7 @@ import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.model.po.FcsFileInfoPO;
 import com.neo.model.po.PtsYcUploadPO;
 import com.neo.model.qo.PtsYcUploadQO;
+import com.neo.service.convert.PtsConvertService;
 import com.neo.service.convert.PtsYcUploadService;
 import com.neo.service.httpclient.HttpAPIService;
 import com.neo.service.yzcloud.IYzcloudService;
@@ -46,11 +47,11 @@ public class YzcloudService implements IYzcloudService {
     private PtsProperty ptsProperty;
 
     @Autowired
-    private FcsFileInfoPOMapper fcsFileInfoPOMapper;
-
-    @Autowired
     private PtsYcUploadPOMapper ptsYcUploadPOMapper;
-
+    
+    @Autowired
+    private PtsConvertService ptsConvertService;
+ 
     @Async("uploadYcFileExecutor")
     @Override
     public IResult<String> uploadFileToYc(FcsFileInfoBO fcsFileInfoBO, Long userId, String cookie) {
@@ -75,7 +76,7 @@ public class YzcloudService implements IYzcloudService {
             headers.put(UaaConsts.COOKIE, cookie);
             System.out.println("开始发送信息给优云。。。。");
             IResult<HttpResultEntity> httpResult = httpAPIService.uploadResouse(targetFile, url, params, headers);
-           System.out.println(httpResult.getData().getBody());
+            System.out.println("====优云返回的结果："+httpResult.getData().getBody());
             if (HttpUtils.isHttpSuccess(httpResult)) {
                 try {
                     Map<String, Object> resultMap = JsonUtils.parseJSON2Map(httpResult.getData().getBody());
@@ -87,7 +88,7 @@ public class YzcloudService implements IYzcloudService {
                             fcsFileInfoPo.setUserID(userId);
                             fcsFileInfoPo.setFileHash(fcsFileInfoBO.getFileHash());
                             fcsFileInfoPo.setUCloudFileId(fileId);
-                            int updateResult = fcsFileInfoPOMapper.updatePtsConvert(fcsFileInfoPo);
+                            int updateResult = ptsConvertService.updatePtsConvert(fcsFileInfoPo);
                             return DefaultResult.successResult(fileId);
                         }
                     }
