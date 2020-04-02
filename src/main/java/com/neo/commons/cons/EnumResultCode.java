@@ -37,6 +37,7 @@ public enum EnumResultCode {
 	E_VOTE_NUM_ERROR(29,"抱歉，每次最多可以投5票"),
 	E_VOTE_CONTENT_NULL_ERROR(30,"抱歉，选择其他选项时，请填写您需要的功能"),
 	E_VOTE_OTHER_ERROR(31,"抱歉，选择其他选项时，才能提交您填写的内容"),
+	E_ZIPPACK_FAIL(32, "打包成压缩包失败,请稍后重试"),
 	
 	E_FCS_VTOKEN_FAIL(42,"获取vToken失败"),
 	E_FCS_CONVERT_FAIL(43,"抱歉网络有点忙，请您稍后再尝试"),

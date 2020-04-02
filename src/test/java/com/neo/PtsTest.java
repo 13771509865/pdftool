@@ -40,7 +40,6 @@ public class PtsTest {
 	public void test() {
 		PtsAuthPO ptsAuthPO =new PtsAuthPO();
 		ptsAuthPO.setUserid(3678L);
-		ptsAuthPO.setMemberType("MemberVip");
 		System.out.println(ptsAuthPOMapper.updatePtsAuthPOByUserId(ptsAuthPO));
 	}
 	
