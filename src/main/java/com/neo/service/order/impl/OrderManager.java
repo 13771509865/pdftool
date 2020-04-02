@@ -90,10 +90,11 @@ public class OrderManager {
 	@Transactional(rollbackFor = Exception.class)
 	public IResult<String> modifyOrderEffective(RedisOrderDto dto){
 		try {
+			//商品id和优先级
+			String productId = dto.getOrderRequestDto().getProductId();
+			Integer priority = dto.getOrderRequestDto().getPriority();
+			
 			for(OrderServiceAppSpec osa : dto.getOrderRequestDto().getSpecs()) {
-				
-				//当前订单的商品id
-				String productId = dto.getOrderRequestDto().getProductId();
 				
 				//获取pdf的会员权益
 				if(YozoServiceApp.PdfTools.getApp().equalsIgnoreCase(osa.getApp().getApp())) {
@@ -115,6 +116,7 @@ public class OrderManager {
 						ptsAuthPO.setUserid(dto.getUserId());
 						ptsAuthPO.setGmtExpire(expireDate);
 						ptsAuthPO.setProductId(productId);
+						ptsAuthPO.setPriority(priority);
 						boolean insertPtsAuthPO = iAuthService.insertPtsAuthPO(ptsAuthPO)>0;
 						if(!insertPtsAuthPO) {
 							SysLogUtils.error("插入用户商品权限失败");
@@ -148,6 +150,7 @@ public class OrderManager {
 			}
 			return DefaultResult.successResult();
 		} catch (Exception e) {
+			e.printStackTrace();
 			SysLogUtils.error("订单域名生效失败,订单为:"+JSON.toJSONString(dto),e);
 			//手动事务回滚
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -199,13 +202,6 @@ public class OrderManager {
 
 
 	public static void main(String[] args) {
-		String[] a = {"1","Month"};
-		String memberType = null;
-
-		Map<String, String[]> specs = new HashMap<>();
-		specs.put("MemberYomoer", a);
-		memberType =  EnumMemberType.getEnumMemberInfo(specs);
-		System.out.println(memberType);
 	}
 
 
