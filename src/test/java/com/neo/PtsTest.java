@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.neo.commons.cons.EnumAuthCode;
 import com.neo.commons.cons.IResult;
+import com.neo.commons.cons.UnitType;
 import com.neo.dao.PtsAuthPOMapper;
 import com.neo.dao.PtsConvertRecordPOMapper;
 import com.neo.model.dto.RedisOrderDto;
@@ -145,7 +146,7 @@ public class PtsTest {
 	    public void contextLoads() {
 			String[] a = {"true"};
 			String[] c = {"100"};
-			String[] b = {"100","mouth"};
+			String[] b = {"100","Month"};
 			Map<String, String[]> specs = new HashMap<>();
 			specs.put(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode(), c);
 			specs.put(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode(), c);
@@ -165,9 +166,12 @@ public class PtsTest {
 			OrderRequestDto ord = new OrderRequestDto();
 			ord.setSpecs(list);
 			ord.setProductId("418458164766187521");
+			ord.setPriority(3);
+			ord.setUpgrade(false);
 			RedisOrderDto dto = new RedisOrderDto();
 			dto.setUserId(77127L);
 			dto.setOrderRequestDto(ord);
+			
 			
 			IResult<String> result = orderManager.modifyOrderEffective(dto);
 			System.out.println(result.isSuccess());
@@ -177,6 +181,10 @@ public class PtsTest {
 
 
 
+//		@Test
+//	    public void updatePtsAuthPOByPriority() {
+//			iAuthService.updatePtsAuthPOByPriority(2, UnitType.Year.toString(), 77127L, 2);
+//		}
 
 
 }

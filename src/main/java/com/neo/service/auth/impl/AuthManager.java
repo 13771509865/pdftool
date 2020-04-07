@@ -11,8 +11,11 @@ import org.springframework.stereotype.Service;
 
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumAuthCode;
+import com.neo.commons.cons.EnumLockCode;
 import com.neo.commons.cons.EnumResultCode;
+import com.neo.commons.cons.EnumStatus;
 import com.neo.commons.cons.IResult;
+import com.neo.commons.cons.constants.PtsConsts;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.helper.PermissionHelper;
 import com.neo.commons.properties.ConfigProperty;
@@ -24,6 +27,7 @@ import com.neo.commons.util.SysLogUtils;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.dto.PermissionDto;
 import com.neo.model.po.PtsAuthPO;
+import com.neo.model.qo.PtsAuthQO;
 import com.neo.service.auth.IAuthService;
 
 @Service("authManager")
@@ -62,13 +66,41 @@ public class AuthManager {
 			defaultMap.putAll(numMap);
 
 			if(userID !=null) {//登录用户或者会员
-				List<PtsAuthPO> list = iAuthService.selectAuthByUserid(userID);
-				if(!list.isEmpty() && list.size()>0) {//没有购买过会员
-					PtsAuthPO ptsAuthPO = list.get(0);
-					if(!DateViewUtils.isExpiredForDays(ptsAuthPO.getGmtExpire())) {//没有过期
-						//会员注册的权限转map
-						Map<String,Object> ptsAuthPOAuthMap = StrUtils.strToMap(ptsAuthPO.getAuth(), SysConstant.COMMA, SysConstant.COLON);
-						return DefaultResult.successResult(getPermission(defaultMap,ptsAuthPOAuthMap));
+				//拿到优先级最高的 && 没有过期 && status=1的数据
+				List<PtsAuthPO> list = iAuthService.selectPtsAuthPOByPriority(userID,EnumStatus.ENABLE.getValue());
+				if(!list.isEmpty() && list.size()>0) {
+
+					//只有一条记录
+					if(list.size() == 1) {
+						PtsAuthPO ptsAuthPO = list.get(0);
+						Map<String,Object> authMap = StrUtils.strToMap(ptsAuthPO.getAuth(), SysConstant.COMMA, SysConstant.COLON);
+						return DefaultResult.successResult(getPermission(defaultMap,authMap));
+					}else {
+						Map<String,Object> newAuthMap = new HashMap<>();
+						//多条记录，合并取最大值
+						for(PtsAuthPO ptsAuthPO : list) {
+							Map<String,Object> authMap = StrUtils.strToMap(ptsAuthPO.getAuth(), SysConstant.COMMA, SysConstant.COLON);
+							for (Map.Entry<String, Object> m : authMap.entrySet()) {
+
+								//key不存在直接塞进去
+								//key存在,只比较更新size和num的值
+								if(!newAuthMap.containsKey(m.getKey())) {
+									newAuthMap.put(m.getKey(), m.getValue());
+								}else {
+									if(StringUtils.equals(m.getKey(), EnumAuthCode.PTS_CONVERT_NUM.getAuthCode())) {
+										Integer num = (Integer)m.getValue();
+										Integer mapNum = (Integer)newAuthMap.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode());
+										newAuthMap.put(m.getKey(), num>mapNum?num:mapNum);
+									}
+									if(StringUtils.equals(m.getKey(), EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode())){
+										Integer size = (Integer)m.getValue();
+										Integer mapSize = (Integer)newAuthMap.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode());
+										newAuthMap.put(m.getKey(), size>mapSize?size:mapSize);
+									}
+								}
+							}
+						}
+						return DefaultResult.successResult(getPermission(defaultMap,newAuthMap));
 					}
 				}
 			}
@@ -117,7 +149,7 @@ public class AuthManager {
 			for (Map.Entry<String, Object> permissionEntry : permissionDtoAuthMap.entrySet()) {
 				Object obj = permissionEntry.getValue();
 				if(obj!=null && StringUtils.equals(obj.toString(), SysConstant.TRUE)) {
-					
+
 					//根据authCode拿moduleNum
 					String mouldeNum =  EnumAuthCode.getModuleNum(permissionEntry.getKey());
 					if(StringUtils.isNotBlank(mouldeNum)) {
@@ -126,7 +158,7 @@ public class AuthManager {
 				}
 			}
 		}
-		
+
 		//会员允许转换的大小
 		if(permissionDtoAuthMap.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode())!=null) {
 			defaultMap.put(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode(), permissionDtoAuthMap.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode()));

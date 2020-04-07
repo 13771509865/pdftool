@@ -90,17 +90,26 @@
 	</sql>
 
 	<!-- 根据userid查询权限表 -->
-	<select id="selectAuthByUserid" resultMap="PtsAuthPOMapper" parameterType="java.lang.Long">
+	<select id="selectPtsAuthPO" resultMap="PtsAuthPOMapper" parameterType="com.neo.model.qo.PtsAuthQO">
 		select
 		<include refid="Base_Column_List" />
 		from pts_auth
-		where USERID = #{userid,jdbcType=BIGINT}
-		for update
+		<where>
+	    	<if test="userid != null">
+				and USERID = #{userid,jdbcType=BIGINT} 
+			</if>
+			<if test="status != null">
+				and STATUS = #{status,jdbcType=INTEGER}
+			</if>
+	    </where> 
+	    <if test="lock!=null and lock == 1">
+			for update
+		</if>
 	</select>
 
 	
 	<!-- 根据userid修改用户权限 -->
-	<update id="updatePtsAuthPOByUserId" parameterType="com.neo.model.po.PtsAuthPO">
+	<update id="updatePtsAuthPO" parameterType="com.neo.model.po.PtsAuthPO">
 		update pts_auth
 		<set>
 			<if test="gmtCreate != null">
@@ -139,8 +148,6 @@
 	</update>
 
 
-
-
 	 <!-- 删除用户会员权限信息 -->
  	 <delete id="deletePtsAuth" parameterType="com.neo.model.po.PtsAuthPO">
         delete from pts_auth
@@ -149,12 +156,42 @@
    	 </delete>
 	
 	
-	<!-- 脚本 -->
-	<select id="selectAuth" resultMap="PtsAuthPOMapper" >
+	<!-- 购买或续费时，修改低优先级的会员时间 -->
+	<update id="updatePtsAuthPOByPriority" >
+		update pts_auth
+		set
+		<if test="ut == 'Year'">
+		<![CDATA[GMT_EXPIRE = DATE_ADD(GMT_EXPIRE,INTERVAL  #{vt,jdbcType=INTEGER}  YEAR)]]>
+		</if>
+		<if test="ut == 'Month'">
+		<![CDATA[GMT_EXPIRE = DATE_ADD(GMT_EXPIRE,INTERVAL  #{vt,jdbcType=INTEGER}  MONTH)]]>
+		</if>
+		<if test="ut == 'Day'">
+		<![CDATA[GMT_EXPIRE = DATE_ADD(GMT_EXPIRE,INTERVAL  #{vt,jdbcType=INTEGER}  DAY)]]>
+		</if>
+		where	
+		GMT_EXPIRE  &gt;  now()
+		and STATUS = 1
+	    and USERID = #{uId,jdbcType=BIGINT} 
+	    and PRIORITY &lt; #{pri,jdbcType=INTEGER}
+	</update>
+	
+	
+	
+	
+	
+	<!-- 查询优先级最高的并且没有过期的会员权限 -->
+	<select id="selectPtsAuthPOByPriority" resultMap="PtsAuthPOMapper">
 		select
 		<include refid="Base_Column_List" />
 		from pts_auth
+		where
+		GMT_EXPIRE &gt; NOW()
+		and USERID = #{uId,jdbcType=BIGINT} 
+		and STATUS = #{sta,jdbcType=INTEGER}
+		and PRIORITY = (SELECT MAX(PRIORITY) from pts_auth where USERID = #{uId,jdbcType=BIGINT})
 	</select>
+	
 	
 
 </mapper>
