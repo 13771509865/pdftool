@@ -30,7 +30,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(value = "订单Controller", tags = {"订单Controller"})
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/api/api")
 public class OrderController {
 
 	@Autowired
@@ -42,7 +42,7 @@ public class OrderController {
 	public ResponseEntity reserveOrder(@RequestParam long userId, @RequestParam long orderId, @RequestBody OrderRequestDto dto, @RequestParam String nonce, @RequestParam String sign) {
 		try {
 			IResult<Participant> reserveResult = iOrderService.reserve(userId, orderId, dto, nonce, sign);
-			SysLogUtils.info("[订单号："+orderId+"预留],预留结果："+reserveResult.getData());
+			SysLogUtils.info("[userId]"+userId+""+"[,订单号："+orderId+"预留,],预留结果："+reserveResult.getData());
 			return ResponseEntity.ok(reserveResult.getData());
 		} catch (Exception e) {
 			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);

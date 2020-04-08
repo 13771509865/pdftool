@@ -88,23 +88,22 @@ public class AuthManager {
 									newAuthMap.put(m.getKey(), m.getValue());
 								}else {
 									if(StringUtils.equals(m.getKey(), EnumAuthCode.PTS_CONVERT_NUM.getAuthCode())) {
-										Integer num = (Integer)m.getValue();
-										Integer mapNum = (Integer)newAuthMap.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode());
+										Integer num = Integer.valueOf(m.getValue().toString());
+										Integer mapNum = Integer.valueOf(newAuthMap.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode()).toString());
 										newAuthMap.put(m.getKey(), num>mapNum?num:mapNum);
 									}
 									if(StringUtils.equals(m.getKey(), EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode())){
-										Integer size = (Integer)m.getValue();
-										Integer mapSize = (Integer)newAuthMap.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode());
+										Integer size = Integer.valueOf(m.getValue().toString());
+										Integer mapSize = Integer.valueOf(newAuthMap.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode()).toString());
 										newAuthMap.put(m.getKey(), size>mapSize?size:mapSize);
 									}
 								}
 							}
 						}
-						return DefaultResult.successResult(getPermission(defaultMap,newAuthMap));
+						defaultMap = getPermission(defaultMap,newAuthMap);
 					}
 				}
 			}
-			//注册用户
 			return DefaultResult.successResult(defaultMap);
 		} catch (Exception e) {
 			//aop会做处理

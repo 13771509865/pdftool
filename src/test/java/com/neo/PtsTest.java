@@ -146,7 +146,7 @@ public class PtsTest {
 	    public void contextLoads() {
 			String[] a = {"true"};
 			String[] c = {"100"};
-			String[] b = {"100","Month"};
+			String[] b = {"1","Month"};
 			Map<String, String[]> specs = new HashMap<>();
 			specs.put(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode(), c);
 			specs.put(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode(), c);
@@ -165,11 +165,11 @@ public class PtsTest {
 			
 			OrderRequestDto ord = new OrderRequestDto();
 			ord.setSpecs(list);
-			ord.setProductId("418458164766187521");
+			ord.setProductId("413985833427673089");
 			ord.setPriority(3);
 			ord.setUpgrade(false);
 			RedisOrderDto dto = new RedisOrderDto();
-			dto.setUserId(77127L);
+			dto.setUserId(8506L);
 			dto.setOrderRequestDto(ord);
 			
 			

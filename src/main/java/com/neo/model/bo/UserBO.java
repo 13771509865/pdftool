@@ -1,5 +1,9 @@
 package com.neo.model.bo;
 
+import java.util.Set;
+
+import com.alibaba.fastjson.JSON;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,10 +26,17 @@ public class UserBO {
 	private String	sex;
 	private String	birthday;
 	private String	chPasswd;
-	private String	binds;
+	private Set<String>	binds;
 	private String	canUnbind;
-	private String  membership;
+	private String  canMerge;
+	private MembershipsBO[]  memberships;
+	private String securityLevel;
+	private String securityLevelCN;
 	
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
+    }
 	
 
 	

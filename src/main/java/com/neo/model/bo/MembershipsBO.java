@@ -1,5 +1,6 @@
 package com.neo.model.bo;
 
+import com.alibaba.fastjson.JSON;
 import com.neo.model.dto.UserClearDto;
 
 import lombok.Data;
@@ -18,5 +19,10 @@ public class MembershipsBO {
 	private String  membership;
 	private String  duetime;
 	private String  membershipLabel;
+	
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
+    }
 	
 }

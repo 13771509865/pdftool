@@ -96,6 +96,7 @@ public class OrderManager {
 			String productId = dto.getOrderRequestDto().getProductId();
 			Integer priority = dto.getOrderRequestDto().getPriority();
 			Boolean upgrade = dto.getOrderRequestDto().getUpgrade();
+			
 
 			for(OrderServiceAppSpec osa : dto.getOrderRequestDto().getSpecs()) {
 
@@ -108,18 +109,9 @@ public class OrderManager {
 					//查看该用户是否购买过商品 && status=1，并且锁表
 					List<PtsAuthPO> list = iAuthService.selectPtsAuthPO(new PtsAuthQO(dto.getUserId(),EnumStatus.ENABLE.getValue(), EnumLockCode.LOCK.getValue()));
 
-					//list空表示首次购买，直接insert
-					if(list.isEmpty() || list.size() < 1) {
-						if(iAuthService.insertPtsAuthPO(orderSpecsEntity,dto.getUserId(),productId,priority)) {
-							SysLogUtils.error("用户首次购买会员，插入数据库失败："+dto.toString());
-							throw new RuntimeException();
-						}
-						return DefaultResult.successResult();
-					}
-
 					//1,升级
 					//升级就随便改第一条数据，其他数据改status=0禁用
-					if(upgrade) {
+					if(upgrade!= null && upgrade) {
 						for(int i = 0 ; i<list.size(); i++) {
 							Date newExpireDate = i > 0?null:DateViewUtils.getTimeDay(DateViewUtils.getNowDate(),orderSpecsEntity.getValidityTime(),orderSpecsEntity.getUnitType());
 							Integer status =i > 0?EnumStatus.DISABLE.getValue():EnumStatus.ENABLE.getValue();
@@ -151,7 +143,7 @@ public class OrderManager {
 
 					//productId不存在就insert
 					if(!exitProductId) {
-						if(iAuthService.insertPtsAuthPO(orderSpecsEntity,dto.getUserId(),productId,priority)) {
+						if(!iAuthService.insertPtsAuthPO(orderSpecsEntity,dto.getUserId(),productId,priority)) {
 							SysLogUtils.error("用户再次购买，插入数据库失败："+dto.toString());
 							throw new RuntimeException();
 						}
