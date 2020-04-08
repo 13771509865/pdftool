@@ -119,7 +119,7 @@ pts:
   product_hmac_key: qaxet9223210^*&     #密钥
   features_insert_url: http://172.18.21.23/product/api/product/profile/insert     #特性注册地址
 
-  domain: http://192.168.60.209:8081
+  domain: http://192.168.61.122:8081
   feedback_url : http://172.18.21.23/api/ask/commit 	#反馈系统
   
   membership_url: http://172.18.21.23/membership/api/member/event/add    #积分成长

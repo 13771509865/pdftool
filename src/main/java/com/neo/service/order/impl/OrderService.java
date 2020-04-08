@@ -85,16 +85,19 @@ public class OrderService implements IOrderService{
 					}
 					
 					//有效期的值
-					Object obj = osa.getSpecs().get(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())[0];
+					Object validityTime = osa.getSpecs().get(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())[0];
 					//有效期的单位
 					Object unitType = osa.getSpecs().get(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())[1];
+					//转换次数
+					Object num = osa.getSpecs().get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode())[0];
+					//转换大小
+					Object size = osa.getSpecs().get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode())[0];
 					
-					if(obj == null || unitType==null || Integer.valueOf(obj.toString()) <=0 || UnitType.getUnit(unitType.toString()) == null) {
-						flag = false;//有效期为空，改成不合法
+					if(num ==null || size==null ||validityTime == null || unitType==null || Integer.valueOf(validityTime.toString()) <=0 || UnitType.getUnit(unitType.toString()) == null) {
+						flag = false;//有效期、单位、次数、大小为空，改成不合法
 					}
 					Iterator<String> it = osa.getSpecs().keySet().iterator();
 					if(it.hasNext()) {
-
 						Object defaultValue = EnumAuthCode.getDefaultValue(it.next());
 						if(defaultValue == null) {
 							flag = false;//枚举类没有对应的authCode，就改成非法

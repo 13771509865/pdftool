@@ -15,6 +15,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import com.alibaba.fastjson.JSON;
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumAuthCode;
+import com.neo.commons.cons.EnumLockCode;
 import com.neo.commons.cons.EnumMemberType;
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.EnumStatus;
@@ -30,6 +31,7 @@ import com.neo.model.dto.RedisOrderDto;
 import com.neo.model.po.PtsAuthNamePO;
 import com.neo.model.po.PtsAuthPO;
 import com.neo.model.qo.PtsAuthNameQO;
+import com.neo.model.qo.PtsAuthQO;
 import com.neo.service.auth.IAuthService;
 import com.yozosoft.api.order.dto.OrderRequestDto;
 import com.yozosoft.api.order.dto.OrderServiceAppSpec;
@@ -90,64 +92,76 @@ public class OrderManager {
 	@Transactional(rollbackFor = Exception.class)
 	public IResult<String> modifyOrderEffective(RedisOrderDto dto){
 		try {
+			//商品id、优先级、是否会员升级
+			String productId = dto.getOrderRequestDto().getProductId();
+			Integer priority = dto.getOrderRequestDto().getPriority();
+			Boolean upgrade = dto.getOrderRequestDto().getUpgrade();
+			
+
 			for(OrderServiceAppSpec osa : dto.getOrderRequestDto().getSpecs()) {
-				
-				//当前订单的商品id
-				String productId = dto.getOrderRequestDto().getProductId();
-				
+
 				//获取pdf的会员权益
 				if(YozoServiceApp.PdfTools.getApp().equalsIgnoreCase(osa.getApp().getApp())) {
-
 					OrderSpecsEntity orderSpecsEntity = getFeatureDetails(osa);
 					if (orderSpecsEntity == null) {
 						throw new RuntimeException();
 					}
-					//查看该用户是否购买过商品，并且锁表
-					List<PtsAuthPO> list = iAuthService.selectAuthByUserid(dto.getUserId());
-					PtsAuthPO ptsAuthPO = new PtsAuthPO();
-					if(list.isEmpty() || list.size() < 1) {
-						//当前时间+权益有效期
-						Date expireDate = DateViewUtils.getTimeDay(DateViewUtils.getNowDate(),orderSpecsEntity.getValidityTime(),orderSpecsEntity.getUnitType());
-						ptsAuthPO.setAuth(orderSpecsEntity.getAuth());
-						ptsAuthPO.setGmtCreate(DateViewUtils.getNowDate());
-						ptsAuthPO.setGmtModified(DateViewUtils.getNowDate());
-						ptsAuthPO.setStatus(EnumStatus.ENABLE.getValue());
-						ptsAuthPO.setUserid(dto.getUserId());
-						ptsAuthPO.setGmtExpire(expireDate);
-						ptsAuthPO.setProductId(productId);
-						boolean insertPtsAuthPO = iAuthService.insertPtsAuthPO(ptsAuthPO)>0;
-						if(!insertPtsAuthPO) {
-							SysLogUtils.error("插入用户商品权限失败");
+					//查看该用户是否购买过商品 && status=1，并且锁表
+					List<PtsAuthPO> list = iAuthService.selectPtsAuthPO(new PtsAuthQO(dto.getUserId(),EnumStatus.ENABLE.getValue(), EnumLockCode.LOCK.getValue()));
+
+					//1,升级
+					//升级就随便改第一条数据，其他数据改status=0禁用
+					if(upgrade!= null && upgrade) {
+						for(int i = 0 ; i<list.size(); i++) {
+							Date newExpireDate = i > 0?null:DateViewUtils.getTimeDay(DateViewUtils.getNowDate(),orderSpecsEntity.getValidityTime(),orderSpecsEntity.getUnitType());
+							Integer status =i > 0?EnumStatus.DISABLE.getValue():EnumStatus.ENABLE.getValue();
+							String auth = i > 0?null:orderSpecsEntity.getAuth();
+							priority = i > 0?null:priority;
+							productId =  i > 0?list.get(i).getProductId():productId;
+							
+							if(!iAuthService.updatePtsAuthPO(auth,dto.getUserId(),productId,newExpireDate,status,priority)) {
+								SysLogUtils.error("用户会员升级，更新数据库失败："+dto.toString());
+								throw new RuntimeException();	
+							}
+						}
+						return DefaultResult.successResult();
+					}
+
+					//2,购买或者续费
+					Boolean exitProductId = false;//是否存在productId
+					Boolean isExpired = true;//是否过期
+					Date gmtExpire = null;
+					for(PtsAuthPO ptsAuthPO : list) {
+						if(StringUtils.equals(ptsAuthPO.getProductId(), productId)) {
+							exitProductId = true;//productId存在
+							if(!DateViewUtils.isExpiredForTimes(ptsAuthPO.getGmtExpire())) {
+								isExpired = false;//没过期
+								gmtExpire = ptsAuthPO.getGmtExpire();
+							}
+						}
+					}
+
+					//productId不存在就insert
+					if(!exitProductId) {
+						if(!iAuthService.insertPtsAuthPO(orderSpecsEntity,dto.getUserId(),productId,priority)) {
+							SysLogUtils.error("用户再次购买，插入数据库失败："+dto.toString());
 							throw new RuntimeException();
 						}
 					}else {
-						Date expireDate = list.get(0).getGmtExpire();
-						Date newExpireDate;
-						
-						//精确到秒
-						//如果已经过期了，或者订单和pdf的productId不一样
-						//当前时间+权限给的月数
-						if(DateViewUtils.isExpiredForTimes(expireDate) || !StringUtils.equals(list.get(0).getProductId(), productId)) {
-							newExpireDate = DateViewUtils.getTimeDay(DateViewUtils.getNowDate(),orderSpecsEntity.getValidityTime(),orderSpecsEntity.getUnitType());
-						}else {
-							//续费：数据库时间+权限给的月数
-							newExpireDate = DateViewUtils.getTimeDay(expireDate,orderSpecsEntity.getValidityTime(),orderSpecsEntity.getUnitType());
-						}
-						ptsAuthPO.setGmtModified(DateViewUtils.getNowDate());
-						ptsAuthPO.setAuth(orderSpecsEntity.getAuth());
-						ptsAuthPO.setUserid(dto.getUserId());
-						ptsAuthPO.setGmtExpire(newExpireDate);
-						ptsAuthPO.setProductId(productId);
-						boolean updatePtsAuthPOByUserId = iAuthService.updatePtsAuthPOByUserId(ptsAuthPO)>0;
-						if(!updatePtsAuthPOByUserId) {
-							SysLogUtils.error("修改用户商品权限失败");
-							throw new RuntimeException();
+						gmtExpire = DateViewUtils.getTimeDay(isExpired?DateViewUtils.getNowDate():gmtExpire,orderSpecsEntity.getValidityTime(),orderSpecsEntity.getUnitType());
+						Boolean updatePtsAuthPO =  iAuthService.updatePtsAuthPO(orderSpecsEntity.getAuth(),dto.getUserId(),productId,gmtExpire,EnumStatus.ENABLE.getValue(),priority);
+						if(!updatePtsAuthPO) {
+							SysLogUtils.error("用户会员续费或者再次购买，更新数据库失败："+dto.toString());
+							throw new RuntimeException();	
 						}
 					}
+					//没有过期的低优先级的改时间，数据库时间+购买时间
+					iAuthService.updatePtsAuthPOByPriority(orderSpecsEntity.getValidityTime(),orderSpecsEntity.getUnitType().toString(), dto.getUserId(), priority);
 				}
 			}
 			return DefaultResult.successResult();
 		} catch (Exception e) {
+			e.printStackTrace();
 			SysLogUtils.error("订单域名生效失败,订单为:"+JSON.toJSONString(dto),e);
 			//手动事务回滚
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -163,12 +177,12 @@ public class OrderManager {
 		try {
 			StringBuilder build = new StringBuilder();
 			Map<String, String[]> specs = osa.getSpecs();
-			
+
 			//过期时间值
 			Integer validityTime = Integer.valueOf(specs.get(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())[0]);
 			//过期时间单位
 			UnitType unitType = UnitType.getUnit(specs.get(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())[1]);
-			
+
 			for (Map.Entry<String, String[]> m : specs.entrySet()) {
 				if(!StringUtils.equals(m.getKey(), EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())) {
 					build.append(m.getKey()).append(SysConstant.COLON).append(m.getValue()[0]).append(SysConstant.COMMA);
@@ -199,13 +213,6 @@ public class OrderManager {
 
 
 	public static void main(String[] args) {
-		String[] a = {"1","Month"};
-		String memberType = null;
-
-		Map<String, String[]> specs = new HashMap<>();
-		specs.put("MemberYomoer", a);
-		memberType =  EnumMemberType.getEnumMemberInfo(specs);
-		System.out.println(memberType);
 	}
 
 
