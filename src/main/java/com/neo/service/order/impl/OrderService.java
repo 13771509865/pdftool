@@ -2,9 +2,7 @@ package com.neo.service.order.impl;
 
 import java.time.OffsetDateTime;
 import java.util.Iterator;
-import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +19,12 @@ import com.neo.commons.cons.constants.TimeConsts;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.DateViewUtils;
 import com.neo.model.dto.RedisOrderDto;
-import com.neo.model.po.PtsAuthNamePO;
-import com.neo.model.qo.PtsAuthNameQO;
 import com.neo.service.authName.IAuthNameService;
 import com.neo.service.cache.impl.RedisCacheManager;
 import com.neo.service.order.IOrderService;
 import com.yozosoft.api.order.dto.OrderRequestDto;
 import com.yozosoft.api.order.dto.OrderServiceAppSpec;
+import com.yozosoft.api.order.dto.ServiceAppUserRightDto;
 import com.yozosoft.api.tcc.Participant;
 import com.yozosoft.api.tcc.TccStatus;
 import com.yozosoft.saas.YozoServiceApp;
@@ -161,7 +158,7 @@ public class OrderService implements IOrderService{
 	 * 订单确认
 	 */
 	@Override
-	public ResponseEntity confirm(long orderId, String nonce, String sign) {
+	public ResponseEntity confirm(ServiceAppUserRightDto serviceAppUserRightDto,long orderId, String nonce, String sign) {
 		RedisOrderDto dto = redisCacheManager.get(RedisConsts.ORDERKEY + orderId, RedisOrderDto.class);
 		if (dto == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
