@@ -13,12 +13,6 @@ public interface PtsAuthPOMapper {
 	
 	List<PtsAuthPO> selectPtsAuthPO(PtsAuthQO ptsAuthQO);
 	
-	Integer updatePtsAuthPO(PtsAuthPO ptsAuthPO);
-	
-	Integer deletePtsAuth(PtsAuthPO ptsAuthPO);
-	
-	Integer updatePtsAuthPOByPriority(@Param("vt")Integer validityTime,@Param("ut")String unitType,@Param("uId")Long userid,@Param("pri")Integer priority);
-	
-	List<PtsAuthPO> selectPtsAuthPOByPriority(@Param("uId")Long userid,@Param("sta")Integer status);
+	Integer deletePtsAuth(Long userid);
 	
 }

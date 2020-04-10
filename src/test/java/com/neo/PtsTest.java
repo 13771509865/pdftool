@@ -142,42 +142,47 @@ public class PtsTest {
 
 
 
-		@Test
-	    public void contextLoads() {
-			String[] a = {"true"};
-			String[] c = {"100"};
-			String[] b = {"1","Month"};
-			Map<String, String[]> specs = new HashMap<>();
-			specs.put(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode(), c);
-			specs.put(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode(), c);
-			specs.put(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode(), b);
-			specs.put(EnumAuthCode.PDF_WORD.getAuthCode(), a);
-			specs.put(EnumAuthCode.EXCEL_PDF.getAuthCode(), a);
-			specs.put(EnumAuthCode.PDF_EXCEL.getAuthCode(), a);
-			specs.put(EnumAuthCode.WORD_PDF.getAuthCode(), a);
-			
-			OrderServiceAppSpec orderServiceAppSpec = new OrderServiceAppSpec();
-			orderServiceAppSpec.setApp(YozoServiceApp.PdfTools);
-			orderServiceAppSpec.setSpecs(specs);
-			
-			List<OrderServiceAppSpec> list = new  ArrayList<>();
-			list.add(orderServiceAppSpec);
-			
-			OrderRequestDto ord = new OrderRequestDto();
-			ord.setSpecs(list);
-			ord.setProductId("413985833427673089");
-			ord.setPriority(3);
-			ord.setUpgrade(false);
-			RedisOrderDto dto = new RedisOrderDto();
-			dto.setUserId(8506L);
-			dto.setOrderRequestDto(ord);
-			
-			
-			IResult<String> result = orderManager.modifyOrderEffective(dto);
-			System.out.println(result.isSuccess());
-			
-		}
+//		@Test
+//	    public void contextLoads() {
+//			String[] a = {"true"};
+//			String[] c = {"100"};
+//			String[] b = {"1","Month"};
+//			Map<String, String[]> specs = new HashMap<>();
+//			specs.put(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode(), c);
+//			specs.put(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode(), c);
+//			specs.put(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode(), b);
+//			specs.put(EnumAuthCode.PDF_WORD.getAuthCode(), a);
+//			specs.put(EnumAuthCode.EXCEL_PDF.getAuthCode(), a);
+//			specs.put(EnumAuthCode.PDF_EXCEL.getAuthCode(), a);
+//			specs.put(EnumAuthCode.WORD_PDF.getAuthCode(), a);
+//			
+//			OrderServiceAppSpec orderServiceAppSpec = new OrderServiceAppSpec();
+//			orderServiceAppSpec.setApp(YozoServiceApp.PdfTools);
+//			orderServiceAppSpec.setSpecs(specs);
+//			
+//			List<OrderServiceAppSpec> list = new  ArrayList<>();
+//			list.add(orderServiceAppSpec);
+//			
+//			OrderRequestDto ord = new OrderRequestDto();
+//			ord.setSpecs(list);
+//			ord.setProductId("413985833427673089");
+//			ord.setPriority(3);
+//			ord.setUpgrade(false);
+//			RedisOrderDto dto = new RedisOrderDto();
+//			dto.setUserId(8506L);
+//			dto.setOrderRequestDto(ord);
+//			
+//			
+//			IResult<String> result = orderManager.modifyOrderEffective(dto);
+//			System.out.println(result.isSuccess());
+//			
+//		}
 
+	
+	@Test
+    public void test() {
+		
+	}
 
 
 

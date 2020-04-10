@@ -22,20 +22,11 @@ public interface IAuthService {
 	
 	IResult<EnumResultCode> checkUploadSize(Long userID,Long uploadSize);
 	
-	Boolean insertPtsAuthPO(OrderSpecsEntity orderSpecsEntity ,Long userId,String productId,Integer priority );
-	
-	Boolean updatePtsAuthPO(String auth,Long userId,String productId,Date newExpireDate,Integer status,Integer priority);
-	
 	Integer insertPtsAuthPO(PtsAuthPO ptsAuthPO);
 	
 	List<PtsAuthPO> selectPtsAuthPO(PtsAuthQO ptsAuthQO);
 	
-	Integer updatePtsAuthPO(PtsAuthPO ptsAuthPO);
+	Integer deletePtsAuth(Long userid);
 	
-	Integer deletePtsAuth(PtsAuthPO ptsAuthPO);
-	
-	Integer updatePtsAuthPOByPriority(Integer validityTime,String unitType,Long userid,Integer priority);
-	
-	List<PtsAuthPO> selectPtsAuthPOByPriority(Long userid, Integer status);
 	
 }

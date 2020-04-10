@@ -169,7 +169,7 @@ public class OrderService implements IOrderService{
 			boolean isRepeat = redisCacheManager.setnx(RedisConsts.ORDERIDMP + orderId, "confirm:" + DateViewUtils.getNowFull(), -1L);
 			if (isRepeat) {
 				//事务支持
-				IResult<String> result = orderManager.modifyOrderEffective(dto);
+				IResult<String> result = orderManager.modifyOrderEffective(serviceAppUserRightDto,orderId,dto.getUserId());
 				if (result.isSuccess()) {
 					//操作成功,删除记录的key
 					redisCacheManager.delete(RedisConsts.ORDERKEY + orderId);

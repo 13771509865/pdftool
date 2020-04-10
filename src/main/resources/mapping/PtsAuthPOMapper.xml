@@ -8,9 +8,10 @@
 		<result column="GMT_EXPIRE" property="gmtExpire" jdbcType="TIMESTAMP" />
 		<result column="STATUS" property="status" jdbcType="INTEGER" />
 		<result column="USERID" property="userid" jdbcType="BIGINT" />
-		<result column="AUTH" property="auth" jdbcType="VARCHAR" />
+		<result column="AUTH_CODE" property="authCode" jdbcType="VARCHAR" />
+		<result column="AUTH_VALUE" property="authValue" jdbcType="VARCHAR" />
 		<result column="REMARK" property="remark" jdbcType="VARCHAR" />
-		<result column="PRODUCT_ID" property="productId" jdbcType="VARCHAR" />
+		<result column="ORDER_ID" property="orderId" jdbcType="BIGINT" />
 		<result column="PRIORITY" property="priority" jdbcType="INTEGER" />
 	</resultMap>
 
@@ -32,14 +33,17 @@
 			<if test="userid != null">
 				USERID,
 			</if>
-			<if test="auth != null and auth != ''">
-				AUTH,
+			<if test="authCode != null and authCode != ''">
+				AUTH_CODE,
+			</if>
+			<if test="authValue != null and authValue != ''">
+				AUTH_VALUE,
 			</if>
 			<if test="remark != null and remark != ''">
 				REMARK,
 			</if>
-			<if test="productId != null and productId != ''">
-				PRODUCT_ID,
+			<if test="orderId != null and orderId != ''">
+				ORDER_ID,
 			</if>
 			<if test="priority != null">
 				PRIORITY,
@@ -61,14 +65,17 @@
 			<if test="userid != null">
 				#{userid,jdbcType=BIGINT},
 			</if>
-			<if test="auth != null and auth != ''">
-				#{auth,jdbcType=VARCHAR},
+			<if test="authCode != null and authCode != ''">
+				#{authCode,jdbcType=VARCHAR},
+			</if>
+			<if test="authValue != null and authValue != ''">
+				#{authValue,jdbcType=VARCHAR},
 			</if>
 			<if test="remark != null and remark != ''">
 				#{remark,jdbcType=VARCHAR},
 			</if>
-			<if test="productId != null and productId != ''">
-				#{productId,jdbcType=VARCHAR},
+			<if test="orderId != null and orderId != ''">
+				#{orderId,jdbcType=VARCHAR},
 			</if>
 			<if test="priority != null">
 				#{priority,jdbcType=INTEGER},
@@ -83,9 +90,10 @@
 		GMT_EXPIRE,
 		STATUS,
 		USERID,
-		AUTH,
+		AUTH_CODE,
+		AUTH_VALUE,
 		REMARK,
-		PRODUCT_ID,
+		ORDER_ID,
 		PRIORITY
 	</sql>
 
@@ -95,16 +103,21 @@
 		<include refid="Base_Column_List" />
 		from pts_auth
 		<where>
+			GMT_EXPIRE  &gt;  now()
 	    	<if test="userid != null">
 				and USERID = #{userid,jdbcType=BIGINT} 
 			</if>
 			<if test="status != null">
 				and STATUS = #{status,jdbcType=INTEGER}
 			</if>
+			<if test="authCode != null and authCode != ''">
+				and (
+				AUTH_CODE = #{authCode,jdbcType=VARCHAR} 
+				or AUTH_CODE = &quot;convertNum&quot;
+				or AUTH_CODE = &quot;uploadSize&quot;
+				)
+			</if>
 	    </where> 
-	    <if test="lock!=null and lock == 1">
-			for update
-		</if>
 	</select>
 
 	
@@ -130,7 +143,7 @@
 			<if test="remark != null and remark != ''">
 				REMARK = #{remark,jdbcType=VARCHAR},
 			</if>
-			<if test="productId != null and productId != ''">
+			<if test="orderId != null and orderId != ''">
 				PRODUCT_ID = #{productId,jdbcType=VARCHAR},
 			</if>
 			<if test="priority != null">
@@ -149,48 +162,16 @@
 
 
 	 <!-- 删除用户会员权限信息 -->
- 	 <delete id="deletePtsAuth" parameterType="com.neo.model.po.PtsAuthPO">
+ 	 <delete id="deletePtsAuth" parameterType="java.lang.Long">
         delete from pts_auth
       	where 
       	USERID = #{userid,jdbcType=BIGINT}
    	 </delete>
 	
 	
-	<!-- 购买或续费时，修改低优先级的会员时间 -->
-	<update id="updatePtsAuthPOByPriority" >
-		update pts_auth
-		set
-		<if test="ut == 'Year'">
-		<![CDATA[GMT_EXPIRE = DATE_ADD(GMT_EXPIRE,INTERVAL  #{vt,jdbcType=INTEGER}  YEAR)]]>
-		</if>
-		<if test="ut == 'Month'">
-		<![CDATA[GMT_EXPIRE = DATE_ADD(GMT_EXPIRE,INTERVAL  #{vt,jdbcType=INTEGER}  MONTH)]]>
-		</if>
-		<if test="ut == 'Day'">
-		<![CDATA[GMT_EXPIRE = DATE_ADD(GMT_EXPIRE,INTERVAL  #{vt,jdbcType=INTEGER}  DAY)]]>
-		</if>
-		where	
-		GMT_EXPIRE  &gt;  now()
-		and STATUS = 1
-	    and USERID = #{uId,jdbcType=BIGINT} 
-	    and PRIORITY &lt; #{pri,jdbcType=INTEGER}
-	</update>
 	
 	
 	
-	
-	
-	<!-- 查询优先级最高的并且没有过期的会员权限 -->
-	<select id="selectPtsAuthPOByPriority" resultMap="PtsAuthPOMapper">
-		select
-		<include refid="Base_Column_List" />
-		from pts_auth
-		where
-		GMT_EXPIRE &gt; NOW()
-		and USERID = #{uId,jdbcType=BIGINT} 
-		and STATUS = #{sta,jdbcType=INTEGER}
-		and PRIORITY = (SELECT MAX(PRIORITY) from pts_auth where USERID = #{uId,jdbcType=BIGINT})
-	</select>
 	
 	
 

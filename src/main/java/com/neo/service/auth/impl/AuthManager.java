@@ -52,7 +52,7 @@ public class AuthManager {
 	 * @param userID
 	 * @return
 	 */
-	public IResult<Map<String,Object>> getPermission(Long userID) {
+	public IResult<Map<String,Object>> getPermission(Long userID,String authCode) {
 		try {
 			Map<String,Object> defaultMap = new HashMap<>();
 
@@ -64,47 +64,40 @@ public class AuthManager {
 
 			//defaultMap里面是所有的默认权限
 			defaultMap.putAll(numMap);
-
-			if(userID !=null) {//登录用户或者会员
-				//拿到优先级最高的 && 没有过期 && status=1的数据
-				List<PtsAuthPO> list = iAuthService.selectPtsAuthPOByPriority(userID,EnumStatus.ENABLE.getValue());
+			
+			Map<String,Object> newAuthMap = new HashMap<>();
+			if(userID !=null) {
+				//根据authCode获取转换大小，数量权益
+				List<PtsAuthPO> list = iAuthService.selectPtsAuthPO(new PtsAuthQO(userID,EnumStatus.ENABLE.getValue(),authCode));
 				if(!list.isEmpty() && list.size()>0) {
-
-					//只有一条记录
-					if(list.size() == 1) {
-						PtsAuthPO ptsAuthPO = list.get(0);
-						Map<String,Object> authMap = StrUtils.strToMap(ptsAuthPO.getAuth(), SysConstant.COMMA, SysConstant.COLON);
-						return DefaultResult.successResult(getPermission(defaultMap,authMap));
-					}else {
-						Map<String,Object> newAuthMap = new HashMap<>();
-						//多条记录，合并取最大值
-						for(PtsAuthPO ptsAuthPO : list) {
-							Map<String,Object> authMap = StrUtils.strToMap(ptsAuthPO.getAuth(), SysConstant.COMMA, SysConstant.COLON);
-							for (Map.Entry<String, Object> m : authMap.entrySet()) {
-
-								//key不存在直接塞进去
-								//key存在,只比较更新size和num的值
-								if(!newAuthMap.containsKey(m.getKey())) {
-									newAuthMap.put(m.getKey(), m.getValue());
-								}else {
-									if(StringUtils.equals(m.getKey(), EnumAuthCode.PTS_CONVERT_NUM.getAuthCode())) {
-										Integer num = Integer.valueOf(m.getValue().toString());
-										Integer mapNum = Integer.valueOf(newAuthMap.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode()).toString());
-										newAuthMap.put(m.getKey(), num>mapNum?num:mapNum);
-									}
-									if(StringUtils.equals(m.getKey(), EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode())){
-										Integer size = Integer.valueOf(m.getValue().toString());
-										Integer mapSize = Integer.valueOf(newAuthMap.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode()).toString());
-										newAuthMap.put(m.getKey(), size>mapSize?size:mapSize);
-									}
-								}
-							}
+					Integer num = 0;
+					Integer size = 0;
+					
+					//获取会员的转换权益
+					for(PtsAuthPO ptsAuthPO : list) {
+						if(StringUtils.equals(ptsAuthPO.getAuthValue(), SysConstant.TRUE)) {
+							newAuthMap.put(ptsAuthPO.getAuthCode(), ptsAuthPO.getAuthValue());
 						}
-						defaultMap = getPermission(defaultMap,newAuthMap);
+						if(StringUtils.equals(ptsAuthPO.getAuthCode(), EnumAuthCode.PTS_CONVERT_NUM.getAuthCode())) {
+							num = Integer.valueOf(ptsAuthPO.getAuthValue())>num?Integer.valueOf(ptsAuthPO.getAuthValue()):num;
+						}
+						if(StringUtils.equals(ptsAuthPO.getAuthCode(), EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode())) {
+							size = Integer.valueOf(ptsAuthPO.getAuthValue())>size?Integer.valueOf(ptsAuthPO.getAuthValue()):size;
+						}
+					}
+					
+					//转换数量
+					if(num != 0 ) {
+						newAuthMap.put(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode(), num);
+					}
+					//转换大小
+					if(size != 0 ) {
+						newAuthMap.put(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode(), size);
 					}
 				}
 			}
-			return DefaultResult.successResult(defaultMap);
+
+			return DefaultResult.successResult(getPermission(defaultMap,newAuthMap));
 		} catch (Exception e) {
 			//aop会做处理
 			SysLogUtils.error("解析用户权限失败,原因："+e.getMessage());
@@ -137,15 +130,15 @@ public class AuthManager {
 	 * @return
 	 * @throws Exception 
 	 */
-	public Map<String,Object> getPermission(Map<String,Object> defaultMap,Map<String,Object> permissionDtoAuthMap){
+	public Map<String,Object> getPermission(Map<String,Object> defaultMap,Map<String,Object> newAuthMap){
 
 		//如果convertNum值不为空，则认为是会员
-		if(permissionDtoAuthMap.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode())!=null) {
-			Integer num = Integer.valueOf(permissionDtoAuthMap.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode()).toString());
+		if(newAuthMap.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode())!=null) {
+			Integer num = Integer.valueOf(newAuthMap.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode()).toString());
 			num = num>999?-1:num;
 
 			//数据库auth的值循环
-			for (Map.Entry<String, Object> permissionEntry : permissionDtoAuthMap.entrySet()) {
+			for (Map.Entry<String, Object> permissionEntry : newAuthMap.entrySet()) {
 				Object obj = permissionEntry.getValue();
 				if(obj!=null && StringUtils.equals(obj.toString(), SysConstant.TRUE)) {
 
@@ -159,11 +152,13 @@ public class AuthManager {
 		}
 
 		//会员允许转换的大小
-		if(permissionDtoAuthMap.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode())!=null) {
-			defaultMap.put(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode(), permissionDtoAuthMap.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode()));
+		if(newAuthMap.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode())!=null) {
+			defaultMap.put(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode(), newAuthMap.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode()));
 		}
 		return defaultMap;
 	}
+
+
 
 
 

@@ -35,6 +35,8 @@ import com.neo.model.qo.PtsAuthQO;
 import com.neo.service.auth.IAuthService;
 import com.yozosoft.api.order.dto.OrderRequestDto;
 import com.yozosoft.api.order.dto.OrderServiceAppSpec;
+import com.yozosoft.api.order.dto.ServiceAppUserRightDto;
+import com.yozosoft.api.order.dto.UserRightItem;
 import com.yozosoft.saas.YozoServiceApp;
 import com.yozosoft.util.SecretSignatureUtils;
 
@@ -90,79 +92,39 @@ public class OrderManager {
 	 * @return
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public IResult<String> modifyOrderEffective(RedisOrderDto dto){
+	public IResult<String> modifyOrderEffective(ServiceAppUserRightDto serviceAppUserRightDto,Long orderId,Long userId){
 		try {
-			//商品id、优先级、是否会员升级
-			String productId = dto.getOrderRequestDto().getProductId();
-			Integer priority = dto.getOrderRequestDto().getPriority();
-			Boolean upgrade = dto.getOrderRequestDto().getUpgrade();
 			
-
-			for(OrderServiceAppSpec osa : dto.getOrderRequestDto().getSpecs()) {
-
-				//获取pdf的会员权益
-				if(YozoServiceApp.PdfTools.getApp().equalsIgnoreCase(osa.getApp().getApp())) {
-					OrderSpecsEntity orderSpecsEntity = getFeatureDetails(osa);
-					if (orderSpecsEntity == null) {
-						throw new RuntimeException();
-					}
-					//查看该用户是否购买过商品 && status=1，并且锁表
-					List<PtsAuthPO> list = iAuthService.selectPtsAuthPO(new PtsAuthQO(dto.getUserId(),EnumStatus.ENABLE.getValue(), EnumLockCode.LOCK.getValue()));
-
-					//1,升级
-					//升级就随便改第一条数据，其他数据改status=0禁用
-					if(upgrade!= null && upgrade) {
-						for(int i = 0 ; i<list.size(); i++) {
-							Date newExpireDate = i > 0?null:DateViewUtils.getTimeDay(DateViewUtils.getNowDate(),orderSpecsEntity.getValidityTime(),orderSpecsEntity.getUnitType());
-							Integer status =i > 0?EnumStatus.DISABLE.getValue():EnumStatus.ENABLE.getValue();
-							String auth = i > 0?null:orderSpecsEntity.getAuth();
-							priority = i > 0?null:priority;
-							productId =  i > 0?list.get(i).getProductId():productId;
-							
-							if(!iAuthService.updatePtsAuthPO(auth,dto.getUserId(),productId,newExpireDate,status,priority)) {
-								SysLogUtils.error("用户会员升级，更新数据库失败："+dto.toString());
-								throw new RuntimeException();	
-							}
-						}
-						return DefaultResult.successResult();
-					}
-
-					//2,购买或者续费
-					Boolean exitProductId = false;//是否存在productId
-					Boolean isExpired = true;//是否过期
-					Date gmtExpire = null;
-					for(PtsAuthPO ptsAuthPO : list) {
-						if(StringUtils.equals(ptsAuthPO.getProductId(), productId)) {
-							exitProductId = true;//productId存在
-							if(!DateViewUtils.isExpiredForTimes(ptsAuthPO.getGmtExpire())) {
-								isExpired = false;//没过期
-								gmtExpire = ptsAuthPO.getGmtExpire();
-							}
-						}
-					}
-
-					//productId不存在就insert
-					if(!exitProductId) {
-						if(!iAuthService.insertPtsAuthPO(orderSpecsEntity,dto.getUserId(),productId,priority)) {
-							SysLogUtils.error("用户再次购买，插入数据库失败："+dto.toString());
+			YozoServiceApp app = serviceAppUserRightDto.getApp();
+			List<UserRightItem> list = serviceAppUserRightDto.getRights();
+			if(app!=null && YozoServiceApp.PdfTools.getApp().equalsIgnoreCase(app.getApp()) && list.size()>0 && !list.isEmpty()) {
+				
+				iAuthService.deletePtsAuth(userId);//删除当前用户所有权益
+				for(UserRightItem serRightItem : list) {
+					if(!StringUtils.equals(serRightItem.getFeature(), EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())) {
+						PtsAuthPO ptsAuthPO = new PtsAuthPO();
+						ptsAuthPO.setAuthCode(serRightItem.getFeature());
+						ptsAuthPO.setAuthValue(serRightItem.getSpecs()[0]);
+						ptsAuthPO.setGmtCreate(serRightItem.getBegin());
+						ptsAuthPO.setGmtModified(serRightItem.getBegin());
+						ptsAuthPO.setGmtExpire(serRightItem.getEnd());
+						ptsAuthPO.setOrderId(orderId);
+						ptsAuthPO.setPriority(serRightItem.getPriority());
+						ptsAuthPO.setStatus(EnumStatus.ENABLE.getValue());
+						ptsAuthPO.setUserid(userId);
+						Boolean insertPtsAuthPO = iAuthService.insertPtsAuthPO(ptsAuthPO)>0;
+						if(!insertPtsAuthPO) {
+							SysLogUtils.error("插入用户权益失败，orderId："+orderId);
 							throw new RuntimeException();
 						}
-					}else {
-						gmtExpire = DateViewUtils.getTimeDay(isExpired?DateViewUtils.getNowDate():gmtExpire,orderSpecsEntity.getValidityTime(),orderSpecsEntity.getUnitType());
-						Boolean updatePtsAuthPO =  iAuthService.updatePtsAuthPO(orderSpecsEntity.getAuth(),dto.getUserId(),productId,gmtExpire,EnumStatus.ENABLE.getValue(),priority);
-						if(!updatePtsAuthPO) {
-							SysLogUtils.error("用户会员续费或者再次购买，更新数据库失败："+dto.toString());
-							throw new RuntimeException();	
-						}
 					}
-					//没有过期的低优先级的改时间，数据库时间+购买时间
-					iAuthService.updatePtsAuthPOByPriority(orderSpecsEntity.getValidityTime(),orderSpecsEntity.getUnitType().toString(), dto.getUserId(), priority);
 				}
 			}
+			
 			return DefaultResult.successResult();
 		} catch (Exception e) {
 			e.printStackTrace();
-			SysLogUtils.error("订单域名生效失败,订单为:"+JSON.toJSONString(dto),e);
+			SysLogUtils.error("订单域名生效失败,订单为:"+orderId,e);
 			//手动事务回滚
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			return DefaultResult.failResult();
