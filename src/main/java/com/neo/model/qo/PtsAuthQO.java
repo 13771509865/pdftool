@@ -20,7 +20,7 @@ public class PtsAuthQO {
 	
 	public Integer status;
 	
-	public Integer lock;
+	public String authCode;
 	 
 
 }

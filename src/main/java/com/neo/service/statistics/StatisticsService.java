@@ -112,7 +112,7 @@ public class StatisticsService {
 		try {
 			
 			//获取所有的用户权限
-			IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID);
+			IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID,null);
 			Map<String,Object> map = getPermissionResult.getData();
 			Map<String,Object> newMap = new HashMap<>();
 

@@ -25,9 +25,10 @@ public class PtsAuthPO {
 	private Date gmtExpire;
 	private Integer status;
 	private Long userid;
-	private String auth;
+	private String authCode;
+	private String authValue;
 	private String remark;
-	private String productId;
+	private Long orderId;
 	private Integer priority;
 	
 

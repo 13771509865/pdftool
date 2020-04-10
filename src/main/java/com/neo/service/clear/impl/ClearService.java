@@ -62,11 +62,8 @@ public class ClearService implements IClearService{
         	FcsFileInfoQO fcsFileInfoQO = new FcsFileInfoQO();
         	fcsFileInfoQO.setUserID(userId);
         	
-        	PtsAuthPO ptsAuthPO =new PtsAuthPO();
-        	ptsAuthPO.setUserid(userId);
-        	
         	ptsConvertService.deletePtsConvert(fcsFileInfoQO);
-        	iAuthService.deletePtsAuth(ptsAuthPO);
+        	iAuthService.deletePtsAuth(userId);
         	
         	//删企业成员记录
         	if(userClearRequestDto.getMembers()!=null && userClearRequestDto.getMembers().length > 0) {
@@ -74,9 +71,8 @@ public class ClearService implements IClearService{
         			if(StringUtils.isNotBlank(userClearRequestDto.getId())) {
         				userId = Long.valueOf(userClearDto.getId());
             			fcsFileInfoQO.setUserID(userId);
-            			ptsAuthPO.setUserid(userId);
             			ptsConvertService.deletePtsConvert(fcsFileInfoQO);
-                    	iAuthService.deletePtsAuth(ptsAuthPO);
+                    	iAuthService.deletePtsAuth(userId);
         			}
         		}
         	}
