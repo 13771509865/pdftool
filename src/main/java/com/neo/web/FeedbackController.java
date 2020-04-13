@@ -1,5 +1,6 @@
 package com.neo.web;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +91,9 @@ public class FeedbackController{
 		}
 		
 		List<PtsAuthPO>list = ptsAuthPOMapper.selectPtsAuthPO(new PtsAuthQO(null, EnumStatus.ENABLE.getValue(), null));
+		System.out.println(list.size());
 		for(PtsAuthPO ptsAuthPO : list) {
+			List<PtsAuthPO> authList = new ArrayList<>();
 			String auth = ptsAuthPO.getAuthCode();
 			Map<String,Object> authMap = StrUtils.strToMap(auth, SysConstant.COMMA, SysConstant.COLON);
 			for (Map.Entry<String, Object> m : authMap.entrySet()) {
@@ -103,9 +106,14 @@ public class FeedbackController{
 				po.setPriority(ptsAuthPO.getPriority());
 				po.setStatus(ptsAuthPO.getStatus());
 				po.setUserid(ptsAuthPO.getUserid());
-				ptsAuthPOMapper.insertPtsAuthPO(po);
+				po.setOrderId(ptsAuthPO.getOrderId());
+				authList.add(po);
 			}
-			
+			try {
+				ptsAuthPOMapper.insertPtsAuthPO(authList);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		
 		return JsonResultUtils.successMapResult();

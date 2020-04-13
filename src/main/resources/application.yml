@@ -33,7 +33,7 @@ spring:
       username: root                            #数据库用户名
       password: root                      #数据库密码
       driver-class-name: com.mysql.cj.jdbc.Driver
-      filters: mergeStat,config,wall,stat
+      filters: mergeStat,config,wall,stat # wall:批量执行多条sql语句，不能注入wall过滤器
       max-active: 20                 # 最大连接池数量
       initial-size: 1                # 初始化时建立物理连接的个数
       max-wait: 3000                 # 获取连接时最大等待时间,单位毫秒

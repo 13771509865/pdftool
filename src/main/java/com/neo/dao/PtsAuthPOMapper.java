@@ -9,7 +9,7 @@ import com.neo.model.qo.PtsAuthQO;
 
 public interface PtsAuthPOMapper {
 
-	Integer insertPtsAuthPO(PtsAuthPO ptsAuthPO);
+	Integer insertPtsAuthPO(List<PtsAuthPO> list);
 	
 	List<PtsAuthPO> selectPtsAuthPO(PtsAuthQO ptsAuthQO);
 	

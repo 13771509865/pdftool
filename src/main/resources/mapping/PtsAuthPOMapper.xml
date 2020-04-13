@@ -15,73 +15,102 @@
 		<result column="PRIORITY" property="priority" jdbcType="INTEGER" />
 	</resultMap>
 
-	<insert id="insertPtsAuthPO" parameterType="com.neo.model.po.PtsAuthPO">
-		insert into pts_auth
-		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="gmtCreate != null">
-				GMT_CREATE,
-			</if>
-			<if test="gmtModified != null">
-				GMT_MODIFIED,
-			</if>
-			<if test="gmtExpire != null">
-				GMT_EXPIRE,
-			</if>
-			<if test="status != null">
-				STATUS,
-			</if>
-			<if test="userid != null">
-				USERID,
-			</if>
-			<if test="authCode != null and authCode != ''">
-				AUTH_CODE,
-			</if>
-			<if test="authValue != null and authValue != ''">
-				AUTH_VALUE,
-			</if>
-			<if test="remark != null and remark != ''">
-				REMARK,
-			</if>
-			<if test="orderId != null and orderId != ''">
-				ORDER_ID,
-			</if>
-			<if test="priority != null">
-				PRIORITY,
-			</if>
-		</trim>
-		<trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="gmtCreate != null">
-				#{gmtCreate,jdbcType=TIMESTAMP},
-			</if>
-			<if test="gmtModified != null">
-				#{gmtModified,jdbcType=TIMESTAMP},
-			</if>
-			<if test="gmtExpire != null">
-				#{gmtExpire,jdbcType=TIMESTAMP},
-			</if>
-			<if test="status != null">
-				#{status,jdbcType=INTEGER},
-			</if>
-			<if test="userid != null">
-				#{userid,jdbcType=BIGINT},
-			</if>
-			<if test="authCode != null and authCode != ''">
-				#{authCode,jdbcType=VARCHAR},
-			</if>
-			<if test="authValue != null and authValue != ''">
-				#{authValue,jdbcType=VARCHAR},
-			</if>
-			<if test="remark != null and remark != ''">
-				#{remark,jdbcType=VARCHAR},
-			</if>
-			<if test="orderId != null and orderId != ''">
-				#{orderId,jdbcType=VARCHAR},
-			</if>
-			<if test="priority != null">
-				#{priority,jdbcType=INTEGER},
-			</if>
-		</trim>
+
+	<insert id="insertPtsAuthPO" parameterType="java.util.List">
+		insert into pts_auth(
+			GMT_CREATE,
+			GMT_MODIFIED,
+			GMT_EXPIRE,
+			STATUS,
+			USERID,
+			AUTH_CODE,
+			AUTH_VALUE,
+			ORDER_ID,
+			PRIORITY
+		)values
+		<foreach collection ="list" item="item" index= "index" separator =",">
+			(
+			#{item.gmtCreate,jdbcType=TIMESTAMP},
+			#{item.gmtModified,jdbcType=TIMESTAMP},
+			#{item.gmtExpire,jdbcType=TIMESTAMP},
+			#{item.status,jdbcType=INTEGER},
+			#{item.userid,jdbcType=BIGINT},
+			#{item.authCode,jdbcType=VARCHAR},
+			#{item.authValue,jdbcType=VARCHAR},
+			#{item.orderId,jdbcType=VARCHAR},
+			#{item.priority,jdbcType=INTEGER}
+			)
+		</foreach>
 	</insert>
+	
+		<!-- <foreach collection ="list" item="item" index= "index" separator =";">
+			insert into pts_auth
+			<trim prefix="(" suffix=")" suffixOverrides=",">
+				<if test="item.gmtCreate != null">
+					GMT_CREATE,
+				</if>
+				<if test="item.gmtModified != null">
+					GMT_MODIFIED,
+				</if>
+				<if test="item.gmtExpire != null">
+					GMT_EXPIRE,
+				</if>
+				<if test="item.status != null">
+					STATUS,
+				</if>
+				<if test="item.userid != null">
+					USERID,
+				</if>
+				<if test="item.authCode != null and item.authCode != ''">
+					AUTH_CODE,
+				</if>
+				<if test="item.authValue != null and item.authValue != ''">
+					AUTH_VALUE,
+				</if>
+				<if test="item.remark != null and item.remark != ''">
+					REMARK,
+				</if>
+				<if test="item.orderId != null and item.orderId != ''">
+					ORDER_ID,
+				</if>
+				<if test="item.priority != null">
+					PRIORITY,
+				</if>
+			</trim>
+			<trim prefix="values (" suffix=")" suffixOverrides=",">
+				<if test="item.gmtCreate != null">
+					#{item.gmtCreate,jdbcType=TIMESTAMP},
+				</if>
+				<if test="item.gmtModified != null">
+					#{item.gmtModified,jdbcType=TIMESTAMP},
+				</if>
+				<if test="item.gmtExpire != null">
+					#{item.gmtExpire,jdbcType=TIMESTAMP},
+				</if>
+				<if test="item.status != null">
+					#{item.status,jdbcType=INTEGER},
+				</if>
+				<if test="item.userid != null">
+					#{item.userid,jdbcType=BIGINT},
+				</if>
+				<if test="item.authCode != null and item.authCode != ''">
+					#{item.authCode,jdbcType=VARCHAR},
+				</if>
+				<if test="item.authValue != null and item.authValue != ''">
+					#{item.authValue,jdbcType=VARCHAR},
+				</if>
+				<if test="item.remark != null and item.remark != ''">
+					#{item.remark,jdbcType=VARCHAR},
+				</if>
+				<if test="item.orderId != null and item.orderId != ''">
+					#{item.orderId,jdbcType=VARCHAR},
+				</if>
+				<if test="item.priority != null">
+					#{item.priority,jdbcType=INTEGER},
+				</if>
+			</trim>
+		</foreach>
+	</insert> -->
 
 	<sql id="Base_Column_List">
 		ID,

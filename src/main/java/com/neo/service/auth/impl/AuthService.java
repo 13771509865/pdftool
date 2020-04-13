@@ -136,8 +136,8 @@ public class AuthService implements IAuthService{
 	 * 插入用户auth信息
 	 * @return
 	 */
-	public Integer insertPtsAuthPO(PtsAuthPO ptsAuthPO) {
-		return ptsAuthPOMapper.insertPtsAuthPO(ptsAuthPO);
+	public Integer insertPtsAuthPO(List<PtsAuthPO> list) {
+		return ptsAuthPOMapper.insertPtsAuthPO(list);
 	}
 	
 	

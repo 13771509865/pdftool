@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.neo.commons.cons.EnumAuthCode;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.UnitType;
+import com.neo.commons.util.DateViewUtils;
 import com.neo.dao.PtsAuthPOMapper;
 import com.neo.dao.PtsConvertRecordPOMapper;
 import com.neo.model.dto.RedisOrderDto;
@@ -181,7 +182,21 @@ public class PtsTest {
 	
 	@Test
     public void test() {
-		
+		List<PtsAuthPO> authList = new ArrayList<>();
+		for(int i = 0;i<3;i++) {
+			PtsAuthPO p = new PtsAuthPO();
+			p.setAuthCode("convert002");
+			p.setAuthValue("true");
+			p.setGmtCreate(DateViewUtils.getNowDate());
+			p.setGmtExpire(DateViewUtils.getNowDate());
+			p.setGmtModified(DateViewUtils.getNowDate());
+			p.setOrderId(null);
+			p.setPriority(i);
+			p.setStatus(1);
+			p.setUserid(121L);
+			authList.add(p);
+		}
+		ptsAuthPOMapper.insertPtsAuthPO(authList);
 	}
 
 
