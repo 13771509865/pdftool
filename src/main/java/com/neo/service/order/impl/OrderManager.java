@@ -1,5 +1,6 @@
 package com.neo.service.order.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -100,6 +101,8 @@ public class OrderManager {
 			if(app!=null && YozoServiceApp.PdfTools.getApp().equalsIgnoreCase(app.getApp()) && list.size()>0 && !list.isEmpty()) {
 				
 				iAuthService.deletePtsAuth(userId);//删除当前用户所有权益
+				
+				List<PtsAuthPO> authList = new ArrayList<>();
 				for(UserRightItem serRightItem : list) {
 					if(!StringUtils.equals(serRightItem.getFeature(), EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())) {
 						PtsAuthPO ptsAuthPO = new PtsAuthPO();
@@ -111,20 +114,22 @@ public class OrderManager {
 						ptsAuthPO.setOrderId(orderId);
 						ptsAuthPO.setPriority(serRightItem.getPriority());
 						ptsAuthPO.setStatus(EnumStatus.ENABLE.getValue());
-						ptsAuthPO.setUserid(userId);
-						Boolean insertPtsAuthPO = iAuthService.insertPtsAuthPO(ptsAuthPO)>0;
-						if(!insertPtsAuthPO) {
-							SysLogUtils.error("插入用户权益失败，orderId："+orderId);
-							throw new RuntimeException();
-						}
+						ptsAuthPO.setUserid(serRightItem.getUserId());
+						authList.add(ptsAuthPO);
 					}
+				}
+				
+				Boolean insertPtsAuthPO = iAuthService.insertPtsAuthPO(authList)>0;
+				if(!insertPtsAuthPO) {
+					SysLogUtils.error("插入用户权益失败，orderId："+orderId);
+					throw new RuntimeException();
 				}
 			}
 			
 			return DefaultResult.successResult();
 		} catch (Exception e) {
 			e.printStackTrace();
-			SysLogUtils.error("订单域名生效失败,订单为:"+orderId,e);
+			SysLogUtils.error("订单域名生效失败,订单为:"+orderId+"，订单对象："+serviceAppUserRightDto.toString(),e);
 			//手动事务回滚
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			return DefaultResult.failResult();

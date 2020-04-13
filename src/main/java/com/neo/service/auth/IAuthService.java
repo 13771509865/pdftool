@@ -22,7 +22,7 @@ public interface IAuthService {
 	
 	IResult<EnumResultCode> checkUploadSize(Long userID,Long uploadSize);
 	
-	Integer insertPtsAuthPO(PtsAuthPO ptsAuthPO);
+	Integer insertPtsAuthPO(List<PtsAuthPO> list);
 	
 	List<PtsAuthPO> selectPtsAuthPO(PtsAuthQO ptsAuthQO);
 	
