@@ -27,10 +27,11 @@ public enum EnumAuthCode {
 	PDF_SPLIT(12,"pdf2split","convert012","82","true","Pdfsplit","convert012Num"),
 	OCR_IMG_TXT(13,"ocrImage2txt","convert013","83","true","Ocr","convert013Num"),
 	PDF_ORC_WORD(14,"pdftoorcword","convert014","64","true","Pdftoocrword","convert014Num"),
-
-	PTS_CONVERT_NUM(15,"转换数量", "convertNum",null,5,null,null), 
-	PTS_UPLOAD_SIZE(16,"文件大小","uploadSize",null,3,null,null),
-	PTS_VALIDITY_TIME(17,"权益有效期","validityTime",null,1,null,null);
+	PIC_PDF(15,"pic2pdf","convert015","32","true","Pic2pdf","convert015Num"),
+	
+	PTS_CONVERT_NUM(25,"转换数量", "convertNum",null,5,null,null), 
+	PTS_UPLOAD_SIZE(26,"文件大小","uploadSize",null,3,null,null),
+	PTS_VALIDITY_TIME(27,"权益有效期","validityTime",null,1,null,null);
 
 
 	private Integer value;
