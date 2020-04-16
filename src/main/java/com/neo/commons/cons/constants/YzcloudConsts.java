@@ -10,7 +10,7 @@ import java.util.Map;
  **/
 public class YzcloudConsts {
 
-    public static final String UPLOAD_INTERFACE = "/external/uploadSourceTypeFile.do";
+    public static final String UPLOAD_INTERFACE = "/rebuild/file/fileMPreviewUrl.do";
     
     public static final String DOWNLOAD_INTERFACE ="/external/externalGetOriginFileUrl.do";
     
