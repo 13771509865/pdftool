@@ -30,6 +30,7 @@ public class UserBO {
 	private String	canUnbind;
 	private String  canMerge;
 	private MembershipsBO[]  memberships;
+	private String membership;
 	private String securityLevel;
 	private String securityLevelCN;
 	
