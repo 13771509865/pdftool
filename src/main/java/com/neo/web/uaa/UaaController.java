@@ -52,15 +52,15 @@ public class UaaController {
 	@GetMapping("/detail")
 	@ResponseBody
 	public Map<String,Object> getUserInfoUaa(HttpServletRequest request){
-		UserBO userBO = null;
-		HttpSession session = request.getSession();
-		String userInfo = (String)session.getAttribute(ConstantCookie.SESSION_USER);
-		if(StringUtils.isBlank(userInfo)) {
-			return JsonResultUtils.failMapResult();
-		}
-		userBO = JsonUtils.json2obj(userInfo, UserBO.class);
-		System.out.println("userBO=="+userBO);
-		return JsonResultUtils.successMapResult(userBO);
+//		UserBO userBO = null;
+//		HttpSession session = request.getSession();
+//		String userInfo = (String)session.getAttribute(ConstantCookie.SESSION_USER);
+//		if(StringUtils.isBlank(userInfo)) {
+//			return JsonResultUtils.failMapResult();
+//		}
+//		userBO = JsonUtils.json2obj(userInfo, UserBO.class);
+//		System.out.println("userBO=="+userBO);
+		return JsonResultUtils.successMapResult();
 	}
 	
 	

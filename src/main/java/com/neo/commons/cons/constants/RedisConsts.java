@@ -52,5 +52,8 @@ public class RedisConsts {
     public static final String CLEAR_IP_KEY = "clearIpTimes";
 
     public static final String RETRY_YC_KEY = "retryYcUpload";
+    
+    //重复转换
+    public static final String CONVERT_FAIL_KEY = "convertFail";
 
 }

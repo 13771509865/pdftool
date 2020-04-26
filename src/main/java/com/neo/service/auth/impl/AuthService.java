@@ -111,11 +111,14 @@ public class AuthService implements IAuthService{
 	 * @return
 	 */
 	@Override
-	public IResult<EnumResultCode> checkUploadSize(Long userID,Long uploadSize){
+	public IResult<EnumResultCode> checkUploadSize(Long userID,Long uploadSize,Integer module){
 		IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID);
 		Map<String,Object> map = getPermissionResult.getData();
 		Integer maxUploadSize = Integer.valueOf(map.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode()).toString());
 
+		//特殊处理OCR不允许超过20M
+		maxUploadSize = module==EnumAuthCode.PDF_ORC_WORD.getValue()?20:maxUploadSize;
+		
 		if(uploadSize > (maxUploadSize*1024*1024)) {
 			if(userID == null) {
 				return DefaultResult.failResult(EnumResultCode.E_VISITOR_UPLOAD_ERROR);

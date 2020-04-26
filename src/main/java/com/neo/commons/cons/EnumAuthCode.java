@@ -1,6 +1,10 @@
 package com.neo.commons.cons;
 
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.neo.commons.cons.constants.SysConstant;
+
 import lombok.Getter;
 
 /**
@@ -188,6 +192,17 @@ public enum EnumAuthCode {
 	}
 	
 	
+	//判断authCode是否存在reConvertModule
+	//reConvertModule对应配置文件中的reConvertModule
+	public static Boolean existReconvertModule(String authCode,String reConvertModule) {
+		String[] modules = reConvertModule.split(SysConstant.COMMA);
+		for(String m : modules) {
+			if(StringUtils.equals(authCode, getAuthCode(Integer.valueOf(m)))) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 
 }

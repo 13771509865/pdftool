@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neo.commons.cons.EnumAuthCode;
+import com.neo.commons.cons.EnumConvertType;
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.SysConstant;
@@ -45,50 +46,50 @@ public class PtsConvertController {
 	@Autowired
 	private AuthManager authManager;
 
-    @Autowired
-    private PtsConvertService ptsConvertService;
+	@Autowired
+	private PtsConvertService ptsConvertService;
 
-    @Autowired
-    private ConfigProperty ConfigProperty;
+	@Autowired
+	private ConfigProperty ConfigProperty;
 
-    @ApiOperation(value = "同步转换")
-    @PostMapping(value = "/convert")
-    @ResponseBody
-    public Map<String, Object> convert(@RequestBody ConvertParameterBO convertBO, HttpServletRequest request) {
-        if (convertBO.getSrcFileSize() == null) {
-            return JsonResultUtils.failMapResult(EnumResultCode.E_NOTALL_PARAM.getInfo());
-        }
-        String cookie = request.getHeader(UaaConsts.COOKIE);//文件上传给优云要用到
-        UserBO userBO = HttpUtils.getUserBO(request);
-        IResult<FcsFileInfoBO> result = ptsConvertService.dispatchConvert(convertBO, userBO, HttpUtils.getIpAddr(request), cookie);
-        ptsConvertService.updatePtsSummay(result.getData(), convertBO, request);
-        if (result.isSuccess()) {
-            return JsonResultUtils.successMapResult(result.getData());
-        } else {
-        	//转换失败记录一下，拦截器要用
-        	String authCode = authManager.getAuthCode(convertBO);
-        	String nowDate = DateViewUtils.getNow();
-            request.setAttribute(SysConstant.CONVERT_RESULT, new PtsConvertRecordPO(userBO.getUserId(), EnumAuthCode.getValue(authCode), DateViewUtils.parseSimple(nowDate)));
-            return JsonResultUtils.buildMapResult(result.getData().getCode(), result.getData(), result.getMessage());
-        }
-    }
+	@ApiOperation(value = "同步转换")
+	@PostMapping(value = "/convert")
+	@ResponseBody
+	public Map<String, Object> convert(@RequestBody ConvertParameterBO convertBO, HttpServletRequest request) {
+		if (convertBO.getSrcFileSize() == null) {
+			return JsonResultUtils.failMapResult(EnumResultCode.E_NOTALL_PARAM.getInfo());
+		}
+		String cookie = request.getHeader(UaaConsts.COOKIE);//文件上传给优云要用到
+		UserBO userBO = HttpUtils.getUserBO(request);
+		IResult<FcsFileInfoBO> result = ptsConvertService.dispatchConvert(convertBO, userBO, HttpUtils.getIpAddr(request), cookie);
+		ptsConvertService.updatePtsSummay(result.getData(), convertBO, request);
 
-    
-    
-    
-//	@ApiOperation(value = "MQ转换")
-//	@PostMapping(value = "/mqconvert")
-//	@ResponseBody
-//	public Map<String, Object> mqconvert(@RequestBody ConvertParameterBO convertBO)  {
-//		if(convertBO.getSrcFileSize() == null) {
-//			return JsonResultUtils.failMapResult(EnumResultCode.E_NOTALL_PARAM.getInfo());
-//		}
-//		IResult<String>  result =  redisMQConvertService.Producer(convertBO);
-//		if(result.isSuccess()) {
-//			return JsonResultUtils.successMapResult();
-//		}else {
-//			return JsonResultUtils.failMapResult(result.getMessage());
-//		}
-//		
-//	}
+		//转换失败记录一下，拦截器要用
+		if (!result.isSuccess()) {
+			String authCode = authManager.getAuthCode(convertBO);
+			String nowDate = DateViewUtils.getNow();
+			request.setAttribute(SysConstant.CONVERT_RESULT, new PtsConvertRecordPO(userBO.getUserId(), EnumAuthCode.getValue(authCode), DateViewUtils.parseSimple(nowDate)));
+			return JsonResultUtils.buildMapResult(result.getData().getCode(), result.getData(), result.getMessage());
+		}
+		return JsonResultUtils.successMapResult(result.getData());
+	}
+
+
+
+
+	//	@ApiOperation(value = "MQ转换")
+	//	@PostMapping(value = "/mqconvert")
+	//	@ResponseBody
+	//	public Map<String, Object> mqconvert(@RequestBody ConvertParameterBO convertBO)  {
+	//		if(convertBO.getSrcFileSize() == null) {
+	//			return JsonResultUtils.failMapResult(EnumResultCode.E_NOTALL_PARAM.getInfo());
+	//		}
+	//		IResult<String>  result =  redisMQConvertService.Producer(convertBO);
+	//		if(result.isSuccess()) {
+	//			return JsonResultUtils.successMapResult();
+	//		}else {
+	//			return JsonResultUtils.failMapResult(result.getMessage());
+	//		}
+	//		
+	//	}
 }

@@ -36,6 +36,7 @@
         <httpmime.version>4.5.8</httpmime.version>
         <yozo-saas-common.version>0.0.2-SNAPSHOT</yozo-saas-common.version>
         <ant.version>1.10.7</ant.version>
+        <fastMd5.version>2.7.1</fastMd5.version>
     </properties>
 
     <dependencies>
@@ -267,6 +268,14 @@
             <artifactId>ant</artifactId>
             <version>${ant.version}</version>
         </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/com.twmacinta/fast-md5 -->
+		<dependency>
+		    <groupId>com.twmacinta</groupId>
+		    <artifactId>fast-md5</artifactId>
+		    <version>${fastMd5.version}</version>
+		</dependency>
+        
         
     </dependencies>
 

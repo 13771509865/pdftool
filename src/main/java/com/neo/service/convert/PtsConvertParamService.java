@@ -1,11 +1,13 @@
 package com.neo.service.convert;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,10 +16,13 @@ import com.neo.commons.cons.EnumStatus;
 import com.neo.commons.cons.constants.FcsParmConsts;
 import com.neo.commons.cons.constants.PtsConsts;
 import com.neo.commons.cons.constants.SizeConsts;
+import com.neo.commons.cons.entity.ModuleEntity;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.CheckMobileUtils;
 import com.neo.commons.util.DateViewUtils;
+import com.neo.commons.util.EncryptUtils;
+import com.neo.commons.util.GetConvertMd5Utils;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.model.bo.ConvertParameterBO;
@@ -58,7 +63,7 @@ public class PtsConvertParamService {
 		if(convertBO.getConvertTimeOut() == null) {
 			convertBO.setConvertTimeOut(configProperty.getConvertTimeout());
 		} 
-		
+
 		Map<String,Object> map = JsonUtils.parseJSON2Map(convertBO.toString());
 		for(String param : FcsParmConsts.FCS_PARMS) {
 			if(map.containsKey(param)) {
@@ -97,7 +102,7 @@ public class PtsConvertParamService {
 		//viewUrl需要修改成download
 		if(convertBO.getConvertType() == 14 && convertBO.getIsSignature()!=null && convertBO.getIsSignature() ==1) {
 			fcsFileInfoPO.setDestFileName(fcsFileInfoBO.getSrcFileName());
-			
+
 			String downloadUrl = StringUtils.replace(fcsFileInfoBO.getViewUrl(), PtsConsts.VIEW_PREVIEW, PtsConsts.VIEW_DOWNLOAD);
 			fcsFileInfoPO.setViewUrl(downloadUrl);
 		}else {
@@ -170,10 +175,10 @@ public class PtsConvertParamService {
 			ptsSummaryPO.setIpAddress(String.valueOf(userId));
 		}
 
-		if(request.getParameter(PtsConsts.MODULE) !=null) {
-			ptsSummaryPO.setModule(Integer.valueOf(request.getParameter(PtsConsts.MODULE)));//区分模块
+		//区分模块
+		if(request.getParameter(PtsConsts.SECTION) != null ) {
+			ptsSummaryPO.setModule(Integer.valueOf(request.getParameter(PtsConsts.SECTION)));
 		}
-		
 		ptsSummaryPO.setCreateDate(DateViewUtils.parseSimple(nowDate));//时间搞一搞
 		ptsSummaryPO.setCreateTime(DateViewUtils.parseSimpleTime(nowTime));
 		ptsSummaryPO.setModifiedDate(DateViewUtils.parseSimple(nowDate));
@@ -183,9 +188,25 @@ public class PtsConvertParamService {
 	}
 
 
+	public String getFileHash(ConvertParameterBO convertBO) {
+		String srcRelative = convertBO.getSrcRelativePath();
+		if (!StringUtils.isEmpty(srcRelative)) {
+			String srcRoot = ptsProperty.getFcs_srcfile_dir();
+			convertBO.setSrcPath(srcRoot + File.separator + srcRelative);
+			if (StringUtils.isEmpty(convertBO.getSrcFileName())) {
+				convertBO.setSrcFileName(FilenameUtils.getName(srcRelative));
+			}
+			File srcFile = new File(srcRoot, srcRelative);
+			if (srcFile.isFile()) {
+				convertBO.setSrcFileSize(srcFile.length());
+			}
+		}
+		return GetConvertMd5Utils.getNotNullConvertMd5(convertBO);
+	}
+
 
 	public static void main(String[] args) {
-		
+
 
 		String viewUrl= "https://pdl.yozodocs.com/view/preview/Qc1lqUEgoeEThAS5Lhz_BHh4sXHecv5ApmY_Dn7OOrs73uXHsMrSrhI9Gjgo6U8EKQSkBZebVZXRulQvmbj_Qf2IL5h5ZqM8JSK9GUGeUJ79cu3sAQCN28SdcBFfBOw4fwkMbj5CxtHUOY-zyrovboFAN1zT4Ly3L-YcCU_r9pZkIA-5gwaEbBnr2fUPN6RyprOKQpIUCo-FzmTegd2AFF4J-ylSzHdjM0L9ouhUawFQbAsi16oS_qRywKBK9RVB6rXHbrwxZwCZ8XlULFdFCBwBujKFadQpKELVciwCQ0Me4lQqpdzyjpEXdfr-yVTNFsjUTTCqgEs=/";
 		String a = "/view/preview";
