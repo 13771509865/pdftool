@@ -1,7 +1,6 @@
 package com.neo.model.vo;
 
 import com.alibaba.fastjson.JSON;
-import com.neo.model.bo.UserBO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

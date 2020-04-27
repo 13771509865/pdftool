@@ -28,7 +28,6 @@ import com.neo.commons.util.SysLogUtils;
 import com.neo.dao.FcsFileInfoPOMapper;
 import com.neo.dao.PtsSummaryPOMapper;
 import com.neo.model.bo.FileUploadBO;
-import com.neo.model.bo.UserBO;
 import com.neo.model.po.FcsFileInfoPO;
 import com.neo.model.po.PtsAuthPO;
 import com.neo.model.po.PtsConvertRecordPO;
@@ -189,27 +188,6 @@ public class StatisticsService {
 
 
 
-	/**
-	 * 查询用户的权限
-	 * @param userBO
-	 * @return
-	 */
-	public IResult<List<String>> findModulePermissions(UserBO userBO){
-
-		//未登录用户所有模块都不能使用
-		if(userBO == null) {
-			return DefaultResult.successResult(staticsManager.getModules(EnumMemberType.VISITOR.getValue(), null));
-		}
-		List<PtsAuthPO> list = iAuthService.selectAuthByUserid(userBO.getUserId());
-
-		//会员用户，并且没有过期
-		if(!list.isEmpty() && list.size() >0 && !DateViewUtils.isExpiredForTimes(list.get(0).getGmtExpire())) {
-			return DefaultResult.successResult(staticsManager.getModules(EnumMemberType.MEMBER_YOZOCLOUD.getValue(), list.get(0).getAuth()));
-		}
-
-		//普通注册用户
-		return DefaultResult.successResult(staticsManager.getModules(EnumMemberType.MEMBER.getValue(), null));
-	}
 
 
 

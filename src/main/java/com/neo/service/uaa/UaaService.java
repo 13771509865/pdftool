@@ -79,6 +79,8 @@ public class UaaService {
         if(token.getRole()!=null && UaaUserRole.Admin==token.getRole()){
             return DefaultResult.failResult(EnumResultCode.E_USER_INVALID.getInfo());
         }
+        HttpSession session = request.getSession();
+        session.setAttribute(ConstantCookie.SESSION_USER, token);
 		return DefaultResult.successResult(oAuth2AccessToken);
 	}
 

@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import com.neo.commons.helper.PermissionHelper;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.properties.ConvertNumProperty;
 import com.neo.commons.util.DateViewUtils;
+import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.StrUtils;
 import com.neo.commons.util.SysLogUtils;
@@ -68,13 +71,16 @@ public class AuthManager {
 					if(!DateViewUtils.isExpiredForDays(ptsAuthPO.getGmtExpire())) {//没有过期
 						//会员注册的权限转map
 						Map<String,Object> ptsAuthPOAuthMap = StrUtils.strToMap(ptsAuthPO.getAuth(), SysConstant.COMMA, SysConstant.COLON);
+						HttpUtils.getRequest().setAttribute(SysConstant.MEMBER_SHIP, true);
 						return DefaultResult.successResult(getPermission(defaultMap,ptsAuthPOAuthMap));
 					}
 				}
 			}
 			//注册用户
+			HttpUtils.getRequest().setAttribute(SysConstant.MEMBER_SHIP, false);
 			return DefaultResult.successResult(defaultMap);
 		} catch (Exception e) {
+			HttpUtils.getRequest().setAttribute(SysConstant.MEMBER_SHIP, false);
 			//aop会做处理
 			SysLogUtils.error("解析用户权限失败,原因："+e.getMessage());
 			return DefaultResult.failResult(EnumResultCode.E_GET_AUTH_ERROR.getInfo());

@@ -1,12 +1,10 @@
 package com.neo.service.convert;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -14,17 +12,13 @@ import org.springframework.stereotype.Service;
 
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumAuthCode;
-import com.neo.commons.cons.EnumConvertType;
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.constants.RedisConsts;
 import com.neo.commons.cons.constants.SysConstant;
-import com.neo.commons.cons.constants.TimeConsts;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.DateViewUtils;
-import com.neo.commons.util.GetConvertMd5Utils;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLogUtils;
@@ -32,7 +26,6 @@ import com.neo.dao.FcsFileInfoPOMapper;
 import com.neo.dao.PtsSummaryPOMapper;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FcsFileInfoBO;
-import com.neo.model.bo.UserBO;
 import com.neo.model.po.ConvertParameterPO;
 import com.neo.model.po.FcsFileInfoPO;
 import com.neo.model.po.PtsSummaryPO;
@@ -41,6 +34,7 @@ import com.neo.service.auth.impl.AuthManager;
 import com.neo.service.cache.impl.RedisCacheManager;
 import com.neo.service.httpclient.HttpAPIService;
 import com.neo.service.ticket.RedisTicketManager;
+import com.yozosoft.auth.client.security.UaaToken;
 
 
 /**
@@ -85,7 +79,7 @@ public class PtsConvertService {
 	 * @param waitTime
 	 * @return
 	 */ 
-	public IResult<FcsFileInfoBO> dispatchConvert(ConvertParameterBO convertBO,UserBO userBO,String ipAddress,String cookie){
+	public IResult<FcsFileInfoBO> dispatchConvert(ConvertParameterBO convertBO,UaaToken uaaToken,String ipAddress,String cookie,Boolean isMember){
 		FcsFileInfoBO fcsFileInfoBO = new FcsFileInfoBO();
 		String fileHash = null;
 		
@@ -100,7 +94,7 @@ public class PtsConvertService {
 		}
 		
 		//取超时时间
-		String ticket = redisTicketManager.getConverTicket(userBO);
+		String ticket = redisTicketManager.getConverTicket(isMember);
 
 		if (StringUtils.isEmpty(ticket)) {
 			fcsFileInfoBO.setCode(EnumResultCode.E_SERVER_BUSY.getValue());
@@ -134,7 +128,7 @@ public class PtsConvertService {
 				return DefaultResult.failResult(message,fcsFileInfoBO);
 			}
 
-			Long userId = userBO==null?null:userBO.getUserId();
+			Long userId = uaaToken==null?null:uaaToken.getUserId();
 			updateFcsFileInfo(convertBO,fcsFileInfoBO,userId,ipAddress);
 			return DefaultResult.successResult(fcsFileInfoBO);
 

@@ -1,7 +1,6 @@
 package com.neo.commons.util;
 
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
@@ -18,23 +17,16 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.ConstantCookie;
 import com.neo.commons.cons.entity.HttpResultEntity;
-import com.neo.model.bo.UserBO;
+import com.yozosoft.auth.client.security.UaaToken;
 
 /**
  * @author zhoufeng
@@ -294,26 +286,33 @@ public class HttpUtils {
      */
 	public static Long getSessionUserID(HttpServletRequest request) {
 		HttpSession session = request.getSession();
-		String userInfo = (String)session.getAttribute(ConstantCookie.SESSION_USER);
-		if(StringUtils.isNotBlank(userInfo)) {
-			UserBO userBO = JsonUtils.json2obj(userInfo, UserBO.class);
-			return userBO.getUserId();
+		UaaToken uaaToken = (UaaToken)session.getAttribute(ConstantCookie.SESSION_USER);
+		if(uaaToken != null) {
+			return uaaToken.getUserId();
 		}
 		return null;
 	}
 	
 	
-	public static UserBO getUserBO(HttpServletRequest request) {
+	/**
+	 * 获取session中的UaaToken对象
+	 * @param request
+	 * @return
+	 */
+	public static UaaToken getUaaToken(HttpServletRequest request) {
 		HttpSession session = request.getSession();
-		String userInfo = (String)session.getAttribute(ConstantCookie.SESSION_USER);
-		if(StringUtils.isNotBlank(userInfo)) {
-			UserBO userBO = JsonUtils.json2obj(userInfo, UserBO.class);
-			return userBO;
-		}
+		UaaToken uaaToken = (UaaToken)session.getAttribute(ConstantCookie.SESSION_USER);
+		if(uaaToken != null) {
+			return uaaToken;
+		}	
 		return null;
 	}
 
 	
+	public static HttpServletRequest getRequest() {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		return request;
+	}
 	
 	
 	public static void sendResponse(HttpServletRequest request, HttpServletResponse response,String message) throws Exception{
