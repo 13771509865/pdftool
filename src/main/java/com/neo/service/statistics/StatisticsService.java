@@ -28,7 +28,6 @@ import com.neo.commons.util.SysLogUtils;
 import com.neo.dao.FcsFileInfoPOMapper;
 import com.neo.dao.PtsSummaryPOMapper;
 import com.neo.model.bo.FileUploadBO;
-import com.neo.model.bo.UserBO;
 import com.neo.model.po.FcsFileInfoPO;
 import com.neo.model.po.PtsAuthPO;
 import com.neo.model.po.PtsConvertRecordPO;
@@ -186,7 +185,6 @@ public class StatisticsService {
 		return DefaultResult.failResult(EnumResultCode.E_GET_UCLOUD_ID_ERROR.getInfo());
 
 	}
-
 
 
 

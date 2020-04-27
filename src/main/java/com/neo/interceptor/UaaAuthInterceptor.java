@@ -71,10 +71,6 @@ public class UaaAuthInterceptor implements HandlerInterceptor{
 			HttpUtils.sendResponse(request, response, JsonResultUtils.buildFailJsonResultByResultCode(EnumResultCode.E_UNLOGIN_ERROR));
 			return false;
 		}else {
-			String userInfo = uaaService.getUserInfoUaa(request);
-			if(StringUtils.isNotBlank(userInfo)) {
-				session.setAttribute(ConstantCookie.SESSION_USER, userInfo);
-			}
 			return true;
 		}
 	}

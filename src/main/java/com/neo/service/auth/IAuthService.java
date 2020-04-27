@@ -20,7 +20,7 @@ public interface IAuthService {
 	
 	IResult<EnumResultCode> checkConvertTimes(Long userID,Integer maxConvertTimes,Integer module);
 	
-	IResult<EnumResultCode> checkUploadSize(Long userID,Long uploadSize);
+	IResult<EnumResultCode> checkUploadSize(Long userID,Long uploadSize,Integer module);
 	
 	Integer insertPtsAuthPO(List<PtsAuthPO> list);
 	

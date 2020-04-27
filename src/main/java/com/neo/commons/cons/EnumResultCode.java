@@ -57,7 +57,10 @@ public enum EnumResultCode {
 	 
 	E_GET_AUTH_ERROR(98,"解析用户权限失败"),
 	E_ORDER_AUTH_CODE_ERROR(99,"抱歉该订单缺少pdf工具集必要的AuthCode或者存在非法的AuthCode"),
-	E_ORDER_ILLEGAL(100,"非法订单信息");
+	E_ORDER_ILLEGAL(100,"非法订单信息"),
+	E_CONVERT_FAIL(101,"转换失败"),
+	;
+	
 
 	private Integer value;
 	private String info;

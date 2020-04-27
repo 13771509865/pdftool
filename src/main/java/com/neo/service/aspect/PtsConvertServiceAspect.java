@@ -6,9 +6,10 @@ import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FcsFileInfoBO;
-import com.neo.model.bo.UserBO;
 import com.neo.service.file.SaveBadFileService;
 import com.neo.service.yzcloud.IYzcloudService;
+import com.yozosoft.auth.client.security.UaaToken;
+
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -39,18 +40,17 @@ public class PtsConvertServiceAspect {
     public void dispatchConvert() {
     }
 
-    @AfterReturning(value = "dispatchConvert()&& args(convertBO,userBO,ipAddress,cookie)", returning = "result")
-    public void dispatchConvertAfter(ConvertParameterBO convertBO, UserBO userBO, String ipAddress, String cookie, IResult<FcsFileInfoBO> result) {
+    @AfterReturning(value = "dispatchConvert()&& args(convertBO,uaaToken,ipAddress,cookie,isMember)", returning = "result")
+    public void dispatchConvertAfter(ConvertParameterBO convertBO,UaaToken uaaToken,String ipAddress,String cookie,Boolean isMember, IResult<FcsFileInfoBO> result) {
         //转换失败则放入指定文件夹中
         if (!result.isSuccess()) {
             String srcRelativePath = convertBO.getSrcRelativePath();
             saveBadFileService.saveBadFile(ptsProperty.getFcs_srcfile_dir(), ptsProperty.getConvert_fail_dir(), srcRelativePath);
         } else {
-            if (userBO != null && EnumUaaRoleType.canUploadYc(userBO.getRole())) {
-            	System.out.println(userBO.toString());
+            if (uaaToken != null && EnumUaaRoleType.canUploadYc(uaaToken.getRole())) {
                 //上传文件到优云,更新数据库,未登录用户和企业用户不上传 
                 FcsFileInfoBO fcsFileInfoBO = result.getData();
-                IResult<String> uploadFileToYc = iYzcloudService.uploadFileToYc(fcsFileInfoBO, userBO.getUserId(), cookie);
+                IResult<String> uploadFileToYc = iYzcloudService.uploadFileToYc(fcsFileInfoBO, uaaToken.getUserId(), cookie);
             }
         }
     }

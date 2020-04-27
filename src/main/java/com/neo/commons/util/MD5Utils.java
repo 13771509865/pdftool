@@ -1,37 +1,15 @@
 package com.neo.commons.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
+import com.twmacinta.util.MD5;
+
 public class MD5Utils {
-
-    /**
-     * 二进制转十六进制
-     * @param bytes
-     * @return
-     */
-    private static String bytesToHex(byte[] bytes) {
-        StringBuffer md5str = new StringBuffer();
-        //把数组每一字节换成16进制连成md5字符串
-        int digital;
-        for (int i = 0; i < bytes.length; i++) {
-             digital = bytes[i];
- 
-            if(digital < 0) {
-                digital += 256;
-            }
-            if(digital < 16){
-                md5str.append("0");
-            }
-            md5str.append(Integer.toHexString(digital));
-        }
-        return md5str.toString().toUpperCase();
-    }
-
-    
     /**
      * @param message 待加密数据
      * @return 加密后数据
@@ -53,20 +31,23 @@ public class MD5Utils {
      * @date 2019/5/9
      */
     public static String getMD5(String message, Boolean upperCase) {
-        String md5 = DigestUtils.md5Hex(message).toUpperCase();
+        String md5 = DigestUtils.md5Hex(message);
         return upperCase ? md5.toUpperCase() : md5;
     }
 
     public static String getMD5(InputStream is, Boolean upperCase) throws IOException {
-        String md5 = DigestUtils.md5Hex(is).toUpperCase();
+        String md5 = DigestUtils.md5Hex(is);
         return upperCase ? md5.toUpperCase() : md5;
     }
-    
-    public static void main(String[] args) {
 
-        System.out.println(MD5Utils.getMD5("123456"));
-        System.out.println(MD5Utils.getMD5("加密"));
-        //E10ADC3949BA59ABBE56E057F20F883E
-        //56563EDF23B9D717DC63981B8836FC60
-    }
+    /**
+     * @param file file
+     * @description fastmd5生成md5
+     * @author dh
+     * @date 2019/12/16
+     */
+	public static String  getMD5(File file) throws IOException {
+		    String hash = MD5.asHex(MD5.getHash(file));
+		    return hash;
+	}
 }

@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import com.neo.commons.helper.PermissionHelper;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.properties.ConvertNumProperty;
 import com.neo.commons.util.DateViewUtils;
+import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.StrUtils;
 import com.neo.commons.util.SysLogUtils;
@@ -64,15 +67,17 @@ public class AuthManager {
 
 			//defaultMap里面是所有的默认权限
 			defaultMap.putAll(numMap);
-			
+
+
 			Map<String,Object> newAuthMap = new HashMap<>();
 			if(userID !=null) {
 				//根据authCode获取转换大小，数量权益
 				List<PtsAuthPO> list = iAuthService.selectPtsAuthPO(new PtsAuthQO(userID,EnumStatus.ENABLE.getValue(),authCode));
+				HttpUtils.getRequest().setAttribute(SysConstant.MEMBER_SHIP, list.isEmpty()?false:true);
 				if(!list.isEmpty() && list.size()>0) {
 					Integer num = 0;
 					Integer size = 0;
-					
+
 					//获取会员的转换权益
 					for(PtsAuthPO ptsAuthPO : list) {
 						if(StringUtils.equals(ptsAuthPO.getAuthValue(), SysConstant.TRUE)) {
@@ -85,7 +90,7 @@ public class AuthManager {
 							size = Integer.valueOf(ptsAuthPO.getAuthValue())>size?Integer.valueOf(ptsAuthPO.getAuthValue()):size;
 						}
 					}
-					
+
 					//转换数量
 					if(num != 0 ) {
 						newAuthMap.put(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode(), num);
@@ -96,9 +101,9 @@ public class AuthManager {
 					}
 				}
 			}
-
 			return DefaultResult.successResult(getPermission(defaultMap,newAuthMap));
 		} catch (Exception e) {
+			HttpUtils.getRequest().setAttribute(SysConstant.MEMBER_SHIP, false);
 			//aop会做处理
 			SysLogUtils.error("解析用户权限失败,原因："+e.getMessage());
 			return DefaultResult.failResult(EnumResultCode.E_GET_AUTH_ERROR.getInfo());

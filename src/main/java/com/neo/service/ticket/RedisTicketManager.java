@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import com.neo.commons.cons.EnumMemberType;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.RedisConsts;
+import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.util.SysLogUtils;
-import com.neo.model.bo.UserBO;
 import com.neo.service.cache.impl.RedisCacheManager;
 
 @Service("redisTicketManager")
@@ -55,8 +55,8 @@ public class RedisTicketManager {
 	 * @param membership
 	 * @return
 	 */
-	public String getConverTicket(UserBO userBO){
-		if(userBO!=null && EnumMemberType.isMember(userBO.getMemberships())) {//会员
+	public String getConverTicket(Boolean isMember){
+		if(isMember) {//会员
 			return redisCacheManager.pop(RedisConsts.CONVERT_QUEUE_KEY);
 		}else {//非会员
 			Long ticketNum = redisCacheManager.getListLen(RedisConsts.CONVERT_QUEUE_KEY);
