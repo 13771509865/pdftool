@@ -118,11 +118,6 @@ public class PtsConvertService {
 
 			//转换失败
 			if(errorCode != 0) {
-				//转换失败是否记录缓存，目前只有OCR
-				if(EnumAuthCode.existReconvertModule(authManager.getAuthCode(convertBO), configProperty.getReConvertModule())) {
-					fileHash = StringUtils.isNotBlank(fileHash)?fileHash:ptsConvertParamService.getFileHash(convertBO);
-					redisCacheManager.setHashValue(DateViewUtils.getNow(), fileHash, convertBO.toString());
-				}
 				//code=24，message做特殊处理
 				String message = fcsFileInfoBO.getCode() == 24?EnumResultCode.E_MERGE_FILE_NAME_ERROR.getInfo():fcsMap.get(SysConstant.FCS_MESSAGE).toString();
 				return DefaultResult.failResult(message,fcsFileInfoBO);
@@ -181,6 +176,13 @@ public class PtsConvertService {
 	@Async("asynConvertExecutor")
 	public IResult<String> updatePtsSummay(FcsFileInfoBO fcsFileInfoBO, ConvertParameterBO convertBO,HttpServletRequest request){
 		try {
+			//不允许重复的文件，转换失败不统计
+			if(EnumAuthCode.existReconvertModule(authManager.getAuthCode(convertBO), configProperty.getReConvertModule())
+			   && StringUtils.isNotBlank(fcsFileInfoBO.getFileHash())
+			   &&StringUtils.isNotBlank(redisCacheManager.getHashValue(DateViewUtils.getNow(), fcsFileInfoBO.getFileHash()))) {
+				return DefaultResult.successResult();
+			}
+			
 			PtsSummaryPO ptsSummaryPO = ptsConvertParamService.buildPtsSummaryPOParameter(fcsFileInfoBO,convertBO, request);
 			int upCount = ptsSummaryPOMapper.updatePtsSumm(ptsSummaryPO);
 			if(upCount < 1) {
