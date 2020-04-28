@@ -55,7 +55,7 @@ public class AuthService implements IAuthService{
 		//获取用户权限
 		IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID,authCode);
 		Map<String,Object> map = getPermissionResult.getData();
-		
+		System.out.println("===权限断点："+map.toString());
 		String booleanAuth = String.valueOf(map.get(authCode));
 
 		//检查转换类型的权限
