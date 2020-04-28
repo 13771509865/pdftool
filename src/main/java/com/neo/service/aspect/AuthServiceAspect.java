@@ -37,8 +37,8 @@ public class AuthServiceAspect {
     public void getPermission() {
     }
 
-    @AfterReturning(value = "getPermission() && args(userID)", returning = "result")
-    public void getPermissionAfter(Long userID, IResult<Map<String,Object>> result) throws Exception {
+    @AfterReturning(value = "getPermission() && args(userID,authCode)", returning = "result")
+    public void getPermissionAfter(Long userID,String authCode, IResult<Map<String,Object>> result) throws Exception {
         if (!result.isSuccess()) {
         	System.out.println("验证权限有问题，进入aop进行权限默认值设定");
         	PermissionDto permissionDto =  permissionHelper.buildDefaultPermission();
