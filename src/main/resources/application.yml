@@ -33,7 +33,7 @@ spring:
       username: root                            #数据库用户名
       password: root                      #数据库密码
       driver-class-name: com.mysql.cj.jdbc.Driver
-      filters: mergeStat,config,wall,stat
+      filters: mergeStat,config,wall,stat # wall:批量执行多条sql语句，不能注入wall过滤器
       max-active: 20                 # 最大连接池数量
       initial-size: 1                # 初始化时建立物理连接的个数
       max-wait: 3000                 # 获取连接时最大等待时间,单位毫秒
@@ -99,7 +99,7 @@ http:
   defaultMaxPerRoute: 400            #设置每个主机地址的并发数
   connectTimeout: 2000               #创建连接的最长时间
   connectionRequestTimeout: 2000     #从连接池中获取到连接的最长时间
-  socketTimeout: 60000               #数据传输的最长时间（毫秒）
+  socketTimeout: 500000               #数据传输的最长时间（毫秒）
   maxIdleTime: 60000                 #空闲时间(用于定期清理空闲连接)
 
 
@@ -119,14 +119,14 @@ pts:
   product_hmac_key: qaxet9223210^*&     #密钥
   features_insert_url: http://172.18.21.23/product/api/product/profile/insert     #特性注册地址
 
-  domain: http://192.168.60.209:8081
+  domain: http://192.168.61.122:8081
   feedback_url : http://172.18.21.23/api/ask/commit 	#反馈系统
   
   membership_url: http://172.18.21.23/membership/api/member/event/add    #积分成长
   member_hamc_key: qaxet9223210^*&
 
-  fcs_srcfile_dir:                      #fcs文件根目录
-  fcs_targetfile_dir: E:\dcs\input      #fcs生产文件目录
+  fcs_srcfile_dir: E:\dcs\input                    #fcs文件根目录
+  fcs_targetfile_dir: E:\dcs\output      #fcs生产文件目录
   convert_fail_dir:                     #转换失败源文件夹
   report_error_dir:                     #报错文件夹
 

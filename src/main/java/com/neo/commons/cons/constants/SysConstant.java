@@ -35,5 +35,7 @@ public interface SysConstant {
 	public static final String ZIP_TEMP = "zipTemp";
 
 	public static final String ZIP_NAME = "fcs.zip";
+	
+	public static final String MEMBER_SHIP = "mamberShip";//取ticket判断依据
 
 }

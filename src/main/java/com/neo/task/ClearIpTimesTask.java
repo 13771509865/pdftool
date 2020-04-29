@@ -36,12 +36,12 @@ public class ClearIpTimesTask {
 
 
 	@Scheduled(cron = "0 0 0 * * ?")
-	public void clearIpTimes() {
-		SysLogUtils.info("=======================================开始清理ip=======================================");
+	public void clearReconvert() {
+		SysLogUtils.info("=======================================开始清理重复转换失败记录=======================================");
 		try {
-			accessTimesService.clearIpTimes();
+			accessTimesService.clearReconvert();
 		} catch (Exception e) {
-			SysLogUtils.info("清理ip线程异常,原因："+e.getMessage());
+			SysLogUtils.info("清理重复转换失败记录,原因："+e.getMessage());
 		}
 	}
 

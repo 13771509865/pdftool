@@ -1,8 +1,8 @@
 package com.neo.commons.cons;
 
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
+
+import com.neo.model.bo.MembershipsBO;
 
 import lombok.Getter;
 
@@ -50,22 +50,6 @@ public enum EnumMemberType {
         }
         return null;
     }
-    
-    
-    
-    /**
-     * 根据订单中的auth节点，提取的map获取info
-     * @param specs
-     * @return
-     */
-    public static String  getEnumMemberInfo(Map<String, String[]> specs) {
-    	 for (EnumMemberType type : values()) {
-             if (specs.get(type.getInfo()) != null ) {
-                 return type.getInfo();
-             }
-         }
-    	 return null;
-    }
 	
     
     
@@ -74,21 +58,26 @@ public enum EnumMemberType {
      * @param info
      * @return
      */
-    public static Boolean isMember(String info){
-		if(StringUtils.isNotBlank(info)){
-			EnumMemberType enumMemberType = getEnumMemberType(info);
-			if(enumMemberType!=null){
-				switch (enumMemberType){
-					case MEMBER_YOZOCLOUD:
-					case MEMBER_YOMOER:
-					case MEMBER_VIP:
-						return true;
-					default:
-						return false;
-				}
-			}
-		}
-		return false;
+    public static Boolean isMember(MembershipsBO  memberships[]){
+    	if(memberships!=null && memberships.length > 0) {
+    		for(MembershipsBO  bo : memberships) {
+    			if(StringUtils.isNotBlank(bo.getMembership())){
+    				EnumMemberType enumMemberType = getEnumMemberType(bo.getMembership());
+    				if(enumMemberType!=null){
+    					switch (enumMemberType){
+    						case MEMBER_YOZOCLOUD:
+    						case MEMBER_YOMOER:
+    						case MEMBER_VIP:
+    							return true;
+    						default:
+    							return false;
+    					}
+    				}
+    			}
+    			return false;
+    		}
+    	}
+    	return false; 
 	}
 	
 	

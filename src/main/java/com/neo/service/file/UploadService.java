@@ -22,7 +22,9 @@ import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.cons.constants.YzcloudConsts;
 import com.neo.commons.cons.entity.FileHeaderEntity;
 import com.neo.commons.cons.entity.HttpResultEntity;
+import com.neo.commons.cons.entity.ModuleEntity;
 import com.neo.commons.properties.PtsProperty;
+import com.neo.commons.util.EncryptUtils;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLogUtils;
@@ -186,9 +188,14 @@ public class UploadService {
 		}else {
 			ptsApplyPO.setAddress(String.valueOf(userId));
 		}
-		if(module !=null ) {
-			ptsApplyPO.setModule(Integer.valueOf(module));
+		
+		if(StringUtils.isNotBlank(module)) {
+			ModuleEntity moduleEntity =EncryptUtils.decryptModule(module);
+			if(moduleEntity.getModule() !=null ) {
+				ptsApplyPO.setModule(moduleEntity.getModule());
+			}
 		}
+		
 		return ptsApplyPO;
 
 	}

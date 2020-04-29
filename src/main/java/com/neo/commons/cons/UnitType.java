@@ -25,5 +25,9 @@ public enum UnitType {
         }
         return null;
     }
+    
+    public static void main(String[] args) {
+		System.out.println(UnitType.Day);
+	}
 
 }

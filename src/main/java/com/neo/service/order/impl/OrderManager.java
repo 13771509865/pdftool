@@ -1,5 +1,6 @@
 package com.neo.service.order.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,6 +16,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import com.alibaba.fastjson.JSON;
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumAuthCode;
+import com.neo.commons.cons.EnumLockCode;
 import com.neo.commons.cons.EnumMemberType;
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.EnumStatus;
@@ -30,9 +32,12 @@ import com.neo.model.dto.RedisOrderDto;
 import com.neo.model.po.PtsAuthNamePO;
 import com.neo.model.po.PtsAuthPO;
 import com.neo.model.qo.PtsAuthNameQO;
+import com.neo.model.qo.PtsAuthQO;
 import com.neo.service.auth.IAuthService;
 import com.yozosoft.api.order.dto.OrderRequestDto;
 import com.yozosoft.api.order.dto.OrderServiceAppSpec;
+import com.yozosoft.api.order.dto.ServiceAppUserRightDto;
+import com.yozosoft.api.order.dto.UserRightItem;
 import com.yozosoft.saas.YozoServiceApp;
 import com.yozosoft.util.SecretSignatureUtils;
 
@@ -88,67 +93,43 @@ public class OrderManager {
 	 * @return
 	 */
 	@Transactional(rollbackFor = Exception.class)
-	public IResult<String> modifyOrderEffective(RedisOrderDto dto){
+	public IResult<String> modifyOrderEffective(ServiceAppUserRightDto serviceAppUserRightDto,Long orderId,Long userId){
 		try {
-			for(OrderServiceAppSpec osa : dto.getOrderRequestDto().getSpecs()) {
+			
+			YozoServiceApp app = serviceAppUserRightDto.getApp();
+			List<UserRightItem> list = serviceAppUserRightDto.getRights();
+			if(app!=null && YozoServiceApp.PdfTools.getApp().equalsIgnoreCase(app.getApp()) && list.size()>0 && !list.isEmpty()) {
 				
-				//当前订单的商品id
-				String productId = dto.getOrderRequestDto().getProductId();
+				iAuthService.deletePtsAuth(userId);//删除当前用户所有权益
 				
-				//获取pdf的会员权益
-				if(YozoServiceApp.PdfTools.getApp().equalsIgnoreCase(osa.getApp().getApp())) {
-
-					OrderSpecsEntity orderSpecsEntity = getFeatureDetails(osa);
-					if (orderSpecsEntity == null) {
-						throw new RuntimeException();
-					}
-					//查看该用户是否购买过商品，并且锁表
-					List<PtsAuthPO> list = iAuthService.selectAuthByUserid(dto.getUserId());
-					PtsAuthPO ptsAuthPO = new PtsAuthPO();
-					if(list.isEmpty() || list.size() < 1) {
-						//当前时间+权益有效期
-						Date expireDate = DateViewUtils.getTimeDay(DateViewUtils.getNowDate(),orderSpecsEntity.getValidityTime(),orderSpecsEntity.getUnitType());
-						ptsAuthPO.setAuth(orderSpecsEntity.getAuth());
-						ptsAuthPO.setGmtCreate(DateViewUtils.getNowDate());
-						ptsAuthPO.setGmtModified(DateViewUtils.getNowDate());
+				List<PtsAuthPO> authList = new ArrayList<>();
+				for(UserRightItem serRightItem : list) {
+					if(!StringUtils.equals(serRightItem.getFeature(), EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())) {
+						PtsAuthPO ptsAuthPO = new PtsAuthPO();
+						ptsAuthPO.setAuthCode(serRightItem.getFeature());
+						ptsAuthPO.setAuthValue(serRightItem.getSpecs()[0]);
+						ptsAuthPO.setGmtCreate(serRightItem.getBegin());
+						ptsAuthPO.setGmtModified(serRightItem.getBegin());
+						ptsAuthPO.setGmtExpire(serRightItem.getEnd());
+						ptsAuthPO.setOrderId(orderId);
+						ptsAuthPO.setPriority(serRightItem.getPriority());
 						ptsAuthPO.setStatus(EnumStatus.ENABLE.getValue());
-						ptsAuthPO.setUserid(dto.getUserId());
-						ptsAuthPO.setGmtExpire(expireDate);
-						ptsAuthPO.setProductId(productId);
-						boolean insertPtsAuthPO = iAuthService.insertPtsAuthPO(ptsAuthPO)>0;
-						if(!insertPtsAuthPO) {
-							SysLogUtils.error("插入用户商品权限失败");
-							throw new RuntimeException();
-						}
-					}else {
-						Date expireDate = list.get(0).getGmtExpire();
-						Date newExpireDate;
-						
-						//精确到秒
-						//如果已经过期了，或者订单和pdf的productId不一样
-						//当前时间+权限给的月数
-						if(DateViewUtils.isExpiredForTimes(expireDate) || !StringUtils.equals(list.get(0).getProductId(), productId)) {
-							newExpireDate = DateViewUtils.getTimeDay(DateViewUtils.getNowDate(),orderSpecsEntity.getValidityTime(),orderSpecsEntity.getUnitType());
-						}else {
-							//续费：数据库时间+权限给的月数
-							newExpireDate = DateViewUtils.getTimeDay(expireDate,orderSpecsEntity.getValidityTime(),orderSpecsEntity.getUnitType());
-						}
-						ptsAuthPO.setGmtModified(DateViewUtils.getNowDate());
-						ptsAuthPO.setAuth(orderSpecsEntity.getAuth());
-						ptsAuthPO.setUserid(dto.getUserId());
-						ptsAuthPO.setGmtExpire(newExpireDate);
-						ptsAuthPO.setProductId(productId);
-						boolean updatePtsAuthPOByUserId = iAuthService.updatePtsAuthPOByUserId(ptsAuthPO)>0;
-						if(!updatePtsAuthPOByUserId) {
-							SysLogUtils.error("修改用户商品权限失败");
-							throw new RuntimeException();
-						}
+						ptsAuthPO.setUserid(serRightItem.getUserId());
+						authList.add(ptsAuthPO);
 					}
 				}
+				
+				Boolean insertPtsAuthPO = iAuthService.insertPtsAuthPO(authList)>0;
+				if(!insertPtsAuthPO) {
+					SysLogUtils.error("插入用户权益失败，orderId："+orderId);
+					throw new RuntimeException();
+				}
 			}
+			
 			return DefaultResult.successResult();
 		} catch (Exception e) {
-			SysLogUtils.error("订单域名生效失败,订单为:"+JSON.toJSONString(dto),e);
+			e.printStackTrace();
+			SysLogUtils.error("订单域名生效失败,订单为:"+orderId+"，订单对象："+serviceAppUserRightDto.toString(),e);
 			//手动事务回滚
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			return DefaultResult.failResult();
@@ -163,12 +144,12 @@ public class OrderManager {
 		try {
 			StringBuilder build = new StringBuilder();
 			Map<String, String[]> specs = osa.getSpecs();
-			
+
 			//过期时间值
 			Integer validityTime = Integer.valueOf(specs.get(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())[0]);
 			//过期时间单位
 			UnitType unitType = UnitType.getUnit(specs.get(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())[1]);
-			
+
 			for (Map.Entry<String, String[]> m : specs.entrySet()) {
 				if(!StringUtils.equals(m.getKey(), EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())) {
 					build.append(m.getKey()).append(SysConstant.COLON).append(m.getValue()[0]).append(SysConstant.COMMA);
@@ -199,13 +180,6 @@ public class OrderManager {
 
 
 	public static void main(String[] args) {
-		String[] a = {"1","Month"};
-		String memberType = null;
-
-		Map<String, String[]> specs = new HashMap<>();
-		specs.put("MemberYomoer", a);
-		memberType =  EnumMemberType.getEnumMemberInfo(specs);
-		System.out.println(memberType);
 	}
 
 

@@ -11,6 +11,7 @@ import com.neo.commons.util.SysLogUtils;
 import com.neo.model.po.PtsConvertRecordPO;
 import com.neo.service.cache.CacheManager;
 import com.neo.service.cache.CacheService;
+import com.neo.service.cache.impl.RedisCacheManager;
 import com.neo.service.convertRecord.IConvertRecordService;
 
 /**
@@ -24,20 +25,18 @@ import com.neo.service.convertRecord.IConvertRecordService;
 public class AccessTimesService {
 
 	@Autowired
-	private CacheService<String> cacheService;
+	private RedisCacheManager<String> redisCacheManager;
 	
 	@Autowired
 	private IConvertRecordService iConvertRecordService;
 
 
 	/**
-	 * Description:ip每日数量重置
+	 * Description：清理转换失败的记录
 	 * @return
 	 */
-	public void clearIpTimes() {
-		CacheManager<String> cacheManager = cacheService.getCacheManager();
-		cacheManager.delete( RedisConsts.IP_CONVERT_TIME_KEY);
-		cacheManager.delete( RedisConsts.ID_CONVERT_TIME_KEY);
+	public void clearReconvert() {
+		redisCacheManager.delete(DateViewUtils.getNow());
 	}
 	
 	

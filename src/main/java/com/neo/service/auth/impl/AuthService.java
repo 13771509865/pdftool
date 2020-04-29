@@ -1,7 +1,10 @@
 package com.neo.service.auth.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +16,13 @@ import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.EnumStatus;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.SysConstant;
+import com.neo.commons.cons.entity.OrderSpecsEntity;
 import com.neo.commons.util.DateViewUtils;
 import com.neo.dao.PtsAuthPOMapper;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.po.PtsAuthPO;
 import com.neo.model.po.PtsConvertRecordPO;
+import com.neo.model.qo.PtsAuthQO;
 import com.neo.model.qo.PtsConvertRecordQO;
 import com.neo.service.auth.IAuthService;
 import com.neo.service.convertRecord.IConvertRecordService;
@@ -44,12 +49,12 @@ public class AuthService implements IAuthService{
 	@Override
 	public IResult<EnumResultCode> checkUserAuth(ConvertParameterBO convertParameterBO,Long userID){
 
-		//获取用户权限
-		IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID);
-		Map<String,Object> map = getPermissionResult.getData();
-		
 		//根据convertType，拿authCode
 		String authCode = authManager.getAuthCode(convertParameterBO);
+		
+		//获取用户权限
+		IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID,authCode);
+		Map<String,Object> map = getPermissionResult.getData();
 		String booleanAuth = String.valueOf(map.get(authCode));
 
 		//检查转换类型的权限
@@ -111,11 +116,14 @@ public class AuthService implements IAuthService{
 	 * @return
 	 */
 	@Override
-	public IResult<EnumResultCode> checkUploadSize(Long userID,Long uploadSize){
-		IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID);
+	public IResult<EnumResultCode> checkUploadSize(Long userID,Long uploadSize,Integer module){
+		IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID,EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode());
 		Map<String,Object> map = getPermissionResult.getData();
 		Integer maxUploadSize = Integer.valueOf(map.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode()).toString());
 
+		//特殊处理OCR不允许超过20M
+		maxUploadSize = module==EnumAuthCode.PDF_ORC_WORD.getValue()?20:maxUploadSize;
+		
 		if(uploadSize > (maxUploadSize*1024*1024)) {
 			if(userID == null) {
 				return DefaultResult.failResult(EnumResultCode.E_VISITOR_UPLOAD_ERROR);
@@ -126,19 +134,17 @@ public class AuthService implements IAuthService{
 		return DefaultResult.successResult(); 
 	}
 
-
-
-
+	
+	
 	/**
 	 * 插入用户auth信息
-	 * @param ptsAuthPO
 	 * @return
 	 */
-	@Override
-	public Integer insertPtsAuthPO(PtsAuthPO ptsAuthPO) {
-		return ptsAuthPOMapper.insertPtsAuthPO(ptsAuthPO);
+	public Integer insertPtsAuthPO(List<PtsAuthPO> list) {
+		return ptsAuthPOMapper.insertPtsAuthPO(list);
 	}
-
+	
+	
 
 	/**
 	 * 根据userid查询auth信息
@@ -146,30 +152,21 @@ public class AuthService implements IAuthService{
 	 * @return
 	 */
 	@Override
-	public List<PtsAuthPO> selectAuthByUserid(Long userid){
-		return ptsAuthPOMapper.selectAuthByUserid(userid);
+	public List<PtsAuthPO> selectPtsAuthPO(PtsAuthQO ptsAuthQO){
+		return ptsAuthPOMapper.selectPtsAuthPO(ptsAuthQO);
 	}
 
-
-	/**
-	 * 根据userid修改auth信息
-	 */
-	public Integer updatePtsAuthPOByUserId(PtsAuthPO ptsAuthPO) {
-		return ptsAuthPOMapper.updatePtsAuthPOByUserId(ptsAuthPO);
-	}
-	
 	
 	/**
 	 * 删除用户权限
 	 * @param ptsAuthPO
 	 * @return
 	 */
-	public Integer deletePtsAuth(PtsAuthPO ptsAuthPO) {
-		return ptsAuthPOMapper.deletePtsAuth(ptsAuthPO);
+	public Integer deletePtsAuth(Long userid) {
+		return ptsAuthPOMapper.deletePtsAuth(userid);
 	}
 
 
-
-
+	
 
 }

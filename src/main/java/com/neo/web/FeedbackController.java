@@ -1,5 +1,6 @@
 package com.neo.web;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,12 +14,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neo.commons.cons.EnumResultCode;
+import com.neo.commons.cons.EnumStatus;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.FeedbackConsts;
+import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.cons.entity.FeedbackEntity;
 import com.neo.commons.cons.entity.HttpResultEntity;
@@ -26,8 +28,10 @@ import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.BindingResultUtils;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.commons.util.JsonUtils;
+import com.neo.commons.util.StrUtils;
 import com.neo.dao.PtsAuthPOMapper;
 import com.neo.model.po.PtsAuthPO;
+import com.neo.model.qo.PtsAuthQO;
 import com.neo.model.vo.FeedbackVO;
 import com.neo.service.httpclient.HttpAPIService;
 
@@ -78,16 +82,46 @@ public class FeedbackController{
 	
 	
 	
+	@ApiOperation(value = "用户反馈")
+	@PostMapping(value = "/feed")
+	@ResponseBody
+	public Map<String, Object> test(String str){ 
+		if(!StringUtils.equals(str, "000")) {
+			return JsonResultUtils.failMapResult("走开");
+		}
+		
+		List<PtsAuthPO>list = ptsAuthPOMapper.selectPtsAuthPO(new PtsAuthQO(null, EnumStatus.ENABLE.getValue(), null));
+		System.out.println(list.size());
+		for(PtsAuthPO ptsAuthPO : list) {
+			List<PtsAuthPO> authList = new ArrayList<>();
+			String auth = ptsAuthPO.getAuthCode();
+			Map<String,Object> authMap = StrUtils.strToMap(auth, SysConstant.COMMA, SysConstant.COLON);
+			for (Map.Entry<String, Object> m : authMap.entrySet()) {
+				PtsAuthPO po = new PtsAuthPO();
+				po.setAuthCode(m.getKey());
+				po.setAuthValue(m.getValue().toString());
+				po.setGmtCreate(ptsAuthPO.getGmtCreate());
+				po.setGmtExpire(ptsAuthPO.getGmtExpire());
+				po.setGmtModified(ptsAuthPO.getGmtModified());
+				po.setPriority(ptsAuthPO.getPriority());
+				po.setStatus(ptsAuthPO.getStatus());
+				po.setUserid(ptsAuthPO.getUserid());
+				po.setOrderId(ptsAuthPO.getOrderId());
+				authList.add(po);
+			}
+			try {
+				ptsAuthPOMapper.insertPtsAuthPO(authList);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return JsonResultUtils.successMapResult();
+	}
 
 
 	
-	public static void main(String[] args) {
-		Map<String, Object> map = new HashMap<>();
-		String a = "{\"id\":400688408357240832,\"phone\":\"13065123410\",\"email\":null,\"name\":\"云客 ☆ 云客 ☆ 云客 ☆ 云客 ☆\",\"role\":\"User\",\"membership\":\"Member\",\"duetime\":1581495010000}";
-		map = JsonUtils.parseJSON2Map(a);
-		System.out.println( map.get("membership").toString());
-		
-	}
+	
 	
 	
 }

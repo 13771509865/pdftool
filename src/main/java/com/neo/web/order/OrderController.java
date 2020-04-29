@@ -16,6 +16,7 @@ import com.neo.commons.cons.IResult;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.service.order.IOrderService;
 import com.yozosoft.api.order.dto.OrderRequestDto;
+import com.yozosoft.api.order.dto.ServiceAppUserRightDto;
 import com.yozosoft.api.tcc.Participant;
 
 import io.swagger.annotations.Api;
@@ -42,7 +43,7 @@ public class OrderController {
 	public ResponseEntity reserveOrder(@RequestParam long userId, @RequestParam long orderId, @RequestBody OrderRequestDto dto, @RequestParam String nonce, @RequestParam String sign) {
 		try {
 			IResult<Participant> reserveResult = iOrderService.reserve(userId, orderId, dto, nonce, sign);
-			SysLogUtils.info("[订单号："+orderId+"预留],预留结果："+reserveResult.getData());
+			SysLogUtils.info("[userId]"+userId+""+"[,订单号："+orderId+"预留,],预留结果："+reserveResult.getData());
 			return ResponseEntity.ok(reserveResult.getData());
 		} catch (Exception e) {
 			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -68,9 +69,9 @@ public class OrderController {
 
 	@ApiOperation(value = "订单确认接口")
 	@PutMapping(value = "/order/{orderId}")
-	public ResponseEntity confirmOrder(@PathVariable("orderId") long orderId, @RequestParam String nonce, @RequestParam String sign) {
+	public ResponseEntity confirmOrder(@RequestBody ServiceAppUserRightDto serviceAppUserRightDto,@PathVariable("orderId") long orderId, @RequestParam String nonce, @RequestParam String sign) {
 		try {
-			ResponseEntity result = iOrderService.confirm(orderId, nonce, sign);
+			ResponseEntity result = iOrderService.confirm(serviceAppUserRightDto,orderId, nonce, sign);
 			SysLogUtils.info("[订单号："+orderId+"开始确认],确认结果："+result.getStatusCode());
 			return result;
 		} catch (Exception e) {

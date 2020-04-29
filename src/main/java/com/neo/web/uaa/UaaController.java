@@ -22,7 +22,6 @@ import com.neo.commons.cons.constants.ConstantCookie;
 import com.neo.commons.util.CookieUtils;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.commons.util.JsonUtils;
-import com.neo.model.bo.UserBO;
 import com.neo.service.uaa.UaaService;
 import com.yozosoft.auth.client.security.OAuth2AccessToken;
 import com.yozosoft.auth.client.security.OAuth2CookieHelper;
@@ -52,15 +51,7 @@ public class UaaController {
 	@GetMapping("/detail")
 	@ResponseBody
 	public Map<String,Object> getUserInfoUaa(HttpServletRequest request){
-		UserBO userBO = null;
-		HttpSession session = request.getSession();
-		String userInfo = (String)session.getAttribute(ConstantCookie.SESSION_USER);
-		if(StringUtils.isBlank(userInfo)) {
-			return JsonResultUtils.failMapResult();
-		}
-		userBO = JsonUtils.json2obj(userInfo, UserBO.class);
-		System.out.println("userBO=="+userBO);
-		return JsonResultUtils.successMapResult(userBO);
+		return JsonResultUtils.successMapResult();
 	}
 	
 	

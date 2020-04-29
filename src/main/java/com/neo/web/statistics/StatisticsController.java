@@ -119,15 +119,6 @@ public class StatisticsController {
 	}
 	
 	
-	@ApiOperation(value = "查询用户的模块权限")
-	@GetMapping(value = "/auth")
-	@ResponseBody
-	public Map<String,Object> findModulePermissions(HttpServletRequest request){
-		IResult<List<String>> result = statisticsService.findModulePermissions(HttpUtils.getUserBO(request));
-		return JsonResultUtils.successMapResult(result.getData());
-	}
-	
-	
 
 	
 

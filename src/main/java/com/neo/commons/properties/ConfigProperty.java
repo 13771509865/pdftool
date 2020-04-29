@@ -39,6 +39,9 @@ public class ConfigProperty{
 	@Value(value = "${uploadSize}")
 	private Integer uploadSize;
 	
+	@Value(value = "${reConvertModule}")
+	private String reConvertModule;
+	
 	@Value(value = "${clearDay}")
 	private Integer clearDay;
 	

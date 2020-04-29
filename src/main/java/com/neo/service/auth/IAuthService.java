@@ -1,6 +1,7 @@
 package com.neo.service.auth;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,8 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
+import com.neo.commons.cons.entity.OrderSpecsEntity;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.po.PtsAuthPO;
+import com.neo.model.qo.PtsAuthQO;
 
 public interface IAuthService {
 	
@@ -17,14 +20,13 @@ public interface IAuthService {
 	
 	IResult<EnumResultCode> checkConvertTimes(Long userID,Integer maxConvertTimes,Integer module);
 	
-	IResult<EnumResultCode> checkUploadSize(Long userID,Long uploadSize);
+	IResult<EnumResultCode> checkUploadSize(Long userID,Long uploadSize,Integer module);
 	
-	Integer insertPtsAuthPO(PtsAuthPO ptsAuthPO);
+	Integer insertPtsAuthPO(List<PtsAuthPO> list);
 	
-	List<PtsAuthPO> selectAuthByUserid(Long userid);
+	List<PtsAuthPO> selectPtsAuthPO(PtsAuthQO ptsAuthQO);
 	
-	Integer updatePtsAuthPOByUserId(PtsAuthPO ptsAuthPO);
+	Integer deletePtsAuth(Long userid);
 	
-	Integer deletePtsAuth(PtsAuthPO ptsAuthPO);
 	
 }

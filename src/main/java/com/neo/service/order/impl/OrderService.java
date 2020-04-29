@@ -2,9 +2,7 @@ package com.neo.service.order.impl;
 
 import java.time.OffsetDateTime;
 import java.util.Iterator;
-import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,19 +12,19 @@ import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumAuthCode;
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
+import com.neo.commons.cons.UnitType;
 import com.neo.commons.cons.constants.RedisConsts;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.constants.TimeConsts;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.DateViewUtils;
 import com.neo.model.dto.RedisOrderDto;
-import com.neo.model.po.PtsAuthNamePO;
-import com.neo.model.qo.PtsAuthNameQO;
 import com.neo.service.authName.IAuthNameService;
 import com.neo.service.cache.impl.RedisCacheManager;
 import com.neo.service.order.IOrderService;
 import com.yozosoft.api.order.dto.OrderRequestDto;
 import com.yozosoft.api.order.dto.OrderServiceAppSpec;
+import com.yozosoft.api.order.dto.ServiceAppUserRightDto;
 import com.yozosoft.api.tcc.Participant;
 import com.yozosoft.api.tcc.TccStatus;
 import com.yozosoft.saas.YozoServiceApp;
@@ -82,14 +80,21 @@ public class OrderService implements IOrderService{
 					if(osa.getSpecs().isEmpty()) {
 						flag = false;//如果map为空，改成不合法
 					}
-					Object obj = osa.getSpecs().get(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())[0];
-
-					if(obj == null ||  Integer.valueOf(obj.toString()) <=0) {
-						flag = false;//有效期为空，改成不合法
+					
+					//有效期的值
+					Object validityTime = osa.getSpecs().get(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())[0];
+					//有效期的单位
+					Object unitType = osa.getSpecs().get(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())[1];
+					//转换次数
+					Object num = osa.getSpecs().get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode())[0];
+					//转换大小
+					Object size = osa.getSpecs().get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode())[0];
+					
+					if(num ==null || size==null ||validityTime == null || unitType==null || Integer.valueOf(validityTime.toString()) <=0 || UnitType.getUnit(unitType.toString()) == null) {
+						flag = false;//有效期、单位、次数、大小为空，改成不合法
 					}
 					Iterator<String> it = osa.getSpecs().keySet().iterator();
 					if(it.hasNext()) {
-
 						Object defaultValue = EnumAuthCode.getDefaultValue(it.next());
 						if(defaultValue == null) {
 							flag = false;//枚举类没有对应的authCode，就改成非法
@@ -153,7 +158,7 @@ public class OrderService implements IOrderService{
 	 * 订单确认
 	 */
 	@Override
-	public ResponseEntity confirm(long orderId, String nonce, String sign) {
+	public ResponseEntity confirm(ServiceAppUserRightDto serviceAppUserRightDto,long orderId, String nonce, String sign) {
 		RedisOrderDto dto = redisCacheManager.get(RedisConsts.ORDERKEY + orderId, RedisOrderDto.class);
 		if (dto == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -164,7 +169,7 @@ public class OrderService implements IOrderService{
 			boolean isRepeat = redisCacheManager.setnx(RedisConsts.ORDERIDMP + orderId, "confirm:" + DateViewUtils.getNowFull(), -1L);
 			if (isRepeat) {
 				//事务支持
-				IResult<String> result = orderManager.modifyOrderEffective(dto);
+				IResult<String> result = orderManager.modifyOrderEffective(serviceAppUserRightDto,orderId,dto.getUserId());
 				if (result.isSuccess()) {
 					//操作成功,删除记录的key
 					redisCacheManager.delete(RedisConsts.ORDERKEY + orderId);
