@@ -68,7 +68,7 @@ public class UploadInterceptor implements HandlerInterceptor {
 		
 		//解密module参数
 		ModuleEntity moduleEntity =EncryptUtils.decryptModule(module);
-		if(moduleEntity.getModule() == null || moduleEntity.getTimeStamp()==null) {
+		if(moduleEntity ==null || moduleEntity.getModule() == null || moduleEntity.getTimeStamp()==null) {
 			HttpUtils.sendResponse(request, response, JsonResultUtils.buildFailJsonResultByResultCode(EnumResultCode.E_UPLOAD_FILE));
 			return false;
 		}
