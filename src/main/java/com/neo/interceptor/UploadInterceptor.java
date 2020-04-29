@@ -68,7 +68,7 @@ public class UploadInterceptor implements HandlerInterceptor {
 		String nonceParm = request.getHeader(PtsConsts.HEADER_NONCE);
 		ModuleEntity moduleEntity;
 		
-		if(StringUtils.isBlank(module) && StringUtils.isBlank(nonceParm) && CheckMobileUtils.checkIsMobile(request)) {
+		if(StringUtils.isBlank(module) && StringUtils.isBlank(nonceParm)) {
 			System.out.println("=========是手机移动端=======");
 			moduleEntity = new ModuleEntity();
 			moduleEntity.setModule(1);
