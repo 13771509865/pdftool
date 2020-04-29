@@ -189,10 +189,13 @@ public class UploadService {
 			ptsApplyPO.setAddress(String.valueOf(userId));
 		}
 		
-		ModuleEntity moduleEntity =EncryptUtils.decryptModule(module);
-		if(moduleEntity.getModule() !=null ) {
-			ptsApplyPO.setModule(moduleEntity.getModule());
+		if(StringUtils.isNotBlank(module)) {
+			ModuleEntity moduleEntity =EncryptUtils.decryptModule(module);
+			if(moduleEntity.getModule() !=null ) {
+				ptsApplyPO.setModule(moduleEntity.getModule());
+			}
 		}
+		
 		return ptsApplyPO;
 
 	}

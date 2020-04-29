@@ -20,6 +20,7 @@ import com.neo.commons.cons.constants.TimeConsts;
 import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.cons.entity.FileHeaderEntity;
 import com.neo.commons.cons.entity.ModuleEntity;
+import com.neo.commons.util.CheckMobileUtils;
 import com.neo.commons.util.EncryptUtils;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonResultUtils;
@@ -65,9 +66,15 @@ public class UploadInterceptor implements HandlerInterceptor {
 			throws Exception {
 		String module = request.getParameter(PtsConsts.MODULE);
 		String nonceParm = request.getHeader(PtsConsts.HEADER_NONCE);
+		ModuleEntity moduleEntity;
 		
+		if(StringUtils.isBlank(module) && StringUtils.isBlank(nonceParm) && CheckMobileUtils.checkIsMobile(request)) {
+			System.out.println("=========是手机移动端=======");
+			moduleEntity = new ModuleEntity();
+			moduleEntity.setModule(1);
+		}else {
 		//解密module参数
-		ModuleEntity moduleEntity =EncryptUtils.decryptModule(module);
+	    moduleEntity =EncryptUtils.decryptModule(module);
 		if(moduleEntity ==null || moduleEntity.getModule() == null || moduleEntity.getTimeStamp()==null) {
 			HttpUtils.sendResponse(request, response, JsonResultUtils.buildFailJsonResultByResultCode(EnumResultCode.E_UPLOAD_FILE));
 			return false;
@@ -79,6 +86,7 @@ public class UploadInterceptor implements HandlerInterceptor {
 			HttpUtils.sendResponse(request, response, JsonResultUtils.buildFailJsonResultByResultCode(EnumResultCode.E_UPLOAD_FILE));
 			return false;
 		}
+	}
 		
 		Long userID = HttpUtils.getSessionUserID(request);
 		ServletRequestContext ctx = new ServletRequestContext(request);
