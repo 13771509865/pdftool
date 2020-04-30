@@ -64,8 +64,8 @@ public class UaaAuthInterceptor implements HandlerInterceptor{
 		IResult<OAuth2AccessToken> result = uaaService.checkSecurity(request);
 		HttpSession session = request.getSession();
 		if(!result.isSuccess()) {
-			String userInfo = (String)session.getAttribute(ConstantCookie.SESSION_USER);
-			if(StringUtils.isNotBlank(userInfo)) {//确保uaa登出后，同步登出
+			UaaToken token = (UaaToken)session.getAttribute(ConstantCookie.SESSION_USER);
+			if(token != null) {//确保uaa登出后，同步登出
 				 session.removeAttribute(ConstantCookie.SESSION_USER);
 			}
 			HttpUtils.sendResponse(request, response, JsonResultUtils.buildFailJsonResultByResultCode(EnumResultCode.E_UNLOGIN_ERROR));
