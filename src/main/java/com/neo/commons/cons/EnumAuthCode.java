@@ -38,6 +38,7 @@ public enum EnumAuthCode {
 	PTS_VALIDITY_TIME(27,"权益有效期","validityTime",null,1,null,null);
 
 
+
 	private Integer value;
 	private String info;
 	private String authCode;
