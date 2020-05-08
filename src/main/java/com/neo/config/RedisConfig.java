@@ -40,6 +40,22 @@ public class RedisConfig {
         redisScript.setResultType(Number.class);
         return redisScript;
     }
+    
+    
+    @Bean(name = "setFileInfoScript")
+    public DefaultRedisScript setFileInfo() {
+        DefaultRedisScript redisScript = new DefaultRedisScript();
+        redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource("luaScripts/setFileInfo.lua")));
+        return redisScript;
+    }
+    
+    @Bean(name = "getFileInfoScript")
+    public DefaultRedisScript<String> getFileInfo() {
+        DefaultRedisScript<String> redisScript = new DefaultRedisScript<>();
+        redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource("luaScripts/getFileInfo.lua")));
+        redisScript.setResultType(String.class);
+        return redisScript;
+    }
 
     @Bean
     public RedisTemplate<String, Object> redisCacheTemplate(LettuceConnectionFactory redisConnectionFactory) {

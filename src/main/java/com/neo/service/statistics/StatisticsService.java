@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumAuthCode;
@@ -27,6 +28,7 @@ import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.dao.FcsFileInfoPOMapper;
 import com.neo.dao.PtsSummaryPOMapper;
+import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.model.bo.FileUploadBO;
 import com.neo.model.po.FcsFileInfoPO;
 import com.neo.model.po.PtsAuthPO;
@@ -188,7 +190,21 @@ public class StatisticsService {
 
 
 
-
+	/**
+	 * 根据fileHash查询转换结果
+	 * @param fileHash
+	 * @return
+	 */
+	public IResult<FcsFileInfoBO> getFileInfoByFileHash(String fileHash){
+		String fileInfo = redisCacheManager.getFileInfo(fileHash);
+		if(StringUtils.isBlank(fileInfo)) {
+			return DefaultResult.failResult(EnumResultCode.E_BEING_CONVERT.getInfo());
+		}
+		FcsFileInfoBO fcsFileInfoBO = JsonUtils.json2obj(fileInfo, FcsFileInfoBO.class);
+		
+		
+		return DefaultResult.successResult(fcsFileInfoBO);
+	}
 
 
 

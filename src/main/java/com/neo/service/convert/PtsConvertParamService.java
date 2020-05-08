@@ -16,6 +16,9 @@ import com.neo.commons.cons.EnumStatus;
 import com.neo.commons.cons.constants.FcsParmConsts;
 import com.neo.commons.cons.constants.PtsConsts;
 import com.neo.commons.cons.constants.SizeConsts;
+import com.neo.commons.cons.constants.SysConstant;
+import com.neo.commons.cons.constants.UaaConsts;
+import com.neo.commons.cons.entity.ConvertEntity;
 import com.neo.commons.cons.entity.ModuleEntity;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.properties.PtsProperty;
@@ -42,6 +45,33 @@ public class PtsConvertParamService {
 	private PtsProperty ptsProperty;
 
 
+	/**
+	 * 构建ConvertEntity对象
+	 * @param convertBO
+	 * @param request
+	 * @return
+	 */
+	public ConvertEntity buildConvertEntity(ConvertParameterBO convertBO,HttpServletRequest request) {
+		ConvertEntity convertEntity = new ConvertEntity();
+		String cookie = request.getHeader(UaaConsts.COOKIE);//文件上传给优云要用到
+		Boolean isMember = request.getAttribute(SysConstant.MEMBER_SHIP)==null?false:(Boolean)request.getAttribute(SysConstant.MEMBER_SHIP);
+		String fileHash = getFileHash(convertBO);
+		Long userId = HttpUtils.getSessionUserID(request);
+		Integer module =request.getParameter(PtsConsts.SECTION)==null?null:Integer.valueOf(request.getParameter(PtsConsts.SECTION));
+		Boolean isMobile = CheckMobileUtils.checkIsMobile(request);
+		
+		convertEntity.setCookie(cookie);
+		convertEntity.setFileHash(fileHash);
+		convertEntity.setIpAddress(HttpUtils.getIpAddr(request));
+		convertEntity.setIsMember(isMember);
+		convertEntity.setUserId(userId);
+		convertEntity.setModule(module);
+		convertEntity.setIsMobile(isMobile);
+		return convertEntity;
+	}
+	
+	
+	
 	/**
 	 * 构建传递给fcs的参数条件
 	 * @param convertPO
@@ -120,7 +150,7 @@ public class PtsConvertParamService {
 	 * @param request
 	 * @return
 	 */
-	public PtsSummaryPO buildPtsSummaryPOParameter(FcsFileInfoBO fcsFileInfoBO,ConvertParameterBO convertBO,HttpServletRequest request) {
+	public PtsSummaryPO buildPtsSummaryPOParameter(FcsFileInfoBO fcsFileInfoBO,ConvertParameterBO convertBO,ConvertEntity convertEntity) {
 		PtsSummaryPO ptsSummaryPO = new PtsSummaryPO();
 		Long srcFileSize = convertBO.getSrcFileSize();
 		if(srcFileSize >= 0 && srcFileSize <=SizeConsts.PTS_TWO_SIZE) {
@@ -157,7 +187,7 @@ public class PtsConvertParamService {
 			ptsSummaryPO.setIsSuccess(1);
 		}
 
-		if(CheckMobileUtils.checkIsMobile(request)) {//判断是手机端，还是PC端
+		if(convertEntity.getIsMobile()) {//判断是手机端，还是PC端
 			ptsSummaryPO.setAppType(0);
 		}else {
 			ptsSummaryPO.setAppType(1);
@@ -168,16 +198,16 @@ public class PtsConvertParamService {
 		String nowTime = DateViewUtils.getNowTime();
 
 
-		Long userId = HttpUtils.getSessionUserID(request);
-		if(userId ==null) {//如果登录ip_address就记录userId，没有登录就记录ip地址
-			ptsSummaryPO.setIpAddress(HttpUtils.getIpAddr(request));
+		
+		if(convertEntity.getUserId() ==null) {//如果登录ip_address就记录userId，没有登录就记录ip地址
+			ptsSummaryPO.setIpAddress(convertEntity.getIpAddress());
 		}else {
-			ptsSummaryPO.setIpAddress(String.valueOf(userId));
+			ptsSummaryPO.setIpAddress(String.valueOf(convertEntity.getUserId()));
 		}
 
 		//区分模块
-		if(request.getParameter(PtsConsts.SECTION) != null ) {
-			ptsSummaryPO.setModule(Integer.valueOf(request.getParameter(PtsConsts.SECTION)));
+		if(convertEntity.getModule() != null ) {
+			ptsSummaryPO.setModule(convertEntity.getModule());
 		}
 		ptsSummaryPO.setCreateDate(DateViewUtils.parseSimple(nowDate));//时间搞一搞
 		ptsSummaryPO.setCreateTime(DateViewUtils.parseSimpleTime(nowTime));

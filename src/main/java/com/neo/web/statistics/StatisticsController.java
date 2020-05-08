@@ -1,14 +1,9 @@
 package com.neo.web.statistics;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.neo.service.convert.PtsConvertService;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,20 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonResultUtils;
-import com.neo.model.bo.FileUploadBO;
-import com.neo.model.po.FcsFileInfoPO;
-import com.neo.model.po.PtsSummaryPO;
+import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.model.qo.FcsFileInfoQO;
-import com.neo.model.qo.PtsSummaryQO;
+import com.neo.service.convert.PtsConvertService;
 import com.neo.service.statistics.StatisticsService;
 
-import io.lettuce.core.dynamic.annotation.Param;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -119,7 +109,17 @@ public class StatisticsController {
 	}
 	
 	
-
+	@ApiOperation(value = "根据fileHash查询转换结果")
+	@PostMapping(value = "/fileInfo")
+	@ResponseBody
+	public Map<String,Object> getFileInfoByFileHash(@RequestParam String fileHash){
+		IResult<FcsFileInfoBO> result =  statisticsService.getFileInfoByFileHash(fileHash);
+		if(result.isSuccess()) {
+			return JsonResultUtils.successMapResult(result.getData());
+		}else {
+			return JsonResultUtils.failMapResult(result.getMessage());
+		}
+	}
 	
 
 
