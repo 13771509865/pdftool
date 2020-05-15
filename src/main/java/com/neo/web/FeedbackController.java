@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.neo.commons.cons.EnumResultCode;
@@ -46,6 +47,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(value = "用户反馈Controller", tags = {"用户反馈Controller"})
 @Controller
+@RequestMapping(value = "/api")
 public class FeedbackController{
 	
 	@Autowired

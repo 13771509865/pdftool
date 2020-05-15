@@ -34,7 +34,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(value = "上传相关Controller", tags = {"上传相关Controller"})
 @Controller
-@RequestMapping(value = "/file")
+@RequestMapping(value = "/api/file")
 public class UploadController{
 
 	@Autowired
