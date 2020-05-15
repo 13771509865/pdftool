@@ -31,7 +31,6 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(value = "订单Controller", tags = {"订单Controller"})
 @RestController
-@RequestMapping(value = "/api")
 public class OrderController {
 
 	@Autowired

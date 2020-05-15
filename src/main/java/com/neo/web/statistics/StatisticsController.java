@@ -37,7 +37,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api(value = "查询记录相关Controller", tags = {"查询记录相关Controller"})
 @Controller
-@RequestMapping(value = "/api/statistics")
+@RequestMapping(value = "/statistics")
 public class StatisticsController {
 	
 	@Autowired

@@ -58,7 +58,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(value = "下载相关Controller", tags = {"下载相关Controller"})
 @Controller
-@RequestMapping(value = "/api/file")
+@RequestMapping(value = "/file")
 public class DownLoadController {
 
 	@Autowired

@@ -42,7 +42,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api(value = "转换相关Controller", tags = {"转换相关Controller"})
 @Controller
-@RequestMapping(value = "/api/composite")
+@RequestMapping(value = "/composite")
 public class PtsConvertController {
 
 	@Autowired

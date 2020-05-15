@@ -47,7 +47,6 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(value = "用户反馈Controller", tags = {"用户反馈Controller"})
 @Controller
-@RequestMapping(value = "/api")
 public class FeedbackController{
 	
 	@Autowired

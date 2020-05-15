@@ -32,7 +32,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api(value = "单点相关Controller", tags = {"单点相关Controller"})
 @Controller
-@RequestMapping(value = "/api/uaa")
+@RequestMapping(value = "/uaa")
 public class UaaController {
 	
 	@Autowired

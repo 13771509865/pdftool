@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(value = "删除相关Controller", tags = {"删除相关Controller"})
 @Controller
-@RequestMapping(value = "/api/file")
+@RequestMapping(value = "/file")
 public class DeleteFileController {
 	
 	@Autowired

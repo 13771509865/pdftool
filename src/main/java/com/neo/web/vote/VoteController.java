@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api(value = "投票相关Controller", tags = {"投票相关Controller"})
 @Controller
-@RequestMapping(value = "/api/vote")
+@RequestMapping(value = "/vote")
 public class VoteController {
 
 	
