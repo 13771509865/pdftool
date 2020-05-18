@@ -3,6 +3,7 @@ package com.neo.web.order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +31,8 @@ import io.swagger.annotations.ApiOperation;
  * @create 2019年10月30日
  */
 @Api(value = "订单Controller", tags = {"订单Controller"})
-@RestController
+@Controller
+@RequestMapping(value = "/api")
 public class OrderController {
 
 	@Autowired
