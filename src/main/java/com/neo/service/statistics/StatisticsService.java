@@ -20,6 +20,7 @@ import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.cons.constants.YzcloudConsts;
 import com.neo.commons.cons.entity.HttpResultEntity;
+import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.properties.ConvertNumProperty;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.DateViewUtils;
@@ -52,9 +53,6 @@ public class StatisticsService {
 	private PtsSummaryPOMapper ptsSummaryPOMapper;
 
 	@Autowired
-	private ConvertNumProperty convertNumProperty;
-
-	@Autowired
 	private RedisCacheManager<String> redisCacheManager;
 
 	@Autowired
@@ -64,16 +62,13 @@ public class StatisticsService {
 	private HttpAPIService httpAPIService;
 
 	@Autowired
-	private IAuthService iAuthService;
-
-	@Autowired
-	private StaticsManager staticsManager;
-
-	@Autowired
 	private IConvertRecordService iConvertRecordService;
 	
 	@Autowired
 	private AuthManager authManager;
+	
+	@Autowired
+	private ConfigProperty configProperty;
 
 	/**
 	 * 根据userID查询三天内的转换记录
@@ -294,6 +289,19 @@ public class StatisticsService {
 
 
 
+	/**
+	 * 获取PDF工具集目前线上运行的模块
+	 * @return
+	 */
+	public Map<String,Object> getPdfMudules(){
+		Map<String,Object> moduleMap = new HashMap<>();
+		String[] convertCode = configProperty.getConvertModule().split(SysConstant.COMMA);
+		for(String code : convertCode) {
+			String info = EnumAuthCode.getTypeInfo(Integer.valueOf(code));
+			moduleMap.put(code, info);
+		}
+		return moduleMap;
+	}
 
 
 

@@ -123,6 +123,14 @@ public class StatisticsController {
 	
 
 
+	
+	@ApiOperation(value = "获取PDF工具集当前运行的模块")
+	@GetMapping(value = "/modules")
+	@ResponseBody
+	public Map<String,Object> getFileInfoByFileHash(){
+		return JsonResultUtils.successMapResult(statisticsService.getPdfMudules());
+	}
+	
 
 
 }
