@@ -34,10 +34,10 @@ public class DeleteFileService {
 	 */
 	public IResult<String> deleteConvert(String fileHash,String uCloudFileId,Long userID){
 
-		//filehash和uCloudFileId，必须要有一个
-		if(StringUtils.isBlank(fileHash) && StringUtils.isBlank(uCloudFileId)) {
-			return DefaultResult.failResult(EnumResultCode.E_NOTALL_PARAM.getInfo());
-		}
+//		//filehash和uCloudFileId，必须要有一个
+//		if(StringUtils.isBlank(fileHash) || StringUtils.isBlank(uCloudFileId)) {
+//			return DefaultResult.failResult(EnumResultCode.E_NOTALL_PARAM.getInfo());
+//		}
 
 		FcsFileInfoPO fcsFileInfoPO =new FcsFileInfoPO();
 		fcsFileInfoPO.setUserID(userID);
