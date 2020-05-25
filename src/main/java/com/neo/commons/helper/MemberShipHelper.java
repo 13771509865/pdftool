@@ -30,7 +30,7 @@ public class MemberShipHelper {
     private HttpAPIService httpAPIService;
 
     
-    @Async("asynConvertExecutor")
+    @Async("addMemberEventExecutor")
     public void addMemberEvent(Long userId, EnumEventType enumEventType) {
         if (userId != null && enumEventType != null) {
             MemberShipBo memberShipBo = new MemberShipBo();

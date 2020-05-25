@@ -15,6 +15,7 @@ import com.neo.commons.cons.EnumAuthCode;
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.SysConstant;
+import com.neo.commons.cons.entity.ConvertEntity;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.properties.PtsProperty;
@@ -79,22 +80,20 @@ public class PtsConvertService {
 	 * @param waitTime
 	 * @return
 	 */ 
-	public IResult<FcsFileInfoBO> dispatchConvert(ConvertParameterBO convertBO,UaaToken uaaToken,String ipAddress,String cookie,Boolean isMember){
+	public IResult<FcsFileInfoBO> dispatchConvert(ConvertParameterBO convertBO,UaaToken uaaToken,ConvertEntity convertEntity){
 		FcsFileInfoBO fcsFileInfoBO = new FcsFileInfoBO();
-		String fileHash = null;
 		
 		//判断是否是重复失败文件
 		if(EnumAuthCode.existReconvertModule(authManager.getAuthCode(convertBO), configProperty.getReConvertModule())) {
-			fileHash = ptsConvertParamService.getFileHash(convertBO);
-			if(StringUtils.isNotBlank(redisCacheManager.getHashValue(DateViewUtils.getNow(), fileHash))) {
+			if(StringUtils.isNotBlank(redisCacheManager.getHashValue(DateViewUtils.getNow(), convertEntity.getFileHash()))) {
 				fcsFileInfoBO.setCode(EnumResultCode.E_CONVERT_FAIL.getValue());
-				fcsFileInfoBO.setFileHash(fileHash);
+				fcsFileInfoBO.setFileHash(convertEntity.getFileHash());
 				return DefaultResult.failResult(EnumResultCode.E_CONVERT_FAIL.getInfo(),fcsFileInfoBO);
 			}
 		}
 		
 		//取超时时间
-		String ticket = redisTicketManager.getConverTicket(isMember);
+		String ticket = redisTicketManager.getConverTicket(convertEntity.getIsMember());
 
 		if (StringUtils.isEmpty(ticket)) {
 			fcsFileInfoBO.setCode(EnumResultCode.E_SERVER_BUSY.getValue());
@@ -124,7 +123,7 @@ public class PtsConvertService {
 			}
 
 			Long userId = uaaToken==null?null:uaaToken.getUserId();
-			updateFcsFileInfo(convertBO,fcsFileInfoBO,userId,ipAddress);
+			updateFcsFileInfo(convertBO,fcsFileInfoBO,userId,convertEntity.getIpAddress());
 			return DefaultResult.successResult(fcsFileInfoBO);
 
 		} catch (Exception e) {
@@ -173,8 +172,8 @@ public class PtsConvertService {
 	 * @param request
 	 * @return
 	 */
-	@Async("asynConvertExecutor")
-	public IResult<String> updatePtsSummay(FcsFileInfoBO fcsFileInfoBO, ConvertParameterBO convertBO,HttpServletRequest request){
+	@Async("updatePtsSummayExecutor")
+	public IResult<String> updatePtsSummay(FcsFileInfoBO fcsFileInfoBO, ConvertParameterBO convertBO,ConvertEntity convertEntity){
 		try {
 			//不允许重复的文件，转换失败不统计
 			if(EnumAuthCode.existReconvertModule(authManager.getAuthCode(convertBO), configProperty.getReConvertModule())
@@ -183,7 +182,7 @@ public class PtsConvertService {
 				return DefaultResult.successResult();
 			}
 			
-			PtsSummaryPO ptsSummaryPO = ptsConvertParamService.buildPtsSummaryPOParameter(fcsFileInfoBO,convertBO, request);
+			PtsSummaryPO ptsSummaryPO = ptsConvertParamService.buildPtsSummaryPOParameter(fcsFileInfoBO,convertBO,convertEntity);
 			int upCount = ptsSummaryPOMapper.updatePtsSumm(ptsSummaryPO);
 			if(upCount < 1) {
 				int a = ptsSummaryPOMapper.insertPtsSumm(ptsSummaryPO);

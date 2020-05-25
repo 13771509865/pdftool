@@ -83,46 +83,6 @@ public class FeedbackController{
 	
 	
 	
-	@ApiOperation(value = "用户反馈")
-	@PostMapping(value = "/feed")
-	@ResponseBody
-	public Map<String, Object> test(String str){ 
-		if(!StringUtils.equals(str, "000")) {
-			return JsonResultUtils.failMapResult("走开");
-		}
-		
-		List<PtsAuthPO>list = ptsAuthPOMapper.selectPtsAuthPO(new PtsAuthQO(null, EnumStatus.ENABLE.getValue(), null));
-		System.out.println(list.size());
-		for(PtsAuthPO ptsAuthPO : list) {
-			List<PtsAuthPO> authList = new ArrayList<>();
-			String auth = ptsAuthPO.getAuthCode();
-			Map<String,Object> authMap = StrUtils.strToMap(auth, SysConstant.COMMA, SysConstant.COLON);
-			for (Map.Entry<String, Object> m : authMap.entrySet()) {
-				PtsAuthPO po = new PtsAuthPO();
-				po.setAuthCode(m.getKey());
-				po.setAuthValue(m.getValue().toString());
-				po.setGmtCreate(ptsAuthPO.getGmtCreate());
-				po.setGmtExpire(ptsAuthPO.getGmtExpire());
-				po.setGmtModified(ptsAuthPO.getGmtModified());
-				po.setPriority(ptsAuthPO.getPriority());
-				po.setStatus(ptsAuthPO.getStatus());
-				po.setUserid(ptsAuthPO.getUserid());
-				po.setOrderId(ptsAuthPO.getOrderId());
-				authList.add(po);
-			}
-			try {
-				ptsAuthPOMapper.insertPtsAuthPO(authList);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
-		return JsonResultUtils.successMapResult();
-	}
-
-
-	
-	
 	
 	
 }

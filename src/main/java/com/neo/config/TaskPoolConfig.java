@@ -26,16 +26,16 @@ public class TaskPoolConfig {
         return buildExecutor(sysConfig.getCorePoolSize(),sysConfig.getMaxPoolSize(),sysConfig.getQueueCapacity(),sysConfig.getKeepAliveSeconds(),"asynConvertExecutor-",sysConfig.getWaitForTasksToCompleteOnShutdown(),sysConfig.getAwaitTerminationSeconds(),new ThreadPoolExecutor.AbortPolicy());
     }
 
-    /**
-    * @description http请求发送线程池 等待队列长度为Interger.Max
-    * @author zhoufeng
-    * @date 2019/2/14
-    */
-//    @Bean("callbackHttpclientExecutor")
-//    public Executor callbackHttpclientExecutor(){
-//        return buildExecutor(sysConfig.getCorePoolSize(),sysConfig.getMaxPoolSize(),Integer.MAX_VALUE,sysConfig.getKeepAliveSeconds(),"callbackHttpclientExecutor-",sysConfig.getWaitForTasksToCompleteOnShutdown(),sysConfig.getAwaitTerminationSeconds(),new ThreadPoolExecutor.AbortPolicy());
-////        return buildExecutor(sysConfig.getCorePoolSize(),sysConfig.getMaxPoolSize(),sysConfig.getQueueCapacity(),sysConfig.getKeepAliveSeconds(),"httpclientExecutor-",sysConfig.getWaitForTasksToCompleteOnShutdown(),sysConfig.getAwaitTerminationSeconds(),new ThreadPoolExecutor.AbortPolicy());
-//    }
+    @Bean("addMemberEventExecutor")
+    public Executor addMemberEventExecutor(){
+        return buildExecutor(sysConfig.getCorePoolSize(),sysConfig.getMaxPoolSize(),sysConfig.getQueueCapacity(),sysConfig.getKeepAliveSeconds(),"addMemberEventExecutor-",sysConfig.getWaitForTasksToCompleteOnShutdown(),sysConfig.getAwaitTerminationSeconds(),new ThreadPoolExecutor.AbortPolicy());
+    }
+    
+    @Bean("updatePtsSummayExecutor")
+    public Executor updatePtsSummayExecutor(){
+        return buildExecutor(sysConfig.getCorePoolSize(),sysConfig.getMaxPoolSize(),sysConfig.getQueueCapacity(),sysConfig.getKeepAliveSeconds(),"updatePtsSummayExecutor-",sysConfig.getWaitForTasksToCompleteOnShutdown(),sysConfig.getAwaitTerminationSeconds(),new ThreadPoolExecutor.AbortPolicy());
+    }
+
 
     @Bean("uploadYcFileExecutor")
     public Executor uploadYzFileExecutor(){

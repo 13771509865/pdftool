@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumAuthCode;
@@ -19,6 +20,7 @@ import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.cons.constants.YzcloudConsts;
 import com.neo.commons.cons.entity.HttpResultEntity;
+import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.properties.ConvertNumProperty;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.DateViewUtils;
@@ -27,6 +29,7 @@ import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.dao.FcsFileInfoPOMapper;
 import com.neo.dao.PtsSummaryPOMapper;
+import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.model.bo.FileUploadBO;
 import com.neo.model.po.FcsFileInfoPO;
 import com.neo.model.po.PtsAuthPO;
@@ -50,9 +53,6 @@ public class StatisticsService {
 	private PtsSummaryPOMapper ptsSummaryPOMapper;
 
 	@Autowired
-	private ConvertNumProperty convertNumProperty;
-
-	@Autowired
 	private RedisCacheManager<String> redisCacheManager;
 
 	@Autowired
@@ -62,16 +62,13 @@ public class StatisticsService {
 	private HttpAPIService httpAPIService;
 
 	@Autowired
-	private IAuthService iAuthService;
-
-	@Autowired
-	private StaticsManager staticsManager;
-
-	@Autowired
 	private IConvertRecordService iConvertRecordService;
 	
 	@Autowired
 	private AuthManager authManager;
+	
+	@Autowired
+	private ConfigProperty configProperty;
 
 	/**
 	 * 根据userID查询三天内的转换记录
@@ -188,7 +185,21 @@ public class StatisticsService {
 
 
 
-
+	/**
+	 * 根据fileHash查询转换结果
+	 * @param fileHash
+	 * @return
+	 */
+	public IResult<FcsFileInfoBO> getFileInfoByFileHash(String fileHash){
+		String fileInfo = redisCacheManager.getFileInfo(fileHash);
+		if(StringUtils.isBlank(fileInfo)) {
+			return DefaultResult.failResult(EnumResultCode.E_BEING_CONVERT.getInfo());
+		}
+		FcsFileInfoBO fcsFileInfoBO = JsonUtils.json2obj(fileInfo, FcsFileInfoBO.class);
+		
+		
+		return DefaultResult.successResult(fcsFileInfoBO);
+	}
 
 
 
@@ -278,6 +289,19 @@ public class StatisticsService {
 
 
 
+	/**
+	 * 获取PDF工具集目前线上运行的模块
+	 * @return
+	 */
+	public Map<String,Object> getPdfMudules(){
+		Map<String,Object> moduleMap = new HashMap<>();
+		String[] convertCode = configProperty.getConvertModule().split(SysConstant.COMMA);
+		for(String code : convertCode) {
+			String info = EnumAuthCode.getTypeInfo(Integer.valueOf(code));
+			moduleMap.put(code, info);
+		}
+		return moduleMap;
+	}
 
 
 
