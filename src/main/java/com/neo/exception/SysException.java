@@ -1,9 +1,22 @@
 package com.neo.exception;
 
-public class SysException extends Exception {
-	private static final long serialVersionUID = 5765726800667388038L;
+import com.neo.commons.cons.EnumResultCode;
 
-	public SysException(String message) {
-		super(message);
+public class SysException extends CustomException {
+
+	public SysException(Integer code, String message) {
+		super(code, message);
+	}
+
+	public SysException(Integer httpCode,Integer code, String message, Object data){
+		super(httpCode,code,message,data);
+	}
+
+	public SysException(EnumResultCode enumResultCode) {
+		super(enumResultCode);
+	}
+
+	public SysException(Integer code, String message, Object data) {
+		super(code, message, data);
 	}
 }

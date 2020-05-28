@@ -60,7 +60,9 @@ public class UaaAuthInterceptor implements HandlerInterceptor{
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object arg2) throws Exception {
-		
+
+		String cookie = request.getHeader(UaaConsts.COOKIE);
+		System.out.println("====cookie======"+cookie);
 		IResult<OAuth2AccessToken> result = uaaService.checkSecurity(request);
 		HttpSession session = request.getSession();
 		if(!result.isSuccess()) {
