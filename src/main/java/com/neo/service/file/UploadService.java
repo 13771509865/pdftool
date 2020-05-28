@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.neo.commons.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +25,6 @@ import com.neo.commons.cons.entity.FileHeaderEntity;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.cons.entity.ModuleEntity;
 import com.neo.commons.properties.PtsProperty;
-import com.neo.commons.util.EncryptUtils;
-import com.neo.commons.util.HttpUtils;
-import com.neo.commons.util.JsonUtils;
-import com.neo.commons.util.SysLogUtils;
 import com.neo.dao.PtsApplyPOMapper;
 import com.neo.model.bo.FileUploadBO;
 import com.neo.model.po.PtsApplyPO;
@@ -123,12 +120,18 @@ public class UploadService {
 	 * @param ycFileId
 	 * @return
 	 */
-	public IResult<FileHeaderEntity> getFileHeaderEntity(String ycFileId,String cookie){
+	public IResult<FileHeaderEntity> getFileHeaderEntity(String ycFileId,String cookie,String accessToken ,String refreshToken){
 		Map<String, Object> params = new HashMap<>();
 		params.put("fileId", ycFileId);
 		
 		Map<String, Object> headers = new HashMap<>();
-        headers.put(UaaConsts.COOKIE, cookie);
+		if(StringUtils.isNotBlank(cookie)){
+			headers.put(UaaConsts.COOKIE, cookie);
+		}
+		if(StringUtils.isNotBlank(accessToken) && StringUtils.isNotBlank(refreshToken)){
+			headers.put(UaaConsts.ACCESS_TOKEN, accessToken);
+			headers.put(UaaConsts.REFRESH_TOKEN, accessToken);
+		}
 
 		//根据fileid去优云获取文件的下载路径
 		IResult<HttpResultEntity> ycResult = httpAPIService.doGet(ptsProperty.getYzcloud_domain()+YzcloudConsts.DOWNLOAD_INTERFACE, params,headers);
@@ -202,10 +205,13 @@ public class UploadService {
 	
 	
 	public static void main(String[] args) {
-		String a = "d656aac07d474180b7c6dfa525a42192/fcsFile.pdf";
-		int s = a.lastIndexOf("/");
-		System.out.println(a.substring(s+1));
-		
+		String cookie = "1";
+		String accessToken = "";
+		String refreshToken = "1";
+		if(StringUtils.isBlank(cookie) && (StringUtils.isBlank(accessToken) || StringUtils.isBlank(refreshToken))) {
+			System.out.println("1");
+		}
+
 	}
 
 	

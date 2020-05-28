@@ -95,13 +95,15 @@ public class UploadInterceptor implements HandlerInterceptor {
 		//判断是普通上传还是优云上传
 		if(StringUtils.isNotBlank(request.getParameter(PtsConsts.YCFILEID))) {
 			String cookie = request.getHeader(UaaConsts.COOKIE);
-			if(StringUtils.isBlank(cookie)) {
+			String accessToken = request.getHeader(UaaConsts.ACCESS_TOKEN);
+			String refreshToken = request.getHeader(UaaConsts.REFRESH_TOKEN);
+			if(StringUtils.isBlank(cookie) && (StringUtils.isBlank(accessToken) || StringUtils.isBlank(refreshToken))) {
 				HttpUtils.sendResponse(request, response, JsonResultUtils.buildFailJsonResultByResultCode(EnumResultCode.E_UNLOGIN_ERROR));
 				return false;
 			}
 			
 			//拿优云的文件链接
-			IResult<FileHeaderEntity> fileHeaderEntity= uploadService.getFileHeaderEntity(request.getParameter(PtsConsts.YCFILEID),cookie);
+			IResult<FileHeaderEntity> fileHeaderEntity= uploadService.getFileHeaderEntity(request.getParameter(PtsConsts.YCFILEID),cookie,accessToken,refreshToken);
 			if(fileHeaderEntity.isSuccess()) {
 				uploadSize = fileHeaderEntity.getData().getContentLength();
 				request.setAttribute(SessionConstant.FILE_HEADER_ENTITY, fileHeaderEntity.getData());
