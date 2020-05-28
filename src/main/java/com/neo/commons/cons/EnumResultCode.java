@@ -28,7 +28,7 @@ public enum EnumResultCode {
 	//用户权限
 	E_VISITOR_UPLOAD_ERROR(23,"游客仅可上传2M以内文档，获取更大权限，请注册登录"),
 	E_VISITOR_CONVERT_NUM_ERROR(24,"游客每日可转换5个文件，获取更大权限，请注册登录"),
-	E_USER_UPLOAD_ERROR(25,"抱歉，文件大小超出3M，暂不支持，成为会员后可以获取更大权限"),
+	E_USER_UPLOAD_ERROR(25,"抱歉，文件大小超出12M，暂不支持，成为会员后可以获取更大权限"),
 	E_USER_CONVERT_NUM_ERROR(26,"抱歉，转换次数已经超出每日限额，成为会员后可以获取更大权限"),
 	
 	//投票
