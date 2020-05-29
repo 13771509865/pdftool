@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.neo.commons.properties.ConvertSizeProperty;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,9 @@ public class AuthManager {
 	@Autowired
 	private ConvertNumProperty convertNumProperty;
 
+	@Autowired
+	private ConvertSizeProperty convertSizeProperty;
+
 
 
 	/**
@@ -65,8 +69,12 @@ public class AuthManager {
 			//拿到配置文件里面，注册用户的转换次数的权限
 			Map<String,Object> numMap = JsonUtils.parseJSON2Map(convertNumProperty);
 
+			//拿到配置文件里面，注册用户的转换大小的权限
+			Map<String,Object> sizeMap = JsonUtils.parseJSON2Map(convertSizeProperty);
+
 			//defaultMap里面是所有的默认权限
 			defaultMap.putAll(numMap);
+			defaultMap.putAll(sizeMap);
 
 
 			Map<String,Object> newAuthMap = new HashMap<>();
@@ -123,7 +131,7 @@ public class AuthManager {
 			permissionDtoAuthMap.put(authCode, SysConstant.TRUE);
 		}
 
-		permissionDtoAuthMap.put(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode(), config.getUploadSize());
+//		permissionDtoAuthMap.put(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode(), config.getUploadSize());
 		return permissionDtoAuthMap;
 	}
 
