@@ -129,13 +129,14 @@ public class UploadService {
 		params.put("fileId", ycFileId);
 		
 		Map<String, Object> headers = new HashMap<>();
-		if(StringUtils.isNotBlank(cookie)){
-			headers.put(UaaConsts.COOKIE, cookie);
-		}
+
 		if(StringUtils.isNotBlank(accessToken) && StringUtils.isNotBlank(refreshToken)){
 			headers.put(UaaConsts.HEADER_ACCESS_TOKEN, accessToken);
-			headers.put(UaaConsts.HEADER_REFRESH_TOKEN, accessToken);
+			headers.put(UaaConsts.HEADER_REFRESH_TOKEN, refreshToken);
+		}else{
+			headers.put(UaaConsts.COOKIE, cookie);
 		}
+
 
 		//根据fileid去优云获取文件的下载路径
 		IResult<HttpResultEntity> ycResult = httpAPIService.doGet(ptsProperty.getYzcloud_domain()+YzcloudConsts.DOWNLOAD_INTERFACE, params,headers);
@@ -236,12 +237,8 @@ public class UploadService {
 
 
 	public static void main(String[] args) {
-		String cookie = "1";
-		String accessToken = "";
-		String refreshToken = "1";
-		if(StringUtils.isBlank(cookie) && (StringUtils.isBlank(accessToken) || StringUtils.isBlank(refreshToken))) {
-			System.out.println("1");
-		}
+		String a = "abc";
+		System.out.println(StringUtils.containsAny(a,"b"));
 
 	}
 
