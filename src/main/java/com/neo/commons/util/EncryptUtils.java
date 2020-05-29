@@ -31,7 +31,6 @@ public class EncryptUtils {
 	/**
 	 * DES加密操作
 	 * @param source 要加密的源
-	 * @param key    约定的密钥
 	 * @return
 	 */
 	public static String encryptDES(String source){
@@ -66,7 +65,6 @@ public class EncryptUtils {
 	/**
 	 * 解密
 	 * @param cryptograph 密文
-	 * @param key         约定的密钥
 	 * @return
 	 */
 	public static String decryptDES(String cryptograph){
@@ -96,7 +94,7 @@ public class EncryptUtils {
 
 	/**
 	 * 解密前端module参数
-	 * @param module
+	 * @param parameter
 	 * @return
 	 */
 	public static ModuleEntity decryptModule(String parameter) {
@@ -117,7 +115,6 @@ public class EncryptUtils {
 			return null;
 		}
 	}
-
 
 
 

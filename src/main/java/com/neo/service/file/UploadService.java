@@ -121,6 +121,10 @@ public class UploadService {
 	 * @return
 	 */
 	public IResult<FileHeaderEntity> getFileHeaderEntity(String ycFileId,String cookie,String accessToken ,String refreshToken){
+		if (StringUtils.isBlank(cookie) && (StringUtils.isBlank(accessToken) || StringUtils.isBlank(refreshToken))) {
+			return DefaultResult.failResult(EnumResultCode.E_UNLOGIN_ERROR.getInfo());
+		}
+
 		Map<String, Object> params = new HashMap<>();
 		params.put("fileId", ycFileId);
 		
@@ -129,8 +133,8 @@ public class UploadService {
 			headers.put(UaaConsts.COOKIE, cookie);
 		}
 		if(StringUtils.isNotBlank(accessToken) && StringUtils.isNotBlank(refreshToken)){
-			headers.put(UaaConsts.ACCESS_TOKEN, accessToken);
-			headers.put(UaaConsts.REFRESH_TOKEN, accessToken);
+			headers.put(UaaConsts.HEADER_ACCESS_TOKEN, accessToken);
+			headers.put(UaaConsts.HEADER_REFRESH_TOKEN, accessToken);
 		}
 
 		//根据fileid去优云获取文件的下载路径
@@ -202,8 +206,35 @@ public class UploadService {
 		return ptsApplyPO;
 
 	}
-	
-	
+
+
+	/**
+	 * 判断加密内容
+	 * @param module
+	 * @param nonceParm
+	 * @return
+	 */
+	public IResult<ModuleEntity> checkModule(String module ,String nonceParm){
+		ModuleEntity moduleEntity = new ModuleEntity();
+		if (StringUtils.isBlank(module) && StringUtils.isBlank(nonceParm)) {
+			System.out.println("=========是手机移动端=======");
+			moduleEntity.setModule(1);
+		} else {
+			//解密module参数
+			moduleEntity = EncryptUtils.decryptModule(module);
+			if (moduleEntity == null || moduleEntity.getModule() == null || moduleEntity.getTimeStamp() == null) {
+				return DefaultResult.failResult();
+			}
+			String nonce = EncryptUtils.decryptDES(nonceParm);
+			//对比时间戳是否一致s
+			if (!StringUtils.equals(nonce, moduleEntity.getTimeStamp())) {
+				return DefaultResult.failResult();
+			}
+		}
+		return DefaultResult.successResult(moduleEntity);
+	}
+
+
 	public static void main(String[] args) {
 		String cookie = "1";
 		String accessToken = "";
