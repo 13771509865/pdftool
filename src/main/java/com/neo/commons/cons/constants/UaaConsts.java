@@ -17,6 +17,8 @@ public class UaaConsts {
 
 	public static final List<String> COOKIE_NAMES = Arrays.asList(ACCESS_TOKEN, REFRESH_TOKEN, SESSION_TOKEN);
 
+	public static final String HEADER_ACCESS_TOKEN = "access-token";
 
+	public static final String HEADER_REFRESH_TOKEN = "refresh-token";
 
 }

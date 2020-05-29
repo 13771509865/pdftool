@@ -47,7 +47,7 @@ public class JsonResultUtils {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("errorcode", result);// 本次请求是否成功
 		params.put("message", message);// 用户封装信息，典型的是检验出错信息
-		params.put("data", data == null ? "" : data);// 本次请求需要返回的数据
+		params.put("data", data == null ? new HashMap<>() : data);// 本次请求需要返回的数据
 		try {
 			return getObjectMapper().writeValueAsString(params);
 		} catch (JsonProcessingException e) {
@@ -111,7 +111,7 @@ public class JsonResultUtils {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("errorcode", result);// 本次请求是否成功
 		params.put("message", message);// 用户封装信息，典型的是检验出错信息
-		params.put("data", data == null ? "" : data);// 本次请求需要返回的数据
+		params.put("data", data == null ? new HashMap<>() : data);// 本次请求需要返回的数据
 		return params;
 	}
 	

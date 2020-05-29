@@ -60,7 +60,7 @@ public class UaaAuthInterceptor implements HandlerInterceptor{
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object arg2) throws Exception {
-		
+
 		IResult<OAuth2AccessToken> result = uaaService.checkSecurity(request);
 		HttpSession session = request.getSession();
 		if(!result.isSuccess()) {

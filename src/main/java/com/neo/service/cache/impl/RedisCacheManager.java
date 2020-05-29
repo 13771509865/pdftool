@@ -1,11 +1,9 @@
 package com.neo.service.cache.impl;
 
-import com.neo.commons.cons.constants.RedisConsts;
-import com.neo.commons.properties.ConfigProperty;
-import com.neo.commons.util.SysLogUtils;
-import com.neo.commons.util.UUIDHelper;
-import com.neo.config.RedisConfig;
-import com.neo.service.cache.CacheManager;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,10 +16,13 @@ import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import com.neo.commons.cons.constants.RedisConsts;
+import com.neo.commons.properties.ConfigProperty;
+import com.neo.commons.util.SysLogUtils;
+import com.neo.commons.util.UUIDHelper;
+import com.neo.config.RedisConfig;
+import com.neo.model.bo.FcsFileInfoBO;
+import com.neo.service.cache.CacheManager;
 
 /**
  * redis实现存取
@@ -38,6 +39,14 @@ public class RedisCacheManager<T> implements CacheManager<T> {
 	@Autowired
     @Qualifier("initPriorityQueueScript")
     private DefaultRedisScript initPriorityQueueScript;
+	
+	@Autowired
+    @Qualifier("setFileInfoScript")
+	private DefaultRedisScript setFileInfoScript;
+	
+	@Autowired
+    @Qualifier("getFileInfoScript")
+	private DefaultRedisScript<String> getFileInfoScript;
 	
     @Autowired
     @Qualifier("htbRateLimiterScript")
@@ -400,7 +409,28 @@ public class RedisCacheManager<T> implements CacheManager<T> {
     }
 
 
+    /**
+     * 保存异步转换结果，指定db4
+     * @param fileHash
+     * @param fcsFileInfoBO
+     * @param time_out
+     */
+    public void setFileInfo(String key,String value,Long time_out) {
+    	List<String> keys = new ArrayList<>();
+    	keys.add(key);
+    	redisTemplate.execute(setFileInfoScript,keys,value,time_out);
+    }
     
-    
+    /**
+     * 根据fileHash获取转换结果，db4
+     * @param key
+     * @return
+     */
+    public String getFileInfo(String key) {
+    	List<String> keys = new ArrayList<>();
+    	keys.add(key);
+    	String value = redisTemplate.execute(getFileInfoScript,keys);
+    	return value;
+    }
 
 }
