@@ -116,7 +116,7 @@ public class UploadService {
 
 
 	/**
-	 * 根据优云的fileid获取优云文件信息，
+	 * 根据优云的fileid获取优云文件信息
 	 * @param ycFileId
 	 * @return
 	 */
