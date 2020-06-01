@@ -73,11 +73,9 @@ public class UploadInterceptor implements HandlerInterceptor {
             HttpUtils.sendResponse(request, response, JsonResultUtils.buildFailJsonResultByResultCode(EnumResultCode.E_UPLOAD_FILE));
             return false;
         }
-        ModuleEntity moduleEntity = checkModuleResult.getData();
 
-        Long userID = HttpUtils.getSessionUserID(request);
         ServletRequestContext ctx = new ServletRequestContext(request);
-        Long uploadSize = null;
+        Long uploadSize = ctx.contentLength();
 
         //判断是普通上传还是优云上传
         if (StringUtils.isNotBlank(request.getParameter(PtsConsts.YCFILEID))) {
@@ -87,19 +85,16 @@ public class UploadInterceptor implements HandlerInterceptor {
 
             //拿优云的文件链接
             IResult<FileHeaderEntity> fileHeaderEntity = uploadService.getFileHeaderEntity(request.getParameter(PtsConsts.YCFILEID), cookie, accessToken, refreshToken);
-            if (fileHeaderEntity.isSuccess()) {
-                uploadSize = fileHeaderEntity.getData().getContentLength();
-                request.setAttribute(SessionConstant.FILE_HEADER_ENTITY, fileHeaderEntity.getData());
-            } else {
+            if (!fileHeaderEntity.isSuccess()) {
                 HttpUtils.sendResponse(request, response, JsonResultUtils.fail((fileHeaderEntity.getMessage())));
                 return false;
             }
-        } else {
-            uploadSize = ctx.contentLength();
+            uploadSize = fileHeaderEntity.getData().getContentLength();
+            request.setAttribute(SessionConstant.FILE_HEADER_ENTITY, fileHeaderEntity.getData());
         }
 
         //验证上传文件大小权限
-        IResult<EnumResultCode> result = iAuthService.checkUploadSize(userID, uploadSize, moduleEntity.getModule());
+        IResult<EnumResultCode> result = iAuthService.checkUploadSize(HttpUtils.getSessionUserID(request), uploadSize, checkModuleResult.getData().getModule());
         if (!result.isSuccess()) {
             HttpUtils.sendResponse(request, response, JsonResultUtils.buildFailJsonResultByResultCode(result.getData()));
             return false;
