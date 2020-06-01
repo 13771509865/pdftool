@@ -40,9 +40,6 @@ public class OrderService implements IOrderService{
 	private RedisCacheManager<RedisOrderDto> redisCacheManager;
 
 	@Autowired
-	private IAuthNameService iAuthNameService;
-
-	@Autowired
 	private PtsProperty ptsProperty;
 
 	/**
@@ -85,12 +82,8 @@ public class OrderService implements IOrderService{
 					Object validityTime = osa.getSpecs().get(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())[0];
 					//有效期的单位
 					Object unitType = osa.getSpecs().get(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())[1];
-					//转换次数
-					Object num = osa.getSpecs().get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode())[0];
-					//转换大小
-					Object size = osa.getSpecs().get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode())[0];
 					
-					if(num ==null || size==null ||validityTime == null || unitType==null || Integer.valueOf(validityTime.toString()) <=0 || UnitType.getUnit(unitType.toString()) == null) {
+					if(validityTime == null || unitType==null || Integer.valueOf(validityTime.toString()) <=0 || UnitType.getUnit(unitType.toString()) == null) {
 						flag = false;//有效期、单位、次数、大小为空，改成不合法
 					}
 					Iterator<String> it = osa.getSpecs().keySet().iterator();

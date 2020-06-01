@@ -47,13 +47,13 @@ public class AuthService implements IAuthService{
 	 * @return
 	 */
 	@Override
-	public IResult<EnumResultCode> checkUserAuth(ConvertParameterBO convertParameterBO,Long userID){
+	public IResult<EnumResultCode> checkConvertNum(ConvertParameterBO convertParameterBO,Long userID){
 
 		//根据convertType，拿authCode
 		String authCode = authManager.getAuthCode(convertParameterBO);
 		
 		//获取用户权限
-		IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID,authCode);
+		IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID,EnumAuthCode.getModuleNum(authCode));
 		Map<String,Object> map = getPermissionResult.getData();
 		String booleanAuth = String.valueOf(map.get(authCode));
 
@@ -74,12 +74,11 @@ public class AuthService implements IAuthService{
 	}
 
 
-
-
 	/**
 	 * 检查用户的转换次数
-	 * @param ipAddr
 	 * @param userID
+	 * @param maxConvertTimes
+	 * @param module
 	 * @return
 	 */
 	@Override
@@ -112,17 +111,14 @@ public class AuthService implements IAuthService{
 
 	/**
 	 * 检查用户的上传文件大小权限
-	 * @param userid
+	 * @param userID
 	 * @return
 	 */
 	@Override
 	public IResult<EnumResultCode> checkUploadSize(Long userID,Long uploadSize,Integer module){
-		IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID,EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode());
+		IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID,EnumAuthCode.getModuleSize(module));
 		Map<String,Object> map = getPermissionResult.getData();
-		Integer maxUploadSize = Integer.valueOf(map.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode()).toString());
-
-		//特殊处理OCR不允许超过20M
-		maxUploadSize = module==EnumAuthCode.PDF_ORC_WORD.getValue()?20:maxUploadSize;
+		Integer maxUploadSize = Integer.valueOf(map.get(EnumAuthCode.getModuleSize(module)).toString());
 		
 		if(uploadSize > (maxUploadSize*1024*1024)) {
 			if(userID == null) {
@@ -148,7 +144,7 @@ public class AuthService implements IAuthService{
 
 	/**
 	 * 根据userid查询auth信息
-	 * @param userid
+	 * @param ptsAuthQO
 	 * @return
 	 */
 	@Override
@@ -159,7 +155,7 @@ public class AuthService implements IAuthService{
 	
 	/**
 	 * 删除用户权限
-	 * @param ptsAuthPO
+	 * @param userid
 	 * @return
 	 */
 	public Integer deletePtsAuth(Long userid) {

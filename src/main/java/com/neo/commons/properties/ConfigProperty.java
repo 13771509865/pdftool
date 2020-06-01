@@ -36,9 +36,6 @@ public class ConfigProperty{
 	@Value(value = "${convertModule}")
 	private String convertModule;
 	
-	@Value(value = "${uploadSize}")
-	private Integer uploadSize;
-	
 	@Value(value = "${reConvertModule}")
 	private String reConvertModule;
 	
