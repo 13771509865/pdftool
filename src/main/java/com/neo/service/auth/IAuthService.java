@@ -28,5 +28,4 @@ public interface IAuthService {
 	
 	Integer deletePtsAuth(Long userid);
 	
-	
 }

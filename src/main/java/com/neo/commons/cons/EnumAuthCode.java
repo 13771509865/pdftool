@@ -57,6 +57,7 @@ public enum EnumAuthCode {
 		this.defaultVaule = defaultVaule;
 		this.module = module;
 		this.moduleNum = moduleNum;
+		this.moduleSize = moduleSize;
 	}
 
 

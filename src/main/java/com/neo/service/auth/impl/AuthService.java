@@ -120,7 +120,7 @@ public class AuthService implements IAuthService{
 		Map<String,Object> map = getPermissionResult.getData();
 		Integer maxUploadSize = Integer.valueOf(map.get(EnumAuthCode.getModuleSize(module)).toString());
 		
-		if(uploadSize > (maxUploadSize*1024*1024)) {
+		if(maxUploadSize !=-1 && uploadSize > (maxUploadSize*1024*1024)) {
 			if(userID == null) {
 				return DefaultResult.failResult(EnumResultCode.E_VISITOR_UPLOAD_ERROR);
 			}else {
@@ -143,7 +143,7 @@ public class AuthService implements IAuthService{
 	
 
 	/**
-	 * 根据userid查询auth信息
+	 * 根据userid,authCode,status查询auth信息,过期时间大于当前时间
 	 * @param ptsAuthQO
 	 * @return
 	 */
@@ -161,6 +161,7 @@ public class AuthService implements IAuthService{
 	public Integer deletePtsAuth(Long userid) {
 		return ptsAuthPOMapper.deletePtsAuth(userid);
 	}
+
 
 
 	

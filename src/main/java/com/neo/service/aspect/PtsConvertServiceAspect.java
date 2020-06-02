@@ -67,7 +67,7 @@ public class PtsConvertServiceAspect {
 				redisCacheManager.setHashValue(DateViewUtils.getNow(), convertEntity.getFileHash(), convertBO.toString());
 			}
             String srcRelativePath = convertBO.getSrcRelativePath();
-            saveBadFileService.saveBadFile(ptsProperty.getFcs_srcfile_dir(), ptsProperty.getConvert_fail_dir(), srcRelativePath);
+            saveBadFileService.saveBadFile(ptsProperty.getFcs_srcfile_dir(), ptsProperty.getConvert_fail_dir(), convertBO);
         } else {
             if (uaaToken != null && EnumUaaRoleType.canUploadYc(uaaToken.getRole())) {
                 //上传文件到优云,更新数据库,未登录用户和企业用户不上传 

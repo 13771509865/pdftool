@@ -140,7 +140,7 @@
 				and STATUS = #{status,jdbcType=INTEGER}
 			</if>
 			<if test="authCode != null and authCode != ''">
-				AUTH_CODE = #{authCode,jdbcType=VARCHAR}
+				and AUTH_CODE = #{authCode,jdbcType=VARCHAR}
 			</if>
 	    </where> 
 	</select>
@@ -192,9 +192,19 @@
       	where 
       	USERID = #{userid,jdbcType=BIGINT}
    	 </delete>
-	
-	
-	
+
+
+	<!-- 根据userid查询权限表 -->
+	<select id="selectAuth" resultMap="PtsAuthPOMapper" parameterType="com.neo.model.qo.PtsAuthQO">
+		select
+		<include refid="Base_Column_List" />
+		from pts_auth
+		<where>
+			<if test="userid != null">
+				and USERID = #{userid,jdbcType=BIGINT}
+			</if>
+		</where>
+	</select>
 	
 	
 	

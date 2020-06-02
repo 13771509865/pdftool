@@ -80,9 +80,7 @@ public class AuthManager {
 				if(!list.isEmpty() && list.size()>0) {
 					//获取会员的转换权益
 					for(PtsAuthPO ptsAuthPO : list) {
-						if(StringUtils.equals(ptsAuthPO.getAuthCode(), authCode)) {
-							defaultMap.put(ptsAuthPO.getAuthCode(),ptsAuthPO.getAuthValue());
-						}
+						defaultMap.put(ptsAuthPO.getAuthCode(),ptsAuthPO.getAuthValue());
 					}
 				}
 			}

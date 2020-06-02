@@ -158,7 +158,7 @@ public class OrderService implements IOrderService{
 		}
 		//校验签名值
 		if (orderManager.checkSign(SysConstant.ORDER_URIKEY + orderId, nonce, sign).isSuccess()) {
-			//幂等调用接口
+			//幂等调用接口¡
 			boolean isRepeat = redisCacheManager.setnx(RedisConsts.ORDERIDMP + orderId, "confirm:" + DateViewUtils.getNowFull(), -1L);
 			if (isRepeat) {
 				//事务支持
