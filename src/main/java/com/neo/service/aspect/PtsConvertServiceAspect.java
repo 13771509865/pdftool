@@ -66,7 +66,6 @@ public class PtsConvertServiceAspect {
 			if(EnumAuthCode.existReconvertModule(authManager.getAuthCode(convertBO), configProperty.getReConvertModule())) {
 				redisCacheManager.setHashValue(DateViewUtils.getNow(), convertEntity.getFileHash(), convertBO.toString());
 			}
-            String srcRelativePath = convertBO.getSrcRelativePath();
             saveBadFileService.saveBadFile(ptsProperty.getFcs_srcfile_dir(), ptsProperty.getConvert_fail_dir(), convertBO);
         } else {
             if (uaaToken != null && EnumUaaRoleType.canUploadYc(uaaToken.getRole())) {

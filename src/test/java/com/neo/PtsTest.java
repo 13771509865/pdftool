@@ -59,7 +59,7 @@ public class PtsTest {
 		List<UserRightItem> rights = new ArrayList<>();
 		String[] specs = {"-1"};
 		String[] specs2 = {"1024"};
-		Long userid = 400928957316202497L;
+		Long userid = 3678L;
 
 		UserRightItem userRightItem = new UserRightItem();
 		UserRightItem u2 = new UserRightItem();
