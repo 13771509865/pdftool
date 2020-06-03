@@ -99,7 +99,7 @@ public class AsyncConvertService {
 			
 			//保存转换失败的文件
 			String srcRelativePath = convertBO.getSrcRelativePath();
-			saveBadFileService.saveBadFile(ptsProperty.getFcs_srcfile_dir(), ptsProperty.getConvert_fail_dir(), srcRelativePath);
+			saveBadFileService.saveBadFile(ptsProperty.getFcs_srcfile_dir(), ptsProperty.getConvert_fail_dir(), convertBO);
 		} 
 	}
 

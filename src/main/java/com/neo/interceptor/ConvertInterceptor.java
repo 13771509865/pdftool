@@ -76,7 +76,7 @@ public class ConvertInterceptor implements HandlerInterceptor {
 		Long userID = HttpUtils.getSessionUserID(request);
 		String body = HttpHelper.getBodyString(request);
 		ConvertParameterBO convertParameterBO = JsonUtils.json2obj(body, ConvertParameterBO.class);
-		IResult<EnumResultCode> result = iAuthService.checkUserAuth(convertParameterBO, userID);
+		IResult<EnumResultCode> result = iAuthService.checkConvertNum(convertParameterBO, userID);
 
 		if(!result.isSuccess()) {
 			HttpUtils.sendResponse(request, response, JsonResultUtils.buildFailJsonResultByResultCode(result.getData()));

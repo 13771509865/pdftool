@@ -58,9 +58,6 @@ public class PermissionHelper {
     }
 
     public static void main(String[] args) throws Exception {
-        PermissionHelper permissionHelper = new PermissionHelper();
-        PermissionDto permissionDto = permissionHelper.buildDefaultPermission();
-        permissionDto.setConvert001("ooooo");
-        System.out.println(permissionDto.toString());
+
     }
 }
