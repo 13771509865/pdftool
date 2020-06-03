@@ -24,7 +24,8 @@ import java.util.Map;
  * @create 2020年06月01日
  */
 @Api(value = "数据更新Controller", tags = {"数据更新Controller"})
-@RestController(value = "/update")
+@RestController
+@RequestMapping(value = "/update")
 public class UpdateController {
 
     @Autowired
