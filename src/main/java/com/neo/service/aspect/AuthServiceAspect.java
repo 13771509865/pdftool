@@ -2,6 +2,7 @@ package com.neo.service.aspect;
 
 import java.util.Map;
 
+import com.neo.commons.properties.ConvertSizeProperty;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -26,12 +27,12 @@ public class AuthServiceAspect {
 
     @Autowired
     private PermissionHelper permissionHelper;
-    
-    @Autowired
-    private AuthManager authManager;
-    
+
     @Autowired
     private ConvertNumProperty convertNumProperty;
+
+    @Autowired
+    private ConvertSizeProperty convertSizeProperty;
     
     @Pointcut(value = "execution(* com.neo.service.auth.impl.AuthManager.getPermission(..))")
     public void getPermission() {
@@ -43,8 +44,10 @@ public class AuthServiceAspect {
         	System.out.println("验证权限有问题，进入aop进行权限默认值设定");
         	PermissionDto permissionDto =  permissionHelper.buildDefaultPermission();
         	Map<String,Object> permissionDtoAuthMap = JsonUtils.parseJSON2Map(permissionDto);
-        	Map<String,Object> map = JsonUtils.parseJSON2Map(convertNumProperty);
-        	permissionDtoAuthMap.putAll(map);
+        	Map<String,Object> numMap = JsonUtils.parseJSON2Map(convertNumProperty);
+            Map<String,Object> sizeMap = JsonUtils.parseJSON2Map(convertSizeProperty);
+        	permissionDtoAuthMap.putAll(numMap);
+            permissionDtoAuthMap.putAll(sizeMap);
         	result.setData(permissionDtoAuthMap);
         }
     }

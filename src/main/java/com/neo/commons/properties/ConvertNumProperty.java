@@ -75,7 +75,7 @@ public class ConvertNumProperty {
 	
 	@NotBlank
 	private Integer convert015Num = -1;
-	
+
 	
 	@Override
 	public String toString() {

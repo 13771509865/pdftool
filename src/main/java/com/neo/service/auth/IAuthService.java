@@ -16,7 +16,7 @@ import com.neo.model.qo.PtsAuthQO;
 
 public interface IAuthService {
 	
-	IResult<EnumResultCode> checkUserAuth(ConvertParameterBO convertParameterBO,Long userID);
+	IResult<EnumResultCode> checkConvertNum(ConvertParameterBO convertParameterBO,Long userID);
 	
 	IResult<EnumResultCode> checkConvertTimes(Long userID,Integer maxConvertTimes,Integer module);
 	
@@ -27,6 +27,5 @@ public interface IAuthService {
 	List<PtsAuthPO> selectPtsAuthPO(PtsAuthQO ptsAuthQO);
 	
 	Integer deletePtsAuth(Long userid);
-	
 	
 }

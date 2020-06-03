@@ -125,7 +125,7 @@ public class StatisticsService {
 					Integer convertNum = po.getConvertNum();//转了多少次
 					String moduleNum = EnumAuthCode.getModuleNum(po.getModule());
 
-					Integer allowConvertNum = (Integer)map.get(moduleNum);//允许转多少次
+					Integer allowConvertNum = Integer.valueOf(map.get(moduleNum).toString());//允许转多少次
 					if(allowConvertNum != -1) {
 						Integer newNum = allowConvertNum - convertNum;//剩余多少次
 						map.put(moduleNum, newNum);

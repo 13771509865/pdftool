@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.neo.commons.util.UUIDHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -84,6 +85,23 @@ public class OrderManager {
 		IResult<String> checkResult = check(rawBuilder.toString(), sign);
 		return checkResult;
 	}
+
+
+	/**
+	 * 根据userId检验签名
+	 * @param userId
+	 * @param nonce
+	 * @param sign
+	 * @return
+	 */
+	public IResult<String> checkSign(Long userId, String nonce, String sign) {
+		StringBuilder rawBuilder = new StringBuilder();
+		rawBuilder.append(userId).append(nonce);
+		IResult<String> checkResult = check(rawBuilder.toString(), sign);
+		return checkResult;
+	}
+
+
 
 
 
@@ -179,7 +197,7 @@ public class OrderManager {
 	}
 
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 	}
 
 
