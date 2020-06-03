@@ -88,7 +88,7 @@ public class OrderService implements IOrderService{
 					}
 					Iterator<String> it = osa.getSpecs().keySet().iterator();
 					if(it.hasNext()) {
-						if(EnumAuthCode.existAuth(it.next())) {
+						if(!EnumAuthCode.existAuth(it.next())) {
 							flag = false;//枚举类没有对应的特性，就改成非法
 						}
 					}
