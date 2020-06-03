@@ -84,13 +84,12 @@ public class OrderService implements IOrderService{
 					Object unitType = osa.getSpecs().get(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())[1];
 					
 					if(validityTime == null || unitType==null || Integer.valueOf(validityTime.toString()) <=0 || UnitType.getUnit(unitType.toString()) == null) {
-						flag = false;//有效期、单位、次数、大小为空，改成不合法
+						flag = false;//有效期、单位为空，改成不合法
 					}
 					Iterator<String> it = osa.getSpecs().keySet().iterator();
 					if(it.hasNext()) {
-						Object defaultValue = EnumAuthCode.getDefaultValue(it.next());
-						if(defaultValue == null) {
-							flag = false;//枚举类没有对应的authCode，就改成非法
+						if(EnumAuthCode.existAuth(it.next())) {
+							flag = false;//枚举类没有对应的特性，就改成非法
 						}
 					}
 					if(flag) {//如果合法

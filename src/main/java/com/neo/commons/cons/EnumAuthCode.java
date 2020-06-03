@@ -33,7 +33,7 @@ public enum EnumAuthCode {
 	PDF_ORC_WORD(14,"扫描件转Word","convert014","64","true","Pdftoocrword","convert014Num","convert014Size"),
 	PIC_PDF(15,"图片转PDF","convert015","32","true","Pic2pdf","convert015Num","convert015Size"),
 	
-	PTS_VALIDITY_TIME(27,"权益有效期","validityTime",null,1,null,null,null);
+	PTS_VALIDITY_TIME(27,"权益有效期","validityTime",null,1,null,"validityTime","validityTime");
 
 
 
@@ -214,6 +214,23 @@ public enum EnumAuthCode {
 		}
 		return null;
 	}
+
+
+	/**
+	 * 订单预留时，判断预留订单中的特性，是否存在
+	 * @param features
+	 * @return
+	 */
+	public static Boolean existAuth(String features) {
+		for (EnumAuthCode code : values()) {
+			if(StringUtils.equals(code.getModuleNum(),features) || StringUtils.equals(code.getModuleSize(),features)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+
 	
 	//重复转换失败文件，判断authCode是否存在reConvertModule
 	//reConvertModule对应配置文件中的reConvertModule
@@ -226,6 +243,7 @@ public enum EnumAuthCode {
 		}
 		return false;
 	}
-	
+
+
 
 }
