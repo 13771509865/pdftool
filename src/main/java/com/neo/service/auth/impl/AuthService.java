@@ -121,8 +121,8 @@ public class AuthService implements IAuthService{
 		Map<String,Object> map = getPermissionResult.getData();
 		Integer maxUploadSize = Integer.valueOf(map.get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode()).toString());
 
-		//特殊处理OCR不允许超过20M
-		maxUploadSize = module==EnumAuthCode.PDF_ORC_WORD.getValue()?20:maxUploadSize;
+		//特殊处理OCR不允许超过12M
+		maxUploadSize = module==EnumAuthCode.PDF_ORC_WORD.getValue()?12:maxUploadSize;
 		
 		if(uploadSize > (maxUploadSize*1024*1024)) {
 			if(userID == null) {
