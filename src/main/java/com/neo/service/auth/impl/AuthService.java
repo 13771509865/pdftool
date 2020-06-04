@@ -127,11 +127,7 @@ public class AuthService implements IAuthService{
 		Integer maxUploadSize = Integer.valueOf(map.get(EnumAuthCode.getModuleSize(module)).toString());
 		
 		if(maxUploadSize !=-1 && uploadSize > (maxUploadSize*1024*1024)) {
-			if(userID == null) {
-				return DefaultResult.failResult(EnumResultCode.E_VISITOR_UPLOAD_ERROR);
-			}else {
-				return DefaultResult.failResult(EnumResultCode.E_USER_UPLOAD_ERROR);
-			}
+			return DefaultResult.failResult(EnumResultCode.E_USER_UPLOAD_ERROR);
 		}
 		return DefaultResult.successResult(); 
 	}
