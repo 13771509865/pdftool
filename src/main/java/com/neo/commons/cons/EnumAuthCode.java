@@ -32,7 +32,12 @@ public enum EnumAuthCode {
 	OCR_IMG_TXT(13,"图片文字识别","convert013","83","true","Ocr","convert013Num","convert013Size"),
 	PDF_ORC_WORD(14,"扫描件转Word","convert014","64","true","Pdftoocrword","convert014Num","convert014Size"),
 	PIC_PDF(15,"图片转PDF","convert015","32","true","Pic2pdf","convert015Num","convert015Size"),
-	
+
+	/**
+	 * PTS_CONVERT_NUM和PTS_UPLOAD_SIZE !!!!!上线后就可以删了!!!!!
+	 */
+	PTS_CONVERT_NUM(25,"转换数量", "convertNum",null,5,null,"convertNum","convertNum"),
+	PTS_UPLOAD_SIZE(26,"文件大小","uploadSize",null,3,null,"uploadSize","uploadSize"),
 	PTS_VALIDITY_TIME(27,"权益有效期","validityTime",null,1,null,"validityTime","validityTime");
 
 

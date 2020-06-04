@@ -1,22 +1,7 @@
 package com.neo.service.auth.impl;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.neo.commons.cons.DefaultResult;
-import com.neo.commons.cons.EnumAuthCode;
-import com.neo.commons.cons.EnumResultCode;
-import com.neo.commons.cons.EnumStatus;
-import com.neo.commons.cons.IResult;
+import com.neo.commons.cons.*;
 import com.neo.commons.cons.constants.SysConstant;
-import com.neo.commons.cons.entity.OrderSpecsEntity;
 import com.neo.commons.util.DateViewUtils;
 import com.neo.dao.PtsAuthPOMapper;
 import com.neo.model.bo.ConvertParameterBO;
@@ -26,6 +11,12 @@ import com.neo.model.qo.PtsAuthQO;
 import com.neo.model.qo.PtsConvertRecordQO;
 import com.neo.service.auth.IAuthService;
 import com.neo.service.convertRecord.IConvertRecordService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 @Service("authService")
 public class AuthService implements IAuthService{
@@ -38,6 +29,9 @@ public class AuthService implements IAuthService{
 
 	@Autowired
 	private IConvertRecordService iConvertRecordService;
+
+	@Autowired
+	private OldAuthManager oldAuthManager;
 
 
 	/**
@@ -55,6 +49,13 @@ public class AuthService implements IAuthService{
 		//获取用户权限
 		IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID,EnumAuthCode.getModuleNum(authCode));
 		Map<String,Object> map = getPermissionResult.getData();
+
+		/**
+		 * 这个两个等更新完了就删掉!!!!!!
+		 */
+		IResult<Map<String,Object>> getPermissionResult2 = oldAuthManager.getPermission(userID,authCode,map);
+		map = getPermissionResult2.getData();
+
 		String booleanAuth = String.valueOf(map.get(authCode));
 
 		//检查转换类型的权限
@@ -118,6 +119,10 @@ public class AuthService implements IAuthService{
 	public IResult<EnumResultCode> checkUploadSize(Long userID,Long uploadSize,Integer module){
 		IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID,EnumAuthCode.getModuleSize(module));
 		Map<String,Object> map = getPermissionResult.getData();
+
+		//这个两个等更新完了就删掉!!!!!!!
+		IResult<Map<String,Object>> getPermissionResult2 = oldAuthManager.getPermission(userID,EnumAuthCode.getAuthCode(module),map);
+		map = getPermissionResult2.getData();
 
 		Integer maxUploadSize = Integer.valueOf(map.get(EnumAuthCode.getModuleSize(module)).toString());
 		

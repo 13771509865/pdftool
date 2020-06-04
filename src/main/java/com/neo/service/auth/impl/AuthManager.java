@@ -1,38 +1,24 @@
 package com.neo.service.auth.impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import com.neo.commons.properties.ConvertSizeProperty;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.neo.commons.cons.DefaultResult;
-import com.neo.commons.cons.EnumAuthCode;
-import com.neo.commons.cons.EnumLockCode;
-import com.neo.commons.cons.EnumResultCode;
-import com.neo.commons.cons.EnumStatus;
-import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.constants.PtsConsts;
+import com.neo.commons.cons.*;
 import com.neo.commons.cons.constants.SysConstant;
-import com.neo.commons.helper.PermissionHelper;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.properties.ConvertNumProperty;
-import com.neo.commons.util.DateViewUtils;
+import com.neo.commons.properties.ConvertSizeProperty;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
-import com.neo.commons.util.StrUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.model.bo.ConvertParameterBO;
-import com.neo.model.dto.PermissionDto;
 import com.neo.model.po.PtsAuthPO;
 import com.neo.model.qo.PtsAuthQO;
 import com.neo.service.auth.IAuthService;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service("authManager")
 public class AuthManager {
@@ -169,6 +155,7 @@ public class AuthManager {
 		}
 		return authCode;
 	}
+
 
 
 
