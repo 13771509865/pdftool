@@ -4,10 +4,12 @@ import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumAuthCode;
 import com.neo.commons.cons.EnumStatus;
 import com.neo.commons.cons.IResult;
+import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.model.po.PtsAuthPO;
 import com.neo.model.qo.PtsAuthQO;
 import com.neo.service.auth.IAuthService;
+import com.neo.service.auth.impl.AuthManager;
 import com.neo.service.update.IUpdateService;
 import com.yozosoft.api.order.dto.ServiceAppUserRightDto;
 import com.yozosoft.api.order.dto.UserRightItem;
@@ -36,6 +38,9 @@ public class UpdateManager {
     @Autowired
     private IUpdateService iUpdateService;
 
+    @Autowired
+    private AuthManager authManager;
+
     /**
      * 更新老用户权益
      * @param serviceAppUserRightDto
@@ -55,20 +60,34 @@ public class UpdateManager {
 
                 iAuthService.deletePtsAuth(userId);//删除当前用户所有权益
 
+                Map<String,Object> convertAuthCodeMap =  authManager.getPermissionByConfig(new HashMap<>());//拿到所有模块的authcode
+
                 List<PtsAuthPO> authList = new ArrayList<>();
                 for(UserRightItem serRightItem : list) {
-                    if(!StringUtils.equals(serRightItem.getFeature(), EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())) {
-                        PtsAuthPO ptsAuthPO = new PtsAuthPO();
-                        ptsAuthPO.setAuthCode(serRightItem.getFeature());
-                        ptsAuthPO.setAuthValue(serRightItem.getSpecs()[0]);
-                        ptsAuthPO.setGmtCreate(serRightItem.getBegin());
-                        ptsAuthPO.setGmtModified(serRightItem.getBegin());
-                        ptsAuthPO.setGmtExpire(serRightItem.getEnd());
-                        ptsAuthPO.setOrderId(orderId);
-                        ptsAuthPO.setPriority(serRightItem.getPriority());
-                        ptsAuthPO.setStatus(EnumStatus.ENABLE.getValue());
-                        ptsAuthPO.setUserid(serRightItem.getUserId());
-                        authList.add(ptsAuthPO);
+
+                    //不需要validityTime，convertNum，uploadSize这几个特性
+                    if(!StringUtils.equals(serRightItem.getFeature(), EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())&&
+                       !StringUtils.equals(serRightItem.getFeature(), EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode())&&
+                       !StringUtils.equals(serRightItem.getFeature(), EnumAuthCode.PTS_CONVERT_NUM.getAuthCode())) {
+
+                        //是老特性就拆分，新特性不需要拆
+                        Map<String,String> map = getFeature(serRightItem.getFeature(),serRightItem.getSpecs()[0],convertAuthCodeMap);
+
+                        for (Map.Entry<String, String> m : map.entrySet()) {
+                            PtsAuthPO ptsAuthPO = new PtsAuthPO();
+                            ptsAuthPO.setAuthCode(m.getKey());
+                            ptsAuthPO.setAuthValue(m.getValue());
+                            ptsAuthPO.setGmtCreate(serRightItem.getBegin());
+                            ptsAuthPO.setGmtModified(serRightItem.getBegin());
+                            ptsAuthPO.setGmtExpire(serRightItem.getEnd());
+                            ptsAuthPO.setOrderId(orderId);
+                            ptsAuthPO.setPriority(serRightItem.getPriority());
+                            ptsAuthPO.setStatus(EnumStatus.ENABLE.getValue());
+                            ptsAuthPO.setUserid(serRightItem.getUserId());
+                            authList.add(ptsAuthPO);
+                        }
+
+
                     }
                 }
 
@@ -89,6 +108,23 @@ public class UpdateManager {
         }
     }
 
+
+    /**
+     * 如果是新特性就不动，如果是老特性就要拆分成2个
+     * @param feature
+     * @return
+     */
+    private Map<String,String> getFeature(String feature,String space,Map<String,Object> convertAuthCodeMap){
+        Map<String,String> map = new HashMap<>();
+        Object authValue = convertAuthCodeMap.get(feature);
+        if(authValue!=null && authValue!="" && StringUtils.equals(space, SysConstant.TRUE)){
+            map.put(EnumAuthCode.getModuleNum(feature),"-1");
+            map.put(EnumAuthCode.getModuleSize(feature),"-1");
+        }else{
+            map.put(feature,space);
+        }
+        return map;
+    }
 
 
 

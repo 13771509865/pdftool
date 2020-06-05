@@ -1,41 +1,26 @@
 package com.neo.service.convert.async;
 
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-
-import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumAuthCode;
-import com.neo.commons.cons.EnumResultCode;
-import com.neo.commons.cons.EnumUaaRoleType;
 import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.constants.TimeConsts;
 import com.neo.commons.cons.entity.ConvertEntity;
-import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.DateViewUtils;
-import com.neo.commons.util.HttpUtils;
-import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FcsFileInfoBO;
-import com.neo.model.po.ConvertParameterPO;
 import com.neo.model.po.PtsConvertRecordPO;
 import com.neo.service.auth.impl.AuthManager;
 import com.neo.service.cache.impl.RedisCacheManager;
-import com.neo.service.convert.PtsConvertParamService;
 import com.neo.service.convert.PtsConvertService;
 import com.neo.service.convertRecord.IConvertRecordService;
 import com.neo.service.file.SaveBadFileService;
-import com.neo.service.httpclient.HttpAPIService;
-import com.neo.service.ticket.RedisTicketManager;
 import com.neo.service.yzcloud.IYzcloudService;
 import com.yozosoft.auth.client.security.UaaToken;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 
 @Service("asyncConvertService")
 public class AsyncConvertService {
@@ -94,11 +79,10 @@ public class AsyncConvertService {
 			
 			//转换失败是否记录缓存，目前只有OCR
 			if(EnumAuthCode.existReconvertModule(authManager.getAuthCode(convertBO), configProperty.getReConvertModule())) {
-				redisCacheManager.setHashValue(DateViewUtils.getNow(), convertEntity.getFileHash(), convertBO.toString());
+				redisCacheManager.setHashValue(DateViewUtils.getNow(), convertEntity.getFileHash(), result.getData().toString());
 			}
 			
 			//保存转换失败的文件
-			String srcRelativePath = convertBO.getSrcRelativePath();
 			saveBadFileService.saveBadFile(ptsProperty.getFcs_srcfile_dir(), ptsProperty.getConvert_fail_dir(), convertBO);
 		} 
 	}

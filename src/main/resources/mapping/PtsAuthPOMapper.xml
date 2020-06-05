@@ -132,8 +132,9 @@
 		<include refid="Base_Column_List" />
 		from pts_auth
 		<where>
-			GMT_EXPIRE  &gt;  now()
-	    	<if test="userid != null">
+			<![CDATA[GMT_EXPIRE > now()]]>
+			<![CDATA[AND GMT_CREATE <= now()]]>
+			<if test="userid != null">
 				and USERID = #{userid,jdbcType=BIGINT} 
 			</if>
 			<if test="status != null">
@@ -142,7 +143,8 @@
 			<if test="authCode != null and authCode != ''">
 				and AUTH_CODE = #{authCode,jdbcType=VARCHAR}
 			</if>
-	    </where> 
+	    </where>
+		GROUP BY AUTH_VALUE
 	</select>
 
 	

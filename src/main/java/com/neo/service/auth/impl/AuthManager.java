@@ -13,6 +13,7 @@ import com.neo.model.po.PtsAuthPO;
 import com.neo.model.qo.PtsAuthQO;
 import com.neo.service.auth.IAuthService;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -58,15 +59,24 @@ public class AuthManager {
 			//defaultMap里面是所有的默认权限
 			defaultMap.putAll(numMap);
 			defaultMap.putAll(sizeMap);
+			String authValue = defaultMap.get(authCode).toString();
 
-			if(userID !=null) {
+			//如果默认权益是-1，就不去查数据库了
+			if(StringUtils.equals(authValue,"-1")) {
 				//根据authCode获取转换大小，数量权益
 				List<PtsAuthPO> list = iAuthService.selectPtsAuthPO(new PtsAuthQO(userID,EnumStatus.ENABLE.getValue(),authCode));
 				HttpUtils.getRequest().setAttribute(SysConstant.MEMBER_SHIP, list.isEmpty()?false:true);
 				if(!list.isEmpty() && list.size()>0) {
 					//获取会员的转换权益
 					for(PtsAuthPO ptsAuthPO : list) {
-						defaultMap.put(ptsAuthPO.getAuthCode(),ptsAuthPO.getAuthValue());
+						if(StringUtils.equals(ptsAuthPO.getAuthValue(),"-1")){//权益值如果是-1，负值后直接跳出循环
+							defaultMap.put(ptsAuthPO.getAuthCode(),authValue);
+							break;
+						}
+
+						//权益取最大值
+						authValue = Integer.valueOf(authValue)>Integer.valueOf(ptsAuthPO.getAuthValue())?authValue:ptsAuthPO.getAuthValue();
+						defaultMap.put(ptsAuthPO.getAuthCode(),authValue);
 					}
 				}
 			}

@@ -1,27 +1,12 @@
 package com.neo.service.statistics;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import com.neo.commons.cons.DefaultResult;
-import com.neo.commons.cons.EnumAuthCode;
-import com.neo.commons.cons.EnumMemberType;
-import com.neo.commons.cons.EnumResultCode;
-import com.neo.commons.cons.EnumStatus;
-import com.neo.commons.cons.IResult;
+import com.neo.commons.cons.*;
 import com.neo.commons.cons.constants.RedisConsts;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.cons.constants.YzcloudConsts;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.ConfigProperty;
-import com.neo.commons.properties.ConvertNumProperty;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.DateViewUtils;
 import com.neo.commons.util.HttpUtils;
@@ -32,16 +17,22 @@ import com.neo.dao.PtsSummaryPOMapper;
 import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.model.bo.FileUploadBO;
 import com.neo.model.po.FcsFileInfoPO;
-import com.neo.model.po.PtsAuthPO;
 import com.neo.model.po.PtsConvertRecordPO;
 import com.neo.model.po.PtsSummaryPO;
 import com.neo.model.qo.FcsFileInfoQO;
 import com.neo.model.qo.PtsSummaryQO;
-import com.neo.service.auth.IAuthService;
 import com.neo.service.auth.impl.AuthManager;
+import com.neo.service.auth.impl.OldAuthManager;
 import com.neo.service.cache.impl.RedisCacheManager;
 import com.neo.service.convertRecord.IConvertRecordService;
 import com.neo.service.httpclient.HttpAPIService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service("statisticsService")
 public class StatisticsService {
@@ -70,9 +61,13 @@ public class StatisticsService {
 	@Autowired
 	private ConfigProperty configProperty;
 
+	@Autowired
+	private OldAuthManager oldAuthManager;
+
+
 	/**
 	 * 根据userID查询三天内的转换记录
-	 * @param request
+	 * @param userID
 	 * @return
 	 */
 	public IResult<Map<String,Object>> selectConvertByUserID(FcsFileInfoQO fcsFileInfoQO,Long userID){
@@ -101,7 +96,7 @@ public class StatisticsService {
 
 	/**
 	 * 查询剩余的转换次数
-	 * @param request
+	 * @param userID
 	 * @return
 	 */
 	public IResult<Map<String,Object>> getConvertTimes(Long userID){
@@ -110,6 +105,12 @@ public class StatisticsService {
 			//获取所有的用户权限
 			IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID,null);
 			Map<String,Object> map = getPermissionResult.getData();
+
+			/**
+			 * 这个两个等更新完了就删掉!!!!!!
+			 */
+			IResult<Map<String,Object>> getPermissionResult2 = oldAuthManager.getPermission(userID,null,map);
+			map = getPermissionResult2.getData();
 			Map<String,Object> newMap = new HashMap<>();
 
 			PtsConvertRecordPO ptsConvertRecordPO = new PtsConvertRecordPO();

@@ -64,7 +64,7 @@ public class PtsConvertServiceAspect {
         if (!result.isSuccess()) {
         	//转换失败是否记录缓存，目前只有OCR
 			if(EnumAuthCode.existReconvertModule(authManager.getAuthCode(convertBO), configProperty.getReConvertModule())) {
-				redisCacheManager.setHashValue(DateViewUtils.getNow(), convertEntity.getFileHash(), convertBO.toString());
+				redisCacheManager.setHashValue(DateViewUtils.getNow(), convertEntity.getFileHash(), result.getData().toString());
 			}
             saveBadFileService.saveBadFile(ptsProperty.getFcs_srcfile_dir(), ptsProperty.getConvert_fail_dir(), convertBO);
         } else {
