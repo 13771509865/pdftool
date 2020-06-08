@@ -62,6 +62,7 @@ public class AuthManager {
 			String authValue = StringUtils.isBlank(authCode)?null:defaultMap.get(authCode).toString();
 
 			//如果默认权益是-1，就不去查数据库了
+			//authCode为空说明要拿所有的权益
 			if(StringUtils.isBlank(authCode) || !StringUtils.equals(authValue,"-1")) {
 				//根据authCode获取转换大小，数量权益
 				List<PtsAuthPO> list = iAuthService.selectPtsAuthPO(new PtsAuthQO(userID,EnumStatus.ENABLE.getValue(),authCode));
@@ -75,7 +76,7 @@ public class AuthManager {
 						}
 
 						//权益取最大值
-						authValue = Integer.valueOf(authValue)>Integer.valueOf(ptsAuthPO.getAuthValue())?authValue:ptsAuthPO.getAuthValue();
+						authValue =StringUtils.isNotBlank(authValue)&&Integer.valueOf(authValue)>Integer.valueOf(ptsAuthPO.getAuthValue())?authValue:ptsAuthPO.getAuthValue();
 						defaultMap.put(ptsAuthPO.getAuthCode(),authValue);
 					}
 				}
