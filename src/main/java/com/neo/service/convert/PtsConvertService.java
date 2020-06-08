@@ -163,16 +163,15 @@ public class PtsConvertService {
 
 	/**
 	 * 每次转换，更新转换的记录,不区分登录转态
-	 * @param fcsFileInfoBO
 	 * @param convertBO
 	 * @return
 	 */
 	@Async("updatePtsSummayExecutor")
-	public IResult<String> updatePtsSummay(FcsFileInfoBO fcsFileInfoBO, ConvertParameterBO convertBO,ConvertEntity convertEntity){
+	public IResult<String> updatePtsSummay(IResult<FcsFileInfoBO> result , ConvertParameterBO convertBO,ConvertEntity convertEntity){
 		try {
-
+			FcsFileInfoBO fcsFileInfoBO = result.getData();
 			//转换失败是否记录缓存，目前只有OCR，用于重复转换判断
-			if(EnumAuthCode.existReconvertModule(authManager.getAuthCode(convertBO), configProperty.getReConvertModule())) {
+			if(!result.isSuccess() && EnumAuthCode.existReconvertModule(authManager.getAuthCode(convertBO), configProperty.getReConvertModule())) {
 				redisCacheManager.setHashValue(DateViewUtils.getNow(), convertEntity.getFileHash(), fcsFileInfoBO.toString());
 
 				//不允许重复的文件，再次转换失败不统计
@@ -196,7 +195,7 @@ public class PtsConvertService {
 
 	/**
 	 * 根据fileHash查询fcsFile信息
-	 * @param fcsFileInfoQO
+	 * @param fileHash
 	 * @return
 	 */
 	public IResult<String> selectFcsFileInfoPOByFileHash(String fileHash,Long userId){

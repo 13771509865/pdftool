@@ -65,7 +65,7 @@ public class AsyncConvertService {
 		//异步转换结果存redis,保存24小时
 		redisCacheManager.setFileInfo(convertEntity.getFileHash(), result.getData().toString(), TimeConsts.SECOND_OF_DAY);
 		
-		ptsConvertService.updatePtsSummay(result.getData(), convertBO, convertEntity);
+		ptsConvertService.updatePtsSummay(result, convertBO, convertEntity);
 		
 		if (!result.isSuccess()) {
 			//转换失败归还转换次数
