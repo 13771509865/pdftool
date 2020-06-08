@@ -59,10 +59,10 @@ public class AuthManager {
 			//defaultMap里面是所有的默认权限
 			defaultMap.putAll(numMap);
 			defaultMap.putAll(sizeMap);
-			String authValue = defaultMap.get(authCode).toString();
+			String authValue = StringUtils.isBlank(authCode)?null:defaultMap.get(authCode).toString();
 
 			//如果默认权益是-1，就不去查数据库了
-			if(StringUtils.equals(authValue,"-1")) {
+			if(StringUtils.isBlank(authCode) || !StringUtils.equals(authValue,"-1")) {
 				//根据authCode获取转换大小，数量权益
 				List<PtsAuthPO> list = iAuthService.selectPtsAuthPO(new PtsAuthQO(userID,EnumStatus.ENABLE.getValue(),authCode));
 				HttpUtils.getRequest().setAttribute(SysConstant.MEMBER_SHIP, list.isEmpty()?false:true);
