@@ -74,6 +74,7 @@ public class PtsConvertService {
 	/**
 	 * 调用fcs进行真实转换
 	 * @param convertBO
+	 * @param uaaToken:切面用于判断用户角色
 	 * @return
 	 */ 
 	public IResult<FcsFileInfoBO> dispatchConvert(ConvertParameterBO convertBO,UaaToken uaaToken,ConvertEntity convertEntity){
@@ -118,8 +119,8 @@ public class PtsConvertService {
 				return DefaultResult.failResult(message,fcsFileInfoBO);
 			}
 
-			Long userId = uaaToken==null?null:uaaToken.getUserId();
-			updateFcsFileInfo(convertBO,fcsFileInfoBO,userId,convertEntity.getIpAddress());
+
+			updateFcsFileInfo(convertBO,fcsFileInfoBO,convertEntity);
 			return DefaultResult.successResult(fcsFileInfoBO);
 
 		} catch (Exception e) {
@@ -138,15 +139,9 @@ public class PtsConvertService {
 	 * @param convertBO
 	 * @return
 	 */
-	public IResult<String> updateFcsFileInfo(ConvertParameterBO convertBO,FcsFileInfoBO fcsFileInfoBO,Long userId,String ipAddress) {
+	public IResult<String> updateFcsFileInfo(ConvertParameterBO convertBO,FcsFileInfoBO fcsFileInfoBO,ConvertEntity convertEntity) {
 		try {
-			//只记录登录用户的
-			if(userId == null) {
-				return DefaultResult.failResult();
-			}
-
-			FcsFileInfoPO fcsFileInfoPO = ptsConvertParamService.buildFcsFileInfoParameter(convertBO,fcsFileInfoBO, userId,ipAddress);
-
+			FcsFileInfoPO fcsFileInfoPO = ptsConvertParamService.buildFcsFileInfoParameter(convertBO,fcsFileInfoBO,convertEntity);
 			//根据userId和fileHash去update
 			int count = updatePtsConvert(fcsFileInfoPO);
 			if(count < 1) {

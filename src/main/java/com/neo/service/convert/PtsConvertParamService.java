@@ -1,38 +1,26 @@
 package com.neo.service.convert;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.neo.commons.cons.EnumStatus;
-import com.neo.commons.cons.constants.FcsParmConsts;
-import com.neo.commons.cons.constants.PtsConsts;
-import com.neo.commons.cons.constants.SizeConsts;
-import com.neo.commons.cons.constants.SysConstant;
-import com.neo.commons.cons.constants.UaaConsts;
+import com.neo.commons.cons.constants.*;
 import com.neo.commons.cons.entity.ConvertEntity;
-import com.neo.commons.cons.entity.ModuleEntity;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.properties.PtsProperty;
-import com.neo.commons.util.CheckMobileUtils;
-import com.neo.commons.util.DateViewUtils;
-import com.neo.commons.util.EncryptUtils;
-import com.neo.commons.util.GetConvertMd5Utils;
-import com.neo.commons.util.HttpUtils;
-import com.neo.commons.util.JsonUtils;
+import com.neo.commons.util.*;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.model.po.ConvertParameterPO;
 import com.neo.model.po.FcsFileInfoPO;
 import com.neo.model.po.PtsSummaryPO;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Service("ptsConvertParamService")
@@ -107,17 +95,17 @@ public class PtsConvertParamService {
 	}
 
 
-
 	/**
-	 * 构建FcsFileInfoPO对象，用于insert
+	 * 构建FcsFileInfoPO对象
+	 * @param convertBO
 	 * @param fcsFileInfoBO
-	 * @param request
+	 * @param convertEntity
 	 * @return
 	 */
-	public FcsFileInfoPO buildFcsFileInfoParameter(ConvertParameterBO convertBO,FcsFileInfoBO fcsFileInfoBO,Long userId,String ipAddress) {
+	public FcsFileInfoPO buildFcsFileInfoParameter(ConvertParameterBO convertBO,FcsFileInfoBO fcsFileInfoBO,ConvertEntity convertEntity) {
 		FcsFileInfoPO fcsFileInfoPO = new FcsFileInfoPO();
-		fcsFileInfoPO.setIpAddress(ipAddress);
-		fcsFileInfoPO.setUserID(userId);
+		fcsFileInfoPO.setIpAddress(convertEntity.getIpAddress());
+		fcsFileInfoPO.setUserID(convertEntity.getUserId());
 		fcsFileInfoPO.setFileHash(fcsFileInfoBO.getFileHash());
 		fcsFileInfoPO.setResultCode(fcsFileInfoBO.getCode());
 		fcsFileInfoPO.setSrcFileName(fcsFileInfoBO.getSrcFileName());
@@ -127,6 +115,7 @@ public class PtsConvertParamService {
 		fcsFileInfoPO.setSrcStoragePath(fcsFileInfoBO.getSrcStoragePath());
 		fcsFileInfoPO.setDestStoragePath(fcsFileInfoBO.getDestStoragePath());
 		fcsFileInfoPO.setStatus(EnumStatus.ENABLE.getValue());
+		fcsFileInfoPO.setModule(convertEntity.getModule());
 
 		//手写签批，做特殊处理DestFileName，需要保存上传的源文件
 		//viewUrl需要修改成download
@@ -147,7 +136,6 @@ public class PtsConvertParamService {
 	/**
 	 * 构建PtsSummaryPO对象，用于数据统计
 	 * @param fcsFileInfoBO
-	 * @param request
 	 * @return
 	 */
 	public PtsSummaryPO buildPtsSummaryPOParameter(FcsFileInfoBO fcsFileInfoBO,ConvertParameterBO convertBO,ConvertEntity convertEntity) {

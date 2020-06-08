@@ -80,7 +80,6 @@ public class StatisticsService {
 		try {
 			Map<String,Object> map = new HashMap<>();
 			List<FcsFileInfoPO> list = fcsFileInfoPOMapper.selectFcsFileInfoPOByUserID(fcsFileInfoQO);
-//			Integer counNum = fcsFileInfoPOMapper.selectCountNumFcsFileInfoPOByUserID(fcsFileInfoQO);
 			map.put(SysConstant.FCS_DATA, list);
 			map.put(SysConstant.COUNT, list.size());
 			return DefaultResult.successResult(map);

@@ -1,12 +1,11 @@
 package com.neo.model.po;
 
-import java.util.Date;
-
 import com.alibaba.fastjson.JSON;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 
 @Data
@@ -31,6 +30,7 @@ public class FcsFileInfoPO {
 	private String uCloudFileId;
 	private Date gmtCreate;
 	private Date gmtModified;
+	private Integer module;
     
     @Override
     public String toString() {

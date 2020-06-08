@@ -3,13 +3,9 @@ package com.neo.service.aspect;
 import com.neo.commons.cons.EnumUaaRoleType;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.entity.ConvertEntity;
-import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FcsFileInfoBO;
-import com.neo.service.auth.impl.AuthManager;
-import com.neo.service.cache.impl.RedisCacheManager;
-import com.neo.service.convert.PtsConvertParamService;
 import com.neo.service.file.SaveBadFileService;
 import com.neo.service.yzcloud.IYzcloudService;
 import com.yozosoft.auth.client.security.UaaToken;
@@ -38,18 +34,7 @@ public class PtsConvertServiceAspect {
 
     @Autowired
     private IYzcloudService iYzcloudService;
-    
-	@Autowired
-	private AuthManager authManager;
 
-	@Autowired
-	private ConfigProperty configProperty;
-
-	@Autowired
-	private PtsConvertParamService ptsConvertParamService;
-	
-	@Autowired
-	private RedisCacheManager<String> redisCacheManager;
 
     @Pointcut(value = "execution(* com.neo.service.convert.PtsConvertService.dispatchConvert(..))")
     public void dispatchConvert() {
