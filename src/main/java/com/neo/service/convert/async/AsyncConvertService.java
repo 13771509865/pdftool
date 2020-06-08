@@ -62,7 +62,7 @@ public class AsyncConvertService {
 	public void asyncConvert(ConvertParameterBO convertBO,UaaToken uaaToken,ConvertEntity convertEntity){
 		IResult<FcsFileInfoBO> result = ptsConvertService.dispatchConvert(convertBO, uaaToken, convertEntity);
 		
-		//转换结果存redis,保存24小时
+		//异步转换结果存redis,保存24小时
 		redisCacheManager.setFileInfo(convertEntity.getFileHash(), result.getData().toString(), TimeConsts.SECOND_OF_DAY);
 		
 		ptsConvertService.updatePtsSummay(result.getData(), convertBO, convertEntity);
@@ -76,14 +76,6 @@ public class AsyncConvertService {
 			if(!updateConvertNum) {
 				SysLogUtils.info("归还用户转换次数失败："+ ptsConvertRecordPO.toString());
 			}
-			
-			//转换失败是否记录缓存，目前只有OCR
-			if(EnumAuthCode.existReconvertModule(authManager.getAuthCode(convertBO), configProperty.getReConvertModule())) {
-				redisCacheManager.setHashValue(DateViewUtils.getNow(), convertEntity.getFileHash(), result.getData().toString());
-			}
-			
-			//保存转换失败的文件
-			saveBadFileService.saveBadFile(ptsProperty.getFcs_srcfile_dir(), ptsProperty.getConvert_fail_dir(), convertBO);
 		} 
 	}
 

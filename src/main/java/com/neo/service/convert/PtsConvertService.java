@@ -1,15 +1,5 @@
 package com.neo.service.convert;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumAuthCode;
 import com.neo.commons.cons.EnumResultCode;
@@ -36,6 +26,13 @@ import com.neo.service.cache.impl.RedisCacheManager;
 import com.neo.service.httpclient.HttpAPIService;
 import com.neo.service.ticket.RedisTicketManager;
 import com.yozosoft.auth.client.security.UaaToken;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -77,7 +74,6 @@ public class PtsConvertService {
 	/**
 	 * 调用fcs进行真实转换
 	 * @param convertBO
-	 * @param waitTime
 	 * @return
 	 */ 
 	public IResult<FcsFileInfoBO> dispatchConvert(ConvertParameterBO convertBO,UaaToken uaaToken,ConvertEntity convertEntity){
@@ -169,18 +165,23 @@ public class PtsConvertService {
 	 * 每次转换，更新转换的记录,不区分登录转态
 	 * @param fcsFileInfoBO
 	 * @param convertBO
-	 * @param request
 	 * @return
 	 */
 	@Async("updatePtsSummayExecutor")
 	public IResult<String> updatePtsSummay(FcsFileInfoBO fcsFileInfoBO, ConvertParameterBO convertBO,ConvertEntity convertEntity){
 		try {
-			//不允许重复的文件，转换失败不统计
-			if(EnumAuthCode.existReconvertModule(authManager.getAuthCode(convertBO), configProperty.getReConvertModule())
-			   && StringUtils.isNotBlank(fcsFileInfoBO.getFileHash())
-			   &&StringUtils.isNotBlank(redisCacheManager.getHashValue(DateViewUtils.getNow(), fcsFileInfoBO.getFileHash()))) {
-				return DefaultResult.successResult();
+
+			//转换失败是否记录缓存，目前只有OCR，用于重复转换判断
+			if(EnumAuthCode.existReconvertModule(authManager.getAuthCode(convertBO), configProperty.getReConvertModule())) {
+				redisCacheManager.setHashValue(DateViewUtils.getNow(), convertEntity.getFileHash(), fcsFileInfoBO.toString());
+
+				//不允许重复的文件，再次转换失败不统计
+				if(StringUtils.isNotBlank(fcsFileInfoBO.getFileHash())&&
+            	   StringUtils.isNotBlank(redisCacheManager.getHashValue(DateViewUtils.getNow(), fcsFileInfoBO.getFileHash()))){
+					return DefaultResult.successResult();
+				}
 			}
+
 			
 			PtsSummaryPO ptsSummaryPO = ptsConvertParamService.buildPtsSummaryPOParameter(fcsFileInfoBO,convertBO,convertEntity);
 			int upCount = ptsSummaryPOMapper.updatePtsSumm(ptsSummaryPO);
