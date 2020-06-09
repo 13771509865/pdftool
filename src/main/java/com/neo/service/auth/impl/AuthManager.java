@@ -71,13 +71,16 @@ public class AuthManager {
 					//获取会员的转换权益
 					for(PtsAuthPO ptsAuthPO : list) {
 						if(StringUtils.equals(ptsAuthPO.getAuthValue(),"-1")){//权益值如果是-1，负值后直接跳出循环
-							defaultMap.put(ptsAuthPO.getAuthCode(),authValue);
-							break;
+							defaultMap.put(ptsAuthPO.getAuthCode(),ptsAuthPO.getAuthValue());
+							continue;
 						}
 
-						//权益取最大值
-						authValue =StringUtils.isNotBlank(authValue)&&Integer.valueOf(authValue)>Integer.valueOf(ptsAuthPO.getAuthValue())?authValue:ptsAuthPO.getAuthValue();
-						defaultMap.put(ptsAuthPO.getAuthCode(),authValue);
+						Object deAuthValue = defaultMap.get(ptsAuthPO.getAuthCode());
+						//deAuthValue不等于-1
+						//deAuthValue小于authValue
+						if(deAuthValue!=null && !StringUtils.equals(deAuthValue.toString(),"-1") && Integer.valueOf(deAuthValue.toString()) < Integer.valueOf(ptsAuthPO.getAuthValue())){
+							defaultMap.put(ptsAuthPO.getAuthCode(),ptsAuthPO.getAuthValue());
+						}
 					}
 				}
 			}

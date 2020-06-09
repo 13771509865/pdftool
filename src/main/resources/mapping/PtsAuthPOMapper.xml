@@ -144,7 +144,9 @@
 				and AUTH_CODE = #{authCode,jdbcType=VARCHAR}
 			</if>
 	    </where>
-		GROUP BY AUTH_VALUE
+		<if test="authCode != null and authCode != ''">
+			GROUP BY AUTH_VALUE
+		</if>
 	</select>
 
 	
