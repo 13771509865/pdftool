@@ -1,39 +1,11 @@
 package com.neo.service.order.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import com.neo.commons.util.UUIDHelper;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
-
-import com.alibaba.fastjson.JSON;
-import com.neo.commons.cons.DefaultResult;
-import com.neo.commons.cons.EnumAuthCode;
-import com.neo.commons.cons.EnumLockCode;
-import com.neo.commons.cons.EnumMemberType;
-import com.neo.commons.cons.EnumResultCode;
-import com.neo.commons.cons.EnumStatus;
-import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.UnitType;
+import com.neo.commons.cons.*;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.entity.OrderSpecsEntity;
 import com.neo.commons.properties.PtsProperty;
-import com.neo.commons.util.DateViewUtils;
-import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLogUtils;
-import com.neo.model.dto.RedisOrderDto;
-import com.neo.model.po.PtsAuthNamePO;
 import com.neo.model.po.PtsAuthPO;
-import com.neo.model.qo.PtsAuthNameQO;
-import com.neo.model.qo.PtsAuthQO;
 import com.neo.service.auth.IAuthService;
 import com.yozosoft.api.order.dto.OrderRequestDto;
 import com.yozosoft.api.order.dto.OrderServiceAppSpec;
@@ -41,6 +13,15 @@ import com.yozosoft.api.order.dto.ServiceAppUserRightDto;
 import com.yozosoft.api.order.dto.UserRightItem;
 import com.yozosoft.saas.YozoServiceApp;
 import com.yozosoft.util.SecretSignatureUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderManager {
@@ -107,7 +88,7 @@ public class OrderManager {
 
 	/**
 	 * 生效订单
-	 * @param dto
+	 * @param serviceAppUserRightDto
 	 * @return
 	 */
 	@Transactional(rollbackFor = Exception.class)
@@ -136,11 +117,12 @@ public class OrderManager {
 						authList.add(ptsAuthPO);
 					}
 				}
-				
-				Boolean insertPtsAuthPO = iAuthService.insertPtsAuthPO(authList)>0;
-				if(!insertPtsAuthPO) {
-					SysLogUtils.error("插入用户权益失败，orderId："+orderId);
-					throw new RuntimeException();
+				if(!authList.isEmpty()){
+					Boolean insertPtsAuthPO = iAuthService.insertPtsAuthPO(authList)>0;
+					if(!insertPtsAuthPO) {
+						SysLogUtils.error("插入用户权益失败，orderId："+orderId);
+						throw new RuntimeException();
+					}
 				}
 			}
 			

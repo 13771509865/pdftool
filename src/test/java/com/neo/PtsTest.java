@@ -1,15 +1,12 @@
 package com.neo;
 
-import com.neo.commons.util.DateViewUtils;
 import com.neo.dao.PtsAuthPOMapper;
+import com.neo.model.po.PtsAuthPO;
 import com.neo.service.auth.IAuthService;
 import com.neo.service.cache.impl.RedisCacheManager;
 import com.neo.service.clear.IClearService;
 import com.neo.service.order.impl.OrderManager;
 import com.neo.service.update.impl.UpdateManager;
-import com.yozosoft.api.order.dto.ServiceAppUserRightDto;
-import com.yozosoft.api.order.dto.UserRightItem;
-import com.yozosoft.saas.YozoServiceApp;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,66 +38,66 @@ public class PtsTest {
 	@Autowired
 	private UpdateManager updateManager;
 
-	@Test
-	public void test() {
-		ServiceAppUserRightDto serviceAppUserRightDto = new ServiceAppUserRightDto();
-		serviceAppUserRightDto.setApp(YozoServiceApp.PdfTools);
-		List<UserRightItem> rights = new ArrayList<>();
-		String[] specs = {"-1"};
-		String[] specs2 = {"1024"};
-		String[] specs3 = {"true"};
-		Long userid = 353109833127297025L;
-
-		UserRightItem userRightItem = new UserRightItem();
-		userRightItem.setId(41172L);
-		userRightItem.setPriority(10);
-		userRightItem.setUserId(userid);
-		userRightItem.setFeature("convert001Num");
-		userRightItem.setSpecs(specs);
-		userRightItem.setBegin(DateViewUtils.getNowDate());
-		userRightItem.setEnd(DateViewUtils.getNowDate());
-
-		UserRightItem u2 = new UserRightItem();
-		u2.setId(41173L);
-		u2.setPriority(10);
-		u2.setUserId(userid);
-		u2.setFeature("convert001Size");
-		u2.setSpecs(specs2);
-		u2.setBegin(DateViewUtils.getNowDate());
-		u2.setEnd(DateViewUtils.getNowDate());
-
-		UserRightItem u3 = new UserRightItem();
-		u3.setId(41173L);
-		u3.setPriority(10);
-		u3.setUserId(userid);
-		u3.setFeature("convert002");
-		u3.setSpecs(specs3);
-		u3.setBegin(DateViewUtils.getNowDate());
-		u3.setEnd(DateViewUtils.getNowDate());
-
-		UserRightItem u4 = new UserRightItem();
-		u4.setId(41174L);
-		u4.setPriority(10);
-		u4.setUserId(userid);
-		u4.setFeature("uploadSize");
-		u4.setSpecs(specs2);
-		u4.setBegin(DateViewUtils.getNowDate());
-		u4.setEnd(DateViewUtils.getNowDate());
-
-		rights.add(userRightItem);
-		rights.add(u2);
-		rights.add(u3);
-		rights.add(u4);
-
-		serviceAppUserRightDto.setRights(rights);
-
-		updateManager.updatePermissions(serviceAppUserRightDto,userid);
-
-
-	}
-	
-	
 //	@Test
+//	public void test() {
+//		ServiceAppUserRightDto serviceAppUserRightDto = new ServiceAppUserRightDto();
+//		serviceAppUserRightDto.setApp(YozoServiceApp.PdfTools);
+//		List<UserRightItem> rights = new ArrayList<>();
+//		String[] specs = {"-1"};
+//		String[] specs2 = {"1024"};
+//		String[] specs3 = {"true"};
+//		Long userid = 353109833127297025L;
+//
+//		UserRightItem userRightItem = new UserRightItem();
+//		userRightItem.setId(41172L);
+//		userRightItem.setPriority(10);
+//		userRightItem.setUserId(userid);
+//		userRightItem.setFeature("convert001Num");
+//		userRightItem.setSpecs(specs);
+//		userRightItem.setBegin(DateViewUtils.getNowDate());
+//		userRightItem.setEnd(DateViewUtils.getNowDate());
+//
+//		UserRightItem u2 = new UserRightItem();
+//		u2.setId(41173L);
+//		u2.setPriority(10);
+//		u2.setUserId(userid);
+//		u2.setFeature("convert001Size");
+//		u2.setSpecs(specs2);
+//		u2.setBegin(DateViewUtils.getNowDate());
+//		u2.setEnd(DateViewUtils.getNowDate());
+//
+//		UserRightItem u3 = new UserRightItem();
+//		u3.setId(41173L);
+//		u3.setPriority(10);
+//		u3.setUserId(userid);
+//		u3.setFeature("convert002");
+//		u3.setSpecs(specs3);
+//		u3.setBegin(DateViewUtils.getNowDate());
+//		u3.setEnd(DateViewUtils.getNowDate());
+//
+//		UserRightItem u4 = new UserRightItem();
+//		u4.setId(41174L);
+//		u4.setPriority(10);
+//		u4.setUserId(userid);
+//		u4.setFeature("uploadSize");
+//		u4.setSpecs(specs2);
+//		u4.setBegin(DateViewUtils.getNowDate());
+//		u4.setEnd(DateViewUtils.getNowDate());
+//
+//		rights.add(userRightItem);
+//		rights.add(u2);
+//		rights.add(u3);
+//		rights.add(u4);
+//
+//		serviceAppUserRightDto.setRights(rights);
+//
+//		updateManager.updatePermissions(serviceAppUserRightDto,userid);
+//
+//
+//	}
+
+
+	//	@Test
 //	public void clearTest() throws InterruptedException {
 //		String nowDate = DateViewUtils.getNow();
 //		String nowTime = DateViewUtils.getNowTime();
@@ -244,10 +241,25 @@ public class PtsTest {
 
 
 
-//		@Test
-//	    public void updatePtsAuthPOByPriority() {
-//			iAuthService.updatePtsAuthPOByPriority(2, UnitType.Year.toString(), 77127L, 2);
-//		}
+		@Test
+	    public void updatePtsAuthPOByPriority() {
+			List<PtsAuthPO> authList = new ArrayList<>();
+//			for(int i = 0;i<5;i++){
+//				PtsAuthPO ptsAuthPO = new PtsAuthPO();
+//				ptsAuthPO.setAuthCode("convert001Num");
+//				ptsAuthPO.setAuthValue("-1");
+//				ptsAuthPO.setGmtCreate(DateViewUtils.getNowDate());
+//				ptsAuthPO.setGmtModified(DateViewUtils.getNowDate());
+//				ptsAuthPO.setGmtExpire(DateViewUtils.getNowDate());
+//				ptsAuthPO.setOrderId(4589467894L);
+//				ptsAuthPO.setPriority(null);
+//				ptsAuthPO.setStatus(EnumStatus.ENABLE.getValue());
+//				ptsAuthPO.setUserid(12345L);
+//				authList.add(ptsAuthPO);
+//			}
+
+			Boolean insertPtsAuthPO = iAuthService.insertPtsAuthPO(authList)>0;
+		}
 
 
 }
