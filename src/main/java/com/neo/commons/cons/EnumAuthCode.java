@@ -33,6 +33,12 @@ public enum EnumAuthCode {
 	PDF_ORC_WORD(14,"扫描件转Word","convert014","64","true","Pdftoocrword","convert014Num","convert014Size"),
 	PIC_PDF(15,"图片转PDF","convert015","32","true","Pic2pdf","convert015Num","convert015Size"),
 
+	PDF_ADDPAGES(16, "pdf插入页","convert016","76","true","pdfaddpages","convert016Num","convert016Size"),
+	PDF_LPNG(17, "pdf转png长图","convert017","77","true","pdf2lpng","convert017Num","convert017Size"),
+	PDF_DECRYPT(18, "pdf解密","convert018","78","true","pdfdecrypt","convert018Num","convert018Size"),
+	PDF_ENCRYPT(19, "pdf加密","convert019","79","true","pdfencrypt","convert019Num","convert019Size"),
+
+
 	/**
 	 * PTS_CONVERT_NUM和PTS_UPLOAD_SIZE !!!!!上线后就可以删了!!!!!
 	 */

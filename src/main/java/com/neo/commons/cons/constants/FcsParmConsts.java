@@ -21,7 +21,9 @@ public class FcsParmConsts {
 	
 	public static final String TARGET_REPALCE = "targetReplace";
 
-	public static final List<String> FCS_PARMS = Arrays.asList(MERGE_INPUT, BOOKMARK, SOURCE_REPLACE,SIGNATRUE_IMGPATH,TARGET_REPALCE);
+	public static final String ADD_SCRIPT_PATH = "addedScriptPath";
+
+	public static final List<String> FCS_PARMS = Arrays.asList(MERGE_INPUT, BOOKMARK, SOURCE_REPLACE,SIGNATRUE_IMGPATH,TARGET_REPALCE,ADD_SCRIPT_PATH);
 
 
 }

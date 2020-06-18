@@ -1,20 +1,15 @@
 package com.neo.commons.properties;
 
-import java.util.Map;
-
-import javax.validation.constraints.NotBlank;
-
+import com.alibaba.fastjson.JSON;
+import com.neo.config.YamlPropertySourceFactory;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
-import com.neo.commons.util.JsonUtils;
-import com.neo.config.YamlPropertySourceFactory;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import javax.validation.constraints.NotBlank;
 
 
 /**
@@ -75,6 +70,18 @@ public class ConvertNumProperty {
 	
 	@NotBlank
 	private Integer convert015Num = -1;
+
+	@NotBlank
+	private Integer convert016Num = -1;
+
+	@NotBlank
+	private Integer convert017Num = -1;
+
+	@NotBlank
+	private Integer convert018Num = -1;
+
+	@NotBlank
+	private Integer convert019Num = -1;
 
 	
 	@Override
