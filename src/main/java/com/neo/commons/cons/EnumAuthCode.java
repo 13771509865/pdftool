@@ -220,6 +220,17 @@ public enum EnumAuthCode {
 		return null;
 	}
 
+
+
+	public static String getModuleSizeByModuleNum(String moduleNum) {
+		for (EnumAuthCode code : values()) {
+			if (code.getModuleNum() !=null && code.getModuleNum().equals(moduleNum)) {
+				return code.getModuleSize();
+			}
+		}
+		return null;
+	}
+
 	public static String getModuleByModuleSize(String moduleSize) {
 		for (EnumAuthCode code : values()) {
 			if (code.getModuleSize() !=null && code.getModuleSize().equals(moduleSize)) {

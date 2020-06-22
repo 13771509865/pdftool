@@ -8,7 +8,6 @@ import com.neo.commons.cons.constants.YzcloudConsts;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.properties.PtsProperty;
-import com.neo.commons.util.DateViewUtils;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLogUtils;
@@ -17,7 +16,6 @@ import com.neo.dao.PtsSummaryPOMapper;
 import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.model.bo.FileUploadBO;
 import com.neo.model.po.FcsFileInfoPO;
-import com.neo.model.po.PtsConvertRecordPO;
 import com.neo.model.po.PtsSummaryPO;
 import com.neo.model.qo.FcsFileInfoQO;
 import com.neo.model.qo.PtsSummaryQO;
@@ -64,6 +62,9 @@ public class StatisticsService {
 	@Autowired
 	private OldAuthManager oldAuthManager;
 
+	@Autowired
+	private StaticsManager staticsManager;
+
 
 	/**
 	 * 根据userID查询三天内的转换记录
@@ -100,47 +101,18 @@ public class StatisticsService {
 	 */
 	public IResult<Map<String,Object>> getConvertTimes(Long userID){
 		try {
-			
-			//获取所有的用户权限
-			IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID,null);
-			Map<String,Object> map = getPermissionResult.getData();
-
-			/**
-			 * 这个两个等更新完了就删掉!!!!!!
-			 */
-			IResult<Map<String,Object>> getPermissionResult2 = oldAuthManager.getPermission(userID,null,map);
-			map = getPermissionResult2.getData();
+			//获取用户剩余权益
+			IResult<Map<String,Object>> result =  staticsManager.getAuth(userID);
+			if(!result.isSuccess()){
+				return DefaultResult.failResult(result.getMessage());
+			}
 
 			Map<String,Object> newMap = new HashMap<>();
 
-			PtsConvertRecordPO ptsConvertRecordPO = new PtsConvertRecordPO();
-			ptsConvertRecordPO.setUserID(userID);
-			String nowDate = DateViewUtils.getNow();
-			ptsConvertRecordPO.setModifiedDate(DateViewUtils.parseSimple(nowDate));
-
-			//查询当天的转换记录
-			List<PtsConvertRecordPO> recordList = iConvertRecordService.selectPtsConvertRecord(ptsConvertRecordPO);
-
-			if(!recordList.isEmpty() && recordList.size()>0) {
-				for(PtsConvertRecordPO po : recordList) {
-					Integer convertNum = po.getConvertNum();//转了多少次
-					String moduleNum = EnumAuthCode.getModuleNum(po.getModule());
-
-					Integer allowConvertNum = Integer.valueOf(map.get(moduleNum).toString());//允许转多少次
-					if(allowConvertNum != -1) {
-						Integer newNum = allowConvertNum - convertNum;//剩余多少次
-						map.put(moduleNum, newNum);
-					}
-				}
-			}
-			
 			//转换成前端想要的字符
-			for (Map.Entry<String, Object> numEntry : map.entrySet()) {
+			for (Map.Entry<String, Object> numEntry : result.getData().entrySet()) {
 				if(EnumAuthCode.getModuleByModuleNum(numEntry.getKey()) != null) {
 					newMap.put(EnumAuthCode.getModuleByModuleNum(numEntry.getKey()), numEntry.getValue());
-				}
-				if(EnumAuthCode.getModuleByModuleSize(numEntry.getKey()) != null) {
-					newMap.put(numEntry.getKey(), numEntry.getValue());
 				}
 			}
 
@@ -152,6 +124,39 @@ public class StatisticsService {
 		}
 	}
 
+
+	/**
+	 * 获取用户剩余的权益，包含：每日剩余次数和文件大小
+	 * @param userID
+	 * @return
+	 */
+	public IResult<Map<String,Object[]>> getAuth(Long userID){
+		try {
+			//获取用户剩余权益
+			IResult<Map<String,Object>> result =  staticsManager.getAuth(userID);
+			if(!result.isSuccess()){
+				return DefaultResult.failResult(result.getMessage());
+			}
+
+			Map<String,Object[]> newMap = new HashMap<>();
+
+			//转换成前端想要的字符
+			for (Map.Entry<String, Object> numEntry : result.getData().entrySet()) {
+				Object[] auth = new Object[2];
+				if(EnumAuthCode.getModuleByModuleNum(numEntry.getKey()) != null) {
+					auth[0] = numEntry.getValue();
+					auth[1] = result.getData().get(EnumAuthCode.getModuleSizeByModuleNum(numEntry.getKey()));
+					newMap.put(EnumAuthCode.getModuleByModuleNum(numEntry.getKey()), auth);
+				}
+			}
+
+			return DefaultResult.successResult(newMap);
+		} catch (Exception e) {
+			e.printStackTrace();
+			SysLogUtils.error("查询每天的转换记录失败，原因：", e);
+			return DefaultResult.failResult("查询每日转换记录失败");
+		}
+	}
 
 
 	/**

@@ -1,27 +1,40 @@
 package com.neo.service.statistics;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
+import com.neo.commons.cons.DefaultResult;
+import com.neo.commons.cons.EnumAuthCode;
+import com.neo.commons.cons.EnumMemberType;
+import com.neo.commons.cons.IResult;
+import com.neo.commons.cons.constants.SysConstant;
+import com.neo.commons.properties.ConfigProperty;
+import com.neo.commons.util.DateViewUtils;
+import com.neo.commons.util.StrUtils;
+import com.neo.commons.util.SysLogUtils;
+import com.neo.model.po.PtsConvertRecordPO;
+import com.neo.service.auth.impl.AuthManager;
+import com.neo.service.auth.impl.OldAuthManager;
+import com.neo.service.convertRecord.IConvertRecordService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.neo.commons.cons.EnumAuthCode;
-import com.neo.commons.cons.EnumMemberType;
-import com.neo.commons.cons.constants.SysConstant;
-import com.neo.commons.properties.ConfigProperty;
-import com.neo.commons.util.StrUtils;
+import java.util.*;
+import java.util.Map.Entry;
 
 @Service("staticsManager")
 public class StaticsManager {
 
 	@Autowired
 	private ConfigProperty configProperty;
+
+	@Autowired
+	private AuthManager authManager;
+
+	@Autowired
+	private OldAuthManager oldAuthManager;
+
+	@Autowired
+	private IConvertRecordService iConvertRecordService;
+
 
 
 	/**
@@ -61,31 +74,54 @@ public class StaticsManager {
 	}
 
 
+	/**
+	 * 获取用户剩余权限
+	 * @param userID
+	 * @return
+	 */
+	public IResult<Map<String,Object>> getAuth(Long userID){
+		try {
 
+			//获取所有的用户权限
+			IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID,null);
+			Map<String,Object> map = getPermissionResult.getData();
+
+			/**
+			 * 这个两个等更新完了就删掉!!!!!!
+			 */
+			IResult<Map<String,Object>> getPermissionResult2 = oldAuthManager.getPermission(userID,null,map);
+			map = getPermissionResult2.getData();
+
+			PtsConvertRecordPO ptsConvertRecordPO = new PtsConvertRecordPO();
+			ptsConvertRecordPO.setUserID(userID);
+			String nowDate = DateViewUtils.getNow();
+			ptsConvertRecordPO.setModifiedDate(DateViewUtils.parseSimple(nowDate));
+
+			//查询当天的转换记录
+			List<PtsConvertRecordPO> recordList = iConvertRecordService.selectPtsConvertRecord(ptsConvertRecordPO);
+
+			if(!recordList.isEmpty() && recordList.size()>0) {
+				for(PtsConvertRecordPO po : recordList) {
+					Integer convertNum = po.getConvertNum();//转了多少次
+					String moduleNum = EnumAuthCode.getModuleNum(po.getModule());
+
+					Integer allowConvertNum = Integer.valueOf(map.get(moduleNum).toString());//允许转多少次
+					if(allowConvertNum != -1) {
+						Integer newNum = allowConvertNum - convertNum;//剩余多少次
+						map.put(moduleNum, newNum);
+					}
+				}
+			}
+			return DefaultResult.successResult(map);
+		} catch (Exception e) {
+			e.printStackTrace();
+			SysLogUtils.error("查询每天的转换记录和文件大小失败，原因：", e);
+			return DefaultResult.failResult("查询每日转换记录和文件大小失败");
+		}
+	}
 
 
 	public static void main(String[] args) {
-		//		String a = "1,2";
-		//		List<String> list = new ArrayList<>();
-		//		String[] convertCode = a.split(SysConstant.COMMA);
-		//		for(String code : convertCode) {
-		//			String module = EnumAuthCode.getModule(Integer.valueOf(code));
-		//			list.add(module);
-		//		}
-		//		System.out.println(list.toString());
-
-
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("aaa", 111);
-		map.put("bbb", 222);
-		map.put("ccc", 333);
-		map.put("ddd", 444);
-		Iterator<Entry<String, Object>> it = map.entrySet().iterator();
-		while(it.hasNext()){
-			Entry<String, Object> entry = it.next();
-			System.out.println(entry.getKey()+","+entry.getValue());
-
-		}
 
 	}
 
