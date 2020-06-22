@@ -220,6 +220,15 @@ public enum EnumAuthCode {
 		return null;
 	}
 
+	public static String getModuleByModuleSize(String moduleSize) {
+		for (EnumAuthCode code : values()) {
+			if (code.getModuleSize() !=null && code.getModuleSize().equals(moduleSize)) {
+				return code.getModule();
+			}
+		}
+		return null;
+	}
+
 
 	/**
 	 * 订单预留时，判断预留订单中的特性，是否存在

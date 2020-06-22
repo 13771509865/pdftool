@@ -110,6 +110,7 @@ public class StatisticsService {
 			 */
 			IResult<Map<String,Object>> getPermissionResult2 = oldAuthManager.getPermission(userID,null,map);
 			map = getPermissionResult2.getData();
+
 			Map<String,Object> newMap = new HashMap<>();
 
 			PtsConvertRecordPO ptsConvertRecordPO = new PtsConvertRecordPO();
@@ -137,6 +138,9 @@ public class StatisticsService {
 			for (Map.Entry<String, Object> numEntry : map.entrySet()) {
 				if(EnumAuthCode.getModuleByModuleNum(numEntry.getKey()) != null) {
 					newMap.put(EnumAuthCode.getModuleByModuleNum(numEntry.getKey()), numEntry.getValue());
+				}
+				if(EnumAuthCode.getModuleByModuleSize(numEntry.getKey()) != null) {
+					newMap.put(numEntry.getKey(), numEntry.getValue());
 				}
 			}
 
