@@ -1,26 +1,18 @@
 package com.neo.web.order;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.neo.commons.cons.IResult;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.service.order.IOrderService;
 import com.yozosoft.api.order.dto.OrderRequestDto;
 import com.yozosoft.api.order.dto.ServiceAppUserRightDto;
 import com.yozosoft.api.tcc.Participant;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 
 /**
@@ -30,7 +22,7 @@ import io.swagger.annotations.ApiOperation;
  * @create 2019年10月30日
  */
 @Api(value = "订单Controller", tags = {"订单Controller"})
-@RestController
+@Controller
 @RequestMapping(value = "/api")
 public class OrderController {
 
