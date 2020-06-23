@@ -40,9 +40,6 @@ public class OrderService implements IOrderService{
 	private RedisCacheManager<RedisOrderDto> redisCacheManager;
 
 	@Autowired
-	private IAuthNameService iAuthNameService;
-
-	@Autowired
 	private PtsProperty ptsProperty;
 
 	/**
@@ -85,19 +82,14 @@ public class OrderService implements IOrderService{
 					Object validityTime = osa.getSpecs().get(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())[0];
 					//有效期的单位
 					Object unitType = osa.getSpecs().get(EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())[1];
-					//转换次数
-					Object num = osa.getSpecs().get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode())[0];
-					//转换大小
-					Object size = osa.getSpecs().get(EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode())[0];
 					
-					if(num ==null || size==null ||validityTime == null || unitType==null || Integer.valueOf(validityTime.toString()) <=0 || UnitType.getUnit(unitType.toString()) == null) {
-						flag = false;//有效期、单位、次数、大小为空，改成不合法
+					if(validityTime == null || unitType==null || Integer.valueOf(validityTime.toString()) <=0 || UnitType.getUnit(unitType.toString()) == null) {
+						flag = false;//有效期、单位为空，改成不合法
 					}
 					Iterator<String> it = osa.getSpecs().keySet().iterator();
 					if(it.hasNext()) {
-						Object defaultValue = EnumAuthCode.getDefaultValue(it.next());
-						if(defaultValue == null) {
-							flag = false;//枚举类没有对应的authCode，就改成非法
+						if(!EnumAuthCode.existAuth(it.next())) {
+							flag = false;//枚举类没有对应的特性，就改成非法
 						}
 					}
 					if(flag) {//如果合法
@@ -165,7 +157,7 @@ public class OrderService implements IOrderService{
 		}
 		//校验签名值
 		if (orderManager.checkSign(SysConstant.ORDER_URIKEY + orderId, nonce, sign).isSuccess()) {
-			//幂等调用接口
+			//幂等调用接口¡
 			boolean isRepeat = redisCacheManager.setnx(RedisConsts.ORDERIDMP + orderId, "confirm:" + DateViewUtils.getNowFull(), -1L);
 			if (isRepeat) {
 				//事务支持

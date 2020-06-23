@@ -38,8 +38,6 @@ public class PermissionDto {
 	private String convert013;
 	private String convert014;
 	private String convert015;
-	private Integer uploadSize;
-	private Integer convertNum;
 	private Integer validityTime;
 
 

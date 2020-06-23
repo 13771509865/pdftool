@@ -1,11 +1,9 @@
 package com.neo.dao;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-
 import com.neo.model.po.PtsAuthPO;
 import com.neo.model.qo.PtsAuthQO;
+
+import java.util.List;
 
 public interface PtsAuthPOMapper {
 
@@ -14,5 +12,11 @@ public interface PtsAuthPOMapper {
 	List<PtsAuthPO> selectPtsAuthPO(PtsAuthQO ptsAuthQO);
 	
 	Integer deletePtsAuth(Long userid);
+
+	List<PtsAuthPO> selectAuth(PtsAuthQO ptsAuthQO);
+
+
+	//更新完就可以删了
+	List<PtsAuthPO> selectOldPtsAuthPO(PtsAuthQO ptsAuthQO);
 	
 }

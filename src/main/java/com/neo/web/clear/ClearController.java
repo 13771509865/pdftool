@@ -30,7 +30,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(value = "注销Controller", tags = {"注销Controller"})
 @RestController
-@RequestMapping(value = "/api/api")
+@RequestMapping(value = "/api")
 public class ClearController {
 
 

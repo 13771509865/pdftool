@@ -1,16 +1,5 @@
 package com.neo.web.composite;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.neo.commons.cons.EnumAuthCode;
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
@@ -27,9 +16,17 @@ import com.neo.service.convert.PtsConvertParamService;
 import com.neo.service.convert.PtsConvertService;
 import com.neo.service.convert.async.AsyncConvertManager;
 import com.yozosoft.auth.client.security.UaaToken;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * 转码控制器
@@ -69,7 +66,7 @@ public class PtsConvertController {
 		IResult<FcsFileInfoBO> result = ptsConvertService.dispatchConvert(convertBO, uaaToken, convertEntity);
 
 		//必须放在转换失败是否记缓存判断前面，否则redis有了记录会导致首次转换失败也不算失败率
-		ptsConvertService.updatePtsSummay(result.getData(), convertBO, convertEntity);
+		ptsConvertService.updatePtsSummay(result, convertBO, convertEntity);
 
 		//转换失败记录一下，拦截器要用
 		if (!result.isSuccess()) {
