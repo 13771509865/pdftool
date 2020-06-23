@@ -57,7 +57,7 @@ public class UpdateManager {
                 //拿orderId
                 List<PtsAuthPO> ptsAuthPOList = iUpdateService.selectAuth(new PtsAuthQO(userId,null,null));
                 Long orderId = null;
-                if(ptsAuthPOList.isEmpty()){
+                if(!ptsAuthPOList.isEmpty()){
                     orderId = ptsAuthPOList.get(0).getOrderId();
                 }
 
