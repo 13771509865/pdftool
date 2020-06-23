@@ -56,7 +56,10 @@ public class UpdateManager {
 
                 //拿orderId
                 List<PtsAuthPO> ptsAuthPOList = iUpdateService.selectAuth(new PtsAuthQO(userId,null,null));
-                Long orderId = ptsAuthPOList.get(0).getOrderId();
+                Long orderId = null;
+                if(ptsAuthPOList.isEmpty()){
+                    orderId = ptsAuthPOList.get(0).getOrderId();
+                }
 
                 iAuthService.deletePtsAuth(userId);//删除当前用户所有权益
 
