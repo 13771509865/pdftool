@@ -36,7 +36,7 @@ public class UpdateController {
     public ResponseEntity authUpdate(@RequestBody ServiceAppUserRightDto serviceAppUserRightDto, @RequestParam long userId, @RequestParam String nonce, @RequestParam String sign){
         try {
             ResponseEntity result = iUpdateService.authUpdate(serviceAppUserRightDto,userId, nonce, sign);
-            SysLogUtils.info("[userId："+userId+"开始更新数据],更新结果："+result.getStatusCode());
+            SysLogUtils.info("[userId："+userId+"开始更新数据]。更新结果："+result.getStatusCode());
             return result;
         } catch (Exception e) {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
