@@ -1,13 +1,20 @@
 package com.neo.web;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
+import com.neo.commons.cons.EnumResultCode;
+import com.neo.commons.cons.IResult;
+import com.neo.commons.cons.constants.FeedbackConsts;
+import com.neo.commons.cons.constants.UaaConsts;
+import com.neo.commons.cons.entity.FeedbackEntity;
+import com.neo.commons.cons.entity.HttpResultEntity;
+import com.neo.commons.properties.PtsProperty;
+import com.neo.commons.util.BindingResultUtils;
+import com.neo.commons.util.JsonResultUtils;
+import com.neo.commons.util.JsonUtils;
+import com.neo.dao.PtsAuthPOMapper;
+import com.neo.model.vo.FeedbackVO;
+import com.neo.service.httpclient.HttpAPIService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,27 +23,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.neo.commons.cons.EnumResultCode;
-import com.neo.commons.cons.EnumStatus;
-import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.constants.FeedbackConsts;
-import com.neo.commons.cons.constants.SysConstant;
-import com.neo.commons.cons.constants.UaaConsts;
-import com.neo.commons.cons.entity.FeedbackEntity;
-import com.neo.commons.cons.entity.HttpResultEntity;
-import com.neo.commons.properties.PtsProperty;
-import com.neo.commons.util.BindingResultUtils;
-import com.neo.commons.util.JsonResultUtils;
-import com.neo.commons.util.JsonUtils;
-import com.neo.commons.util.StrUtils;
-import com.neo.dao.PtsAuthPOMapper;
-import com.neo.model.po.PtsAuthPO;
-import com.neo.model.qo.PtsAuthQO;
-import com.neo.model.vo.FeedbackVO;
-import com.neo.service.httpclient.HttpAPIService;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 用户反馈controller

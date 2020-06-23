@@ -1,21 +1,14 @@
 package com.neo.service.file;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.EnumStatus;
 import com.neo.commons.cons.IResult;
-import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.SysLogUtils;
-import com.neo.dao.FcsFileInfoPOMapper;
 import com.neo.model.po.FcsFileInfoPO;
-import com.neo.model.qo.FcsFileInfoQO;
 import com.neo.service.convert.PtsConvertService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 
 @Service("deleteFileService")
@@ -35,7 +28,7 @@ public class DeleteFileService {
 	public IResult<String> deleteConvert(String fileHash,String uCloudFileId,Long userID){
 
 //		//filehash和uCloudFileId，必须要有一个
-//		if(StringUtils.isBlank(fileHash) || StringUtils.isBlank(uCloudFileId)) {
+//		if(StringUtils.isBlank(fileHash) && StringUtils.isBlank(uCloudFileId)) {
 //			return DefaultResult.failResult(EnumResultCode.E_NOTALL_PARAM.getInfo());
 //		}
 
