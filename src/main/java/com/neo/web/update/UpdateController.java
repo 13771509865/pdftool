@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Api(value = "数据更新Controller", tags = {"数据更新Controller"})
 @Controller
-@RequestMapping(value = "/update")
+@RequestMapping(value = "/api/update")
 public class UpdateController {
 
     @Autowired
