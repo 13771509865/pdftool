@@ -1,5 +1,6 @@
 package com.neo.service.convert;
 
+import com.neo.commons.cons.EnumConvertType;
 import com.neo.commons.cons.EnumStatus;
 import com.neo.commons.cons.constants.*;
 import com.neo.commons.cons.entity.ConvertEntity;
@@ -80,7 +81,12 @@ public class PtsConvertParamService {
 	public ConvertParameterPO buildConvertParameterPO(ConvertParameterBO convertBO) {
 		if(convertBO.getConvertTimeOut() == null) {
 			convertBO.setConvertTimeOut(configProperty.getConvertTimeout());
-		} 
+		}
+
+		//PDF转图片，清晰度做特殊处理，zoom值暂定为3
+		if(isPic(convertBO)){
+			convertBO.setZoom(3f);
+		}
 
 		Map<String,Object> map = JsonUtils.parseJSON2Map(convertBO.toString());
 		for(String param : FcsParmConsts.FCS_PARMS) {
@@ -92,6 +98,24 @@ public class PtsConvertParamService {
 			}
 		}
 		return JsonUtils.map2obj(map, ConvertParameterPO.class);
+	}
+
+
+	/**
+	 * 判断是否是PDF转图片
+	 * @param convertBO
+	 * @return
+	 */
+	public Boolean isPic(ConvertParameterBO convertBO){
+		switch (EnumConvertType.getEnum(convertBO.getConvertType())){
+			case PDF_GIF:
+			case PDF_PNG:
+			case PDF_JPG:
+			case PDF_TIFF:
+			case PDF_BMP:
+				return true;
+		}
+			return false;
 	}
 
 
@@ -224,13 +248,9 @@ public class PtsConvertParamService {
 
 
 	public static void main(String[] args) {
-
-
-		String viewUrl= "https://pdl.yozodocs.com/view/preview/Qc1lqUEgoeEThAS5Lhz_BHh4sXHecv5ApmY_Dn7OOrs73uXHsMrSrhI9Gjgo6U8EKQSkBZebVZXRulQvmbj_Qf2IL5h5ZqM8JSK9GUGeUJ79cu3sAQCN28SdcBFfBOw4fwkMbj5CxtHUOY-zyrovboFAN1zT4Ly3L-YcCU_r9pZkIA-5gwaEbBnr2fUPN6RyprOKQpIUCo-FzmTegd2AFF4J-ylSzHdjM0L9ouhUawFQbAsi16oS_qRywKBK9RVB6rXHbrwxZwCZ8XlULFdFCBwBujKFadQpKELVciwCQ0Me4lQqpdzyjpEXdfr-yVTNFsjUTTCqgEs=/";
-		String a = "/view/preview";
-		String b = "/view/download";
-		String aa = StringUtils.substringAfter(viewUrl,a);
-		String  c = StringUtils.replace(viewUrl, a, b);
-		System.out.println(c);
+		PtsConvertParamService p = new PtsConvertParamService();
+		ConvertParameterBO co = new ConvertParameterBO();
+		co.setConvertType(6);
+		System.out.println(p.isPic(co));
 	}
 }

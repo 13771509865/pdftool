@@ -1,7 +1,6 @@
 package com.neo.service.statistics;
 
 import com.neo.commons.cons.*;
-import com.neo.commons.cons.constants.RedisConsts;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.cons.constants.YzcloudConsts;
@@ -14,11 +13,8 @@ import com.neo.commons.util.SysLogUtils;
 import com.neo.dao.FcsFileInfoPOMapper;
 import com.neo.dao.PtsSummaryPOMapper;
 import com.neo.model.bo.FcsFileInfoBO;
-import com.neo.model.bo.FileUploadBO;
 import com.neo.model.po.FcsFileInfoPO;
-import com.neo.model.po.PtsSummaryPO;
 import com.neo.model.qo.FcsFileInfoQO;
-import com.neo.model.qo.PtsSummaryQO;
 import com.neo.service.auth.impl.AuthManager;
 import com.neo.service.auth.impl.OldAuthManager;
 import com.neo.service.cache.impl.RedisCacheManager;
@@ -209,93 +205,6 @@ public class StatisticsService {
 		
 		return DefaultResult.successResult(fcsFileInfoBO);
 	}
-
-
-
-	/**==================================运营统计数据============================================ */	
-
-
-
-
-	/**
-	 * 查询每个文件大小区间的转换数量（包括失败的），缓存6小时
-	 * @return
-	 */
-	//	@Cacheable(value = RedisConsts.CACHE_QUARTER_DAY, keyGenerator = "cacheKeyGenerator")
-	public IResult<PtsSummaryPO> selectCountBySize(){
-		try {
-			PtsSummaryPO ptsSummaryPO = ptsSummaryPOMapper.selectCountBySize();
-			if(ptsSummaryPO == null ) {
-				return DefaultResult.failResult("查询转换记录失败");
-			}
-			return DefaultResult.successResult(ptsSummaryPO);
-		} catch (Exception e) {
-			SysLogUtils.error("查询转换数量失败，原因：", e);
-			return DefaultResult.failResult("查询转换数量失败");
-		}
-	}
-
-
-
-	/**
-	 * 查询每个ip每天的转换量，缓存6小时
-	 * @param request
-	 * @return
-	 */
-	//	@Cacheable(value = RedisConsts.CACHE_QUARTER_DAY, keyGenerator = "cacheKeyGenerator")
-	public IResult<List<PtsSummaryPO>> selectCountByIpAndDate(PtsSummaryQO ptsSummaryQO){
-		try {
-			List<PtsSummaryPO> list = ptsSummaryPOMapper.selectCountByIpAndDate(ptsSummaryQO);
-			if(list.isEmpty() || list == null) {
-				return DefaultResult.failResult("根据ip查询每天的转换数量失败");
-			}
-			return DefaultResult.successResult(list);
-		} catch (Exception e) {
-			SysLogUtils.error("根据ip查询每天的转换数量失败，原因：", e);
-			return DefaultResult.failResult("根据ip查询每天的转换数量失败");
-		}
-	}
-
-
-
-
-	/**
-	 * 查询每天的转换量，缓存6小时
-	 * @param request
-	 * @return
-	 */
-	//	@Cacheable(value = RedisConsts.CACHE_QUARTER_DAY, keyGenerator = "cacheKeyGenerator")
-	public IResult<List<PtsSummaryPO>> selectConvertByDay(PtsSummaryQO ptsSummaryQO){
-		try {
-			ptsSummaryQO.setGroupby("DATE");
-			List<PtsSummaryPO> list = ptsSummaryPOMapper.selectCountByIpAndDate(ptsSummaryQO);
-			if(list.isEmpty() || list == null) {
-				return DefaultResult.failResult("查询每天的转换数量失败");
-			}
-			return DefaultResult.successResult(list);
-		} catch (Exception e) {
-			SysLogUtils.error("查询每天的转换数量失败，原因：", e);
-			return DefaultResult.failResult("查询每天的转换数量失败");
-		}
-	}
-
-
-
-
-	/**
-	 * 查询上传文件的记录
-	 * @return
-	 */
-	public IResult<FileUploadBO> getUploadTimes(){
-		Integer successUpload = redisCacheManager.getScore(RedisConsts.UPLOAD_CONNT, RedisConsts.SUCCESS).intValue();
-		Integer failUpload = redisCacheManager.getScore(RedisConsts.UPLOAD_CONNT, RedisConsts.FAIL).intValue();
-		FileUploadBO fileUploadBO = new FileUploadBO();
-		fileUploadBO.setFailNum(failUpload);
-		fileUploadBO.setSuccessNum(successUpload);
-		fileUploadBO.setCount(failUpload+successUpload);
-		return DefaultResult.successResult(fileUploadBO);
-	}
-
 
 
 	/**
