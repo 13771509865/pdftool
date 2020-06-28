@@ -14,6 +14,8 @@
         <property name="MYLOG_NAME">all_log</property>
         <!--用户反馈日志文件名-->
         <property name="SIZEROLLING_FILE_NAME">pts_Feedback</property>
+        <!--360，百度登录统计日志-->
+        <property name="LOGIN_FILE_NAME">statistics/login_log</property>
         <!--#DEBUG、INFO、WARN、ERROR和FATAL-->
         <property name="LOG_LEVEL">INFO</property>
     </properties>
@@ -32,7 +34,7 @@
             </Policies>
         </RollingFile>
         
-          <RollingFile name="LogRollingFile" fileName="${LOG_HOME}/${MYLOG_NAME}.log" filePattern="${LOG_HOME}/${MYLOG_NAME}-%d{yyyy-MM-dd}.log">
+        <RollingFile name="LogRollingFile" fileName="${LOG_HOME}/${MYLOG_NAME}.log" filePattern="${LOG_HOME}/${MYLOG_NAME}-%d{yyyy-MM-dd}.log">
             <PatternLayout pattern="[%p] %d{yyyy-MM-dd HH:mm:ss,SSS} - %l - %m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy modulate="true" interval="1" />
@@ -49,6 +51,14 @@
             </Policies>
             <DefaultRolloverStrategy max="30"/>
         </RollingFile>
+
+        <RollingFile name="StatisticsRollingFile" fileName="${LOG_HOME}/${LOGIN_FILE_NAME}.log" filePattern="${LOG_HOME}/${LOGIN_FILE_NAME}-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="[%p] %d{yyyy-MM-dd HH:mm:ss,SSS} - %l - %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1" />
+            </Policies>
+        </RollingFile>
+
     </appenders>
 
     <loggers>
@@ -66,6 +76,10 @@
 
         <Logger name="Feedback" level="INFO" additivity="false">
             <appender-ref ref="SizeRollingFile"/>
+        </Logger>
+
+        <Logger name="Statistics" level="INFO" additivity="false">
+            <appender-ref ref="StatisticsRollingFile"/>
         </Logger>
     </loggers>
 </configuration>
