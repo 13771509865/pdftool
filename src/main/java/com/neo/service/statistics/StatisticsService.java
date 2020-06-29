@@ -229,15 +229,15 @@ public class StatisticsService {
 	 * @param userId
 	 * @return
 	 */
-	public IResult<String> statisticsLogin(String sourceId,Long userId){
+	public IResult<String> statisticsRegister(String sourceId,Long userId){
 		try {
 			String opertime = DateViewUtils.getNowFull();
 			String message = "sourceId="+sourceId+",userId="+userId+",opertime="+opertime;
 			SysLogUtils.statisticsInfo(message);
 			return DefaultResult.successResult();
 		}catch (Exception e){
-			SysLogUtils.error("统计登录来源失败，原因："+e);
-			return DefaultResult.failResult("统计失败");
+			SysLogUtils.error("统计注册来源失败，原因："+e);
+			return DefaultResult.failResult("统计注册来源失败");
 		}
 	}
 

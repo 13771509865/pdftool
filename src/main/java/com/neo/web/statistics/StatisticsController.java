@@ -142,11 +142,11 @@ public class StatisticsController {
 
 
 
-	@ApiOperation(value = "统计登录来源")
-	@PostMapping(value = "/login")
+	@ApiOperation(value = "统计注册来源")
+	@PostMapping(value = "/register")
 	@ResponseBody
-	public Map<String,Object> statisticsLogin(@RequestParam("sourceId")String sourceId,HttpServletRequest request){
-		IResult<String> result = statisticsService.statisticsLogin(sourceId,HttpUtils.getSessionUserID(request));
+	public Map<String,Object> statisticsRegister(@RequestParam("sourceId")String sourceId,HttpServletRequest request){
+		IResult<String> result = statisticsService.statisticsRegister(sourceId,HttpUtils.getSessionUserID(request));
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
 		}else {

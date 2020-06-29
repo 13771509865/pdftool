@@ -14,8 +14,8 @@
         <property name="MYLOG_NAME">all_log</property>
         <!--用户反馈日志文件名-->
         <property name="SIZEROLLING_FILE_NAME">pts_Feedback</property>
-        <!--360，百度登录统计日志-->
-        <property name="LOGIN_FILE_NAME">statistics/login_log</property>
+        <!--360，百度注册来源统计日志-->
+        <property name="REGISTER_FILE_NAME">statistics/register_log</property>
         <!--#DEBUG、INFO、WARN、ERROR和FATAL-->
         <property name="LOG_LEVEL">INFO</property>
     </properties>
@@ -52,7 +52,7 @@
             <DefaultRolloverStrategy max="30"/>
         </RollingFile>
 
-        <RollingFile name="StatisticsRollingFile" fileName="${LOG_HOME}/${LOGIN_FILE_NAME}.log" filePattern="${LOG_HOME}/${LOGIN_FILE_NAME}-%d{yyyy-MM-dd}.log">
+        <RollingFile name="StatisticsRollingFile" fileName="${LOG_HOME}/${REGISTER_FILE_NAME}.log" filePattern="${LOG_HOME}/${REGISTER_FILE_NAME}-%d{yyyy-MM-dd}.log">
             <PatternLayout pattern="[%p] %d{yyyy-MM-dd HH:mm:ss,SSS} - %l - %m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy modulate="true" interval="1" />
