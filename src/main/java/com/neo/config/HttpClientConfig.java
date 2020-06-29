@@ -78,7 +78,7 @@ public class HttpClientConfig {
 		httpClientBuilder.setConnectionManager(httpClientConnectionManager);
 		httpClientBuilder.setRetryHandler(httpRequestRetryHandler);
 		httpClientBuilder.setDefaultRequestConfig(requestConfig);
-		httpClientBuilder.disableCookieManagement();//禁止cookie携带
+		httpClientBuilder.disableCookieManagement();//禁止httpclient自动处理cookie
 		return httpClientBuilder;
 	}
 
