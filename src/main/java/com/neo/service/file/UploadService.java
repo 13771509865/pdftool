@@ -1,23 +1,9 @@
 package com.neo.service.file;
 
 
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import com.neo.commons.util.*;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.constants.PtsConsts;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.cons.constants.YzcloudConsts;
@@ -25,10 +11,22 @@ import com.neo.commons.cons.entity.FileHeaderEntity;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.cons.entity.ModuleEntity;
 import com.neo.commons.properties.PtsProperty;
+import com.neo.commons.util.EncryptUtils;
+import com.neo.commons.util.HttpUtils;
+import com.neo.commons.util.JsonUtils;
+import com.neo.commons.util.SysLogUtils;
 import com.neo.dao.PtsApplyPOMapper;
 import com.neo.model.bo.FileUploadBO;
 import com.neo.model.po.PtsApplyPO;
 import com.neo.service.httpclient.HttpAPIService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service("uploadService")
 public class UploadService {
@@ -127,7 +125,7 @@ public class UploadService {
 
 		Map<String, Object> params = new HashMap<>();
 		params.put("fileId", ycFileId);
-		
+
 		Map<String, Object> headers = new HashMap<>();
 
 		if(StringUtils.isNotBlank(accessToken) && StringUtils.isNotBlank(refreshToken)){
