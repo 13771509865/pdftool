@@ -36,7 +36,7 @@ public class FailRecordService implements IFailRecordService {
         ptsFailRecordPO.setUserId(convertEntity.getUserId());
         ptsFailRecordPO.setStatus(EnumStatus.ENABLE.getValue());
         ptsFailRecordPO.setSrcFileSize(convertBO.getSrcFileSize());
-        ptsFailRecordPO.setSrcFileName(convertBO.getSrcFileName());
+        ptsFailRecordPO.setSrcFileName(convertBO.getSrcRelativePath());
         ptsFailRecordPO.setResultMessage(result.getMessage());
         ptsFailRecordPO.setResultCode(result.getData().getCode());
         ptsFailRecordPO.setModule(convertEntity.getModule());
