@@ -7,7 +7,7 @@
 <configuration status="info" monitorInterval="60">
     <properties>
         <!--日志路径 /users/yozo/log -->
-        <property name="LOG_HOME">/Users/xujun/data/dcs/log</property>
+        <property name="LOG_HOME">/Users/xujun/data/dcs/log/pts</property>
         <!--日志文件名-->
         <property name="FILE_NAME">pts_error</property>
          <!--日志文件名-->
