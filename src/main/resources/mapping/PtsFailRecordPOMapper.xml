@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neo.dao.PtsFailRecordPOMapper">
+    <resultMap id="PtsFailRecordPOMapper" type="com.neo.model.po.PtsFailRecordPO">
+        <id column="ID" property="id" jdbcType="INTEGER"/>
+        <result column="GMT_CREATE" property="gmtCreate" jdbcType="TIMESTAMP"/>
+        <result column="GMT_MODIFIED" property="gmtModified" jdbcType="TIMESTAMP"/>
+        <result column="STATUS" property="status" jdbcType="INTEGER"/>
+        <result column="USERID" property="userId" jdbcType="BIGINT"/>
+        <result column="RESULT_CODE" property="resultCode" jdbcType="INTEGER"/>
+        <result column="RESULT_MESSAGE" property="resultMessage" jdbcType="VARCHAR"/>
+        <result column="SRC_FILE_NAME" property="srcFileName" jdbcType="VARCHAR"/>
+        <result column="SRC_FILE_SIZE" property="srcFileSize" jdbcType="BIGINT"/>
+        <result column="CONVERT_TYPE" property="convertType" jdbcType="INTEGER"/>
+        <result column="MODULE" property="module" jdbcType="INTEGER"/>
+        <result column="REMARK" property="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <sql id="Base_Column_List">
+		ID,
+		GMT_CREATE,
+		GMT_MODIFIED,
+		STATUS,
+		USERID,
+		RESULT_CODE,
+		RESULT_MESSAGE,
+		SRC_FILE_NAME,
+		SRC_FILE_SIZE,
+		CONVERT_TYPE,
+		MODULE,
+		REMARK
+	</sql>
+
+
+    <!-- 插入转换失败的文件记录 -->
+    <insert id="insertPtsFailRecord" parameterType="com.neo.model.po.PtsFailRecordPO">
+        insert into pts_fail_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="gmtCreate != null">
+                GMT_CREATE,
+            </if>
+            <if test="gmtModified != null">
+                GMT_MODIFIED,
+            </if>
+            <if test="status != null">
+                STATUS,
+            </if>
+            <if test="userId != null">
+                USERID,
+            </if>
+            <if test="resultCode != null">
+                RESULT_CODE,
+            </if>
+            <if test="resultMessage != null and resultMessage != ''">
+                RESULT_MESSAGE,
+            </if>
+            <if test="srcFileName != null and srcFileName != ''">
+                SRC_FILE_NAME,
+            </if>
+            <if test="srcFileSize != null">
+                SRC_FILE_SIZE,
+            </if>
+            <if test="convertType != null">
+                CONVERT_TYPE,
+            </if>
+            <if test="module != null">
+                MODULE,
+            </if>
+            <if test="remark != null and remark != ''">
+                REMARK,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="gmtCreate != null">
+                #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtModified != null">
+                #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="resultCode != null">
+                #{resultCode,jdbcType=INTEGER},
+            </if>
+            <if test="resultMessage != null and resultMessage != ''">
+                #{resultMessage,jdbcType=VARCHAR},
+            </if>
+            <if test="srcFileName != null and srcFileName != ''">
+                #{srcFileName,jdbcType=VARCHAR},
+            </if>
+            <if test="srcFileSize != null">
+                #{srcFileSize,jdbcType=BIGINT},
+            </if>
+            <if test="convertType != null">
+                #{convertType,jdbcType=INTEGER},
+            </if>
+            <if test="module != null">
+                #{module,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null and remark != ''">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+        </trim>
+ 	  </insert>
+
+
+
+
+
+
+
+</mapper>
