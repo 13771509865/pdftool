@@ -139,7 +139,20 @@ public class StatisticsController {
 	public Map<String,Object> getFileInfoByFileHash(){
 		return JsonResultUtils.successMapResult(statisticsService.getPdfMudules());
 	}
-	
+
+
+
+	@ApiOperation(value = "统计注册来源")
+	@PostMapping(value = "/register")
+	@ResponseBody
+	public Map<String,Object> statisticsRegister(@RequestParam("sourceId")String sourceId,HttpServletRequest request){
+		IResult<String> result = statisticsService.statisticsRegister(sourceId,HttpUtils.getSessionUserID(request));
+		if(result.isSuccess()) {
+			return JsonResultUtils.successMapResult(result.getData());
+		}else {
+			return JsonResultUtils.failMapResult(result.getMessage());
+		}
+	}
 
 
 }

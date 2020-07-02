@@ -7,6 +7,7 @@ import com.neo.commons.cons.constants.YzcloudConsts;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.properties.PtsProperty;
+import com.neo.commons.util.DateViewUtils;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLogUtils;
@@ -221,6 +222,24 @@ public class StatisticsService {
 		return moduleMap;
 	}
 
+
+	/**
+	 * 统计登录来源
+	 * @param sourceId
+	 * @param userId
+	 * @return
+	 */
+	public IResult<String> statisticsRegister(String sourceId,Long userId){
+		try {
+			String opertime = DateViewUtils.getNowFull();
+			String message = "sourceId="+sourceId+",userId="+userId+",opertime="+opertime;
+			SysLogUtils.statisticsInfo(message);
+			return DefaultResult.successResult();
+		}catch (Exception e){
+			SysLogUtils.error("统计注册来源失败，原因："+e);
+			return DefaultResult.failResult("统计注册来源失败");
+		}
+	}
 
 
 

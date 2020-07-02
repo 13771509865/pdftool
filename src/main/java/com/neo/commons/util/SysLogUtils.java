@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 public class SysLogUtils {
 	 private static final Logger logger = LoggerFactory.getLogger("N");
 	 private static final Logger elogger = LoggerFactory.getLogger("R");
+	 private static final Logger statisticslogger = LoggerFactory.getLogger("Statistics");
 
 	 
 	public static void error(Throwable t){
@@ -28,6 +29,10 @@ public class SysLogUtils {
 	public static void warn(String value) {
 		logger.warn(value);
 		
+	}
+
+	public static void statisticsInfo(String message) {
+		statisticslogger.info("[{}]", message);
 	}
 
 }
