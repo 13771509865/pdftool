@@ -19,7 +19,7 @@
     
     
 	<insert id="insertPtsAuthNamePO" parameterType="com.neo.model.po.PtsAuthNamePO">
-	    insert into pts_vote
+	    insert into pts_auth_name
 	    <trim prefix="(" suffix=")" suffixOverrides=",">
 	      <if test="gmtCreate != null">
 	        GMT_CREATE,

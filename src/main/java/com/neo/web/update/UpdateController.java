@@ -2,6 +2,7 @@ package com.neo.web.update;
 
 
 import com.neo.commons.util.SysLogUtils;
+import com.neo.model.bo.PtsAuthNameBO;
 import com.neo.service.update.IUpdateService;
 import com.yozosoft.api.order.dto.ServiceAppUserRightDto;
 import io.swagger.annotations.Api;
@@ -41,6 +42,13 @@ public class UpdateController {
         } catch (Exception e) {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+
+    @ApiOperation(value = "authName表数据更新")
+    @PostMapping(value = "/authName")
+    public ResponseEntity authNameUpdate(PtsAuthNameBO ptsAuthNameBO, @RequestParam String flag){
+        return iUpdateService.authNameUpdate(ptsAuthNameBO,flag);
     }
 
 
