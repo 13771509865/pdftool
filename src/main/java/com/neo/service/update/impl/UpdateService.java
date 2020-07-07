@@ -65,16 +65,16 @@ public class UpdateService implements IUpdateService {
     public ResponseEntity authNameUpdate(PtsAuthNameBO ptsAuthNameBO, String flag){
         Boolean isSuccess = false;
         if(StringUtils.equals(flag,"insert")){
-            PtsAuthNamePO ptsAuthNamePO = new PtsAuthNamePO();
-            ptsAuthNamePO.setGmtCreate(DateViewUtils.getNowDate());
-            ptsAuthNamePO.setGmtModified(DateViewUtils.getNowDate());
-            ptsAuthNamePO.setStatus(EnumStatus.ENABLE.getValue());
-            ptsAuthNamePO.setAuthCode(ptsAuthNameBO.getAuthCode());
-            ptsAuthNamePO.setAuthName(ptsAuthNameBO.getAuthName());
-            ptsAuthNamePO.setDefaultVaule(ptsAuthNameBO.getDefaultVaule());
-            ptsAuthNamePO.setDescription(ptsAuthNameBO.getDescription());
-            ptsAuthNamePO.setValueType(ptsAuthNameBO.getValueType());
-            ptsAuthNamePO.setValueUnit(ptsAuthNameBO.getValueUnit());
+            PtsAuthNamePO ptsAuthNamePO =  PtsAuthNamePO.builder()
+                    .gmtCreate(DateViewUtils.getNowDate())
+                    .gmtModified(DateViewUtils.getNowDate())
+                    .status(EnumStatus.ENABLE.getValue())
+                    .authCode(ptsAuthNameBO.getAuthCode())
+                    .authName(ptsAuthNameBO.getAuthName())
+                    .defaultVaule(ptsAuthNameBO.getDefaultVaule())
+                    .description(ptsAuthNameBO.getDescription())
+                    .valueType(ptsAuthNameBO.getValueType())
+                    .valueUnit(ptsAuthNameBO.getValueUnit()).build();
             isSuccess =  iAuthNameService.insertPtsAuthNamePO(ptsAuthNamePO)>0;
         }
         return ResponseEntity.ok(isSuccess?EnumResultCode.E_SUCCES.getInfo():EnumResultCode.E_FAIL.getInfo());
