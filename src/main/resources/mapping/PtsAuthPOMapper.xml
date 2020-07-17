@@ -215,7 +215,7 @@
 
 
 	<!-- 查老用户权限，！！！！更新完就能删了！！！！ -->
-	<select id="selectOldPtsAuthPO" resultMap="PtsAuthPOMapper" parameterType="com.neo.model.qo.PtsAuthQO">
+<!--	<select id="selectOldPtsAuthPO" resultMap="PtsAuthPOMapper" parameterType="com.neo.model.qo.PtsAuthQO">
 		select
 		<include refid="Base_Column_List" />
 		from pts_auth
@@ -235,7 +235,7 @@
 				)
 			</if>
 		</where>
-	</select>
+	</select>-->
 
 
 

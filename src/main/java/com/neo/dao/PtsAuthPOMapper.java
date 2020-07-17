@@ -17,6 +17,6 @@ public interface PtsAuthPOMapper {
 
 
 	//更新完就可以删了
-	List<PtsAuthPO> selectOldPtsAuthPO(PtsAuthQO ptsAuthQO);
+//	List<PtsAuthPO> selectOldPtsAuthPO(PtsAuthQO ptsAuthQO);
 	
 }
