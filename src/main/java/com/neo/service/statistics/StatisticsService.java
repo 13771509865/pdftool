@@ -12,14 +12,10 @@ import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.dao.FcsFileInfoPOMapper;
-import com.neo.dao.PtsSummaryPOMapper;
 import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.model.po.FcsFileInfoPO;
 import com.neo.model.qo.FcsFileInfoQO;
-import com.neo.service.auth.impl.AuthManager;
-import com.neo.service.auth.impl.OldAuthManager;
 import com.neo.service.cache.impl.RedisCacheManager;
-import com.neo.service.convertRecord.IConvertRecordService;
 import com.neo.service.httpclient.HttpAPIService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +32,6 @@ public class StatisticsService {
 	private FcsFileInfoPOMapper fcsFileInfoPOMapper;
 
 	@Autowired
-	private PtsSummaryPOMapper ptsSummaryPOMapper;
-
-	@Autowired
 	private RedisCacheManager<String> redisCacheManager;
 
 	@Autowired
@@ -48,16 +41,7 @@ public class StatisticsService {
 	private HttpAPIService httpAPIService;
 
 	@Autowired
-	private IConvertRecordService iConvertRecordService;
-	
-	@Autowired
-	private AuthManager authManager;
-	
-	@Autowired
 	private ConfigProperty configProperty;
-
-	@Autowired
-	private OldAuthManager oldAuthManager;
 
 	@Autowired
 	private StaticsManager staticsManager;

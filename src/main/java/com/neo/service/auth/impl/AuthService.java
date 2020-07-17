@@ -30,8 +30,8 @@ public class AuthService implements IAuthService{
 	@Autowired
 	private IConvertRecordService iConvertRecordService;
 
-	@Autowired
-	private OldAuthManager oldAuthManager;
+//	@Autowired
+//	private OldAuthManager oldAuthManager;
 
 
 	/**
@@ -53,8 +53,8 @@ public class AuthService implements IAuthService{
 		/**
 		 * 这个两个等更新完了就删掉!!!!!!
 		 */
-		IResult<Map<String,Object>> getPermissionResult2 = oldAuthManager.getPermission(userID,authCode,map);
-		map = getPermissionResult2.getData();
+//		IResult<Map<String,Object>> getPermissionResult2 = oldAuthManager.getPermission(userID,authCode,map);
+//		map = getPermissionResult2.getData();
 
 		String booleanAuth = String.valueOf(map.get(authCode));
 
@@ -121,8 +121,8 @@ public class AuthService implements IAuthService{
 		Map<String,Object> map = getPermissionResult.getData();
 
 		//这个两个等更新完了就删掉!!!!!!!
-		IResult<Map<String,Object>> getPermissionResult2 = oldAuthManager.getPermission(userID,EnumAuthCode.getAuthCode(module),map);
-		map = getPermissionResult2.getData();
+//		IResult<Map<String,Object>> getPermissionResult2 = oldAuthManager.getPermission(userID,EnumAuthCode.getAuthCode(module),map);
+//		map = getPermissionResult2.getData();
 
 		Integer maxUploadSize = Integer.valueOf(map.get(EnumAuthCode.getModuleSize(module)).toString());
 		
