@@ -12,6 +12,7 @@ import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.dao.FcsFileInfoPOMapper;
+import com.neo.dao.PtsApplyPOMapper;
 import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.model.po.FcsFileInfoPO;
 import com.neo.model.qo.FcsFileInfoQO;
@@ -45,6 +46,9 @@ public class StatisticsService {
 
 	@Autowired
 	private StaticsManager staticsManager;
+
+	@Autowired
+	private PtsApplyPOMapper ptsApplyPOMapper;
 
 
 	/**
@@ -226,6 +230,19 @@ public class StatisticsService {
 	}
 
 
+	/**
+	 * 获取首页展示数量
+	 * @return
+	 */
+	public IResult<Long> getShowNum(){
+		try {
+			Long num = ptsApplyPOMapper.selectCountOfPtsApply();
+			return DefaultResult.successResult(num);
+		}catch (Exception e){
+			SysLogUtils.error("查询上传文件总数失败，原因：",e);
+			return DefaultResult.failResult();
+		}
+	}
 
 
 }

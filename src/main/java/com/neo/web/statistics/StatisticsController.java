@@ -155,4 +155,18 @@ public class StatisticsController {
 	}
 
 
+	@ApiOperation(value = "获取首页展示数量")
+	@GetMapping(value = "/show")
+	@ResponseBody
+	public Map<String,Object> getShowNum(){
+		IResult<Long> result = statisticsService.getShowNum();
+		if(result.isSuccess()) {
+			return JsonResultUtils.successMapResult(result.getData());
+		}else {
+			return JsonResultUtils.failMapResult(result.getMessage());
+		}
+	}
+
+
+
 }
