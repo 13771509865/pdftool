@@ -24,7 +24,10 @@
 	      )
  	  </insert>
 	 
-	  
- 	  
+
+	 <!--查询上传文件的总数 -->
+ 	  <select id="selectCountOfPtsApply" resultType="long">
+		  select  count(*) from pts_apply;
+	  </select>
     
 </mapper>
