@@ -13,4 +13,6 @@ public interface PtsApplyPOMapper {
 	
 	int insertPtsApply(PtsApplyPO ptsApplyPO);
 
+	Long selectCountOfPtsApply();
+
 }
