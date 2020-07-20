@@ -1,12 +1,12 @@
 package com.neo.commons.util;
 
+import com.neo.commons.cons.UnitType;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-
-import com.neo.commons.cons.UnitType;
 /**
  * 处理日期的格式化
  */
@@ -479,7 +479,7 @@ public class DateViewUtils {
 		
 		String d = DateViewUtils.getDayBefore(5);
 		System.out.println(d);
-		System.out.println(DateViewUtils.parseSimpleDate(d));
+		System.out.println(DateViewUtils.yesterday());
 		
 	}
 }
