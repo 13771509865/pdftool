@@ -1,18 +1,14 @@
 package com.neo.service.accessTimes;
 
-import java.util.Date;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.neo.commons.cons.constants.RedisConsts;
 import com.neo.commons.util.DateViewUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.model.po.PtsConvertRecordPO;
-import com.neo.service.cache.CacheManager;
-import com.neo.service.cache.CacheService;
 import com.neo.service.cache.impl.RedisCacheManager;
 import com.neo.service.convertRecord.IConvertRecordService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 /**
  * 
@@ -36,7 +32,7 @@ public class AccessTimesService {
 	 * @return
 	 */
 	public void clearReconvert() {
-		redisCacheManager.delete(DateViewUtils.getNow());
+		redisCacheManager.delete(DateViewUtils.yesterday());
 	}
 	
 	
