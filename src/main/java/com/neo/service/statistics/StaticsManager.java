@@ -11,13 +11,15 @@ import com.neo.commons.util.StrUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.model.po.PtsConvertRecordPO;
 import com.neo.service.auth.impl.AuthManager;
-import com.neo.service.auth.impl.OldAuthManager;
 import com.neo.service.convertRecord.IConvertRecordService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 @Service("staticsManager")
@@ -29,8 +31,8 @@ public class StaticsManager {
 	@Autowired
 	private AuthManager authManager;
 
-	@Autowired
-	private OldAuthManager oldAuthManager;
+//	@Autowired
+//	private OldAuthManager oldAuthManager;
 
 	@Autowired
 	private IConvertRecordService iConvertRecordService;
@@ -89,8 +91,8 @@ public class StaticsManager {
 			/**
 			 * 这个两个等更新完了就删掉!!!!!!
 			 */
-			IResult<Map<String,Object>> getPermissionResult2 = oldAuthManager.getPermission(userID,null,map);
-			map = getPermissionResult2.getData();
+//			IResult<Map<String,Object>> getPermissionResult2 = oldAuthManager.getPermission(userID,null,map);
+//			map = getPermissionResult2.getData();
 
 			PtsConvertRecordPO ptsConvertRecordPO = new PtsConvertRecordPO();
 			ptsConvertRecordPO.setUserID(userID);

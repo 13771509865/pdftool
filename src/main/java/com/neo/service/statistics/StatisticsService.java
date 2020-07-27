@@ -1,28 +1,22 @@
 package com.neo.service.statistics;
 
 import com.neo.commons.cons.*;
-import com.neo.commons.cons.constants.RedisConsts;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.cons.constants.YzcloudConsts;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.ConfigProperty;
 import com.neo.commons.properties.PtsProperty;
+import com.neo.commons.util.DateViewUtils;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.dao.FcsFileInfoPOMapper;
-import com.neo.dao.PtsSummaryPOMapper;
+import com.neo.dao.PtsApplyPOMapper;
 import com.neo.model.bo.FcsFileInfoBO;
-import com.neo.model.bo.FileUploadBO;
 import com.neo.model.po.FcsFileInfoPO;
-import com.neo.model.po.PtsSummaryPO;
 import com.neo.model.qo.FcsFileInfoQO;
-import com.neo.model.qo.PtsSummaryQO;
-import com.neo.service.auth.impl.AuthManager;
-import com.neo.service.auth.impl.OldAuthManager;
 import com.neo.service.cache.impl.RedisCacheManager;
-import com.neo.service.convertRecord.IConvertRecordService;
 import com.neo.service.httpclient.HttpAPIService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +33,6 @@ public class StatisticsService {
 	private FcsFileInfoPOMapper fcsFileInfoPOMapper;
 
 	@Autowired
-	private PtsSummaryPOMapper ptsSummaryPOMapper;
-
-	@Autowired
 	private RedisCacheManager<String> redisCacheManager;
 
 	@Autowired
@@ -51,19 +42,13 @@ public class StatisticsService {
 	private HttpAPIService httpAPIService;
 
 	@Autowired
-	private IConvertRecordService iConvertRecordService;
-	
-	@Autowired
-	private AuthManager authManager;
-	
-	@Autowired
 	private ConfigProperty configProperty;
 
 	@Autowired
-	private OldAuthManager oldAuthManager;
+	private StaticsManager staticsManager;
 
 	@Autowired
-	private StaticsManager staticsManager;
+	private PtsApplyPOMapper ptsApplyPOMapper;
 
 
 	/**
@@ -211,93 +196,6 @@ public class StatisticsService {
 	}
 
 
-
-	/**==================================运营统计数据============================================ */	
-
-
-
-
-	/**
-	 * 查询每个文件大小区间的转换数量（包括失败的），缓存6小时
-	 * @return
-	 */
-	//	@Cacheable(value = RedisConsts.CACHE_QUARTER_DAY, keyGenerator = "cacheKeyGenerator")
-	public IResult<PtsSummaryPO> selectCountBySize(){
-		try {
-			PtsSummaryPO ptsSummaryPO = ptsSummaryPOMapper.selectCountBySize();
-			if(ptsSummaryPO == null ) {
-				return DefaultResult.failResult("查询转换记录失败");
-			}
-			return DefaultResult.successResult(ptsSummaryPO);
-		} catch (Exception e) {
-			SysLogUtils.error("查询转换数量失败，原因：", e);
-			return DefaultResult.failResult("查询转换数量失败");
-		}
-	}
-
-
-
-	/**
-	 * 查询每个ip每天的转换量，缓存6小时
-	 * @param request
-	 * @return
-	 */
-	//	@Cacheable(value = RedisConsts.CACHE_QUARTER_DAY, keyGenerator = "cacheKeyGenerator")
-	public IResult<List<PtsSummaryPO>> selectCountByIpAndDate(PtsSummaryQO ptsSummaryQO){
-		try {
-			List<PtsSummaryPO> list = ptsSummaryPOMapper.selectCountByIpAndDate(ptsSummaryQO);
-			if(list.isEmpty() || list == null) {
-				return DefaultResult.failResult("根据ip查询每天的转换数量失败");
-			}
-			return DefaultResult.successResult(list);
-		} catch (Exception e) {
-			SysLogUtils.error("根据ip查询每天的转换数量失败，原因：", e);
-			return DefaultResult.failResult("根据ip查询每天的转换数量失败");
-		}
-	}
-
-
-
-
-	/**
-	 * 查询每天的转换量，缓存6小时
-	 * @param request
-	 * @return
-	 */
-	//	@Cacheable(value = RedisConsts.CACHE_QUARTER_DAY, keyGenerator = "cacheKeyGenerator")
-	public IResult<List<PtsSummaryPO>> selectConvertByDay(PtsSummaryQO ptsSummaryQO){
-		try {
-			ptsSummaryQO.setGroupby("DATE");
-			List<PtsSummaryPO> list = ptsSummaryPOMapper.selectCountByIpAndDate(ptsSummaryQO);
-			if(list.isEmpty() || list == null) {
-				return DefaultResult.failResult("查询每天的转换数量失败");
-			}
-			return DefaultResult.successResult(list);
-		} catch (Exception e) {
-			SysLogUtils.error("查询每天的转换数量失败，原因：", e);
-			return DefaultResult.failResult("查询每天的转换数量失败");
-		}
-	}
-
-
-
-
-	/**
-	 * 查询上传文件的记录
-	 * @return
-	 */
-	public IResult<FileUploadBO> getUploadTimes(){
-		Integer successUpload = redisCacheManager.getScore(RedisConsts.UPLOAD_CONNT, RedisConsts.SUCCESS).intValue();
-		Integer failUpload = redisCacheManager.getScore(RedisConsts.UPLOAD_CONNT, RedisConsts.FAIL).intValue();
-		FileUploadBO fileUploadBO = new FileUploadBO();
-		fileUploadBO.setFailNum(failUpload);
-		fileUploadBO.setSuccessNum(successUpload);
-		fileUploadBO.setCount(failUpload+successUpload);
-		return DefaultResult.successResult(fileUploadBO);
-	}
-
-
-
 	/**
 	 * 获取PDF工具集目前线上运行的模块
 	 * @return
@@ -313,7 +211,38 @@ public class StatisticsService {
 	}
 
 
+	/**
+	 * 统计登录来源
+	 * @param sourceId
+	 * @param userId
+	 * @return
+	 */
+	public IResult<String> statisticsRegister(String sourceId,Long userId){
+		try {
+			String opertime = DateViewUtils.getNowFull();
+			String message = "sourceId="+sourceId+",userId="+userId+",opertime="+opertime;
+			SysLogUtils.statisticsInfo(message);
+			return DefaultResult.successResult();
+		}catch (Exception e){
+			SysLogUtils.error("统计注册来源失败，原因："+e);
+			return DefaultResult.failResult("统计注册来源失败");
+		}
+	}
 
+
+	/**
+	 * 获取首页展示数量
+	 * @return
+	 */
+	public IResult<Long> getShowNum(){
+		try {
+			Long num = ptsApplyPOMapper.selectCountOfPtsApply();
+			return DefaultResult.successResult(num);
+		}catch (Exception e){
+			SysLogUtils.error("查询上传文件总数失败，原因：",e);
+			return DefaultResult.failResult();
+		}
+	}
 
 
 }

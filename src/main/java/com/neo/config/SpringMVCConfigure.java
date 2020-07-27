@@ -1,22 +1,5 @@
 package com.neo.config;
 
-import java.nio.charset.Charset;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -25,6 +8,16 @@ import com.neo.interceptor.ConvertInterceptor;
 import com.neo.interceptor.FeedBackInterceptor;
 import com.neo.interceptor.UaaAuthInterceptor;
 import com.neo.interceptor.UploadInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.*;
+
+import java.nio.charset.Charset;
+import java.util.List;
 
 @Configuration
 @EnableWebMvc
@@ -67,7 +60,7 @@ public class SpringMVCConfigure implements WebMvcConfigurer{
 	        .addPathPatterns("/feedback")
 	        .excludePathPatterns("/uaa/setCookie")
 	        .excludePathPatterns("/statistics/modules")
-	        .excludePathPatterns("/statistics/auth");
+			.excludePathPatterns("/statistics/show");
 	        registry.addInterceptor(uploadInterceptor).addPathPatterns("/file/defaultUpload","/file/uploadYc");
 	        registry.addInterceptor(convertInterceptor).addPathPatterns("/composite/**");
 	    }

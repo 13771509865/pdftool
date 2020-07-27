@@ -1,11 +1,16 @@
 package com.neo.interceptor;
 
-import java.net.URLDecoder;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.neo.commons.cons.EnumResultCode;
+import com.neo.commons.cons.IResult;
+import com.neo.commons.cons.constants.PtsConsts;
+import com.neo.commons.cons.constants.SessionConstant;
+import com.neo.commons.cons.constants.UaaConsts;
+import com.neo.commons.cons.entity.FileHeaderEntity;
+import com.neo.commons.cons.entity.ModuleEntity;
+import com.neo.commons.util.HttpUtils;
+import com.neo.commons.util.JsonResultUtils;
+import com.neo.service.auth.IAuthService;
+import com.neo.service.file.UploadService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletRequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,21 +18,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.neo.commons.cons.EnumResultCode;
-import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.constants.PtsConsts;
-import com.neo.commons.cons.constants.SessionConstant;
-import com.neo.commons.cons.constants.TimeConsts;
-import com.neo.commons.cons.constants.UaaConsts;
-import com.neo.commons.cons.entity.FileHeaderEntity;
-import com.neo.commons.cons.entity.ModuleEntity;
-import com.neo.commons.util.CheckMobileUtils;
-import com.neo.commons.util.EncryptUtils;
-import com.neo.commons.util.HttpUtils;
-import com.neo.commons.util.JsonResultUtils;
-import com.neo.commons.util.UrlEncodingUtils;
-import com.neo.service.auth.IAuthService;
-import com.neo.service.file.UploadService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 对用户上传权限做拦截

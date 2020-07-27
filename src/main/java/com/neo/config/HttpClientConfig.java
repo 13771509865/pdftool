@@ -1,17 +1,5 @@
 package com.neo.config;
 
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.net.UnknownHostException;
-import java.security.GeneralSecurityException;
-import java.util.concurrent.TimeUnit;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLHandshakeException;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.NoHttpResponseException;
@@ -35,6 +23,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+
+import javax.net.ssl.*;
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.net.UnknownHostException;
+import java.security.GeneralSecurityException;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class HttpClientConfig {
@@ -83,7 +78,7 @@ public class HttpClientConfig {
 		httpClientBuilder.setConnectionManager(httpClientConnectionManager);
 		httpClientBuilder.setRetryHandler(httpRequestRetryHandler);
 		httpClientBuilder.setDefaultRequestConfig(requestConfig);
-
+		httpClientBuilder.disableCookieManagement();//禁止httpclient自动处理cookie
 		return httpClientBuilder;
 	}
 

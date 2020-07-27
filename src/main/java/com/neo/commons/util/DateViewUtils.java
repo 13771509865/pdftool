@@ -1,12 +1,12 @@
 package com.neo.commons.util;
 
+import com.neo.commons.cons.UnitType;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-
-import com.neo.commons.cons.UnitType;
 /**
  * 处理日期的格式化
  */
@@ -470,6 +470,21 @@ public class DateViewUtils {
         calendar.add(Calendar.SECOND, -1);
         return calendar.getTime();
     }
+
+
+	/**
+	 * 获取当前时间到凌晨12点的秒数
+	 * @return
+	 */
+	public static Long getSecondsNextEarlyMorning() {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DAY_OF_YEAR, 1);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		return (cal.getTimeInMillis() - System.currentTimeMillis()) / 1000;
+	}
 	
 
 	public static void main(String[] args) throws ParseException {
@@ -479,7 +494,7 @@ public class DateViewUtils {
 		
 		String d = DateViewUtils.getDayBefore(5);
 		System.out.println(d);
-		System.out.println(DateViewUtils.parseSimpleDate(d));
+		System.out.println(DateViewUtils.getSecondsNextEarlyMorning());
 		
 	}
 }

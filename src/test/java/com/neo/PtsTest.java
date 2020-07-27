@@ -1,7 +1,9 @@
 package com.neo;
 
+import com.neo.commons.util.DateViewUtils;
 import com.neo.dao.PtsAuthPOMapper;
-import com.neo.model.po.PtsAuthPO;
+import com.neo.dao.PtsFailRecordPOMapper;
+import com.neo.model.po.PtsFailRecordPO;
 import com.neo.service.auth.IAuthService;
 import com.neo.service.cache.impl.RedisCacheManager;
 import com.neo.service.clear.IClearService;
@@ -12,9 +14,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -37,6 +36,9 @@ public class PtsTest {
 
 	@Autowired
 	private UpdateManager updateManager;
+
+	@Autowired
+	private PtsFailRecordPOMapper ptsFailRecordPOMapper;
 
 //	@Test
 //	public void test() {
@@ -241,9 +243,9 @@ public class PtsTest {
 
 
 
-		@Test
-	    public void updatePtsAuthPOByPriority() {
-			List<PtsAuthPO> authList = new ArrayList<>();
+//		@Test
+//	    public void updatePtsAuthPOByPriority() {
+//			List<PtsAuthPO> authList = new ArrayList<>();
 //			for(int i = 0;i<5;i++){
 //				PtsAuthPO ptsAuthPO = new PtsAuthPO();
 //				ptsAuthPO.setAuthCode("convert001Num");
@@ -257,9 +259,28 @@ public class PtsTest {
 //				ptsAuthPO.setUserid(12345L);
 //				authList.add(ptsAuthPO);
 //			}
+//
+//			Boolean insertPtsAuthPO = iAuthService.insertPtsAuthPO(authList)>0;
+//		}
 
-			Boolean insertPtsAuthPO = iAuthService.insertPtsAuthPO(authList)>0;
+
+		@Test
+	    public void insertFailRecord() {
+			PtsFailRecordPO p = new PtsFailRecordPO();
+			p.setConvertType(1);
+			p.setGmtCreate(DateViewUtils.getNowDate());
+			p.setGmtModified(DateViewUtils.getNowDate());
+			p.setModule(1);
+			p.setRemark("111");
+			p.setResultCode(0);
+			p.setResultMessage("ceshi");
+			p.setSrcFileName("123.docx");
+			p.setSrcFileSize(11111L);
+			p.setStatus(1);
+			p.setUserId(111111L);
+			ptsFailRecordPOMapper.insertPtsFailRecord(p);
+
+
 		}
-
 
 }

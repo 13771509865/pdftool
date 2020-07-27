@@ -23,6 +23,7 @@ import com.neo.model.po.PtsSummaryPO;
 import com.neo.model.qo.FcsFileInfoQO;
 import com.neo.service.auth.impl.AuthManager;
 import com.neo.service.cache.impl.RedisCacheManager;
+import com.neo.service.convertRecord.IFailRecordService;
 import com.neo.service.httpclient.HttpAPIService;
 import com.neo.service.ticket.RedisTicketManager;
 import com.yozosoft.auth.client.security.UaaToken;
@@ -70,6 +71,11 @@ public class PtsConvertService {
 	
 	@Autowired
 	private ConfigProperty configProperty;
+
+	@Autowired
+	private IFailRecordService iFailRecordService;
+
+
 
 	/**
 	 * 调用fcs进行真实转换
@@ -176,7 +182,10 @@ public class PtsConvertService {
 				}
 			}
 
-			
+			//统计转换失败的文件信息
+			if(!result.isSuccess()){
+				iFailRecordService.insertPtsFailRecord(result,convertBO,convertEntity);
+			}
 			PtsSummaryPO ptsSummaryPO = ptsConvertParamService.buildPtsSummaryPOParameter(fcsFileInfoBO,convertBO,convertEntity);
 			int upCount = ptsSummaryPOMapper.updatePtsSumm(ptsSummaryPO);
 			if(upCount < 1) {
