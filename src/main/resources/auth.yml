@@ -15,6 +15,10 @@ convert-num:
   convert013Num: 5
   convert014Num: 0
   convert015Num: -1
+  convert016Num: -1
+  convert017Num: -1
+  convert018Num: -1
+  convert019Num: -1
 
 convert-size:
   convert001Size: 20
@@ -32,3 +36,7 @@ convert-size:
   convert013Size: 0
   convert014Size: 0
   convert015Size: 20
+  convert016Size: 20
+  convert017Size: 20
+  convert018Size: 20
+  convert019Size: 20

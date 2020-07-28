@@ -1,6 +1,5 @@
 package com.neo.commons.cons;
 
-
 /**
  * 转换类型枚举封装
  */
@@ -77,20 +76,29 @@ public enum EnumConvertType {
 	PDF_WORD_TOWORD(59,"pdfandwordtoword","pdf和word的合并","doc",false,false,false,false),
 	IMAGE_WORD_TOWORD(60,"imageandwordtoword","图片和word的合并","doc",false,false,false,false),
 	MS_HTML_CANVAS(61,"ms2htmlcanvas","文档格式到高清html canvas的转换","",false,true,false,false),
-	PDF_TO_WORD(62,"pdftoword","pdf生成word格式","doc",false,false, false, false),
+	PDF_TO_WORD(62,"pdftoword","pdf生成word格式","docx",false,false, false, false),
 	PDF_TO_DOUBLE_PDF(63,"pdftodoublepdf","pdf生成双层pdf","pdf",false,false, false, false),
-	PDF_TO_OCR_WORD(64,"pdftoorcword","pdf使用ocr生成word","doc",false,false, false, false),
-	OFD_TO_OCR_WORD(65,"ofdtoorcword","ofd使用ocr生成word","doc",false,false, false, false),
-	
+	PDF_TO_OCR_WORD(64,"pdftoorcword","pdf使用ocr生成word","docx",false,false, false, false),
+	OFD_TO_OCR_WORD(65,"ofdtoorcword","ofd使用ocr生成word","docx",false,false, false, false),
+
+	PDF_ADDPAGES(76, "pdfaddpages", "pdf插入页", "pdf", false, false, false, false),
+	PDF_LPNG(77, "pdf2lpng", "pdf转png长图", "png", false, false, false, false),
+	PDF_DECRYPT(78, "pdfdecrypt", "pdf解密", "pdf", false, false, false, false),
+	PDF_ENCRYPT(79, "pdfencrypt", "pdf加密", "pdf", false, false, false, false),
 	PDF_PPT(80, "pdf2ppt", "pdf到ppt的转换", "pptx", false, false, false, false),
 	PDF_EXCEL(81, "pdf2excel", "pdf到excel的转换", "xlsx", false, false, false, false),
 	PDF_SPLIT(82, "pdf2split", "pdf拆分", "pdf", true, false, true, false),
 	
 	IMAGE_OCR_TXT(83, "ocrImage2txt", "ocr转图片成txt", "txt", false, false, false, false),
 
+	MS_SVG_PAGE_MERGE(90, "ms2svgpagemerge", "文档按页转换（高清版,单html）", "html", false, false, true, false),
+	MS_HTML_PAGE_MERGE(91, "ms2htmlpagemerge", "文档按页转换（标准版,单html）", "html", false, false, true, false),
+
+	
 	MS_HTML_ENCRYPTED(100, "ms2htmlEncrypted", "加密文档格式到加密html的转换", "html", false, false, true, false),
 	MS_HTML_HD_ENCRYPTED(101, "ms2htmlHdEncrypted", "加密文档格式到高清加密html的转换", "html", false, false, true, false),
 	PDF_HTML_ENCRYPTED(102, "pdf2htmlEncrypted", "加密pdf格式到加密html的转换", "html", false, false, true, false),
+	PIC_HTML_ENCRYPTED(123, "pic2htmlEncrypted", "加密pic格式到加密html的转换", "html", false, false, true, false),
 
 	;
 
@@ -198,6 +206,7 @@ public enum EnumConvertType {
 			case PDF_MERGE:
 			case MS_MERGE:
 			case OFD_MERGE:
+			case PDF_ADDPAGES:
 				return true;
 			default:
 				return false;
@@ -265,6 +274,11 @@ public enum EnumConvertType {
 			case PDF_WORD_TOWORD:
 			case PDF_TO_DOUBLE_PDF:
 			case PDF_TO_OCR_WORD:
+			case PDF_HTML_ENCRYPTED:
+			case PDF_ADDPAGES:
+			case PDF_LPNG:
+			case PDF_DECRYPT:
+			case PDF_ENCRYPT:
 				return true;
 			default:
 				return false;
@@ -298,7 +312,10 @@ public enum EnumConvertType {
 			case MS_HTML_ENCRYPTED:
 			case MS_HTML_HD_ENCRYPTED:
 			case PDF_HTML_ENCRYPTED:
-
+			case MS_SVG_PAGE:
+			case MS_HTML_PAGE:
+			case MS_SVG_PAGE_MERGE:
+			case MS_HTML_PAGE_MERGE:
 				return true;
 			default:
 				return false;
@@ -347,223 +364,6 @@ public enum EnumConvertType {
 			return enumConvertType.ext;
 		}
 		return "";
-	}
-
-	/**
-	 * 根据convertType,ext 纠正convertType
-	 *
-	 * @param value
-	 * @param ext
-	 * @return
-	 * @author dh
-	 */
-	public static Integer fixConvertType(Integer value, String ext) {
-		EnumConvertType enumConvertType = getEnum(value);
-		if(enumConvertType==null) {
-			enumConvertType=ALL_PDF_TEMP;
-		}
-		String type = getFileType(ext);
-		if (type != null) {
-			switch (type) {
-			case "html": {
-				switch (enumConvertType) {
-				case HTML_MS:
-				case HTML_PDF:
-					return value;
-				default:
-					return HTML_PDF.getValue();
-				}
-			}
-
-			case "ms": {
-				switch (enumConvertType) {
-				case MS_HTML_SVG:
-				case MS_HTML:
-				case MS_TXT:
-				case MS_PDF:
-				case MS_GIF:
-				case MS_PNG:
-				case MS_JPG:
-				case MS_TIFF:
-				case MS_BMP:
-				case MS_SVG_TEMP:
-				case MS_SVG:
-				case MS_MERGE:
-				case MS_SVG_PAGE:
-				case MS_HTML_PAGE:
-				case MS_OFD:
-				case MS_HTMLOFPIC:
-				case MS_MS:
-				case GET_PAGECONUT_MS:
-				case MS_UOF:
-					return value;
-				default:
-					return MS_HTML.getValue();
-				}
-			}
-			case "pdf": {
-				if(isPdfOperation(value)) {
-					return value;
-				}
-				else {
-					return PDF_HTML.getValue();
-				}
-//				switch (enumConvertType) {
-//				case PDF_GIF:
-//				case PDF_PNG:
-//				case PDF_JPG:
-//				case PDF_TIFF:
-//				case PDF_BMP:
-//				case PDF_HTML:
-//				case PDF_HTML_TEMP:
-//				case PDF_TXT:
-//				case PDF_MERGE:
-//				case PDF_WORD:
-//				case GET_PAGECONUT_PDF:
-//					return value;
-//				default:
-//					return PDF_HTML.getValue();
-//				}
-			}
-
-			case "tif":
-			case "tiff": {
-				switch (enumConvertType) {
-				case TIF_HTML:
-				case TIF_HTML_TEMP:
-					return value;
-				default:
-					return TIF_HTML.getValue();
-				}
-			}
-
-			case "ofd": {
-				if(isOfdOperation(value)) {
-					return value;
-				}
-				else {
-					return OFD_HTML_TEMP.getValue();
-				}
-//				switch (enumConvertType) {
-//				case OFD_HTML_TEMP:
-//				case OFD_STRING:
-//				case OFD_OFD:
-//				case OFD_MERGE:
-//					return value;
-//				default:
-//					return OFD_HTML_TEMP.getValue();
-//				}
-			}
-
-			case "zip": {
-				switch (enumConvertType) {
-				case ZIP_HTML_TEMP:
-					return value;
-				default:
-					return ZIP_HTML_TEMP.getValue();
-				}
-			}
-
-			case "pic": {
-				switch (enumConvertType) {
-				case PIC_HTML:
-				case PIC_PDF:
-				case IMAGE_IMAGE:
-				case IMAGE_OFD:
-				case IMAGE_OCR_TXT:
-					return value;
-				default:
-					return PIC_HTML.getValue();
-				}
-			}
-
-			case "mp4": {
-				switch (enumConvertType) {
-				case VIDEO_MP4:
-					return value;
-				default:
-					return VIDEO_MP4.getValue();
-				}
-			}
-
-			case "indd": {
-				switch (enumConvertType) {
-				case INDD_PDF:
-					return value;
-				default:
-					return INDD_PDF.getValue();
-				}
-			}
-
-			case "cad": {
-				switch (enumConvertType) {
-				case CAD_PDF:
-					return value;
-				default:
-					return CAD_PDF.getValue();
-				}
-			}
-
-			case "psd": {
-				switch (enumConvertType) {
-				case PSD_PDF:
-					return value;
-				default:
-					return PSD_PDF.getValue();
-				}
-			}
-
-			case "ai": {
-				switch (enumConvertType) {
-				case AI_PDF:
-					return value;
-				default:
-					return AI_PDF.getValue();
-				}
-			}
-
-			case "cdr": {
-				switch (enumConvertType) {
-				case CDR_PDF:
-					return value;
-				default:
-					return CDR_PDF.getValue();
-				}
-			}
-
-			case "threed": {
-				switch (enumConvertType) {
-				case ThreeD_DAE:
-					return value;
-				default:
-					return ThreeD_DAE.getValue();
-				}
-			}
-
-			case "epub": {
-				switch (enumConvertType) {
-				case EPUB_HTML_TEMP:
-					return value;
-				default:
-					return EPUB_HTML_TEMP.getValue();
-				}
-			}
-
-			case "dae": {
-				switch (enumConvertType) {
-				case DAE_HTML_TEMP:
-					return value;
-				default:
-					return DAE_HTML_TEMP.getValue();
-				}
-			}
-
-			default:
-				return ALL_PDF_TEMP.getValue();
-			}
-		}
-
-		return null;
 	}
 
 	public static String getFileType(String ext) {
@@ -670,6 +470,7 @@ public enum EnumConvertType {
 			case MS_HTML_ENCRYPTED:
 			case MS_HTML_HD_ENCRYPTED:
 			case PDF_HTML_ENCRYPTED:
+			case PIC_HTML_ENCRYPTED:
 				return true;
 			default:
 				return false;

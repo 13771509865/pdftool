@@ -1,13 +1,11 @@
 package com.neo.model.po;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-
 import com.alibaba.fastjson.JSON;
-
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.io.Serializable;
+import java.util.Map;
 
 
 @Data
@@ -15,17 +13,19 @@ public class ConvertParameterPO implements Serializable{
     //通用参数
     @ApiModelProperty(value = "转换超时时间",example="30")
     private Long convertTimeOut;
-    @ApiModelProperty(value = "转换超时时间",hidden = true)
+    @ApiModelProperty(value = "真实的源文件名", hidden = true)
     private String srcFileName;
     @ApiModelProperty(value = "真实的生成的文件名",hidden = true)
     private String destFileName;
     @ApiModelProperty(value = "源文件全路径",hidden = true)
     private String srcPath;
-    @ApiModelProperty(value = "目标文件全路径",hidden = true)
+    @ApiModelProperty(value = "目标文件存储路径",hidden = true)
+    private String storageDir;
+    @ApiModelProperty(value = "目标文件全路径", hidden = true)
     private String destPath;
     @ApiModelProperty(value = "转换类型",required = true,example="0")
     private Integer convertType;
-    @ApiModelProperty(value = "源文件相对路径",required = true)
+    @ApiModelProperty(value = "源文件相对路径")
     private String srcRelativePath;
     @ApiModelProperty(value = "目标文件相对路径",hidden = true)
     private String destRelativePath;
@@ -41,8 +41,12 @@ public class ConvertParameterPO implements Serializable{
     private String convertId;
     @ApiModelProperty(value = "是否强制转换1是0否",example = "0")
     private Integer noCache;
-
+    @ApiModelProperty(value = "参数路径", hidden = true)
+    private String parameterFilePath;
+    
     private String fcsCustomData; //fcs自定义数据,直接加在返回结果中
+    @ApiModelProperty(value = "压缩包内文件高清标清开关", example = "0")
+    private Integer zipConvertType;
 
     @ApiModelProperty(value = "是否删除源文件1是0否",example="0")
     private Integer isDelSrc;
@@ -50,8 +54,12 @@ public class ConvertParameterPO implements Serializable{
     private String inputUrl;
     @ApiModelProperty(value = "自定义output相对路径")
     private String appendPath;
+    @ApiModelProperty(value = "自定义压缩包内文件预览output相对路径")
+    private String appendPathZip;
     @ApiModelProperty(value = "自定义生成的文件名")
     private String destinationName;
+    @ApiModelProperty(value = "允许转换文件大小", example = "100")
+    private Float allowFileSize;
     //DCC参数
     @ApiModelProperty(value = "转换后的标题名字")
     private String htmlName;
@@ -65,25 +73,33 @@ public class ConvertParameterPO implements Serializable{
     private Integer isShowTitle;
     @ApiModelProperty(value = "转换页数",example="1")
     private Integer[] page;
-    @ApiModelProperty(value = "缩放比例",example="1")
+    @ApiModelProperty(value = "转换页数起始页", example = "-1")
+    private Integer pageStart;
+    @ApiModelProperty(value = "转换页数终止页", example = "-1")
+    private Integer pageEnd;
+    @ApiModelProperty(value = "缩放比例", example = "1")
     private Float zoom;
     @ApiModelProperty(value = "文档合并")
     private String mergeInput;
+    @ApiModelProperty(value = "待合并文档合并启始页码", example = "1")
+    private Integer sourceMergePage;
+    @ApiModelProperty(value = "合并文档合并的页码", example = "1")
+    private Integer[] targetMergePages;
     @ApiModelProperty(value = "添加书签内容")
     private String bookMark;
     @ApiModelProperty(value = "水印内容")
     private String wmContent;
-    @ApiModelProperty(value = "水印字体大小",example="50")
+    @ApiModelProperty(value = "水印字体大小", example = "18")
     private Integer wmSize;
     @ApiModelProperty(value = "水印颜色",example="5")
     private Integer wmColor;
-    @ApiModelProperty(value = "水印字体",example="宋体")
+    @ApiModelProperty(value = "水印字体", example = "楷体")
     private String wmFont;
-    @ApiModelProperty(value = "静态水印间距",example="150")
+    @ApiModelProperty(value = "静态水印间距", example = "50")
     private Integer wmSpace;
-    @ApiModelProperty(value = "静态水印透明度",example="0.5")
+    @ApiModelProperty(value = "静态水印透明度", example = "0.5")
     private Float wmTransparency;
-    @ApiModelProperty(value = "静态水印内容旋转角度",example="-50")
+    @ApiModelProperty(value = "静态水印内容旋转角度", example = "45")
     private Integer wmRotate;
     @ApiModelProperty(value = "静态文件内容是否在文字上方还是下方",example="0")
     private Integer wmSuspend;
@@ -123,15 +139,15 @@ public class ConvertParameterPO implements Serializable{
     private String htmlPath;
     @ApiModelProperty(value = "动态水印")
     private String dynamicMark;
-    @ApiModelProperty(value = "动态水印x轴内容之间距离",example = "150")
+    @ApiModelProperty(value = "动态水印x轴内容之间距离", example = "150")
     private Integer dmXextra;
-    @ApiModelProperty(value = "动态水印y轴内容之间距离",example = "150")
+    @ApiModelProperty(value = "动态水印y轴内容之间距离", example = "150")
     private Integer dmYextra;
-    @ApiModelProperty(value = "动态水印的文字大小",example = "50")
+    @ApiModelProperty(value = "动态水印的文字大小", example = "50")
     private Integer dmFontSize;
-    @ApiModelProperty(value = "动态水印的透明度(范围是0到1)",example="0.5")
+    @ApiModelProperty(value = "动态水印的透明度(范围是0到1)", example = "0.5")
     private Float dmAlpha;
-    @ApiModelProperty(value = "动态水印旋转角度",example = "0")
+    @ApiModelProperty(value = "动态水印旋转角度", example = "0")
     private Integer dmAngle;
     @ApiModelProperty(value = "动态水印字体")
     private String dmFont;
@@ -190,30 +206,31 @@ public class ConvertParameterPO implements Serializable{
 
     @ApiModelProperty(value = "传入后缀名(对于上传的文件没有后缀名，我们可以根据这个参数强制修改)")
     private String suffix;
-    @ApiModelProperty(value = "加入图片水印，设置是否是第一页加入，默认不是，为1时就是在第一页加入",example="0")
+    @ApiModelProperty(value = "加入图片水印，设置是否是第一页加入，默认不是，为1时就是在第一页加入", example = "0")
     private Integer isFirstImage;
-    @ApiModelProperty(value = "调整excel单元行的宽度，默认不调整，当为1时调整",example="0")
+    @ApiModelProperty(value = "调整excel单元行的宽度，默认不调整，当为1时调整", example = "0")
     private Integer isExcelWidth;
-    @ApiModelProperty(value = "生成pdf是否是以绘图的方式，默认不是，设置为1是的",example="0")
+    @ApiModelProperty(value = "生成pdf是否是以绘图的方式，默认不是，设置为1是的", example = "0")
     private Integer isPdfBmp;
-    @ApiModelProperty(value = "对word生成word的红头文件做置灰处理，默认不置灰，1置灰",example="0")
+    @ApiModelProperty(value = "对word生成word的红头文件做置灰处理，默认不置灰，1置灰", example = "0")
     private Integer isAshPlacing;
-    @ApiModelProperty(value = "图片转html加水印的时候，水印大小间距参照",example="0")
+    @ApiModelProperty(value = "图片转html加水印的时候，水印大小间距参照", example = "0")
     private Integer imageSacleValue;
     @ApiModelProperty(value = "广告js地址引入")
-	private String[] addedScriptPath;
-    @ApiModelProperty(value = "图片水印x轴控制",example="0")
-	private Integer wmPicX;
-    @ApiModelProperty(value = "图片水印y轴控制",example="0")
-	private Integer wmPicY;
-    
+    private String addedScriptPath;
+    @ApiModelProperty(value = "图片水印x轴控制", example = "0")
+    private Integer wmPicX;
+    @ApiModelProperty(value = "图片水印y轴控制", example = "0")
+    private Integer wmPicY;
+
     @ApiModelProperty(value = "图片水印文字上方")
     private Boolean wmPicIsTextUp;
-    @ApiModelProperty(value = "图片水印透明度",example="0.5")
+    @ApiModelProperty(value = "图片水印透明度", example = "0.5")
     private Float wmPicTransparency;
-    @ApiModelProperty(value = "图片水印内容旋转角度",example="0")
+    @ApiModelProperty(value = "图片水印内容旋转角度", example = "0")
     private Integer wmPicRotate;
-    
+    @ApiModelProperty(value = "高清转换是否高像素", example = "0")
+    private Integer zoomPic;
     //ofd属性参数
     @ApiModelProperty(value = "查找ofd reader中文字高亮显示")
     private String searchString;
@@ -233,29 +250,29 @@ public class ConvertParameterPO implements Serializable{
     private String modDate;
     @ApiModelProperty(value = "元数据(自定义内容)")
     private Map<String, String> customDatas;
-    @ApiModelProperty(value = "默认是文件水印，1是图片水印",example="0")
-	private Integer OFDType;
-    @ApiModelProperty(value = "水印旋转角度，[-90,90]",example="45")
-	private Integer OFDAngle;
-    @ApiModelProperty(value = "字体大小",example="20")
-	private Integer OFDFontSize;
-    @ApiModelProperty(value = "水印透明度，0-1",example="0.5")
-	private Float OFDAlpha;
+    @ApiModelProperty(value = "默认是文件水印，1是图片水印", example = "0")
+    private Integer OFDType;
+    @ApiModelProperty(value = "水印旋转角度，[-90,90]", example = "45")
+    private Integer OFDAngle;
+    @ApiModelProperty(value = "字体大小", example = "20")
+    private Integer OFDFontSize;
+    @ApiModelProperty(value = "水印透明度，0-1", example = "0.5")
+    private Float OFDAlpha;
     @ApiModelProperty(value = "水印文字")
-	private String OFDContent;
-    @ApiModelProperty(value = "字体名称，默认宋体",example="楷体")
+    private String OFDContent;
+    @ApiModelProperty(value = "字体名称，默认宋体", example = "楷体")
     private String OFDFontName;
-    @ApiModelProperty(value = "rgb颜色 空格分隔",example="192 192 192")
+    @ApiModelProperty(value = "rgb颜色 空格分隔", example = "192 192 192")
     private String OFDolor;
-    @ApiModelProperty(value = "是否平铺，默认不是，1时平铺",example="0")
-	private Integer OFDRepeat;
-    @ApiModelProperty(value = "单个水印位置，0中间 1左上 2中上 3右上 4左下 5中下 6右下,默认在中间",example="0")
-	private Integer OFDAlign;
-    @ApiModelProperty(value = "图片水印路径",example="0")
-	private String OFDImgPath;
-    @ApiModelProperty(value = "图片水印位置调整参数",example="6")
-	private Integer OFDMargin;
-    
+    @ApiModelProperty(value = "是否平铺，默认不是，1时平铺", example = "0")
+    private Integer OFDRepeat;
+    @ApiModelProperty(value = "单个水印位置，0中间 1左上 2中上 3右上 4左下 5中下 6右下,默认在中间", example = "0")
+    private Integer OFDAlign;
+    @ApiModelProperty(value = "图片水印路径", example = "0")
+    private String OFDImgPath;
+    @ApiModelProperty(value = "图片水印位置调整参数", example = "6")
+    private Integer OFDMargin;
+
     //pdf拆分参数
     @ApiModelProperty(value = "pdf拆分起始页，默认0从第一页开始",example="0")
     private Integer[] splitStartPage;
@@ -264,10 +281,39 @@ public class ConvertParameterPO implements Serializable{
     @ApiModelProperty(value = "pdf拆分分隔页数，默认0不分割，如果起始页和终止页都是0默认1",example="0")
     private Integer[] splitPages;
     
+    @ApiModelProperty(value = "转换高清ppt，是否使用标清样式显示，默认不是，1表示是", example = "0")
+    private Integer isSDPGModel;
+
+    @ApiModelProperty(value = "word和图片合并的时候，图片在word里面的位置，默认在下方，1表示在上方", example = "0")
+    private Integer isImageLocation;
+
+    @ApiModelProperty(value = "excel是否分页加载，默认是的，0不是", example = "1")
+    private Integer isPaged;
+
+    @ApiModelProperty(value = "转换日志标识,在记录日志的过滤器里面有")
+    private String identify;
+
     @ApiModelProperty(value = "pdf转双层pdf时候的的调用ocr的地址")
     private String OCRUrl;
+
+    @ApiModelProperty(value = "pdf转双层pdf时候的的调用ocr的key")
+    private String ocrKey;
+
+    @ApiModelProperty(value = "pdf转双层pdf时候的的调用ocr的secret")
+    private String ocrSecret;
     
+    @ApiModelProperty(value = "ocr接口类型", example = "1")
+    private Integer ocrType;
     
+    @ApiModelProperty(value = "ocr接口参数")
+    private String ocrParam;
+    
+    @ApiModelProperty(value = "临时文件目录")
+    private String tempPath;
+    
+    @ApiModelProperty(value = "dcc异步转换标识文件路径")
+    private String dccAsyncPath;
+
     @Override
     public String toString() {
         return JSON.toJSONString(this);

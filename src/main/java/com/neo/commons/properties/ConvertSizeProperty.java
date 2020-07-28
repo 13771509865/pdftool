@@ -71,6 +71,18 @@ public class ConvertSizeProperty {
     @NotBlank
     private Integer convert015Size = 20;
 
+    @NotBlank
+    private Integer convert016Size = 20;
+
+    @NotBlank
+    private Integer convert017Size = 20;
+
+    @NotBlank
+    private Integer convert018Size = 20;
+
+    @NotBlank
+    private Integer convert019Size = 20;
+
 
     @Override
     public String toString() {
