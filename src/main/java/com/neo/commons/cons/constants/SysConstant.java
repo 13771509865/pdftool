@@ -38,4 +38,7 @@ public interface SysConstant {
 	
 	public static final String MEMBER_SHIP = "mamberShip";//取ticket判断依据
 
+	public static final String IS_RPT = "isRpt";//判断获取权益时，是否使用资源包次数
+
+
 }

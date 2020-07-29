@@ -70,7 +70,14 @@ public class AuthManager {
 				if(!list.isEmpty() && list.size()>0) {
 					//获取会员的转换权益
 					for(PtsAuthPO ptsAuthPO : list) {
-						if(StringUtils.equals(ptsAuthPO.getAuthValue(),"-1")){//权益值如果是-1，负值后直接跳出循环
+						//把资源包（次数）存入defaultMap
+						if (StringUtils.equals(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode(),ptsAuthPO.getAuthCode())){
+							defaultMap.put(ptsAuthPO.getAuthCode(),Integer.valueOf(ptsAuthPO.getAuthValue()));
+							continue;
+						}
+
+						//权益值如果是-1，赋值后直接跳出循环
+						if(StringUtils.equals(ptsAuthPO.getAuthValue(),"-1")){
 							defaultMap.put(ptsAuthPO.getAuthCode(),Integer.valueOf(ptsAuthPO.getAuthValue()));
 							continue;
 						}

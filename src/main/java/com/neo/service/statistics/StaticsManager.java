@@ -88,12 +88,6 @@ public class StaticsManager {
 			IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID,null);
 			Map<String,Object> map = getPermissionResult.getData();
 
-			/**
-			 * 这个两个等更新完了就删掉!!!!!!
-			 */
-//			IResult<Map<String,Object>> getPermissionResult2 = oldAuthManager.getPermission(userID,null,map);
-//			map = getPermissionResult2.getData();
-
 			PtsConvertRecordPO ptsConvertRecordPO = new PtsConvertRecordPO();
 			ptsConvertRecordPO.setUserID(userID);
 			String nowDate = DateViewUtils.getNow();
@@ -105,6 +99,11 @@ public class StaticsManager {
 			if(!recordList.isEmpty() && recordList.size()>0) {
 				for(PtsConvertRecordPO po : recordList) {
 					Integer convertNum = po.getConvertNum();//转了多少次
+
+					//module==0,跳出
+					if(po.getModule() == EnumAuthCode.PTS_CONVERT_NUM.getValue()){
+						continue;
+					}
 					String moduleNum = EnumAuthCode.getModuleNum(po.getModule());
 
 					Integer allowConvertNum = Integer.valueOf(map.get(moduleNum).toString());//允许转多少次

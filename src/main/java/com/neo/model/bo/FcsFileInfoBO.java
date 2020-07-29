@@ -51,6 +51,9 @@ public class FcsFileInfoBO {
 
     //fcs自定义数据
     private String fcsCustomData;
+
+    //PDF专用，存储FCS返回错误信息
+    private String message;
     
     @Override
     public String toString() {

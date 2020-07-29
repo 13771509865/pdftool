@@ -1,5 +1,7 @@
 package com.neo.service.statistics;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.neo.commons.cons.*;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.constants.UaaConsts;
@@ -243,6 +245,27 @@ public class StatisticsService {
 			return DefaultResult.failResult();
 		}
 	}
+
+
+	/**
+	 * 查询用户的资源包次数消费记录
+	 * @param userId
+	 * @return
+	 */
+	public IResult<PageInfo<FcsFileInfoPO>> getConsumeRecord(Long userId,int page,int rows){
+		try {
+			PageHelper.startPage(page, rows);
+			FcsFileInfoQO fcsFileInfoQO = new FcsFileInfoQO();
+			fcsFileInfoQO.setUserID(userId);
+			fcsFileInfoQO.setStatus(1);
+			fcsFileInfoQO.setIsRPT(EnumRPTCode.IS_RPT.getValue());
+			List<FcsFileInfoPO> list = fcsFileInfoPOMapper.selectFcsFileInfoPO(fcsFileInfoQO);
+			return DefaultResult.successResult(new PageInfo<FcsFileInfoPO>(list));
+		}catch (Exception e){
+			return DefaultResult.failResult();
+		}
+	}
+
 
 
 }

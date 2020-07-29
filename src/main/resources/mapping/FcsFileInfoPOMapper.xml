@@ -20,13 +20,14 @@
         <result column="GMT_CREATE" property="gmtCreate" jdbcType="TIMESTAMP"/>
         <result column="GMT_MODIFIED" property="gmtModified" jdbcType="TIMESTAMP"/>
 		<result column="MODULE" property="module" jdbcType="INTEGER"/>
+		<result column="IS_RPT" property="isRPT" jdbcType="INTEGER"/>
     </resultMap>
     
     <sql id="Base_Column_List">
 		ID,STATUS,IP_ADDRESS, USERID,FILE_HASH, RESULT_CODE,
 		DEST_FILE_NAME, SRC_FILE_NAME, DEST_FILE_SIZE, SRC_FILE_SIZE,
 		CONVERT_TYPE, SRC_STORAGE_PATH, DEST_STORAGE_PATH, DOWNLOAD_URL,UCLOUD_FILE_ID,
-		GMT_CREATE, GMT_MODIFIED,MODULE
+		GMT_CREATE, GMT_MODIFIED,MODULE,IS_RPT
   	</sql>
     
     
@@ -53,6 +54,9 @@
             <if test="showDateEnd !=null">
                 <![CDATA[AND GMT_CREATE <= DATE_FORMAT(#{showDateEnd},'%Y-%m-%d')]]>
             </if>
+			<if test="isRPT !=null">
+				AND IS_RPT = #{isRPT}
+			</if>
         </where>
     </sql>
     
@@ -72,7 +76,7 @@
 	   	 	STATUS,IP_ADDRESS, USERID,FILE_HASH, RESULT_CODE,
 			DEST_FILE_NAME, SRC_FILE_NAME, DEST_FILE_SIZE, SRC_FILE_SIZE,
 			CONVERT_TYPE, SRC_STORAGE_PATH, DEST_STORAGE_PATH, DOWNLOAD_URL,
-			UCLOUD_FILE_ID,MODULE,
+			UCLOUD_FILE_ID,MODULE,IS_RPT
 			GMT_CREATE, GMT_MODIFIED
 			)
 	 	values (
@@ -84,6 +88,7 @@
 	      #{convertType,jdbcType=INTEGER},  	#{srcStoragePath,jdbcType=VARCHAR},
 	      #{destStoragePath,jdbcType=VARCHAR}, 	#{viewUrl,jdbcType=VARCHAR}, 
 	      #{uCloudFileId,jdbcType=VARCHAR},     #{module,jdbcType=INTEGER},
+	      #{isRPT,jdbcType=INTEGER},
 	      now(),now()
 	      )
  	  </insert>
@@ -110,7 +115,7 @@
 			<![CDATA[and  DATEDIFF(now(), GMT_MODIFIED)<3]]>
 		</select>
 
-		<select id="selectFcsFileInfoPOByFileHash" parameterType="com.neo.model.qo.FcsFileInfoQO" resultMap="FcsFileInfoPOResultMap">
+		<select id="selectFcsFileInfoPO" parameterType="com.neo.model.qo.FcsFileInfoQO" resultMap="FcsFileInfoPOResultMap">
 			select
 			<include refid="Base_Column_List" />
 			from pts_convert
@@ -144,6 +149,9 @@
 				</if>
 				<if test="fileHash != null and fileHash != ''">
 					and FILE_HASH = #{fileHash,jdbcType= VARCHAR}
+				</if>
+				<if test="id != null">
+					and ID = #{id,jdbcType=INTEGER}
 				</if>
 		    </where>
  		</update>

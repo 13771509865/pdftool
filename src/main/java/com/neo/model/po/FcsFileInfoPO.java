@@ -31,6 +31,7 @@ public class FcsFileInfoPO {
 	private Date gmtCreate;
 	private Date gmtModified;
 	private Integer module;
+	private Integer isRPT;
     
     @Override
     public String toString() {

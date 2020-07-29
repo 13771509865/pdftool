@@ -1,6 +1,7 @@
 package com.neo.service.convert;
 
 import com.neo.commons.cons.EnumConvertType;
+import com.neo.commons.cons.EnumRPTCode;
 import com.neo.commons.cons.EnumStatus;
 import com.neo.commons.cons.constants.*;
 import com.neo.commons.cons.entity.ConvertEntity;
@@ -48,6 +49,7 @@ public class PtsConvertParamService {
 		Long userId = HttpUtils.getSessionUserID(request);
 		Integer module =request.getParameter(PtsConsts.SECTION)==null?null:Integer.valueOf(request.getParameter(PtsConsts.SECTION));
 		Boolean isMobile = CheckMobileUtils.checkIsMobile(request);
+		Boolean isRPT = (Boolean) request.getAttribute(SysConstant.IS_RPT);
 		
 		convertEntity.setCookie(cookie);
 		convertEntity.setFileHash(fileHash);
@@ -56,6 +58,7 @@ public class PtsConvertParamService {
 		convertEntity.setUserId(userId);
 		convertEntity.setModule(module);
 		convertEntity.setIsMobile(isMobile);
+		convertEntity.setIsRPT(isRPT);
 		return convertEntity;
 	}
 	
@@ -140,6 +143,7 @@ public class PtsConvertParamService {
 		fcsFileInfoPO.setDestStoragePath(fcsFileInfoBO.getDestStoragePath());
 		fcsFileInfoPO.setStatus(EnumStatus.ENABLE.getValue());
 		fcsFileInfoPO.setModule(convertEntity.getModule());
+		fcsFileInfoPO.setIsRPT(convertEntity.getIsRPT()? EnumRPTCode.IS_RPT.getValue():EnumRPTCode.UN_RPT.getValue());
 
 		//手写签批，做特殊处理DestFileName，需要保存上传的源文件
 		//viewUrl需要修改成download

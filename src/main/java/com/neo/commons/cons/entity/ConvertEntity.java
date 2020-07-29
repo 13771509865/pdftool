@@ -1,5 +1,6 @@
 package com.neo.commons.cons.entity;
 
+import com.alibaba.fastjson.JSON;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,12 +10,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ConvertEntity {
 	
-	public String ipAddress;
-	public String cookie;
-	public Boolean isMember;
-	public String fileHash;
-	public Boolean isMobile;
-	public Long userId;
-	public Integer module;
+	private String ipAddress;
+	private String cookie;
+	private Boolean isMember;
+	private String fileHash;
+	private Boolean isMobile;
+	private Long userId;
+	private Integer module;
+	private Boolean isRPT;
+
+	@Override
+	public String toString() {
+		return JSON.toJSONString(this);
+	}
 
 }
