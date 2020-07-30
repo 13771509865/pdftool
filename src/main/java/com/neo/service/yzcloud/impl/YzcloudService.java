@@ -54,8 +54,8 @@ public class YzcloudService implements IYzcloudService {
     @Override
     public IResult<String> uploadFileToYc(FcsFileInfoBO fcsFileInfoBO, Long userId, String cookie) {
         File targetFile = new File(ptsProperty.getFcs_targetfile_dir(), fcsFileInfoBO.getDestStoragePath());
-        SysLogUtils.info(System.currentTimeMillis()+"===转换完成进入上传优云方法，fcs文件路径==="+targetFile.getAbsolutePath());
         String finalFileName = targetFile.getName();
+        SysLogUtils.info(System.currentTimeMillis()+"===转换完成进入上传优云方法，文件名==="+finalFileName);
         if (targetFile.exists()) {
             if (EnumConvertType.isNeedPack(fcsFileInfoBO.getConvertType())) {
                 // 需要打包
@@ -72,9 +72,9 @@ public class YzcloudService implements IYzcloudService {
             params.put("typeOfSource", "application.pdf");
             Map<String, Object> headers = new HashMap<>();
             headers.put(UaaConsts.COOKIE, cookie);
-            SysLogUtils.info(System.currentTimeMillis()+"==开始发送信息给优云。。。。fileHash："+fcsFileInfoBO.getFileHash());
+            SysLogUtils.info(System.currentTimeMillis()+"==开始发送信息给优云。。。。文件名："+finalFileName);
             IResult<HttpResultEntity> httpResult = httpAPIService.uploadResouse(targetFile, url, params, headers);
-            SysLogUtils.info(System.currentTimeMillis()+"====优云返回的结果："+httpResult.getData().getBody()+"==fileHash==="+fcsFileInfoBO.getFileHash());
+            SysLogUtils.info(System.currentTimeMillis()+"====优云返回的结果。。。。"+httpResult.getData().getBody()+"==文件名==="+finalFileName);
             if (HttpUtils.isHttpSuccess(httpResult)) {
                 try {
                     Map<String, Object> resultMap = JsonUtils.parseJSON2Map(httpResult.getData().getBody());
@@ -87,7 +87,7 @@ public class YzcloudService implements IYzcloudService {
                             fcsFileInfoPo.setFileHash(fcsFileInfoBO.getFileHash());
                             fcsFileInfoPo.setUCloudFileId(fileId);
                             int updateResult = ptsConvertService.updatePtsConvert(fcsFileInfoPo);
-                            SysLogUtils.info(System.currentTimeMillis()+"=====优云返回结果数据库记录完毕");
+                            SysLogUtils.info(System.currentTimeMillis()+"=====优云返回结果数据库记录完毕=====文件名："+finalFileName);
                             return DefaultResult.successResult(fileId);
                         }
                     }
