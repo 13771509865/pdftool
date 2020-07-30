@@ -342,7 +342,9 @@ public class HttpAPIService {
         }
         httpPost.setEntity(builder.build());
         addHttpHeader(httpPost, headers);
+        SysLogUtils.info(System.currentTimeMillis()+"====开始执行post请求传递给优云文件====");
         CloseableHttpResponse response = this.httpClient.execute(httpPost);
+        SysLogUtils.info(System.currentTimeMillis()+"====post执行完成====");
         return response;
     }
 

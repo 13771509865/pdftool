@@ -122,7 +122,6 @@ public class PtsConvertService {
 			Integer errorCode = Integer.valueOf((fcsMap.get(SysConstant.FCS_ERRORCODE).toString()));
 
 			fcsFileInfoBO = JsonUtils.json2obj(fcsMap.get(SysConstant.FCS_DATA), FcsFileInfoBO.class);
-			SysLogUtils.info("ConvertType："+convertBO.getConvertType()+"==源文件相对路径:"+convertBO.getSrcRelativePath()+"==fcs转码结果："+ fcsFileInfoBO.getCode());
 
 			//转换失败
 			if(errorCode != 0) {
@@ -131,8 +130,8 @@ public class PtsConvertService {
 				return DefaultResult.failResult(message,fcsFileInfoBO);
 			}
 
-
 			updateFcsFileInfo(convertBO,fcsFileInfoBO,convertEntity);
+			SysLogUtils.info(System.currentTimeMillis()+"====ConvertType："+convertBO.getConvertType()+"==源文件相对路径:"+convertBO.getSrcRelativePath()+"==fcs转码结果："+ fcsFileInfoBO.getCode());
 			return DefaultResult.successResult(fcsFileInfoBO);
 
 		} catch (Exception e) {
