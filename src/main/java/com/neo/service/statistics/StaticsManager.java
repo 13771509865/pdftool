@@ -10,8 +10,10 @@ import com.neo.commons.util.DateViewUtils;
 import com.neo.commons.util.StrUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.model.po.PtsConvertRecordPO;
+import com.neo.model.po.PtsTotalConvertRecordPO;
 import com.neo.service.auth.impl.AuthManager;
 import com.neo.service.convertRecord.IConvertRecordService;
+import com.neo.service.convertRecord.ITotalConvertRecordService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,8 +33,8 @@ public class StaticsManager {
 	@Autowired
 	private AuthManager authManager;
 
-//	@Autowired
-//	private OldAuthManager oldAuthManager;
+	@Autowired
+	private ITotalConvertRecordService iTotalConvertRecordService;
 
 	@Autowired
 	private IConvertRecordService iConvertRecordService;
@@ -88,29 +90,42 @@ public class StaticsManager {
 			IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID,null);
 			Map<String,Object> map = getPermissionResult.getData();
 
-			PtsConvertRecordPO ptsConvertRecordPO = new PtsConvertRecordPO();
-			ptsConvertRecordPO.setUserID(userID);
 			String nowDate = DateViewUtils.getNow();
-			ptsConvertRecordPO.setModifiedDate(DateViewUtils.parseSimple(nowDate));
+			PtsConvertRecordPO ptsConvertRecordPO = PtsConvertRecordPO.builder()
+						.userID(userID)
+						.modifiedDate(DateViewUtils.parseSimple(nowDate)).build();
+
+			PtsTotalConvertRecordPO ptsTotalConvertRecordPO = PtsTotalConvertRecordPO.builder()
+					.userID(userID)
+					.authCode(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode()).build();
 
 			//查询当天的转换记录
 			List<PtsConvertRecordPO> recordList = iConvertRecordService.selectPtsConvertRecord(ptsConvertRecordPO);
+			//资源包次数权益
+			List<PtsTotalConvertRecordPO> totalList = iTotalConvertRecordService.selectPtsTotalConvertRecord(ptsTotalConvertRecordPO);
 
+			//时效会员权益剩余
 			if(!recordList.isEmpty() && recordList.size()>0) {
 				for(PtsConvertRecordPO po : recordList) {
 					Integer convertNum = po.getConvertNum();//转了多少次
-
-					//module==0,跳出
-					if(po.getModule() == EnumAuthCode.PTS_CONVERT_NUM.getValue()){
-						continue;
-					}
 					String moduleNum = EnumAuthCode.getModuleNum(po.getModule());
-
 					Integer allowConvertNum = Integer.valueOf(map.get(moduleNum).toString());//允许转多少次
 					if(allowConvertNum != -1) {
-						Integer newNum = allowConvertNum - convertNum;//剩余多少次
+						Integer newNum = convertNum>=allowConvertNum?0:allowConvertNum - convertNum;//剩余多少次
 						map.put(moduleNum, newNum);
 					}
+				}
+			}
+			//资源包次数剩余
+			if(!totalList.isEmpty() && totalList.size()>0){
+				for(PtsTotalConvertRecordPO po : totalList){
+					Integer convertNum = po.getConvertNum();
+					if(map.get(po.getAuthCode())==null){
+						continue;
+					}
+					Integer allowConvertNum = Integer.valueOf(map.get(po.getAuthCode()).toString());//允许转多少次
+					Integer newNum =convertNum>=allowConvertNum?0:allowConvertNum - convertNum;//剩余多少次
+					map.put(po.getAuthCode(),newNum);
 				}
 			}
 			return DefaultResult.successResult(map);

@@ -1,6 +1,5 @@
 package com.neo.dao;
 
-import com.neo.model.po.PtsConvertRecordPO;
 import com.neo.model.po.PtsTotalConvertRecordPO;
 import com.neo.model.qo.PtsTotalConvertRecordQO;
 import org.apache.ibatis.annotations.Param;
@@ -15,7 +14,7 @@ public interface PtsTotalConvertRecordPOMapper {
 
     int insertOrUpdatePtsTotalConvertRecord(@Param("rp") PtsTotalConvertRecordPO ptsTotalConvertRecordPO, @Param("rq") PtsTotalConvertRecordQO ptsTotalConvertRecordQO);
 
-    List<PtsConvertRecordPO> selectPtsTotalConvertRecord(PtsTotalConvertRecordPO ptsTotalConvertRecordPO);
+    List<PtsTotalConvertRecordPO> selectPtsTotalConvertRecord(PtsTotalConvertRecordPO ptsTotalConvertRecordPO);
 
     int updateConvertNum(PtsTotalConvertRecordPO ptsTotalConvertRecordPO);
 

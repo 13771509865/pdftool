@@ -1,11 +1,11 @@
 package com.neo.service.convertRecord.impl;
 
 import com.neo.dao.PtsTotalConvertRecordPOMapper;
-import com.neo.model.po.PtsConvertRecordPO;
 import com.neo.model.po.PtsTotalConvertRecordPO;
 import com.neo.model.qo.PtsTotalConvertRecordQO;
 import com.neo.service.convertRecord.ITotalConvertRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -13,6 +13,7 @@ import java.util.List;
  * @Author: xujun
  * @Date: 2020/7/29 4:09 下午
  */
+@Service("totalConvertRecordService")
 public class TotalConvertRecordService implements ITotalConvertRecordService {
 
     @Autowired
@@ -27,7 +28,7 @@ public class TotalConvertRecordService implements ITotalConvertRecordService {
     }
 
     @Override
-    public List<PtsConvertRecordPO> selectPtsTotalConvertRecord(PtsTotalConvertRecordPO ptsTotalConvertRecordPO){
+    public List<PtsTotalConvertRecordPO> selectPtsTotalConvertRecord(PtsTotalConvertRecordPO ptsTotalConvertRecordPO){
         return ptsTotalConvertRecordPOMapper.selectPtsTotalConvertRecord(ptsTotalConvertRecordPO);
     }
 

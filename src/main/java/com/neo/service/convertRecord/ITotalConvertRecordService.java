@@ -1,6 +1,5 @@
 package com.neo.service.convertRecord;
 
-import com.neo.model.po.PtsConvertRecordPO;
 import com.neo.model.po.PtsTotalConvertRecordPO;
 import com.neo.model.qo.PtsTotalConvertRecordQO;
 
@@ -15,7 +14,7 @@ public interface ITotalConvertRecordService {
 
     int insertOrUpdatePtsTotalConvertRecord(PtsTotalConvertRecordPO ptsTotalConvertRecordPO,PtsTotalConvertRecordQO ptsTotalConvertRecordQO);
 
-    List<PtsConvertRecordPO> selectPtsTotalConvertRecord(PtsTotalConvertRecordPO ptsTotalConvertRecordPO);
+    List<PtsTotalConvertRecordPO> selectPtsTotalConvertRecord(PtsTotalConvertRecordPO ptsTotalConvertRecordPO);
 
     int updateConvertNum(PtsTotalConvertRecordPO ptsTotalConvertRecordPO);
 

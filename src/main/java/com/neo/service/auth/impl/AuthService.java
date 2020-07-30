@@ -73,7 +73,7 @@ public class AuthService implements IAuthService{
 		//获取允许转换的次数
 		Integer maxConvertTimes = Integer.valueOf(map.get(EnumAuthCode.getModuleNum(authCode)).toString());
 		//资源包次数
-		Integer rpConvertNum = Integer.valueOf(map.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode()).toString());
+		Integer rpConvertNum =map.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode())==null?null:Integer.valueOf(map.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode()).toString());
 
 		//转换次数检查
 		IResult<EnumResultCode> resultCheckConvertTimes = checkConvertTimes(userID,maxConvertTimes,EnumAuthCode.getValue(authCode),rpConvertNum);

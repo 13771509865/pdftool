@@ -25,7 +25,7 @@
 		MODIFIED_TIME,
 		STATUS,
 		USERID,
-		authCode,
+		AUTH_CODE,
 		CONVERT_NUM,
 		REMARK
 	</sql>
@@ -36,7 +36,7 @@
                 AND USERID = #{userID,jdbcType=BIGINT}
             </if>
             <if test="authCode != null and authCode!=''">
-                AND AUTH_CODE = #{authCode,jdbcType=INTEGER}
+                AND AUTH_CODE = #{authCode,jdbcType=VARCHAR}
             </if>
         </where>
     </sql>
@@ -64,8 +64,8 @@
             <if test="rp.userID != null">
                 USERID,
             </if>
-            <if test="rp.module != null">
-                MODULE,
+            <if test="rp.authCode != null and rp.authCode!=''">
+                AUTH_CODE,
             </if>
             <if test="rp.convertNum != null">
                 CONVERT_NUM,
@@ -93,8 +93,8 @@
             <if test="rp.userID != null">
                 #{rp.userID,jdbcType=BIGINT},
             </if>
-            <if test="rp.module != null">
-                #{rp.module,jdbcType=INTEGER},
+            <if test="rp.authCode != null and rp.authCode!=''">
+                #{rp.authCode,jdbcType=VARCHAR},
             </if>
             <if test="rp.convertNum != null">
                 #{rp.convertNum,jdbcType=INTEGER},
@@ -112,7 +112,7 @@
 
 
     <select id="selectPtsTotalConvertRecord" resultMap="PtsTotalConvertRecordPOMapper"
-            parameterType="com.neo.model.po.PtsConvertRecordPO">
+            parameterType="com.neo.model.po.PtsTotalConvertRecordPO">
         select
         <include refid="Base_Column_List" />
         from pts_total_convert_record
@@ -122,7 +122,7 @@
 
 
     <!-- 转换失败还次数 -->
-    <update id="updateConvertNum" parameterType="com.neo.model.po.PtsConvertRecordPO">
+    <update id="updateConvertNum" parameterType="com.neo.model.po.PtsTotalConvertRecordPO">
         update pts_total_convert_record
         <set>
             CONVERT_NUM = CONVERT_NUM -1
