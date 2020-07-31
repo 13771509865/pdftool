@@ -16,7 +16,7 @@ import lombok.Getter;
 @Getter
 public enum EnumAuthCode {
 
-	PTS_CONVERT_NUM(0,"所有模块转换数量", "convertNum",null,5,null,"convertNum","convertNum"),
+	PTS_CONVERT_NUM(0,"所有模块转换数量", "convertNum",null,5,"convertNum","convertNum","convertNum"),
 	PDF_WORD(1,"PDF转Word","convert001","36","true","Pdf2word","convert001Num","convert001Size"),
 	WORD_PDF(2,"Word转PDF","convert002","3","true","Word2pdf","convert002Num","convert002Size"),
 	PDF_PPT(3,"PDF转PPT","convert003","80","true","Pdf2ppt","convert003Num","convert003Size"),

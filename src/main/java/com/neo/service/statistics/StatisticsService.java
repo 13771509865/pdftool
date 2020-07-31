@@ -136,7 +136,11 @@ public class StatisticsService {
 				Object[] auth = new Object[2];
 				if(EnumAuthCode.getModuleByModuleNum(numEntry.getKey()) != null) {
 					auth[0] = numEntry.getValue();
-					auth[1] = result.getData().get(EnumAuthCode.getModuleSizeByModuleNum(numEntry.getKey()));
+
+					//全局次数不拿size
+					if(!StringUtils.equals(numEntry.getKey(),EnumAuthCode.PTS_CONVERT_NUM.getAuthCode())){
+						auth[1] = result.getData().get(EnumAuthCode.getModuleSizeByModuleNum(numEntry.getKey()));
+					}
 					newMap.put(EnumAuthCode.getModuleByModuleNum(numEntry.getKey()), auth);
 				}
 			}
