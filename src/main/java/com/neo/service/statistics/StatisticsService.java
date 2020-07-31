@@ -19,6 +19,7 @@ import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.model.po.FcsFileInfoPO;
 import com.neo.model.qo.FcsFileInfoQO;
 import com.neo.service.cache.impl.RedisCacheManager;
+import com.neo.service.convert.PtsConvertService;
 import com.neo.service.httpclient.HttpAPIService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,9 @@ public class StatisticsService {
 
 	@Autowired
 	private PtsApplyPOMapper ptsApplyPOMapper;
+
+	@Autowired
+	private PtsConvertService ptsConvertService;
 
 
 	/**
@@ -186,14 +190,21 @@ public class StatisticsService {
 	 * @param fileHash
 	 * @return
 	 */
-	public IResult<FcsFileInfoBO> getFileInfoByFileHash(String fileHash){
+	public IResult<FcsFileInfoBO> getFileInfoByFileHash(String fileHash,Boolean isCloudApp,Long userId){
 		String fileInfo = redisCacheManager.getFileInfo(fileHash);
 		if(StringUtils.isBlank(fileInfo)) {
 			return DefaultResult.failResult(EnumResultCode.E_BEING_CONVERT.getInfo());
 		}
 		FcsFileInfoBO fcsFileInfoBO = JsonUtils.json2obj(fileInfo, FcsFileInfoBO.class);
-		
-		
+
+		//优云app做特殊化处理,直接返回优云上传结果
+		if(isCloudApp){
+			IResult<String> result = ptsConvertService.selectFcsFileInfoPOByFileHash(fcsFileInfoBO.getFileHash(),userId);
+			if(result.isSuccess()){
+				return DefaultResult.successResult(fcsFileInfoBO);
+			}
+			return DefaultResult.failResult(EnumResultCode.E_BEING_YCUPLOAD.getInfo());
+		}
 		return DefaultResult.successResult(fcsFileInfoBO);
 	}
 
@@ -265,7 +276,6 @@ public class StatisticsService {
 			return DefaultResult.failResult();
 		}
 	}
-
 
 
 }

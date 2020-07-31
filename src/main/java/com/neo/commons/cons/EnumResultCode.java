@@ -61,6 +61,7 @@ public enum EnumResultCode {
 	E_ORDER_ILLEGAL(100,"非法订单信息"),
 	E_CONVERT_FAIL(101,"转换失败"),
 	E_BEING_CONVERT(102,"目标文件正在转换请稍后。。。"),
+	E_BEING_YCUPLOAD(103,"文件正在上传优云，请稍后。。。"),
 	;
 	
 

@@ -13,6 +13,7 @@ import com.neo.service.convert.PtsConvertService;
 import com.neo.service.statistics.StatisticsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -124,8 +125,10 @@ public class StatisticsController {
 	@ApiOperation(value = "根据fileHash查询转换结果")
 	@PostMapping(value = "/fileInfo")
 	@ResponseBody
-	public Map<String,Object> getFileInfoByFileHash(@RequestParam String fileHash){
-		IResult<FcsFileInfoBO> result =  statisticsService.getFileInfoByFileHash(fileHash);
+	public Map<String,Object> getFileInfoByFileHash(@RequestParam String fileHash,HttpServletRequest request){
+		String header = request.getHeader("User-Agent");
+		Boolean isCloudApp =  StringUtils.containsAny(header,"优云APP") || StringUtils.containsAny(header,"babelANphone");
+		IResult<FcsFileInfoBO> result =  statisticsService.getFileInfoByFileHash(fileHash,isCloudApp,HttpUtils.getSessionUserID(request));
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
 		}else {
