@@ -1,6 +1,7 @@
 package com.neo.service.statistics;
 
 import com.neo.commons.cons.*;
+import com.neo.commons.cons.constants.PtsConsts;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.cons.constants.YzcloudConsts;
@@ -236,7 +237,7 @@ public class StatisticsService {
 	 */
 	public IResult<Long> getShowNum(){
 		try {
-			Long num = ptsApplyPOMapper.selectCountOfPtsApply();
+			Long num = ptsApplyPOMapper.selectCountOfPtsApply()+ PtsConsts.showNum;
 			return DefaultResult.successResult(num);
 		}catch (Exception e){
 			SysLogUtils.error("查询上传文件总数失败，原因：",e);
