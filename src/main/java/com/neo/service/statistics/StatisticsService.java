@@ -17,10 +17,12 @@ import com.neo.dao.FcsFileInfoPOMapper;
 import com.neo.dao.PtsApplyPOMapper;
 import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.model.po.FcsFileInfoPO;
+import com.neo.model.po.PtsYcUploadPO;
 import com.neo.model.qo.FcsFileInfoQO;
+import com.neo.model.qo.PtsYcUploadQO;
 import com.neo.service.cache.impl.RedisCacheManager;
-import com.neo.service.convert.PtsConvertService;
 import com.neo.service.httpclient.HttpAPIService;
+import com.neo.service.yzcloud.IYzcloudService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,7 +56,7 @@ public class StatisticsService {
 	private PtsApplyPOMapper ptsApplyPOMapper;
 
 	@Autowired
-	private PtsConvertService ptsConvertService;
+	private IYzcloudService iYzcloudService;
 
 
 	/**
@@ -194,20 +196,25 @@ public class StatisticsService {
 	 * @param fileHash
 	 * @return
 	 */
-	public IResult<FcsFileInfoBO> getFileInfoByFileHash(String fileHash,Boolean isCloudApp,Long userId){
+	public IResult<FcsFileInfoBO> getFileInfoByFileHash(String fileHash,Boolean ycApp,Boolean mergeYc,Long userId){
 		String fileInfo = redisCacheManager.getFileInfo(fileHash);
 		if(StringUtils.isBlank(fileInfo)) {
 			return DefaultResult.failResult(EnumResultCode.E_BEING_CONVERT.getInfo());
 		}
 		FcsFileInfoBO fcsFileInfoBO = JsonUtils.json2obj(fileInfo, FcsFileInfoBO.class);
 
-		//优云app做特殊化处理,直接返回优云上传结果
-		if(isCloudApp){
-			IResult<String> result = ptsConvertService.selectFcsFileInfoPOByFileHash(fcsFileInfoBO.getFileHash(),userId);
-			if(result.isSuccess()){
-				return DefaultResult.successResult(fcsFileInfoBO);
+		//是否合并上传优云结果
+		//转换失败直接返回结果
+		if((mergeYc || ycApp) && fcsFileInfoBO.getCode() == EnumResultCode.E_SUCCES.getValue()){
+
+			PtsYcUploadQO ptsYcUploadQO = PtsYcUploadQO.builder().fileHash(fileHash).userId(userId).build();
+			List<PtsYcUploadPO> list = iYzcloudService.selectPtsYcUploadPOByStatus(ptsYcUploadQO);
+			if(list.isEmpty()){
+				return DefaultResult.failResult(EnumResultCode.E_BEING_CONVERT.getInfo());
 			}
-			return DefaultResult.failResult(EnumResultCode.E_BEING_YCUPLOAD.getInfo());
+			PtsYcUploadPO ptsYcUploadPO = list.get(0);
+			fcsFileInfoBO.setYcErrorCode(ptsYcUploadPO.getErrorCode());
+			fcsFileInfoBO.setYcMessage(ptsYcUploadPO.getErrorMessage());
 		}
 		return DefaultResult.successResult(fcsFileInfoBO);
 	}
@@ -280,6 +287,5 @@ public class StatisticsService {
 			return DefaultResult.failResult();
 		}
 	}
-
 
 }

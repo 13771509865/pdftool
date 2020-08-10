@@ -132,7 +132,7 @@ public class PtsConvertService {
 
 			updateFcsFileInfo(convertBO,fcsFileInfoBO,convertEntity);
 			SysLogUtils.info(System.currentTimeMillis()+"====ConvertType："+convertBO.getConvertType()+"==源文件相对路径:"+convertBO.getSrcRelativePath()+"==fcs转码结果："+ fcsFileInfoBO.getCode());
-			return DefaultResult.successResult(fcsFileInfoBO);
+			return DefaultResult.successResult(fcsMap.get(SysConstant.FCS_MESSAGE).toString(),fcsFileInfoBO);
 
 		} catch (Exception e) {
 			fcsFileInfoBO.setCode(EnumResultCode.E_SERVER_UNKNOW_ERROR.getValue());
@@ -218,10 +218,13 @@ public class PtsConvertService {
 		fcsFileInfoQO.setUserID(userId);
 
 		List<FcsFileInfoPO> list = fcsFileInfoBOMapper.selectFcsFileInfoPO(fcsFileInfoQO);
-		if(list.size() < 1 || list.isEmpty() ||StringUtils.isBlank(list.get(0).getUCloudFileId())){
-			return DefaultResult.failResult(EnumResultCode.E_UCLOUDFILEID_NULL.getInfo());
+
+		for(FcsFileInfoPO fcsFileInfoPO : list){
+			if (StringUtils.isNotBlank(fcsFileInfoPO.getUCloudFileId())){
+				return DefaultResult.successResult(fcsFileInfoPO.getUCloudFileId());
+			}
 		}
-		return DefaultResult.successResult(list.get(0).getUCloudFileId());
+		return DefaultResult.failResult(EnumResultCode.E_UCLOUDFILEID_NULL.getInfo());
 	}
 
 

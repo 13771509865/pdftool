@@ -45,7 +45,7 @@ public class PtsConvertParamService {
 		ConvertEntity convertEntity = new ConvertEntity();
 		String cookie = request.getHeader(UaaConsts.COOKIE);//文件上传给优云要用到
 		Boolean isMember = request.getAttribute(SysConstant.MEMBER_SHIP)==null?false:(Boolean)request.getAttribute(SysConstant.MEMBER_SHIP);
-		String fileHash = getFileHash(convertBO);
+		String fileHash = UUIDHelper.generateUUID();
 		Long userId = HttpUtils.getSessionUserID(request);
 		Integer module =request.getParameter(PtsConsts.SECTION)==null?null:Integer.valueOf(request.getParameter(PtsConsts.SECTION));
 		Boolean isMobile = CheckMobileUtils.checkIsMobile(request);
@@ -255,6 +255,6 @@ public class PtsConvertParamService {
 		PtsConvertParamService p = new PtsConvertParamService();
 		ConvertParameterBO co = new ConvertParameterBO();
 		co.setConvertType(6);
-		System.out.println(p.isPic(co));
+		System.out.println(UUIDHelper.generateUUID());
 	}
 }

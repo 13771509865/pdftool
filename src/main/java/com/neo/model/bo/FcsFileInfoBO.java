@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.neo.model.vo.FileAttributeVO;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class FcsFileInfoBO {
 	
     //文件的md5 hash值
@@ -53,7 +55,13 @@ public class FcsFileInfoBO {
     private String fcsCustomData;
 
     //PDF专用，存储FCS返回错误信息
-    private String message;
+    private String fcsMessage;
+
+    //PDF专用，存储优云返回信息
+    private String ycMessage;
+
+    //PDF专用，存储优云返回errorCode
+    private Integer ycErrorCode;
     
     @Override
     public String toString() {

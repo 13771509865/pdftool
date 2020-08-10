@@ -46,7 +46,7 @@ public class AsyncConvertService {
 	public void asyncConvert(ConvertParameterBO convertBO,UaaToken uaaToken,ConvertEntity convertEntity){
 		IResult<FcsFileInfoBO> result = ptsConvertService.dispatchConvert(convertBO, uaaToken, convertEntity);
 		FcsFileInfoBO fcsFileInfoBO = result.getData();
-		fcsFileInfoBO.setMessage(result.getMessage());
+		fcsFileInfoBO.setFcsMessage(result.getMessage());
 
 		//异步转换结果存redis,保存24小时
 		redisCacheManager.setFileInfo(convertEntity.getFileHash(), fcsFileInfoBO.toString(), TimeConsts.SECOND_OF_DAY);

@@ -1,8 +1,5 @@
 package com.neo.commons.cons.constants;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author zhoufeng
  * @description
@@ -17,6 +14,8 @@ public class YzcloudConsts {
     public static final String FOLDERID_INTERFACE = "/external/staticFolderId.do";
 
     public static final String ERRORCODE = "errorCode";
+
+    public static final  String ERROR_MESSAGE = "errorMessage";
 
     public static final String RESULT = "result";
     

@@ -1,10 +1,8 @@
 package com.neo;
 
-import com.neo.commons.util.DateViewUtils;
 import com.neo.dao.PtsAuthPOMapper;
 import com.neo.dao.PtsFailRecordPOMapper;
-import com.neo.model.po.PtsTotalConvertRecordPO;
-import com.neo.model.qo.PtsTotalConvertRecordQO;
+import com.neo.dao.PtsYcUploadPOMapper;
 import com.neo.service.auth.IAuthService;
 import com.neo.service.cache.impl.RedisCacheManager;
 import com.neo.service.clear.IClearService;
@@ -16,6 +14,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -44,6 +45,9 @@ public class PtsTest {
 
 	@Autowired
 	private TotalConvertRecordService totalConvertRecordService;
+
+	@Autowired
+	private PtsYcUploadPOMapper ptsYcUploadPOMapper;
 
 //	@Test
 //	public void test() {
@@ -286,26 +290,33 @@ public class PtsTest {
 //			ptsFailRecordPOMapper.insertPtsFailRecord(p);
 //		}
 
+//	@Test
+//	public void testTotalConvertRecord() {
+//
+//		String nowDate = DateViewUtils.getNow();
+//		String nowTime = DateViewUtils.getNowTime();
+//
+//		PtsTotalConvertRecordPO ptsTotalConvertRecordPO = PtsTotalConvertRecordPO.builder()
+//				.authCode("convertNum")
+//				.userID(480319169426882560L)
+//				.convertNum(1)
+//				.createDate(DateViewUtils.parseSimple(nowDate))
+//				.createTime(DateViewUtils.parseSimpleTime(nowTime))
+//				.modifiedDate(DateViewUtils.parseSimple(nowDate))
+//				.modifiedTime(DateViewUtils.parseSimpleTime(nowTime))
+//				.status(1).build();
+//		PtsTotalConvertRecordQO ptsTotalConvertRecordQO = PtsTotalConvertRecordQO.builder()
+//				.convertNum(2).build();
+//		int a =totalConvertRecordService.insertOrUpdatePtsTotalConvertRecord(ptsTotalConvertRecordPO,ptsTotalConvertRecordQO);
+//		System.out.println(a);
+//	}
+
 	@Test
-	public void testTotalConvertRecord() {
-
-		String nowDate = DateViewUtils.getNow();
-		String nowTime = DateViewUtils.getNowTime();
-
-		PtsTotalConvertRecordPO ptsTotalConvertRecordPO = PtsTotalConvertRecordPO.builder()
-				.authCode("convertNum")
-				.userID(480319169426882560L)
-				.convertNum(1)
-				.createDate(DateViewUtils.parseSimple(nowDate))
-				.createTime(DateViewUtils.parseSimpleTime(nowTime))
-				.modifiedDate(DateViewUtils.parseSimple(nowDate))
-				.modifiedTime(DateViewUtils.parseSimpleTime(nowTime))
-				.status(1).build();
-		PtsTotalConvertRecordQO ptsTotalConvertRecordQO = PtsTotalConvertRecordQO.builder()
-				.convertNum(2).build();
-		int a =totalConvertRecordService.insertOrUpdatePtsTotalConvertRecord(ptsTotalConvertRecordPO,ptsTotalConvertRecordQO);
-		System.out.println(a);
+	public void updatePtsYcUploadByIds(){
+		List<Integer> list = new ArrayList<>();
+		list.add(2337);
+		list.add(2338);
+		ptsYcUploadPOMapper.updatePtsYcUploadByIds(list);
 	}
-
 
 }

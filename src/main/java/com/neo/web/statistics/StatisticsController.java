@@ -125,10 +125,13 @@ public class StatisticsController {
 	@ApiOperation(value = "根据fileHash查询转换结果")
 	@PostMapping(value = "/fileInfo")
 	@ResponseBody
-	public Map<String,Object> getFileInfoByFileHash(@RequestParam String fileHash,HttpServletRequest request){
+	public Map<String,Object> getFileInfoByFileHash(@RequestParam String fileHash,
+													@RequestParam(required = false, defaultValue = "false")Boolean mergeYc,
+													HttpServletRequest request){
 		String header = request.getHeader("User-Agent");
-		Boolean isCloudApp =  StringUtils.containsAny(header,"优云APP") || StringUtils.containsAny(header,"babelANphone");
-		IResult<FcsFileInfoBO> result =  statisticsService.getFileInfoByFileHash(fileHash,isCloudApp,HttpUtils.getSessionUserID(request));
+		Boolean ycApp =StringUtils.containsOnly("优云APP",header) || StringUtils.containsOnly("babelANphone",header);
+
+		IResult<FcsFileInfoBO> result =  statisticsService.getFileInfoByFileHash(fileHash,ycApp,mergeYc,HttpUtils.getSessionUserID(request));
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
 		}else {
