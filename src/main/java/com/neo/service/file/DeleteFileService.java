@@ -25,18 +25,14 @@ public class DeleteFileService {
 	 * @param request
 	 * @return
 	 */
-	public IResult<String> deleteConvert(String fileHash,String uCloudFileId,Long userID){
-
-//		//filehash和uCloudFileId，必须要有一个
-//		if(StringUtils.isBlank(fileHash) && StringUtils.isBlank(uCloudFileId)) {
-//			return DefaultResult.failResult(EnumResultCode.E_NOTALL_PARAM.getInfo());
-//		}
+	public IResult<String> deleteConvert(Integer id,String fileHash,String uCloudFileId,Long userID){
 
 		FcsFileInfoPO fcsFileInfoPO =new FcsFileInfoPO();
 		fcsFileInfoPO.setUserID(userID);
 		fcsFileInfoPO.setFileHash(fileHash);
 		fcsFileInfoPO.setUCloudFileId(uCloudFileId);
 		fcsFileInfoPO.setStatus(EnumStatus.DISABLE.getValue());
+		fcsFileInfoPO.setId(id);
 
 		try {
 			int count = ptsConvertService.updatePtsConvert(fcsFileInfoPO);

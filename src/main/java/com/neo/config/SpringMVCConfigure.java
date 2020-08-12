@@ -8,12 +8,14 @@ import com.neo.interceptor.ConvertInterceptor;
 import com.neo.interceptor.FeedBackInterceptor;
 import com.neo.interceptor.UaaAuthInterceptor;
 import com.neo.interceptor.UploadInterceptor;
+import com.neo.json.JsonReturnHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.config.annotation.*;
 
 import java.nio.charset.Charset;
@@ -119,5 +121,18 @@ public class SpringMVCConfigure implements WebMvcConfigurer{
 	        converters.add(responseBodyConverter());
 	        converters.add(messageConverter()); //解决处理中文问题后接口500问题
 	    }
+
+
+		@Bean
+		public JsonReturnHandler jsonReturnHandler(){
+			return new JsonReturnHandler();//初始化json过滤器
+		}
+
+		@Override
+		public void addReturnValueHandlers( List<HandlerMethodReturnValueHandler> returnValueHandlers) {
+			returnValueHandlers.add(jsonReturnHandler());
+		}
+
+
 
 }

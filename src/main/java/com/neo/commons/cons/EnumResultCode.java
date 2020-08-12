@@ -54,12 +54,14 @@ public enum EnumResultCode {
 	E_USER_INVALID(63,"无用户信息,请重新登录!"),
 	E_DELETE_CONVERT_RECORD_NULL(64,"抱歉，没有找到对应的转换记录"),
 	E_DELETE_CONVERT_RECORD_ERROR(65,"抱歉，删除转换记录失败，请稍后再试"),
+	E_CONVERT_LIMIT_ERROR(66,"抱歉，您当前账户出现异常，请联系客服进行解决"),
 	 
 	E_GET_AUTH_ERROR(98,"解析用户权限失败"),
 	E_ORDER_AUTH_CODE_ERROR(99,"抱歉该订单缺少pdf工具集必要的AuthCode或者存在非法的AuthCode"),
 	E_ORDER_ILLEGAL(100,"非法订单信息"),
 	E_CONVERT_FAIL(101,"转换失败"),
 	E_BEING_CONVERT(102,"目标文件正在转换请稍后。。。"),
+	E_BEING_YCUPLOAD(103,"文件正在上传优云，请稍后。。。"),
 	;
 	
 

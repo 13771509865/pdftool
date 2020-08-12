@@ -1,9 +1,9 @@
 package com.neo.dao;
 
-import java.util.List;
-
 import com.neo.model.po.FcsFileInfoPO;
 import com.neo.model.qo.FcsFileInfoQO;
+
+import java.util.List;
 
 public interface FcsFileInfoPOMapper {
 	
@@ -17,6 +17,6 @@ public interface FcsFileInfoPOMapper {
 	
 	int deletePtsConvert(FcsFileInfoQO fcsFileInfoQO);
 
-	List<FcsFileInfoPO> selectFcsFileInfoPOByFileHash(FcsFileInfoQO fcsFileInfoQO);
+	List<FcsFileInfoPO> selectFcsFileInfoPO(FcsFileInfoQO fcsFileInfoQO);
 	
 }

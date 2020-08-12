@@ -17,13 +17,13 @@ import com.neo.dao.FcsFileInfoPOMapper;
 import com.neo.dao.PtsSummaryPOMapper;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FcsFileInfoBO;
-import com.neo.model.po.ConvertParameterPO;
-import com.neo.model.po.FcsFileInfoPO;
-import com.neo.model.po.PtsSummaryPO;
+import com.neo.model.po.*;
 import com.neo.model.qo.FcsFileInfoQO;
 import com.neo.service.auth.impl.AuthManager;
 import com.neo.service.cache.impl.RedisCacheManager;
+import com.neo.service.convertRecord.IConvertRecordService;
 import com.neo.service.convertRecord.IFailRecordService;
+import com.neo.service.convertRecord.ITotalConvertRecordService;
 import com.neo.service.httpclient.HttpAPIService;
 import com.neo.service.ticket.RedisTicketManager;
 import com.yozosoft.auth.client.security.UaaToken;
@@ -74,6 +74,12 @@ public class PtsConvertService {
 
 	@Autowired
 	private IFailRecordService iFailRecordService;
+
+	@Autowired
+	private ITotalConvertRecordService iTotalConvertRecordService;
+
+	@Autowired
+	private IConvertRecordService iConvertRecordService;
 
 
 
@@ -126,7 +132,7 @@ public class PtsConvertService {
 
 			updateFcsFileInfo(convertBO,fcsFileInfoBO,convertEntity);
 			SysLogUtils.info(System.currentTimeMillis()+"====ConvertType："+convertBO.getConvertType()+"==源文件相对路径:"+convertBO.getSrcRelativePath()+"==fcs转码结果："+ fcsFileInfoBO.getCode());
-			return DefaultResult.successResult(fcsFileInfoBO);
+			return DefaultResult.successResult(fcsMap.get(SysConstant.FCS_MESSAGE).toString(),fcsFileInfoBO);
 
 		} catch (Exception e) {
 			fcsFileInfoBO.setCode(EnumResultCode.E_SERVER_UNKNOW_ERROR.getValue());
@@ -147,11 +153,13 @@ public class PtsConvertService {
 	public IResult<String> updateFcsFileInfo(ConvertParameterBO convertBO,FcsFileInfoBO fcsFileInfoBO,ConvertEntity convertEntity) {
 		try {
 			FcsFileInfoPO fcsFileInfoPO = ptsConvertParamService.buildFcsFileInfoParameter(convertBO,fcsFileInfoBO,convertEntity);
-			//根据userId和fileHash去update
-			int count = updatePtsConvert(fcsFileInfoPO);
-			if(count < 1) {
-				int a = insertPtsConvert(fcsFileInfoPO);
+
+			Boolean insertPtsConvert = insertPtsConvert(fcsFileInfoPO)>0;
+			if (!insertPtsConvert){
+				SysLogUtils.error("fcsFileInfo插入数据库失败,convertBO:"+convertBO.toString()+",ConvertEntity:"+convertEntity.toString());
+				return DefaultResult.failResult();
 			}
+
 			return DefaultResult.successResult();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -209,11 +217,35 @@ public class PtsConvertService {
 		fcsFileInfoQO.setFileHash(fileHash);
 		fcsFileInfoQO.setUserID(userId);
 
-		List<FcsFileInfoPO> list = fcsFileInfoBOMapper.selectFcsFileInfoPOByFileHash(fcsFileInfoQO);
-		if(list.size() < 1 || list.isEmpty() ||StringUtils.isBlank(list.get(0).getUCloudFileId())){
-			return DefaultResult.failResult(EnumResultCode.E_UCLOUDFILEID_NULL.getInfo());
+		List<FcsFileInfoPO> list = fcsFileInfoBOMapper.selectFcsFileInfoPO(fcsFileInfoQO);
+
+		for(FcsFileInfoPO fcsFileInfoPO : list){
+			if (StringUtils.isNotBlank(fcsFileInfoPO.getUCloudFileId())){
+				return DefaultResult.successResult(fcsFileInfoPO.getUCloudFileId());
+			}
 		}
-		return DefaultResult.successResult(list.get(0).getUCloudFileId());
+		return DefaultResult.failResult(EnumResultCode.E_UCLOUDFILEID_NULL.getInfo());
+	}
+
+
+	/**
+	 * 转换失败归还转换次数
+	 * @param convertEntity
+	 * @param authCode
+	 */
+	public void returnConvertNum(ConvertEntity convertEntity,String authCode){
+		String nowDate = DateViewUtils.getNow();
+		boolean updateConvertNum = false;
+
+		//判断是否是资源包次数
+		if(convertEntity.getIsRPT()){
+			PtsTotalConvertRecordPO ptsTotalConvertRecordPO = PtsTotalConvertRecordPO.builder().userID(convertEntity.getUserId()).authCode(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode()).build();
+			updateConvertNum = iTotalConvertRecordService.updateConvertNum(ptsTotalConvertRecordPO)>0;
+		}else{
+			PtsConvertRecordPO ptsConvertRecordPO = new PtsConvertRecordPO(convertEntity.getUserId(),EnumAuthCode.getValue(authCode), DateViewUtils.parseSimple(nowDate));
+			updateConvertNum = iConvertRecordService.updateConvertNum(ptsConvertRecordPO)>0;
+		}
+		SysLogUtils.info(convertEntity.getUserId()+",归还用户转换次数："+ updateConvertNum+"，是否是资源包："+convertEntity.getIsRPT());
 	}
 
 
@@ -243,7 +275,6 @@ public class PtsConvertService {
 	public int insertPtsConvert(FcsFileInfoPO fcsFileInfoPO){
 		return fcsFileInfoBOMapper.insertPtsConvert(fcsFileInfoPO);
 	}
-
 
 
 }

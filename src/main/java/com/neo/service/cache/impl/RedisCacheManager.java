@@ -1,10 +1,11 @@
 package com.neo.service.cache.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
+import com.neo.commons.cons.constants.RedisConsts;
+import com.neo.commons.properties.ConfigProperty;
+import com.neo.commons.util.SysLogUtils;
+import com.neo.commons.util.UUIDHelper;
+import com.neo.config.RedisConfig;
+import com.neo.service.cache.CacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -16,13 +17,10 @@ import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.neo.commons.cons.constants.RedisConsts;
-import com.neo.commons.properties.ConfigProperty;
-import com.neo.commons.util.SysLogUtils;
-import com.neo.commons.util.UUIDHelper;
-import com.neo.config.RedisConfig;
-import com.neo.model.bo.FcsFileInfoBO;
-import com.neo.service.cache.CacheManager;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * redis实现存取
@@ -51,6 +49,10 @@ public class RedisCacheManager<T> implements CacheManager<T> {
     @Autowired
     @Qualifier("htbRateLimiterScript")
     private DefaultRedisScript<Number> htbRateLimiterScript;
+
+    @Autowired
+    @Qualifier("callConvertLimiterScript")
+    private DefaultRedisScript<Number> callConvertLimiterScript;
     
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -432,5 +434,23 @@ public class RedisCacheManager<T> implements CacheManager<T> {
     	String value = redisTemplate.execute(getFileInfoScript,keys);
     	return value;
     }
+
+
+    /**
+     * 判断每日转换次数限流
+     * @param key--userid
+     * @param limit
+     * @param time
+     * @return true:表示需要限流
+     */
+    public Boolean callConvertLimiter(String key, Integer limit, Long time) {
+        List<String> keys = Collections.singletonList(RedisConsts.CALL_CONVERT_LIMITER_KEY + key);
+        Number number = redisTemplate.execute(callConvertLimiterScript, keys, limit, time);
+        return number.intValue() == 0;
+    }
+
+
+
+
 
 }

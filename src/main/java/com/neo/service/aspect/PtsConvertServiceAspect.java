@@ -46,9 +46,12 @@ public class PtsConvertServiceAspect {
             saveBadFileService.saveBadFile(ptsProperty.getFcs_srcfile_dir(), ptsProperty.getConvert_fail_dir(), convertBO);
         } else {
             if (uaaToken != null) {
-                //上传文件到优云,更新数据库,未登录用户和企业用户不上传 
                 FcsFileInfoBO fcsFileInfoBO = result.getData();
+                //上传优云
                 IResult<String> uploadFileToYc = iYzcloudService.uploadFileToYc(fcsFileInfoBO, uaaToken.getUserId(), convertEntity.getCookie());
+
+                //记录上传优云结果
+                iYzcloudService.recordFailYCUpload(uploadFileToYc,fcsFileInfoBO, uaaToken.getUserId(), convertEntity);
             }
         }
     }

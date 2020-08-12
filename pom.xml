@@ -37,6 +37,7 @@
         <yozo-saas-common.version>0.0.2-SNAPSHOT</yozo-saas-common.version>
         <ant.version>1.10.7</ant.version>
         <fastMd5.version>2.7.1</fastMd5.version>
+        <pagehelper-starter.version>1.2.12</pagehelper-starter.version>
     </properties>
 
     <dependencies>
@@ -275,7 +276,12 @@
 		    <artifactId>fast-md5</artifactId>
 		    <version>${fastMd5.version}</version>
 		</dependency>
-        
+
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>${pagehelper-starter.version}</version>
+        </dependency>
         
     </dependencies>
 

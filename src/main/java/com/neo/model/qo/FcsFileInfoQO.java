@@ -1,11 +1,10 @@
 package com.neo.model.qo;
 
-import java.util.Date;
-
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -19,6 +18,7 @@ public class FcsFileInfoQO extends PageQO{
 	private Date showDateStart;
     private Date showDateEnd;
     private Integer status;
+    private Integer isRPT;
 	
 
 

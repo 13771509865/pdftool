@@ -1,5 +1,7 @@
 package com.neo.service.statistics;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.neo.commons.cons.*;
 import com.neo.commons.cons.constants.PtsConsts;
 import com.neo.commons.cons.constants.SysConstant;
@@ -16,9 +18,12 @@ import com.neo.dao.FcsFileInfoPOMapper;
 import com.neo.dao.PtsApplyPOMapper;
 import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.model.po.FcsFileInfoPO;
+import com.neo.model.po.PtsYcUploadPO;
 import com.neo.model.qo.FcsFileInfoQO;
+import com.neo.model.qo.PtsYcUploadQO;
 import com.neo.service.cache.impl.RedisCacheManager;
 import com.neo.service.httpclient.HttpAPIService;
+import com.neo.service.yzcloud.IYzcloudService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,6 +55,9 @@ public class StatisticsService {
 
 	@Autowired
 	private PtsApplyPOMapper ptsApplyPOMapper;
+
+	@Autowired
+	private IYzcloudService iYzcloudService;
 
 
 	/**
@@ -131,7 +139,11 @@ public class StatisticsService {
 				Object[] auth = new Object[2];
 				if(EnumAuthCode.getModuleByModuleNum(numEntry.getKey()) != null) {
 					auth[0] = numEntry.getValue();
-					auth[1] = result.getData().get(EnumAuthCode.getModuleSizeByModuleNum(numEntry.getKey()));
+
+					//全局次数不拿size
+					if(!StringUtils.equals(numEntry.getKey(),EnumAuthCode.PTS_CONVERT_NUM.getAuthCode())){
+						auth[1] = result.getData().get(EnumAuthCode.getModuleSizeByModuleNum(numEntry.getKey()));
+					}
 					newMap.put(EnumAuthCode.getModuleByModuleNum(numEntry.getKey()), auth);
 				}
 			}
@@ -185,14 +197,26 @@ public class StatisticsService {
 	 * @param fileHash
 	 * @return
 	 */
-	public IResult<FcsFileInfoBO> getFileInfoByFileHash(String fileHash){
+	public IResult<FcsFileInfoBO> getFileInfoByFileHash(String fileHash,Boolean ycApp,Boolean mergeYc,Long userId){
 		String fileInfo = redisCacheManager.getFileInfo(fileHash);
 		if(StringUtils.isBlank(fileInfo)) {
 			return DefaultResult.failResult(EnumResultCode.E_BEING_CONVERT.getInfo());
 		}
 		FcsFileInfoBO fcsFileInfoBO = JsonUtils.json2obj(fileInfo, FcsFileInfoBO.class);
-		
-		
+
+		//是否合并上传优云结果
+		//转换失败直接返回结果
+		if((mergeYc || ycApp) && fcsFileInfoBO.getCode() == EnumResultCode.E_SUCCES.getValue()){
+
+			PtsYcUploadQO ptsYcUploadQO = PtsYcUploadQO.builder().fileHash(fileHash).userId(userId).build();
+			List<PtsYcUploadPO> list = iYzcloudService.selectPtsYcUploadPOByStatus(ptsYcUploadQO);
+			if(list.isEmpty()){
+				return DefaultResult.failResult(EnumResultCode.E_BEING_CONVERT.getInfo());
+			}
+			PtsYcUploadPO ptsYcUploadPO = list.get(0);
+			fcsFileInfoBO.setYcErrorCode(ptsYcUploadPO.getErrorCode());
+			fcsFileInfoBO.setYcMessage(ptsYcUploadPO.getErrorMessage());
+		}
 		return DefaultResult.successResult(fcsFileInfoBO);
 	}
 
@@ -245,5 +269,24 @@ public class StatisticsService {
 		}
 	}
 
+
+	/**
+	 * 查询用户的资源包次数消费记录
+	 * @param userId
+	 * @return
+	 */
+	public IResult<PageInfo<FcsFileInfoPO>> getConsumeRecord(Long userId,int page,int rows){
+		try {
+			PageHelper.startPage(page, rows);
+			FcsFileInfoQO fcsFileInfoQO = new FcsFileInfoQO();
+			fcsFileInfoQO.setUserID(userId);
+			fcsFileInfoQO.setStatus(1);
+			fcsFileInfoQO.setIsRPT(EnumRPTCode.IS_RPT.getValue());
+			List<FcsFileInfoPO> list = fcsFileInfoPOMapper.selectFcsFileInfoPO(fcsFileInfoQO);
+			return DefaultResult.successResult(new PageInfo<FcsFileInfoPO>(list));
+		}catch (Exception e){
+			return DefaultResult.failResult();
+		}
+	}
 
 }

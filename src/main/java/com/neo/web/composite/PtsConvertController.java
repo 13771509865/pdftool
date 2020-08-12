@@ -1,16 +1,12 @@
 package com.neo.web.composite;
 
-import com.neo.commons.cons.EnumAuthCode;
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.entity.ConvertEntity;
-import com.neo.commons.util.DateViewUtils;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FcsFileInfoBO;
-import com.neo.model.po.PtsConvertRecordPO;
 import com.neo.service.auth.impl.AuthManager;
 import com.neo.service.convert.PtsConvertParamService;
 import com.neo.service.convert.PtsConvertService;
@@ -68,11 +64,9 @@ public class PtsConvertController {
 		//必须放在转换失败是否记缓存判断前面，否则redis有了记录会导致首次转换失败也不算失败率
 		ptsConvertService.updatePtsSummay(result, convertBO, convertEntity);
 
-		//转换失败记录一下，拦截器要用
+		//转换失败归还次数
 		if (!result.isSuccess()) {
-			String authCode = authManager.getAuthCode(convertBO);
-			String nowDate = DateViewUtils.getNow();
-			request.setAttribute(SysConstant.CONVERT_RESULT, new PtsConvertRecordPO(uaaToken.getUserId(), EnumAuthCode.getValue(authCode), DateViewUtils.parseSimple(nowDate)));
+			ptsConvertService.returnConvertNum(convertEntity,authManager.getAuthCode(convertBO));
 			return JsonResultUtils.buildMapResult(result.getData().getCode(), result.getData(), result.getMessage());
 		}
 		return JsonResultUtils.successMapResult(result.getData());

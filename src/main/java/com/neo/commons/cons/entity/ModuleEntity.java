@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ModuleEntity {
 	
-	Integer module;
+    private Integer module;
 	
-	String timeStamp;
+	private String timeStamp;
 
 }

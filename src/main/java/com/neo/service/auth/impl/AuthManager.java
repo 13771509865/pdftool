@@ -47,18 +47,14 @@ public class AuthManager {
 		try {
 			Map<String,Object> defaultMap = new HashMap<>();
 
-			//拿到配置文件里面，注册用户的权限
-			defaultMap = getPermissionByConfig(defaultMap);
-
-			//拿到配置文件里面，注册用户的转换次数的权限
-			Map<String,Object> numMap = JsonUtils.parseJSON2Map(convertNumProperty);
-
-			//拿到配置文件里面，注册用户的转换大小的权限
-			Map<String,Object> sizeMap = JsonUtils.parseJSON2Map(convertSizeProperty);
-
+			//获取配置文件里面，注册用户的权限
 			//defaultMap里面是所有的默认权限
+			defaultMap = getPermissionByConfig(defaultMap);
+			Map<String,Object> numMap = JsonUtils.parseJSON2Map(convertNumProperty);
+			Map<String,Object> sizeMap = JsonUtils.parseJSON2Map(convertSizeProperty);
 			defaultMap.putAll(numMap);
 			defaultMap.putAll(sizeMap);
+
 			String authValue = StringUtils.isBlank(authCode)?null:defaultMap.get(authCode).toString();
 
 			//如果默认权益是-1，就不去查数据库了
@@ -66,11 +62,13 @@ public class AuthManager {
 			if(StringUtils.isBlank(authCode) || !StringUtils.equals(authValue,"-1")) {
 				//根据authCode获取转换大小，数量权益
 				List<PtsAuthPO> list = iAuthService.selectPtsAuthPO(new PtsAuthQO(userID,EnumStatus.ENABLE.getValue(),authCode));
-				HttpUtils.getRequest().setAttribute(SysConstant.MEMBER_SHIP, list.isEmpty()?false:true);
+				HttpUtils.getRequest().setAttribute(SysConstant.MEMBER_SHIP, list.isEmpty()?false:true);//取票时要用
 				if(!list.isEmpty() && list.size()>0) {
 					//获取会员的转换权益
 					for(PtsAuthPO ptsAuthPO : list) {
-						if(StringUtils.equals(ptsAuthPO.getAuthValue(),"-1")){//权益值如果是-1，负值后直接跳出循环
+
+						//权益值如果是-1，或者是资源包（次数）,赋值后直接跳出循环
+						if(StringUtils.equals(ptsAuthPO.getAuthValue(),"-1") || StringUtils.equals(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode(),ptsAuthPO.getAuthCode())){
 							defaultMap.put(ptsAuthPO.getAuthCode(),Integer.valueOf(ptsAuthPO.getAuthValue()));
 							continue;
 						}

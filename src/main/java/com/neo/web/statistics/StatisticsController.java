@@ -1,15 +1,19 @@
 package com.neo.web.statistics;
 
+import com.github.pagehelper.PageInfo;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonResultUtils;
+import com.neo.json.JSON;
 import com.neo.model.bo.FcsFileInfoBO;
+import com.neo.model.po.FcsFileInfoPO;
 import com.neo.model.qo.FcsFileInfoQO;
 import com.neo.service.convert.PtsConvertService;
 import com.neo.service.statistics.StatisticsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -121,8 +125,13 @@ public class StatisticsController {
 	@ApiOperation(value = "根据fileHash查询转换结果")
 	@PostMapping(value = "/fileInfo")
 	@ResponseBody
-	public Map<String,Object> getFileInfoByFileHash(@RequestParam String fileHash){
-		IResult<FcsFileInfoBO> result =  statisticsService.getFileInfoByFileHash(fileHash);
+	public Map<String,Object> getFileInfoByFileHash(@RequestParam String fileHash,
+													@RequestParam(required = false, defaultValue = "false")Boolean mergeYc,
+													HttpServletRequest request){
+		String header = request.getHeader("User-Agent");
+		Boolean ycApp =StringUtils.containsOnly("优云APP",header) || StringUtils.containsOnly("babelANphone",header);
+
+		IResult<FcsFileInfoBO> result =  statisticsService.getFileInfoByFileHash(fileHash,ycApp,mergeYc,HttpUtils.getSessionUserID(request));
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
 		}else {
@@ -166,6 +175,22 @@ public class StatisticsController {
 			return JsonResultUtils.failMapResult(result.getMessage());
 		}
 	}
+
+
+	@ApiOperation(value = "查询用户资源包次数消费记录")
+	@GetMapping(value = "/consume")
+	@JSON(type = FcsFileInfoPO.class, include = "id,destFileName,srcFileName,destFileSize,srcFileSize,gmtCreate,gmtModified,module,isRPT")
+	public Map<String,Object> getConsumeRecord(HttpServletRequest request,
+											   @RequestParam(required = false, defaultValue = "1") int page,
+											   @RequestParam(required = false, defaultValue = "10") int rows){
+		IResult<PageInfo<FcsFileInfoPO>> result = statisticsService.getConsumeRecord(HttpUtils.getSessionUserID(request),page,rows);
+		if(result.isSuccess()) {
+			return JsonResultUtils.successMapResult(result.getData());
+		}else {
+			return JsonResultUtils.failMapResult(result.getMessage());
+		}
+	}
+
 
 
 

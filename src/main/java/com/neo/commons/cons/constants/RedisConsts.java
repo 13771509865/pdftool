@@ -56,4 +56,7 @@ public class RedisConsts {
     //重复转换
     public static final String CONVERT_FAIL_KEY = "convertFail";
 
+    //每日最高转换次数限制
+    public static final String CALL_CONVERT_LIMITER_KEY = "convertLimiterKey_";
+
 }

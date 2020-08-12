@@ -57,6 +57,16 @@ public class RedisConfig {
         return redisScript;
     }
 
+
+    @Bean(name = "callConvertLimiterScript")
+    public DefaultRedisScript<Number> callConvertLimiterScript() {
+        DefaultRedisScript<Number> redisScript = new DefaultRedisScript<>();
+        redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource("luaScripts/callConvertLimiterScript.lua")));
+        redisScript.setResultType(Number.class);
+        return redisScript;
+    }
+
+
     @Bean
     public RedisTemplate<String, Object> redisCacheTemplate(LettuceConnectionFactory redisConnectionFactory) {
         //redis序列化器

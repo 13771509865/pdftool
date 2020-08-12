@@ -47,7 +47,10 @@ public class ConfigProperty{
 	
 	@Value(value = "${convertTicketWaitTime}")
 	private Integer convertTicketWaitTime;
-	
+
+	@Value(value = "${convertLimiter}")
+	private Integer convertLimiter;
+
 	@Value(value= "${corePoolSize}")
 	private Integer corePoolSize = 5;
 

@@ -12,16 +12,18 @@
         <result column="COOKIE" property="cookie" jdbcType="VARCHAR"/>
         <result column="GMT_CREATE" property="gmtCreate" jdbcType="TIMESTAMP"/>
         <result column="GMT_MODIFIED" property="gmtModified" jdbcType="TIMESTAMP"/>
+		<result column="ERROR_MESSAGE" property="errorMessage" jdbcType="VARCHAR"/>
+		<result column="ERROR_CODE" property="errorCode" jdbcType="INTEGER"/>
     </resultMap>
     
     <sql id="Base_Column_List">
 		ID,STATUS, USER_ID,FILE_HASH, SRC_FILE_NAME,
 		CONVERT_TYPE, DEST_STORAGE_PATH,COOKIE,
-		GMT_CREATE, GMT_MODIFIED
+		GMT_CREATE, GMT_MODIFIED,ERROR_MESSAGE,ERROR_CODE
   	</sql>
     
     
-       <sql id="search_condition">
+	<sql id="search_condition">
         <where>
             <if test="id != null">
                 AND ID = #{id}
@@ -29,88 +31,83 @@
             <if test="status != null">
                 AND STATUS = #{status}
             </if>
+			<if test="errorCode != null">
+				AND ERROR_CODE = #{errorCode}
+			</if>
+			<if test="fileHash !=null and fileHash !=''">
+				AND FILE_HASH = #{fileHash}
+			</if>
+			<if test="userId != null">
+				AND USER_ID = #{userId}
+			</if>
         </where>
     </sql>
 
-   	  <!-- 插入登录用户转换成功的数据 -->
-      <insert id="insertPtsYcUpload" parameterType="com.neo.model.po.PtsYcUploadPO">
+	<!-- 插入登录用户转换成功的数据 -->
+     <insert id="insertPtsYcUpload" parameterType="com.neo.model.po.PtsYcUploadPO">
 	    insert into pts_yc_upload (
-	   	 	STATUS, USER_ID,FILE_HASH, SRC_FILE_NAME,
-			CONVERT_TYPE, DEST_STORAGE_PATH,COOKIE,
+	   	 	STATUS, USER_ID,
+	   	 	FILE_HASH, SRC_FILE_NAME,
+			CONVERT_TYPE, DEST_STORAGE_PATH,
+			COOKIE,ERROR_MESSAGE,
+			ERROR_CODE,
 			GMT_CREATE, GMT_MODIFIED
 			)
 	 	values (
 	 	  #{status,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT},
 	      #{fileHash,jdbcType=VARCHAR},  #{srcFileName,jdbcType=VARCHAR},
 	      #{convertType,jdbcType=INTEGER},  #{destStoragePath,jdbcType=VARCHAR},
-	      #{cookie,jdbcType=VARCHAR},
+	      #{cookie,jdbcType=VARCHAR}, #{errorMessage,jdbcType=VARCHAR},
+	      #{errorCode,jdbcType=INTEGER},
 	      now(),now()
 	      )
- 	  </insert>
+ 	 </insert>
  	  
 
 
-		<select id="selectPtsYcUploadPOByStatus" parameterType="com.neo.model.qo.PtsYcUploadQO" resultMap="PtsYcUploadPOResultMap">
-			select
+	<!--查询上传优云的记录 -->
+	<select id="selectPtsYcUploadPOByStatus" parameterType="com.neo.model.qo.PtsYcUploadQO" resultMap="PtsYcUploadPOResultMap">
+		select
 			<include refid="Base_Column_List" />
-			from pts_yc_upload
+		from pts_yc_upload
 			<include refid="search_condition" />
-		</select>
+	</select>
 
- 	   <update id="updatePtsYcUpload" parameterType="com.neo.model.qo.PtsYcUploadQO" >
-		    update pts_yc_upload
+
+
+	<!--修改24小时内没有上传成功的数据 -->
+	<update id="updatePtsYcUpload" parameterType="com.neo.model.qo.PtsYcUploadQO" >
+		update pts_yc_upload
 		   <set>
-		    GMT_MODIFIED = now(),
-		     <if test="status != null ">
-				 STATUS = #{status,jdbcType=INTEGER},
-			</if>
+		    		GMT_MODIFIED = now(),
+			   <if test="status != null ">
+					STATUS = #{status,jdbcType=INTEGER},
+			   </if>
 		    </set> 
 		    <where>
-		    	<if test="id != null">
-					and ID = #{id,jdbcType=BIGINT}
-				</if>
-				<if test="flag !=null">
-					and status = 0 and HOUR( timediff( now(), GMT_CREATE) ) > 24
-				</if>
+				STATUS = 0
+				<![CDATA[and TIMESTAMPDIFF(HOUR, now(), GMT_CREATE) > 24]]>
 		    </where>
- 		</update>
+	</update>
 
 
+	<!--修改重试成功的数据-->
 	<update id="updatePtsYcUploadByIds" parameterType="java.util.List" >
 		update pts_yc_upload
 		<set>
 			GMT_MODIFIED = now(),
-			<if test="status != null ">
-				STATUS = #{status,jdbcType=INTEGER},
-			</if>
+			STATUS = 1,
 		</set>
 		<where>
 			id in
-			<foreach item="item" index="index" collection="ids"
+			<foreach item="item" index="index" collection="list"
 					 open="(" separator="," close=")">
 				${item}
 			</foreach>
-
-
 		</where>
 	</update>
- 	  
- 	  <!-- 删除优云上传失败记录 -->
- 	   <delete id="deletePtsYcUpload" parameterType="java.util.Map">
-	        delete from pts_yc_upload
-		    where
-		    <if test="ids!=null">
-			   id in
-			   <foreach item="item" index="index" collection="ids"
-						open="(" separator="," close=")">
-				   ${item}
-			   </foreach>
-			</if>
-		   <if test="status!=null">
-			   status = #{status,jdbcType=INTEGER}
-		   </if>
-   	   </delete>
- 	  
+
+
 
  	  
     

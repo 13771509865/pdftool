@@ -16,7 +16,7 @@ import lombok.Getter;
 @Getter
 public enum EnumAuthCode {
 
-
+	PTS_CONVERT_NUM(0,"所有模块转换数量", "convertNum",null,5,"convertNum","convertNum","convertNum"),
 	PDF_WORD(1,"PDF转Word","convert001","36","true","Pdf2word","convert001Num","convert001Size"),
 	WORD_PDF(2,"Word转PDF","convert002","3","true","Word2pdf","convert002Num","convert002Size"),
 	PDF_PPT(3,"PDF转PPT","convert003","80","true","Pdf2ppt","convert003Num","convert003Size"),
@@ -39,10 +39,6 @@ public enum EnumAuthCode {
 	PDF_ENCRYPT(19, "pdf加密","convert019","79","true","pdfencrypt","convert019Num","convert019Size"),
 
 
-	/**
-	 * PTS_CONVERT_NUM和PTS_UPLOAD_SIZE !!!!!上线后就可以删了!!!!!
-	 */
-	PTS_CONVERT_NUM(25,"转换数量", "convertNum",null,5,null,"convertNum","convertNum"),
 	PTS_UPLOAD_SIZE(26,"文件大小","uploadSize",null,3,null,"uploadSize","uploadSize"),
 	PTS_VALIDITY_TIME(27,"权益有效期","validityTime",null,1,null,"validityTime","validityTime");
 

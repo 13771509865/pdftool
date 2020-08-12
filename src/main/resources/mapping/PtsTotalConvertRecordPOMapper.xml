@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neo.dao.PtsTotalConvertRecordPOMapper">
+    <resultMap id="PtsTotalConvertRecordPOMapper" type="com.neo.model.po.PtsTotalConvertRecordPO">
+        <id column="ID" property="id" jdbcType="INTEGER" />
+        <result column="CREATE_DATE" property="createDate" jdbcType="DATE" />
+        <result column="CREATE_TIME" property="createTime" jdbcType="TIME" />
+        <result column="MODIFIED_DATE" property="modifiedDate"
+                jdbcType="DATE" />
+        <result column="MODIFIED_TIME" property="modifiedTime"
+                jdbcType="TIME" />
+        <result column="USERID" property="userID" jdbcType="BIGINT" />
+        <result column="STATUS" property="status" jdbcType="INTEGER" />
+        <result column="AUTH_CODE" property="authCode" jdbcType="VARCHAR" />
+        <result column="CONVERT_NUM" property="convertNum" jdbcType="INTEGER" />
+        <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    </resultMap>
+
+
+    <sql id="Base_Column_List">
+		ID,
+		CREATE_DATE,
+		CREATE_TIME,
+		MODIFIED_DATE,
+		MODIFIED_TIME,
+		STATUS,
+		USERID,
+		AUTH_CODE,
+		CONVERT_NUM,
+		REMARK
+	</sql>
+
+    <sql id="search_condition">
+        <where>
+            <if test="userID != null">
+                AND USERID = #{userID,jdbcType=BIGINT}
+            </if>
+            <if test="authCode != null and authCode!=''">
+                AND AUTH_CODE = #{authCode,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </sql>
+
+
+    <!-- 插入或修改数据 -->
+    <insert id="insertOrUpdatePtsTotalConvertRecord">
+        insert into pts_total_convert_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="rp.createDate != null">
+                CREATE_DATE,
+            </if>
+            <if test="rp.createTime != null">
+                CREATE_TIME,
+            </if>
+            <if test="rp.modifiedDate != null">
+                MODIFIED_DATE,
+            </if>
+            <if test="rp.modifiedTime != null">
+                MODIFIED_TIME,
+            </if>
+            <if test="rp.status != null">
+                STATUS,
+            </if>
+            <if test="rp.userID != null">
+                USERID,
+            </if>
+            <if test="rp.authCode != null and rp.authCode!=''">
+                AUTH_CODE,
+            </if>
+            <if test="rp.convertNum != null">
+                CONVERT_NUM,
+            </if>
+            <if test="rp.remark != null and rp.remark != ''">
+                REMARK,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="rp.createDate != null">
+                #{rp.createDate,jdbcType=DATE},
+            </if>
+            <if test="rp.createTime != null">
+                #{rp.createTime,jdbcType=TIME},
+            </if>
+            <if test="rp.modifiedDate != null">
+                #{rp.modifiedDate,jdbcType=DATE},
+            </if>
+            <if test="rp.modifiedTime != null">
+                #{rp.modifiedTime,jdbcType=TIME},
+            </if>
+            <if test="rp.status != null">
+                #{rp.status,jdbcType=INTEGER},
+            </if>
+            <if test="rp.userID != null">
+                #{rp.userID,jdbcType=BIGINT},
+            </if>
+            <if test="rp.authCode != null and rp.authCode!=''">
+                #{rp.authCode,jdbcType=VARCHAR},
+            </if>
+            <if test="rp.convertNum != null">
+                #{rp.convertNum,jdbcType=INTEGER},
+            </if>
+            <if test="rp.remark != null and rp.remark != ''">
+                #{rp.remark,jdbcType=VARCHAR},
+            </if>
+        </trim>
+        ON DUPLICATE KEY UPDATE
+        MODIFIED_DATE=IF(CONVERT_NUM &lt; #{rq.convertNum,jdbcType=INTEGER},#{rp.modifiedDate,jdbcType=DATE},MODIFIED_DATE),
+        MODIFIED_TIME=IF(CONVERT_NUM &lt; #{rq.convertNum,jdbcType=INTEGER},#{rp.modifiedTime,jdbcType=TIME},MODIFIED_TIME),
+        CONVERT_NUM=IF(CONVERT_NUM &lt; #{rq.convertNum,jdbcType=INTEGER}, CONVERT_NUM+1,CONVERT_NUM)
+    </insert>
+
+
+
+    <select id="selectPtsTotalConvertRecord" resultMap="PtsTotalConvertRecordPOMapper"
+            parameterType="com.neo.model.po.PtsTotalConvertRecordPO">
+        select
+        <include refid="Base_Column_List" />
+        from pts_total_convert_record
+        <include refid="search_condition" />
+    </select>
+
+
+
+    <!-- 转换失败还次数 -->
+    <update id="updateConvertNum" parameterType="com.neo.model.po.PtsTotalConvertRecordPO">
+        update pts_total_convert_record
+        <set>
+            CONVERT_NUM = CONVERT_NUM -1
+        </set>
+        <include refid="search_condition" />
+    </update>
+
+
+
+
+
+
+</mapper>

@@ -1,26 +1,19 @@
 package com.neo.web.file;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.neo.commons.cons.IResult;
+import com.neo.commons.util.HttpUtils;
+import com.neo.commons.util.JsonResultUtils;
+import com.neo.service.file.DeleteFileService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.neo.commons.cons.IResult;
-import com.neo.commons.properties.ConfigProperty;
-import com.neo.commons.util.HttpUtils;
-import com.neo.commons.util.JsonResultUtils;
-import com.neo.model.qo.FcsFileInfoQO;
-import com.neo.service.file.DeleteFileService;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * 文件删除接口
@@ -45,8 +38,8 @@ public class DeleteFileController {
 	@ApiOperation(value = "删除用户的转换记录")
 	@PostMapping(value = "/delete")
 	@ResponseBody
-	public Map<String, Object> deleteConvert(String fileHash,String uCloudFileId, HttpServletRequest request){
-		IResult<String> result = deleteFileService.deleteConvert(fileHash,uCloudFileId,HttpUtils.getSessionUserID(request));
+	public Map<String, Object> deleteConvert(Integer id,String fileHash,String uCloudFileId, HttpServletRequest request){
+		IResult<String> result = deleteFileService.deleteConvert(id,fileHash,uCloudFileId,HttpUtils.getSessionUserID(request));
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult();
 		}else {

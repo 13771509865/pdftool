@@ -1,17 +1,15 @@
 package com.neo.model.qo;
 
-import java.util.Date;
-
 import com.alibaba.fastjson.JSON;
-import com.neo.model.po.PtsConvertRecordPO;
-
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class PtsConvertRecordQO {
 	
 	private Integer convertNum;

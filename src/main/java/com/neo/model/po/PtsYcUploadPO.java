@@ -1,6 +1,7 @@
 package com.neo.model.po;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class PtsYcUploadPO {
     //主键
     private Integer  id;
@@ -30,4 +32,8 @@ public class PtsYcUploadPO {
     private String   cookie;
     //最终文件名
     private String   srcFileName;
+
+    private String errorMessage;
+
+    private Integer errorCode;
 }
