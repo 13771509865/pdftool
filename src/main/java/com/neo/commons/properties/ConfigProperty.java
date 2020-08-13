@@ -51,6 +51,9 @@ public class ConfigProperty{
 	@Value(value = "${convertLimiter}")
 	private Integer convertLimiter;
 
+	@Value(value = "${UnlimitedUsers}")
+	private String UnlimitedUsers;
+
 	@Value(value= "${corePoolSize}")
 	private Integer corePoolSize = 5;
 

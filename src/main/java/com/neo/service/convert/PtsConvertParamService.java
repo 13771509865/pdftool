@@ -81,9 +81,14 @@ public class PtsConvertParamService {
 	 * 构建ConvertParameterPO对象
 	 * @param convertBO
 	 */
-	public ConvertParameterPO buildConvertParameterPO(ConvertParameterBO convertBO) {
+	public ConvertParameterPO buildConvertParameterPO(ConvertParameterBO convertBO,Long userId) {
 		if(convertBO.getConvertTimeOut() == null) {
-			convertBO.setConvertTimeOut(configProperty.getConvertTimeout());
+			//后门用户设置超时时间为半个小时
+			if(isUnlimitedUsers(userId)){
+				convertBO.setConvertTimeOut(TimeConsts.SECOND_OF_HALFHOUR);
+			}else{
+				convertBO.setConvertTimeOut(configProperty.getConvertTimeout());
+			}
 		}
 
 		//PDF转图片，清晰度做特殊处理，zoom值暂定为3
@@ -248,6 +253,22 @@ public class PtsConvertParamService {
 			}
 		}
 		return GetConvertMd5Utils.getNotNullConvertMd5(convertBO);
+	}
+
+
+	/**
+	 * 判断该用户是否是后门用户
+	 * @param userId
+	 * @return
+	 */
+	public Boolean isUnlimitedUsers(Long userId){
+		String[] unlimitedUsers = configProperty.getUnlimitedUsers().split(SysConstant.COMMA);
+		for(String unlimitedUser : unlimitedUsers){
+			if(StringUtils.equals(unlimitedUser,String.valueOf(userId))){
+				return true;
+			}
+		}
+		return false;
 	}
 
 
