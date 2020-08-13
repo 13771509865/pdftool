@@ -1,6 +1,7 @@
 package com.neo.model.vo;
 
 import com.alibaba.fastjson.JSON;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * @author zhoufeng
@@ -9,9 +10,11 @@ import com.alibaba.fastjson.JSON;
  **/
 public class FileAttributeVO {
 
-    private Integer pageCount;        //总页数
+    @ApiModelProperty(value = "总页数",example = "1")
+    private Integer pageCount;
 
-    private String content;          //文本内容
+    @ApiModelProperty(value = "文本内容")
+    private String content;
 
     public FileAttributeVO(){}
 
