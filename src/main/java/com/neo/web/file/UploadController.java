@@ -1,18 +1,5 @@
 package com.neo.web.file;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.neo.commons.cons.EnumResultCode;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.PtsConsts;
@@ -22,9 +9,18 @@ import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.model.bo.FileUploadBO;
 import com.neo.service.file.UploadService;
+import io.swagger.annotations.*;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * 上传的控制器
@@ -42,6 +38,11 @@ public class UploadController{
 
 
 	@ApiOperation(value = "文件上传")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name="file" ,value="真实文件对象，MultipartFile" ,required=true ,dataType="MultipartFile",paramType="formdata"),
+			@ApiImplicitParam(name="originalFilename" ,value="真实的文件名" ,required=false ,dataType="string",paramType="query")})
+	@ApiResponses({
+			@ApiResponse(code=200 ,response=Map.class, message="固定返回模型，json字符串表现形式,data:主要字段内容，code：返回结果码，message：返回结果信息")})
 	@PostMapping(value = "/defaultUpload")
 	@ResponseBody
 	public Map<String, Object> fileUpload(@RequestParam("file") MultipartFile  file,
@@ -63,6 +64,10 @@ public class UploadController{
 
 
 	@ApiOperation(value = "优云文件上传接口")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name="ycFileId" ,value="优云的fileId" ,required=false ,dataType="string",paramType="query")})
+	@ApiResponses({
+			@ApiResponse(code=200 ,response=Map.class, message="固定返回模型，json字符串表现形式,data:主要字段内容，code：返回结果码，message：返回结果信息")})
 	@PostMapping(value = "/uploadYc")
 	@ResponseBody
 	public Map<String, Object> fileUploadFromYc(String ycFileId ,HttpServletRequest request){

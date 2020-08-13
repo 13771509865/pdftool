@@ -12,8 +12,7 @@ import com.neo.service.convert.PtsConvertParamService;
 import com.neo.service.convert.PtsConvertService;
 import com.neo.service.convert.async.AsyncConvertManager;
 import com.yozosoft.auth.client.security.UaaToken;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,6 +49,8 @@ public class PtsConvertController {
 
 
 	@ApiOperation(value = "同步转换")
+	@ApiResponses({
+			@ApiResponse(code=200 ,response=FcsFileInfoBO.class, message="固定返回模型，json字符串表现形式,data:主要字段内容，code：返回结果码，message：返回结果信息")})
 	@PostMapping(value = "/convert")
 	@ResponseBody
 	public Map<String, Object> convert(@RequestBody ConvertParameterBO convertBO, HttpServletRequest request) {
@@ -76,6 +77,8 @@ public class PtsConvertController {
 
 
 	@ApiOperation(value = "异步转换")
+	@ApiResponses({
+			@ApiResponse(code=200 ,response=FcsFileInfoBO.class, message="固定返回模型，json字符串表现形式,data:主要字段内容，code：返回结果码，message：返回结果信息")})
 	@PostMapping(value = "/asyncConvert")
 	@ResponseBody
 	public Map<String, Object> mqconvert(@RequestBody ConvertParameterBO convertBO, HttpServletRequest request)  {

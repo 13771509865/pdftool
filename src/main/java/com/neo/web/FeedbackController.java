@@ -13,8 +13,7 @@ import com.neo.commons.util.JsonUtils;
 import com.neo.dao.PtsAuthPOMapper;
 import com.neo.model.vo.FeedbackVO;
 import com.neo.service.httpclient.HttpAPIService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -48,6 +47,8 @@ public class FeedbackController{
 	private PtsAuthPOMapper ptsAuthPOMapper;
 
 	@ApiOperation(value = "用户反馈")
+	@ApiResponses({
+			@ApiResponse(code=200 ,response= Map.class, message="固定返回模型，json字符串表现形式,data:主要字段内容，code：返回结果码，message：返回结果信息")})
 	@PostMapping(value = "/feedback")
 	@ResponseBody
 	public Map<String, Object> convertPdf2word(@RequestBody @Valid FeedbackEntity feedbackEntity ,BindingResult bindingResult, HttpServletRequest request){

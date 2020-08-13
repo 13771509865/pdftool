@@ -110,7 +110,7 @@ public class PtsConvertService {
 		}
 		try {
 
-			ConvertParameterPO convertPO = ptsConvertParamService.buildConvertParameterPO(convertBO);//暂只有给个超时时间
+			ConvertParameterPO convertPO = ptsConvertParamService.buildConvertParameterPO(convertBO,uaaToken.getUserId());//暂只有给个超时时间
 			//调用fcs进行转码
 			IResult<HttpResultEntity> httpResult = httpAPIService.doPost(ptsProperty.getFcs_convert_url(), ptsConvertParamService.buildFcsMapParamPO(convertPO));
 

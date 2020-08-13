@@ -2,7 +2,8 @@ package com.neo.model.bo;
 
 import com.alibaba.fastjson.JSON;
 import com.neo.model.vo.FileAttributeVO;
-
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,54 +14,56 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ApiModel(value = "FcsFileInfoBO对象", description = "返回转换结果参数对象")
 public class FcsFileInfoBO {
 	
-    //文件的md5 hash值
+    @ApiModelProperty(value = "文件的MD5，hash值")
     private String fileHash = "";
 
-    //文件转换结果
+    @ApiModelProperty(value = "文件转换，返回结果码，0表示成功，非0表示失败",example = "0")
     private Integer code = 0;
 
-    //生成文件名
+    @ApiModelProperty(value = "生成文件名")
     private String destFileName = "";
 
-    //原文件名
+    @ApiModelProperty(value = "源文件名称")
     private String srcFileName = "";
 
-    //原文件大小
+    @ApiModelProperty(value = "源文件大小",example = "0")
     private long srcFileSize = 0;
 
-    //生成文件大小
+    @ApiModelProperty(value = "生成文件大小",example = "0")
     private long destFileSize = 0;
 
-    //文件转换类型
+    @ApiModelProperty(value = "文件转换类型",example = "0")
     private Integer convertType;
 
-    //原文件路径
+    @ApiModelProperty(value = "源文件路径")
     private String srcStoragePath = "";
 
-    //生成文件路径
+    @ApiModelProperty(value = "生成文件路径")
     private String destStoragePath = "";
 
-    //转码时长
+    @ApiModelProperty(value = "转码时长",example = "0")
     private Long convertTime;
 
-    //文档属性
+    @ApiModelProperty(value = "文档属性")
     private FileAttributeVO fileAttributeVO;
 
-    //预览地址
+    @ApiModelProperty(value = "预览地址")
     private String viewUrl;
 
-    //fcs自定义数据
+    @ApiModelProperty(value = "fcs自定义数据")
     private String fcsCustomData;
 
-    //PDF专用，存储FCS返回错误信息
+    @ApiModelProperty(value = "文件转换，返回结果信息")
     private String fcsMessage;
 
-    //PDF专用，存储优云返回信息
+    @ApiModelProperty(value = "上传优云，返回结果信息")
+
     private String ycMessage;
 
-    //PDF专用，存储优云返回errorCode
+    @ApiModelProperty(value = "上传优云，返回结果码，0表示成功，非0表示失败", example = "0")
     private Integer ycErrorCode;
     
     @Override

@@ -4,8 +4,7 @@ import com.neo.commons.cons.IResult;
 import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonResultUtils;
 import com.neo.service.file.DeleteFileService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,11 +30,16 @@ public class DeleteFileController {
 	
 	/**
 	 * 删除用户的转换记录
-	 * @param filehash
 	 * @param request
 	 * @return
 	 */
 	@ApiOperation(value = "删除用户的转换记录")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name="id" ,value="每一条转换记录对应的id" ,required=false ,dataType="int",paramType="query",example = "0"),
+			@ApiImplicitParam(name="fileHash" ,value="每一条转换记录对应的MD5哈希值" ,required=false ,dataType="string",paramType="query"),
+		@ApiImplicitParam(name="uCloudFileId" ,value="每一条转换记录对应的优云fileId" ,required=false ,dataType="string",paramType="query")})
+	@ApiResponses({
+			@ApiResponse(code=200 ,response=Map.class, message="固定返回模型，json字符串表现形式,data:主要字段内容，code：返回结果码，message：返回结果信息")})
 	@PostMapping(value = "/delete")
 	@ResponseBody
 	public Map<String, Object> deleteConvert(Integer id,String fileHash,String uCloudFileId, HttpServletRequest request){
