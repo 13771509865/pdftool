@@ -39,18 +39,17 @@ public class UploadController{
 
 	@ApiOperation(value = "文件上传")
 	@ApiImplicitParams({
-			@ApiImplicitParam(name="file" ,value="真实文件对象，MultipartFile" ,required=true ,dataType="MultipartFile",paramType="formdata"),
-			@ApiImplicitParam(name="originalFilename" ,value="真实的文件名" ,required=false ,dataType="string",paramType="query")})
+			@ApiImplicitParam(name="originalFilename" ,value="微信小程序真实的文件名" ,required=false ,dataType="string",paramType="query")})
 	@ApiResponses({
 			@ApiResponse(code=200 ,response=Map.class, message="固定返回模型，json字符串表现形式,data:主要字段内容，code：返回结果码，message：返回结果信息")})
 	@PostMapping(value = "/defaultUpload")
 	@ResponseBody
 	public Map<String, Object> fileUpload(@RequestParam("file") MultipartFile  file,
 			String originalFilename ,HttpServletRequest request){
-		
+
 		//处理微信小程序临时文件名问题
 		originalFilename = StringUtils.isBlank(originalFilename)?file.getOriginalFilename():originalFilename;
-		
+
 		IResult<FileUploadBO> result  =uploadService.upload(file,originalFilename,request);
 		uploadService.insertPtsApply(HttpUtils.getSessionUserID(request),HttpUtils.getIpAddr(request),originalFilename,file.getSize(),request.getParameter(PtsConsts.MODULE));
 		if(result.isSuccess()) {
