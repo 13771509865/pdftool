@@ -169,4 +169,12 @@ public class StatisticsController {
 
 
 
+	@ApiOperation(value = "查询PDF工具集当前版本")
+	@GetMapping(value = "/version")
+	@ResponseBody
+	public Map<String,Object> getVersion(){
+		return JsonResultUtils.successMapResult("PTS_1.0.01_20081801_Release");
+	}
+
+
 }
