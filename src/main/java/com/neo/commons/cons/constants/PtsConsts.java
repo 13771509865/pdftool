@@ -16,5 +16,7 @@ public class PtsConsts {
 	public static final String HEADER_NONCE = "nonce";//前端加密偷偷放header里的参数
 	
 	public static final String SECTION = "section";//转换时模块参数
+
+	public static final Long showNum = 5000000L;//页面展示添加基数
 	
 }
