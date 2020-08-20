@@ -2,9 +2,9 @@
 convert-num:
   convert001Num: -1
   convert002Num: -1
-  convert003Num: 5
+  convert003Num: -1
   convert004Num: -1
-  convert005Num: 5
+  convert005Num: -1
   convert006Num: -1
   convert007Num: 5
   convert008Num: 5
@@ -13,30 +13,30 @@ convert-num:
   convert011Num: 5
   convert012Num: 5
   convert013Num: 5
-  convert014Num: 0
-  convert015Num: -1
-  convert016Num: -1
-  convert017Num: -1
-  convert018Num: -1
-  convert019Num: -1
+  convert014Num: 5
+  convert015Num: 5
+  convert016Num: 5
+  convert017Num: 5
+  convert018Num: 5
+  convert019Num: 5
 
 convert-size:
-  convert001Size: 20
-  convert002Size: 20
-  convert003Size: 5
-  convert004Size: 20
-  convert005Size: 20
-  convert006Size: 20
-  convert007Size: 5
-  convert008Size: 5
+  convert001Size: 30
+  convert002Size: 30
+  convert003Size: 30
+  convert004Size: 30
+  convert005Size: 30
+  convert006Size: 30
+  convert007Size: 30
+  convert008Size: 30
   convert009Size: 5
   convert010Size: 5
   convert011Size: 5
   convert012Size: 5
-  convert013Size: 0
-  convert014Size: 0
-  convert015Size: 20
-  convert016Size: 20
-  convert017Size: 20
-  convert018Size: 20
-  convert019Size: 20
+  convert013Size: 5
+  convert014Size: 5
+  convert015Size: 30
+  convert016Size: 5
+  convert017Size: 30
+  convert018Size: 5
+  convert019Size: 5
