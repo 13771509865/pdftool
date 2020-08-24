@@ -178,6 +178,12 @@ public class PtsConvertService {
 	public IResult<String> updatePtsSummay(IResult<FcsFileInfoBO> result , ConvertParameterBO convertBO,ConvertEntity convertEntity){
 		try {
 			FcsFileInfoBO fcsFileInfoBO = result.getData();
+
+			//pdf解密，密码输入错误不记录失败率
+			if(convertBO.getConvertType()== 78 && fcsFileInfoBO.getCode()!=0){
+				return DefaultResult.successResult();
+			}
+
 			//转换失败是否记录缓存，目前只有OCR，用于重复转换判断
 			if(!result.isSuccess() && EnumAuthCode.existReconvertModule(authManager.getAuthCode(convertBO), configProperty.getReConvertModule())) {
 				redisCacheManager.setHashValue(DateViewUtils.getNow(), convertEntity.getFileHash(), fcsFileInfoBO.toString());
