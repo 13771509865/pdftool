@@ -242,10 +242,13 @@ public class StatisticsService {
 	 * @param userId
 	 * @return
 	 */
-	public IResult<String> statisticsRegister(String sourceId,Long userId){
+	public IResult<String> statisticsRegister(String sourceId,Long userId,String e_keywordid,String e_keywordid2,String kw){
 		try {
 			String opertime = DateViewUtils.getNowFull();
 			String message = "sourceId="+sourceId+",userId="+userId+",opertime="+opertime;
+			message = StringUtils.isNotBlank(e_keywordid)?message+",e_keywordid="+e_keywordid:message;
+			message = StringUtils.isNotBlank(e_keywordid2)?message+",e_keywordid2="+e_keywordid2:message;
+			message = StringUtils.isNotBlank(kw)?message+",kw="+kw:message;
 			SysLogUtils.statisticsInfo(message);
 			return DefaultResult.successResult();
 		}catch (Exception e){
