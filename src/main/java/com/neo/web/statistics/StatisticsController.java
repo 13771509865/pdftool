@@ -176,8 +176,8 @@ public class StatisticsController {
 			@ApiResponse(code=200 ,response=Map.class, message="固定返回模型，json字符串表现形式,data:主要字段内容，code：返回结果码，message：返回结果信息")})
 	@PostMapping(value = "/register")
 	@ResponseBody
-	public Map<String,Object> statisticsRegister(@RequestParam("sourceId")String sourceId,HttpServletRequest request){
-		IResult<String> result = statisticsService.statisticsRegister(sourceId,HttpUtils.getSessionUserID(request));
+	public Map<String,Object> statisticsRegister(@RequestParam("sourceId")String sourceId,String e_keywordid,String e_keywordid2,String kw,HttpServletRequest request){
+		IResult<String> result = statisticsService.statisticsRegister(sourceId,HttpUtils.getSessionUserID(request),e_keywordid,e_keywordid2,kw);
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
 		}else {
