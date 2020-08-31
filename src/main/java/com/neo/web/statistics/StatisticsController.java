@@ -145,7 +145,7 @@ public class StatisticsController {
 													@RequestParam(required = false, defaultValue = "false")Boolean mergeYc,
 													HttpServletRequest request){
 		String header = request.getHeader("User-Agent");
-		Boolean ycApp =StringUtils.containsOnly("优云APP",header) || StringUtils.containsOnly("babelANphone",header);
+		Boolean ycApp =StringUtils.containsOnly("优云APP",header) || StringUtils.containsOnly("babeliphone",header);
 
 		IResult<FcsFileInfoBO> result =  statisticsService.getFileInfoByFileHash(fileHash,ycApp,mergeYc,HttpUtils.getSessionUserID(request));
 		if(result.isSuccess()) {

@@ -7,6 +7,7 @@ import com.neo.commons.util.DateViewUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.commons.util.UUIDHelper;
 import com.neo.model.bo.ConvertParameterBO;
+import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.service.auth.impl.AuthManager;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +29,12 @@ public class SaveBadFileService {
     private AuthManager authManager;
 
 
-    public IResult<Integer> saveBadFile(String srcDir, String destDir, ConvertParameterBO convertBO) {
+    public IResult<Integer> saveBadFile(String srcDir, String destDir, ConvertParameterBO convertBO,IResult<FcsFileInfoBO> result) {
         try {
             File srcFile = new File(srcDir, convertBO.getSrcRelativePath());
             if (srcFile.isFile() && srcFile.exists()) {
                 String authCode = authManager.getAuthCode(convertBO);
-                String errorDir = destDir + File.separator + DateViewUtils.format(new Date(), "yyyy/MM/dd")+ File.separator +authCode;
+                String errorDir = destDir + File.separator + DateViewUtils.format(new Date(), "yyyy/MM/dd")+ File.separator +authCode+File.separator+result.getData().getCode();
                 File errorFile = new File(errorDir, srcFile.getName());
                 if (errorFile.isFile() && errorFile.exists()) {
                     File parentFile = errorFile.getParentFile();

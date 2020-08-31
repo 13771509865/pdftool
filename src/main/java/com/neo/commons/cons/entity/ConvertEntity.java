@@ -18,6 +18,8 @@ public class ConvertEntity {
 	private Long userId;
 	private Integer module;
 	private Boolean isRPT;
+	private String accessToken;
+	private String refreshToken;
 
 	@Override
 	public String toString() {
