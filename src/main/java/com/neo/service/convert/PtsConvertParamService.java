@@ -44,6 +44,8 @@ public class PtsConvertParamService {
 	public ConvertEntity buildConvertEntity(ConvertParameterBO convertBO,HttpServletRequest request) {
 		ConvertEntity convertEntity = new ConvertEntity();
 		String cookie = request.getHeader(UaaConsts.COOKIE);//文件上传给优云要用到
+		String accessToken = request.getHeader(UaaConsts.HEADER_ACCESS_TOKEN);//优云俩app端要这么玩
+		String refreshToken = request.getHeader(UaaConsts.HEADER_REFRESH_TOKEN);//优云俩app端要这么玩
 		Boolean isMember = request.getAttribute(SysConstant.MEMBER_SHIP)==null?false:(Boolean)request.getAttribute(SysConstant.MEMBER_SHIP);
 		String fileHash = UUIDHelper.generateUUID();
 		Long userId = HttpUtils.getSessionUserID(request);
@@ -59,6 +61,8 @@ public class PtsConvertParamService {
 		convertEntity.setModule(module);
 		convertEntity.setIsMobile(isMobile);
 		convertEntity.setIsRPT(isRPT);
+		convertEntity.setAccessToken(accessToken);
+		convertEntity.setRefreshToken(refreshToken);
 		return convertEntity;
 	}
 	
