@@ -34,6 +34,7 @@ public class OrderController {
 	@PostMapping(value = "/order/reserve")
 	public ResponseEntity reserveOrder(@RequestParam long userId, @RequestParam long orderId, @RequestBody OrderRequestDto dto, @RequestParam String nonce, @RequestParam String sign) {
 		try {
+			System.out.println("========OrderRequestDto======="+dto.toString());
 			IResult<Participant> reserveResult = iOrderService.reserve(userId, orderId, dto, nonce, sign);
 			SysLogUtils.info("[userId]"+userId+""+"[,订单号："+orderId+"预留,],预留结果："+reserveResult.getData());
 			return ResponseEntity.ok(reserveResult.getData());
