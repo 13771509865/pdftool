@@ -7,6 +7,7 @@ import com.neo.commons.properties.PtsProperty;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.model.bo.FcsFileInfoBO;
 import com.neo.service.file.SaveBadFileService;
+import com.neo.service.message.IMessageService;
 import com.neo.service.yzcloud.IYzcloudService;
 import com.yozosoft.auth.client.security.UaaToken;
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +37,9 @@ public class PtsConvertServiceAspect {
     @Autowired
     private IYzcloudService iYzcloudService;
 
+    @Autowired
+    private IMessageService iMessageService;
+
 
     @Pointcut(value = "execution(* com.neo.service.convert.PtsConvertService.dispatchConvert(..))")
     public void dispatchConvert() {
@@ -57,12 +61,13 @@ public class PtsConvertServiceAspect {
                     String refreshToken = UaaConsts.REFRESH_TOKEN+"="+convertEntity.getRefreshToken()+"; ";
                     cookie = accessToken+refreshToken;
                 }
-
                 //上传优云
                 IResult<String> uploadFileToYc = iYzcloudService.uploadFileToYc(fcsFileInfoBO, uaaToken.getUserId(), cookie);
-
                 //记录上传优云结果
                 iYzcloudService.recordFailYCUpload(uploadFileToYc,fcsFileInfoBO, uaaToken.getUserId(), convertEntity);
+
+                //转换成功消息推送
+                iMessageService.sendMessageTemplate(uaaToken);
             }
         }
     }
