@@ -65,7 +65,6 @@ public class PtsConvertServiceAspect {
                 IResult<String> uploadFileToYc = iYzcloudService.uploadFileToYc(fcsFileInfoBO, uaaToken.getUserId(), cookie);
                 //记录上传优云结果
                 iYzcloudService.recordFailYCUpload(uploadFileToYc,fcsFileInfoBO, uaaToken.getUserId(), convertEntity);
-
                 //转换成功消息推送
                 iMessageService.sendMessageTemplate(uaaToken);
             }

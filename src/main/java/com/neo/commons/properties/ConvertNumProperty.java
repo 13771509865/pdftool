@@ -27,61 +27,73 @@ import javax.validation.constraints.NotBlank;
 public class ConvertNumProperty {
 	
 	@NotBlank
-	private Integer convert001Num = -1;
+	private Integer convert001Num;
 	
 	@NotBlank
-	private Integer convert002Num = -1;
-	
-	@NotBlank
-	private Integer convert003Num = 5;
-	
-	@NotBlank
-	private Integer convert004Num = -1;
-	
-	@NotBlank
-	private Integer convert005Num = 5;
-	
-	@NotBlank
-	private Integer convert006Num = -1;
-	
-	@NotBlank
-	private Integer convert007Num = 5;
-	
-	@NotBlank
-	private Integer convert008Num = 5;
-	
-	@NotBlank
-	private Integer convert009Num = 5;
-	
-	@NotBlank
-	private Integer convert010Num = 5;
-	
-	@NotBlank
-	private Integer convert011Num = 5;
-	
-	@NotBlank
-	private Integer convert012Num = 5;
-	
-	@NotBlank
-	private Integer convert013Num = 5;
-	
-	@NotBlank
-	private Integer convert014Num = 5;
-	
-	@NotBlank
-	private Integer convert015Num = -1;
+	private Integer convert002Num;
 
 	@NotBlank
-	private Integer convert016Num = -1;
+	private Integer convert003Num;
+	
+	@NotBlank
+	private Integer convert004Num;
+	
+	@NotBlank
+	private Integer convert005Num;
+	
+	@NotBlank
+	private Integer convert006Num;
+	
+	@NotBlank
+	private Integer convert007Num;
+	
+	@NotBlank
+	private Integer convert008Num;
+	
+	@NotBlank
+	private Integer convert009Num;
+	
+	@NotBlank
+	private Integer convert010Num;
+	
+	@NotBlank
+	private Integer convert011Num;
+	
+	@NotBlank
+	private Integer convert012Num;
+	
+	@NotBlank
+	private Integer convert013Num;
+	
+	@NotBlank
+	private Integer convert014Num;
+	
+	@NotBlank
+	private Integer convert015Num;
 
 	@NotBlank
-	private Integer convert017Num = -1;
+	private Integer convert016Num;
 
 	@NotBlank
-	private Integer convert018Num = -1;
+	private Integer convert017Num;
 
 	@NotBlank
-	private Integer convert019Num = -1;
+	private Integer convert018Num;
+
+	@NotBlank
+	private Integer convert019Num;
+
+	@NotBlank
+	private Integer convert020Num;
+
+	@NotBlank
+	private Integer convert021Num;
+
+	@NotBlank
+	private Integer convert022Num;
+
+	@NotBlank
+	private Integer convert023Num;
 
 	
 	@Override

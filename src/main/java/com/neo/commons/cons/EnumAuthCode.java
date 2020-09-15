@@ -38,9 +38,14 @@ public enum EnumAuthCode {
 	PDF_DECRYPT(18, "pdf解密","convert018","78","true","pdfdecrypt","convert018Num","convert018Size"),
 	PDF_ENCRYPT(19, "pdf加密","convert019","79","true","pdfencrypt","convert019Num","convert019Size"),
 
+	PDF_COMPRESS(20,"PDF压缩","convert020","",true,"pdfcompress","convert020Num","convert020Size"),
+	PDF_DELETE_PAGE(21,"PDF删除页面","convert021","",true,"pdfdeletepage","convert021Num","convert021Size"),
+	PDF_EXTRACT_IMG(22,"PDF提取图片","convert022","",true,"pdfextractimg","convert022Num","convert022Size"),
+	PDF_ROTATE(23,"PDF旋转","convert023","",true,"pdfrotate","convert023Num","convert023Size"),
 
-	PTS_UPLOAD_SIZE(26,"文件大小","uploadSize",null,3,null,"uploadSize","uploadSize"),
-	PTS_VALIDITY_TIME(27,"权益有效期","validityTime",null,1,null,"validityTime","validityTime");
+
+	PTS_UPLOAD_SIZE(99,"文件大小","uploadSize",null,3,null,"uploadSize","uploadSize"),
+	PTS_VALIDITY_TIME(100,"权益有效期","validityTime",null,1,null,"validityTime","validityTime");
 
 
 
