@@ -77,9 +77,9 @@ public class YzcloudService implements IYzcloudService {
             SysLogUtils.info(System.currentTimeMillis()+"==开始发送信息给优云。。。。文件名："+finalFileName);
             IResult<HttpResultEntity> httpResult = httpAPIService.uploadResouse(targetFile, url, params, headers);
             SysLogUtils.info(System.currentTimeMillis()+"====优云返回的结果。。。。"+httpResult.getData().getBody()+"==文件名==="+finalFileName);
-            Map<String, Object> resultMap = JsonUtils.parseJSON2Map(httpResult.getData().getBody());
             if (HttpUtils.isHttpSuccess(httpResult)) {
                 try {
+                    Map<String, Object> resultMap = JsonUtils.parseJSON2Map(httpResult.getData().getBody());
                     if (!resultMap.isEmpty() && "0".equals(resultMap.get(YzcloudConsts.ERRORCODE).toString())) {
                         Map<String, Object> result = (Map<String, Object>) resultMap.get(YzcloudConsts.RESULT);
                         String fileId = result.get("fileId").toString();
