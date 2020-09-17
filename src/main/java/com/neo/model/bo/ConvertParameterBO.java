@@ -66,6 +66,8 @@ public class ConvertParameterBO implements Serializable {
     private String destinationName;
     @ApiModelProperty(value = "允许转换文件大小", example = "100")
     private Float allowFileSize;
+    @ApiModelProperty(value = "加解密类型")
+    private String encryptType;
     //DCC参数
     @ApiModelProperty(value = "转换后的标题名字")
     private String htmlName;
@@ -195,7 +197,7 @@ public class ConvertParameterBO implements Serializable {
     private String wmImage;
     @ApiModelProperty(value = "图片水印是否被拉伸和页面一直大小，默认不拉升，为0", example = "0")
     private Integer wmPull;
-    @ApiModelProperty(value = "图片转图片,生成图片的后缀名，默认是jpg")
+    @ApiModelProperty(value = "图片转图片,生成图片的后缀名，默认是jpg(jpg、png、bmp、tif、gif)")
     private String imageType;
     @ApiModelProperty(value = "word转word之后，设置是否可编辑，默认可以，0可以编辑，1不可以编辑", example = "0")
     private Integer wordEdit;
@@ -237,6 +239,10 @@ public class ConvertParameterBO implements Serializable {
     private Integer wmPicRotate;
     @ApiModelProperty(value = "高清转换是否高像素", example = "0")
     private Integer zoomPic;
+    @ApiModelProperty(value = "显示头部导航1是0否", example = "1")
+    private Integer isHeaderBar;
+    @ApiModelProperty(value = "显示搜索栏1是0否", example = "1")
+    private Integer isShowSearch;
     //ofd属性参数
     @ApiModelProperty(value = "查找ofd reader中文字高亮显示")
     private String searchString;
@@ -320,6 +326,18 @@ public class ConvertParameterBO implements Serializable {
     @ApiModelProperty(value = "dcc异步转换标识文件路径")
     private String dccAsyncPath;
 
+    @ApiModelProperty(value = "pdf旋转类型，0全部 1奇数页 2偶数页 3自定义数值", example = "0")
+    private Integer pdfRotatedType;
+
+    @ApiModelProperty(value = "pdf旋转角度，[90°、180°、270°]", example = "90")
+    private Integer pdfAngle;
+
+    @ApiModelProperty(value = "页码位置（0:页眉左对齐，1：页眉居中，2：页眉右对齐，3：页脚左对齐，4：页脚居中，5：页脚右对齐）", example = "1")
+    private Integer pageNoPos;
+
+
+    public ConvertParameterBO() {
+    }
 
 	public String getSrcFileName() {
         return srcFileName;
@@ -1025,6 +1043,14 @@ public class ConvertParameterBO implements Serializable {
         this.isSignature = isSignature;
     }
 
+    public Integer getIsHeaderBar() {
+        return isHeaderBar;
+    }
+
+    public void setIsHeaderBar(Integer isHeaderBar) {
+        this.isHeaderBar = isHeaderBar;
+    }
+
     @Override
     public String toString() {
         return JSON.toJSONString(this);
@@ -1461,4 +1487,45 @@ public class ConvertParameterBO implements Serializable {
     public void setTargetMergePages(Integer[] targetMergePages) {
         this.targetMergePages = targetMergePages;
     }
+
+    public String getEncryptType() {
+        return encryptType;
+    }
+
+    public void setEncryptType(String encryptType) {
+        this.encryptType = encryptType;
+    }
+
+    public Integer getIsShowSearch() {
+        return isShowSearch;
+    }
+
+    public void setIsShowSearch(Integer isShowSearch) {
+        this.isShowSearch = isShowSearch;
+    }
+
+    public Integer getPdfRotatedType() {
+        return pdfRotatedType;
+    }
+
+    public void setPdfRotatedType(Integer pdfRotatedType) {
+        this.pdfRotatedType = pdfRotatedType;
+    }
+
+    public Integer getPdfAngle() {
+        return pdfAngle;
+    }
+
+    public void setPdfAngle(Integer pdfAngle) {
+        this.pdfAngle = pdfAngle;
+    }
+
+    public Integer getPageNoPos() {
+        return pageNoPos;
+    }
+
+    public void setPageNoPos(Integer pageNoPos) {
+        this.pageNoPos = pageNoPos;
+    }
+
 }

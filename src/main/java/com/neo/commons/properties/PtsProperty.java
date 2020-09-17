@@ -1,14 +1,12 @@
 package com.neo.commons.properties;
 
-import javax.validation.constraints.NotBlank;
-
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
-
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+import javax.validation.constraints.NotBlank;
 
 
 /**
@@ -68,13 +66,22 @@ public class PtsProperty {
 	@NotBlank
 	private String fcs_srcfile_dir;
 
+	@NotBlank
 	private String fcs_targetfile_dir;
 
+	@NotBlank
 	private String convert_fail_dir;
 
+	@NotBlank
 	private String report_error_dir;
 
+	@NotBlank
 	private String yzcloud_domain;
-	
+
+	@NotBlank
 	private String retryFlag;
+
+	@NotBlank
+	private String message_url;
+
 }

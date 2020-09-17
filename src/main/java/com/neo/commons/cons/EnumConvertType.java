@@ -68,19 +68,28 @@ public enum EnumConvertType {
 	HTML_OFD(51,"html2ofd","html到ofd","ofd", false, false,false,false),
 	ALL_OFD_TEMP(52,"all2ofdtemp","其它格式转换到ofd格式预览(模板)","ofd", false, false,false,false),
 	OFD_CUSTOMDATAS_TXT(53,"ofdcustomdatas信息","获取ofd的元数据信息","html", false, false,false,false),
-	GET_WORDS_BOOKMARKS(54,"获取所有word的书签信息","获取所有word的书签信息","html", false, false,false,false),
+	GET_WORDS_BOOKMARKS(54,"获取所有word的书签信息","获取所有word的书签信息","string", false, false,false,false),
 	PDF_PIC_PDFA(55,"PDF转图片再转pdfa","pdf到pdfa转换","pdf", false, false,false,false),
 	OFD_WATERMARK_OFD(56,"ofd给ofd加水印","ofd到ofd转换","ofd", false, false,false,false),
 	OFD_PDF(57,"ofdtopdf","ofd到pdf转换","pdf",false,false,false,false),
 	ALL_MS_OFDENVRY(58,"mstoofdtemp","ofd到pdf转换","yo",false,false,false,false),
 	PDF_WORD_TOWORD(59,"pdfandwordtoword","pdf和word的合并","doc",false,false,false,false),
 	IMAGE_WORD_TOWORD(60,"imageandwordtoword","图片和word的合并","doc",false,false,false,false),
-	MS_HTML_CANVAS(61,"ms2htmlcanvas","文档格式到高清html canvas的转换","",false,true,false,false),
+	MS_HTML_CANVAS(61,"ms2htmlcanvas","文档格式到高清html canvas的转换","json",true,true,true,true),
 	PDF_TO_WORD(62,"pdftoword","pdf生成word格式","docx",false,false, false, false),
 	PDF_TO_DOUBLE_PDF(63,"pdftodoublepdf","pdf生成双层pdf","pdf",false,false, false, false),
 	PDF_TO_OCR_WORD(64,"pdftoorcword","pdf使用ocr生成word","docx",false,false, false, false),
 	OFD_TO_OCR_WORD(65,"ofdtoorcword","ofd使用ocr生成word","docx",false,false, false, false),
 
+	MS_LPIC(69, "ms2lpic", "word、ppt转长图,支持JPG、PNG、BMP、TIF、GIF", "png", false, false, false, false),
+
+	//pdf
+	PDF_REMOVE_WATERMARKS(70, "pdfRemoveWatermarks", "PDF删除水印(第三方)", "pdf", false, false, false, false),
+	PDF_REMOVE_PAGES(71, "pdfRemovePages", "PDF删除页面", "pdf", false, false, false, false),
+	PDF_EXTRACT_IMAGES(72, "pdfExtractImages", "PDF图片提取", "jpg", true, false, true, false),
+	PDF_OPTIMIZE(73, "pdfOptimize", "PDF压缩(第三方）", "pdf", false, false, false, false),
+	PDF_ROTATED_PAGE(74, "pdfRotatedPage", "PDF旋转", "pdf", false, false, false, false),
+	PDF_ADD_PAGENO(75, "pdfAddPageNo", "PDF加页码", "pdf", false, false, false, false),
 	PDF_ADDPAGES(76, "pdfaddpages", "pdf插入页", "pdf", false, false, false, false),
 	PDF_LPNG(77, "pdf2lpng", "pdf转png长图", "png", false, false, false, false),
 	PDF_DECRYPT(78, "pdfdecrypt", "pdf解密", "pdf", false, false, false, false),
@@ -100,7 +109,13 @@ public enum EnumConvertType {
 	PDF_HTML_ENCRYPTED(102, "pdf2htmlEncrypted", "加密pdf格式到加密html的转换", "html", false, false, true, false),
 	PIC_HTML_ENCRYPTED(123, "pic2htmlEncrypted", "加密pic格式到加密html的转换", "html", false, false, true, false),
 
-	;
+	GET_OFD_PAGES(130,"getOfdPageInfo", "获取ofd页数", "int", false, false, false, false),
+	GET_OFD_ATTRIBUTES(131,"getOfdAttributes", "获取ofd属性", "String", false, false, false, false),
+	GET_OFD_ANNEX(132,"getOfdAnnex", "获取ofd附件", "String", true, false, true, false),
+	OFD_ENCRYPT(133, "ofdencrypt", "ofd加密", "ofd", false, false, false, false),
+	OFD_DECRYPT(134, "ofddecrypt", "ofd解密", "ofd", false, false, false, false),
+	OFD_SM3_QRCODE(135, "ofdsm32qrcode", "ofdsm3编码生成二维码", "png", false, false, false, false),
+	OFD_QRCODE_SM3(136, "ofdqrcode2sm3", "ofd二维码生成sm3编码", "string", false, false, false, false);
 
 	
 	private final Integer value;
@@ -190,6 +205,10 @@ public enum EnumConvertType {
 			case GET_PAGECONUT_MS:
 			case GET_PAGECONUT_PDF:
 			case OFD_STRING:
+			case GET_OFD_PAGES:
+			case GET_OFD_ATTRIBUTES:
+			case OFD_QRCODE_SM3:
+			case GET_WORDS_BOOKMARKS:
 				return true;
 			default:
 				return false;
@@ -207,6 +226,8 @@ public enum EnumConvertType {
 			case MS_MERGE:
 			case OFD_MERGE:
 			case PDF_ADDPAGES:
+			case PDF_WORD_TOWORD:
+			case PIC_PDF:
 				return true;
 			default:
 				return false;
@@ -227,6 +248,12 @@ public enum EnumConvertType {
 			case OFD_WATERMARK_OFD:
 			case OFD_PDF:
 			case OFD_TO_OCR_WORD:
+			case GET_OFD_PAGES:
+			case GET_OFD_ATTRIBUTES:
+			case GET_OFD_ANNEX:
+			case OFD_ENCRYPT:
+			case OFD_DECRYPT:
+			case OFD_SM3_QRCODE:
 				return true;
 			default:
 				return false;
@@ -241,6 +268,11 @@ public enum EnumConvertType {
 			switch (enumConvertType) {
 			case GET_PAGECONUT_MS:
 			case GET_PAGECONUT_PDF:
+			case OFD_STRING:
+			case GET_OFD_PAGES:
+			case GET_OFD_ATTRIBUTES:
+			case OFD_QRCODE_SM3:
+			case GET_WORDS_BOOKMARKS:
 				return false;
 			default:
 				return true;
@@ -279,6 +311,13 @@ public enum EnumConvertType {
 			case PDF_LPNG:
 			case PDF_DECRYPT:
 			case PDF_ENCRYPT:
+			case PDF_REMOVE_WATERMARKS:
+			case PDF_REMOVE_PAGES:
+			case PDF_EXTRACT_IMAGES:
+			case PDF_OPTIMIZE:
+			case PDF_ROTATED_PAGE:
+			case PDF_ADD_PAGENO:
+			case PIC_PDF:
 				return true;
 			default:
 				return false;
@@ -316,6 +355,7 @@ public enum EnumConvertType {
 			case MS_HTML_PAGE:
 			case MS_SVG_PAGE_MERGE:
 			case MS_HTML_PAGE_MERGE:
+			case MS_HTML_CANVAS:
 				return true;
 			default:
 				return false;

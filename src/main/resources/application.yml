@@ -127,8 +127,10 @@ pts:
 
   fcs_srcfile_dir: /Users/xujun/data/dcs/input                    #fcs文件根目录
   fcs_targetfile_dir: /Users/xujun/data/dcs/output      #fcs生产文件目录
-  convert_fail_dir: /Users/xujun/data/dcs/error                    #转换失败源文件夹
-  report_error_dir:                     #报错文件夹
+  convert_fail_dir: /Users/xujun/data/dcs/fail                    #转换失败源文件夹
+  report_error_dir: /Users/xujun/data/dcs/error                    #报错文件夹
 
   yzcloud_domain: http://www.yozodocs.com       #优云域名
   retryFlag: true #是否进行重试
+
+  message_url: http://auth.yozodocs.com/message/api/template/push/external   #消息推送地址
