@@ -91,7 +91,6 @@ public class PtsConvertService {
 	 */ 
 	public IResult<FcsFileInfoBO> dispatchConvert(ConvertParameterBO convertBO,UaaToken uaaToken,ConvertEntity convertEntity){
 		FcsFileInfoBO fcsFileInfoBO = new FcsFileInfoBO();
-		
 		//判断是否是重复失败文件
 		if(EnumAuthCode.existReconvertModule(authManager.getAuthCode(convertBO), configProperty.getReConvertModule())) {
 			if(StringUtils.isNotBlank(redisCacheManager.getHashValue(DateViewUtils.getNow(), convertEntity.getFileHash()))) {
@@ -100,40 +99,32 @@ public class PtsConvertService {
 				return DefaultResult.failResult(EnumResultCode.E_CONVERT_FAIL.getInfo(),fcsFileInfoBO);
 			}
 		}
-		
 		//取超时时间
 		String ticket = redisTicketManager.getConverTicket(convertEntity.getIsMember());
-
 		if (StringUtils.isEmpty(ticket)) {
 			fcsFileInfoBO.setCode(EnumResultCode.E_SERVER_BUSY.getValue());
 			return DefaultResult.failResult(EnumResultCode.E_SERVER_BUSY.getInfo(), fcsFileInfoBO);
 		}
 		try {
-
 			ConvertParameterPO convertPO = ptsConvertParamService.buildConvertParameterPO(convertBO,uaaToken.getUserId());//暂只有给个超时时间
 			//调用fcs进行转码
 			IResult<HttpResultEntity> httpResult = httpAPIService.doPost(ptsProperty.getFcs_convert_url(), ptsConvertParamService.buildFcsMapParamPO(convertPO));
-
 			if (!HttpUtils.isHttpSuccess(httpResult)) {
 				fcsFileInfoBO.setCode(EnumResultCode.E_FCS_CONVERT_FAIL.getValue());
 				return DefaultResult.failResult(EnumResultCode.E_FCS_CONVERT_FAIL.getInfo(),fcsFileInfoBO);
 			}
 			Map<String, Object> fcsMap= JsonUtils.parseJSON2Map(httpResult.getData().getBody());
 			Integer errorCode = Integer.valueOf((fcsMap.get(SysConstant.FCS_ERRORCODE).toString()));
-
 			fcsFileInfoBO = JsonUtils.json2obj(fcsMap.get(SysConstant.FCS_DATA), FcsFileInfoBO.class);
-
 			//转换失败
 			if(errorCode != 0) {
 				//code=24，message做特殊处理
 				String message = fcsFileInfoBO.getCode() == 24?EnumResultCode.E_MERGE_FILE_NAME_ERROR.getInfo():fcsMap.get(SysConstant.FCS_MESSAGE).toString();
 				return DefaultResult.failResult(message,fcsFileInfoBO);
 			}
-
 			updateFcsFileInfo(convertBO,fcsFileInfoBO,convertEntity);
 			SysLogUtils.info(System.currentTimeMillis()+"====ConvertType："+convertBO.getConvertType()+"==源文件相对路径:"+convertBO.getSrcRelativePath()+"==fcs转码结果："+ fcsFileInfoBO.getCode());
 			return DefaultResult.successResult(fcsMap.get(SysConstant.FCS_MESSAGE).toString(),fcsFileInfoBO);
-
 		} catch (Exception e) {
 			fcsFileInfoBO.setCode(EnumResultCode.E_SERVER_UNKNOW_ERROR.getValue());
 			SysLogUtils.error(convertBO.getSrcPath() + "文件转换未知错误", e);
@@ -141,7 +132,6 @@ public class PtsConvertService {
 		}finally {
 			redisTicketManager.returnPriorityTicket(ticket);
 		}
-
 	}
 
 	/**

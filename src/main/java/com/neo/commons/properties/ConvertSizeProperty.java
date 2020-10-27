@@ -95,6 +95,18 @@ public class ConvertSizeProperty {
     @NotBlank
     private Integer convert023Size;
 
+    @NotBlank
+    private Integer convert024Size;
+
+    @NotBlank
+    private Integer convert025Size;
+
+    @NotBlank
+    private Integer convert026Size;
+
+    @NotBlank
+    private Integer convert027Size;
+
 
     @Override
     public String toString() {

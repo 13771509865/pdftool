@@ -147,6 +147,20 @@ public class AuthManager {
 				return DefaultResult.successResult(EnumAuthCode.EXCEL_PDF.getAuthCode());
 			}
 		}
+
+		//文档转长图
+		if(convertType == 69) {
+			String ext = FilenameUtils.getExtension(convertParameterBO.getSrcRelativePath());
+			switch (ext) {
+				case "doc":
+				case "docx":
+					return DefaultResult.successResult(EnumAuthCode.WORD_LONG_PIC.getAuthCode());
+				case "ppt":
+				case "pptx":
+					return DefaultResult.successResult(EnumAuthCode.PPT_LONG_PIC.getAuthCode());
+			}
+		}
+
 		return DefaultResult.failResult();
 	}
 

@@ -95,6 +95,18 @@ public class ConvertNumProperty {
 	@NotBlank
 	private Integer convert023Num;
 
+	@NotBlank
+	private Integer convert024Num;
+
+	@NotBlank
+	private Integer convert025Num;
+
+	@NotBlank
+	private Integer convert026Num;
+
+	@NotBlank
+	private Integer convert027Num;
+
 	
 	@Override
 	public String toString() {
