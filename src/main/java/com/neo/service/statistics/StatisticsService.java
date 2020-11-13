@@ -24,6 +24,7 @@ import com.neo.model.qo.PtsYcUploadQO;
 import com.neo.service.cache.impl.RedisCacheManager;
 import com.neo.service.httpclient.HttpAPIService;
 import com.neo.service.yzcloud.IYzcloudService;
+import com.yozosoft.auth.client.security.UaaToken;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -90,13 +91,12 @@ public class StatisticsService {
 
 	/**
 	 * 查询剩余的转换次数
-	 * @param userID
 	 * @return
 	 */
-	public IResult<Map<String,Object>> getConvertTimes(Long userID){
+	public IResult<Map<String,Object>> getConvertTimes(UaaToken uaaToken){
 		try {
 			//获取用户剩余权益
-			IResult<Map<String,Object>> result =  staticsManager.getAuth(userID);
+			IResult<Map<String,Object>> result =  staticsManager.getAuth(uaaToken);
 			if(!result.isSuccess()){
 				return DefaultResult.failResult(result.getMessage());
 			}
@@ -121,13 +121,12 @@ public class StatisticsService {
 
 	/**
 	 * 获取用户剩余的权益，包含：每日剩余次数和文件大小
-	 * @param userID
 	 * @return
 	 */
-	public IResult<Map<String,Object[]>> getAuth(Long userID){
+	public IResult<Map<String,Object[]>> getAuth(UaaToken uaaToken){
 		try {
 			//获取用户剩余权益
-			IResult<Map<String,Object>> result =  staticsManager.getAuth(userID);
+			IResult<Map<String,Object>> result =  staticsManager.getAuth(uaaToken);
 			if(!result.isSuccess()){
 				return DefaultResult.failResult(result.getMessage());
 			}

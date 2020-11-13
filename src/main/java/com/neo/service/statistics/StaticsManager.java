@@ -14,6 +14,7 @@ import com.neo.model.po.PtsTotalConvertRecordPO;
 import com.neo.service.auth.impl.AuthManager;
 import com.neo.service.convertRecord.IConvertRecordService;
 import com.neo.service.convertRecord.ITotalConvertRecordService;
+import com.yozosoft.auth.client.security.UaaToken;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -80,23 +81,21 @@ public class StaticsManager {
 
 	/**
 	 * 获取用户剩余权限
-	 * @param userID
 	 * @return
 	 */
-	public IResult<Map<String,Object>> getAuth(Long userID){
+	public IResult<Map<String,Object>> getAuth(UaaToken uaaToken){
 		try {
-
 			//获取所有的用户权限
-			IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID,null);
+			IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(uaaToken,null);
 			Map<String,Object> map = getPermissionResult.getData();
 
 			String nowDate = DateViewUtils.getNow();
 			PtsConvertRecordPO ptsConvertRecordPO = PtsConvertRecordPO.builder()
-						.userID(userID)
+						.userID(uaaToken.getUserId())
 						.modifiedDate(DateViewUtils.parseSimple(nowDate)).build();
 
 			PtsTotalConvertRecordPO ptsTotalConvertRecordPO = PtsTotalConvertRecordPO.builder()
-					.userID(userID)
+					.userID(uaaToken.getUserId())
 					.authCode(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode()).build();
 
 			//查询当天的转换记录

@@ -11,6 +11,7 @@ import com.neo.commons.util.JsonUtils;
 import com.neo.model.bo.ConvertParameterBO;
 import com.neo.service.auth.IAuthService;
 import com.neo.service.convertRecord.IConvertRecordService;
+import com.yozosoft.auth.client.security.UaaToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -57,27 +58,27 @@ public class ConvertInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		Long userID = HttpUtils.getSessionUserID(request);
+		UaaToken uaaToken = HttpUtils.getUaaToken(request);
 		String body = HttpHelper.getBodyString(request);
 		ConvertParameterBO convertParameterBO = JsonUtils.json2obj(body, ConvertParameterBO.class);
 
-		//权限验证
-		IResult<EnumResultCode> result = iAuthService.checkConvertNum(convertParameterBO, userID);
-		if(!result.isSuccess()) {
-			HttpUtils.sendResponse(request, response, JsonResultUtils.buildFailJsonResultByResultCode(result.getData()));
-			return false;
-		}
-
 		//每日最高转换次数限制
-		IResult<EnumResultCode> limitResult = iAuthService.checkConvertNumByDay(userID);
+		IResult<EnumResultCode> limitResult = iAuthService.checkConvertNumByDay(uaaToken.getUserId());
 		if(!limitResult.isSuccess()) {
 			HttpUtils.sendResponse(request, response, JsonResultUtils.buildFailJsonResultByResultCode(limitResult.getData()));
 			return false;
 		}
 
-		if(userID!=null){
-			//发送积分事件
-			memberShipHelper.addMemberEvent(userID, EnumEventType.CONVERT_EVENT);
+		//权限验证
+		IResult<EnumResultCode> result = iAuthService.checkConvertNum(convertParameterBO, uaaToken);
+		if(!result.isSuccess()) {
+			HttpUtils.sendResponse(request, response, JsonResultUtils.buildFailJsonResultByResultCode(result.getData()));
+			return false;
+		}
+
+		//发送积分事件
+		if(uaaToken.getUserId()!=null){
+			memberShipHelper.addMemberEvent(uaaToken.getUserId(), EnumEventType.CONVERT_EVENT);
 		}
 		return true;
 	}

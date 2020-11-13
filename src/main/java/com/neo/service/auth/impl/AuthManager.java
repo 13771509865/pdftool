@@ -9,9 +9,14 @@ import com.neo.commons.util.HttpUtils;
 import com.neo.commons.util.JsonUtils;
 import com.neo.commons.util.SysLogUtils;
 import com.neo.model.bo.ConvertParameterBO;
+import com.neo.model.po.PtsAuthCorpPO;
 import com.neo.model.po.PtsAuthPO;
+import com.neo.model.qo.PtsAuthCorpQO;
 import com.neo.model.qo.PtsAuthQO;
 import com.neo.service.auth.IAuthService;
+import com.neo.service.authCorp.IAuthCorpService;
+import com.yozosoft.auth.client.security.UaaToken;
+import com.yozosoft.auth.client.security.UaaUserRole;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,50 +41,28 @@ public class AuthManager {
 	@Autowired
 	private ConvertSizeProperty convertSizeProperty;
 
+	@Autowired
+	private IAuthCorpService iAuthCorpService;
+
 
 
 	/**
 	 * 根据userId获取用户的权限对象
-	 * @param userID
 	 * @return
 	 */
-	public IResult<Map<String,Object>> getPermission(Long userID,String authCode) {
+	public IResult<Map<String,Object>> getPermission(UaaToken uaaToken, String authCode) {
 		try {
-			Map<String,Object> defaultMap = new HashMap<>();
-
-			//获取配置文件里面，注册用户的权限
 			//defaultMap里面是所有的默认权限
-			defaultMap = getPermissionByConfig(defaultMap);
-			Map<String,Object> numMap = JsonUtils.parseJSON2Map(convertNumProperty);
-			Map<String,Object> sizeMap = JsonUtils.parseJSON2Map(convertSizeProperty);
-			defaultMap.putAll(numMap);
-			defaultMap.putAll(sizeMap);
-
+			Map<String,Object> defaultMap = getPermissionByConfig();
 			String authValue = StringUtils.isBlank(authCode)?null:defaultMap.get(authCode).toString();
 
 			//如果默认权益是-1，就不去查数据库了
 			//authCode为空说明要拿所有的权益
 			if(StringUtils.isBlank(authCode) || !StringUtils.equals(authValue,"-1")) {
-				//根据authCode获取转换大小，数量权益
-				List<PtsAuthPO> list = iAuthService.selectPtsAuthPO(new PtsAuthQO(userID,EnumStatus.ENABLE.getValue(),authCode));
-				HttpUtils.getRequest().setAttribute(SysConstant.MEMBER_SHIP, list.isEmpty()?false:true);//取票时要用
-				if(!list.isEmpty() && list.size()>0) {
-					//获取会员的转换权益
-					for(PtsAuthPO ptsAuthPO : list) {
-
-						//权益值如果是-1，或者是资源包（次数）,赋值后直接跳出循环
-						if(StringUtils.equals(ptsAuthPO.getAuthValue(),"-1") || StringUtils.equals(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode(),ptsAuthPO.getAuthCode())){
-							defaultMap.put(ptsAuthPO.getAuthCode(),Integer.valueOf(ptsAuthPO.getAuthValue()));
-							continue;
-						}
-
-						Object deAuthValue = defaultMap.get(ptsAuthPO.getAuthCode());
-						//deAuthValue不等于-1
-						//deAuthValue小于authValue
-						if(deAuthValue!=null && !StringUtils.equals(deAuthValue.toString(),"-1") && Integer.valueOf(deAuthValue.toString()) < Integer.valueOf(ptsAuthPO.getAuthValue())){
-							defaultMap.put(ptsAuthPO.getAuthCode(),Integer.valueOf(ptsAuthPO.getAuthValue()));
-						}
-					}
+				if(uaaToken.getRole().equals(UaaUserRole.CorpAdmin) || uaaToken.getRole().equals(UaaUserRole.CorpMember)){
+					defaultMap = getCorpAuth(defaultMap,uaaToken.getCorpId(),authCode);
+				}else {
+					defaultMap = getUserAuth(defaultMap,uaaToken.getUserId(),authCode);
 				}
 			}
 			return DefaultResult.successResult(defaultMap);
@@ -96,17 +79,36 @@ public class AuthManager {
 	 * 获取注册用户的权限
 	 * @return
 	 */
-	public Map<String,Object> getPermissionByConfig(Map<String,Object> permissionDtoAuthMap) {
-
+	public Map<String,Object> getPermissionByConfig() {
+		Map<String,Object> defaultMap = new HashMap<>();
 		String[] convertCode = config.getConvertModule().split(SysConstant.COMMA);
 		for(String code : convertCode) {
 			String authCode = EnumAuthCode.getAuthCode(Integer.valueOf(code));
-			permissionDtoAuthMap.put(authCode, SysConstant.TRUE);
+			defaultMap.put(authCode, SysConstant.TRUE);
 		}
-
-		return permissionDtoAuthMap;
+		defaultMap.putAll(JsonUtils.parseJSON2Map(convertNumProperty));
+		defaultMap.putAll(JsonUtils.parseJSON2Map(convertSizeProperty));
+		return defaultMap;
 	}
 
+
+
+	/**
+	 * 根据用户请求的convertType，获取对应的authCode
+	 * @param convertParameterBO
+	 * @return
+	 */
+	public String getAuthCode(ConvertParameterBO convertParameterBO) {
+		IResult<String> result = authCodeHandle(convertParameterBO);
+		Integer convertType = convertParameterBO.getConvertType();
+		String authCode;
+		if(result.isSuccess()) {
+			authCode = result.getData();
+		}else {
+			authCode = EnumAuthCode.getAuthCode(String.valueOf(convertType));
+		}
+		return authCode;
+	}
 
 
 	/**
@@ -160,27 +162,88 @@ public class AuthManager {
 					return DefaultResult.successResult(EnumAuthCode.PPT_LONG_PIC.getAuthCode());
 			}
 		}
-
 		return DefaultResult.failResult();
 	}
 
 
 	/**
-	 * 根据用户请求的convertType，获取对应的authCode
-	 * @param convertParameterBO
+	 * 获取个人用户会员权益
 	 * @return
 	 */
-	public String getAuthCode(ConvertParameterBO convertParameterBO) {
-		IResult<String> result = authCodeHandle(convertParameterBO);
-		Integer convertType = convertParameterBO.getConvertType();
-		String authCode;
-		if(result.isSuccess()) {
-			authCode = result.getData();
-		}else {
-			authCode = EnumAuthCode.getAuthCode(String.valueOf(convertType));
+	private Map<String,Object> getUserAuth(Map<String,Object> defaultMap,Long userID,String authCode){
+		PtsAuthQO ptsAuthQO = new PtsAuthQO();
+		ptsAuthQO.setAuthCode(authCode);
+		ptsAuthQO.setStatus(EnumStatus.ENABLE.getValue());
+		ptsAuthQO.setUserid(userID);
+		List<PtsAuthPO> list = iAuthService.selectPtsAuthPO(ptsAuthQO);
+		HttpUtils.getRequest().setAttribute(SysConstant.MEMBER_SHIP, list.isEmpty()?false:true);//取票时要用
+		if(!list.isEmpty() && list.size()>0) {
+			for(PtsAuthPO ptsAuthPO : list) {
+				//权益值如果是-1，或者是资源包（次数）,赋值后直接跳出循环
+				if(StringUtils.equals(ptsAuthPO.getAuthValue(),"-1") || StringUtils.equals(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode(),ptsAuthPO.getAuthCode())){
+					defaultMap.put(ptsAuthPO.getAuthCode(),Integer.valueOf(ptsAuthPO.getAuthValue()));
+					continue;
+				}
+				Object deAuthValue = defaultMap.get(ptsAuthPO.getAuthCode());
+				//deAuthValue不等于-1
+				if(deAuthValue!=null && !StringUtils.equals(deAuthValue.toString(),"-1")){
+					//size取最大值
+					if(EnumAuthCode.isModuleSize(ptsAuthPO.getAuthCode()) && Integer.valueOf(deAuthValue.toString()) < Integer.valueOf(ptsAuthPO.getAuthValue())){
+						defaultMap.put(ptsAuthPO.getAuthCode(),Integer.valueOf(ptsAuthPO.getAuthValue()));
+					}
+					//num累加
+					if(EnumAuthCode.isModuleNum(ptsAuthPO.getAuthCode())){
+						Integer num = Integer.valueOf(ptsAuthPO.getAuthValue()+Integer.valueOf(deAuthValue.toString()));
+						defaultMap.put(ptsAuthPO.getAuthCode(),num);
+					}
+				}
+			}
 		}
-		return authCode;
+		return defaultMap;
 	}
+
+
+	/**
+	 * 获取企业账号会员权益
+	 * @return
+	 */
+	private Map<String,Object> getCorpAuth(Map<String,Object> defaultMap,Long corpId,String authCode){
+		PtsAuthCorpQO ptsAuthCorpQO = new PtsAuthCorpQO();
+		ptsAuthCorpQO.setAuthCode(authCode);
+		ptsAuthCorpQO.setStatus(EnumStatus.ENABLE.getValue());
+		ptsAuthCorpQO.setCorpId(corpId);
+		List<PtsAuthCorpPO> list = iAuthCorpService.selectPtsAuthCorpPO(ptsAuthCorpQO);
+		HttpUtils.getRequest().setAttribute(SysConstant.MEMBER_SHIP, list.isEmpty()?false:true);//取票时要用
+		if(!list.isEmpty() && list.size()>0) {
+			for(PtsAuthCorpPO ptsAuthCorpPO : list) {
+				//数据库里权益值如果是-1，或者是资源包（次数）,赋值后直接跳出循环
+				if(StringUtils.equals(ptsAuthCorpPO.getAuthValue(),"-1") || StringUtils.equals(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode(),ptsAuthCorpPO.getAuthCode())){
+					defaultMap.put(ptsAuthCorpPO.getAuthCode(),Integer.valueOf(ptsAuthCorpPO.getAuthValue()));
+					continue;
+				}
+				Object deAuthValue = defaultMap.get(ptsAuthCorpPO.getAuthCode());
+				//deAuthValue不等于-1
+				if(deAuthValue!=null && !StringUtils.equals(deAuthValue.toString(),"-1")){
+					//size取最大值
+					if(EnumAuthCode.isModuleSize(ptsAuthCorpPO.getAuthCode()) && Integer.valueOf(deAuthValue.toString()) < Integer.valueOf(ptsAuthCorpPO.getAuthValue())){
+						defaultMap.put(ptsAuthCorpPO.getAuthCode(),Integer.valueOf(ptsAuthCorpPO.getAuthValue()));
+					}
+					//num累加
+					if(EnumAuthCode.isModuleNum(ptsAuthCorpPO.getAuthCode())){
+						Integer num = Integer.valueOf(ptsAuthCorpPO.getAuthValue()+Integer.valueOf(deAuthValue.toString()));
+						defaultMap.put(ptsAuthCorpPO.getAuthCode(),num);
+					}
+				}
+			}
+		}
+		return defaultMap;
+	}
+
+
+
+
+
+
 
 
 

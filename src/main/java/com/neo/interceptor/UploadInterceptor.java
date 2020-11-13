@@ -86,7 +86,7 @@ public class UploadInterceptor implements HandlerInterceptor {
         }
 
         //验证上传文件大小权限
-        IResult<EnumResultCode> result = iAuthService.checkUploadSize(HttpUtils.getSessionUserID(request), uploadSize, checkModuleResult.getData().getModule());
+        IResult<EnumResultCode> result = iAuthService.checkUploadSize(HttpUtils.getUaaToken(request), uploadSize, checkModuleResult.getData().getModule());
         if (!result.isSuccess()) {
             HttpUtils.sendResponse(request, response, JsonResultUtils.buildFailJsonResultByResultCode(result.getData()));
             return false;

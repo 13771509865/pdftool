@@ -17,6 +17,7 @@ import com.neo.service.auth.IAuthService;
 import com.neo.service.cache.impl.RedisCacheManager;
 import com.neo.service.convertRecord.IConvertRecordService;
 import com.neo.service.convertRecord.ITotalConvertRecordService;
+import com.yozosoft.auth.client.security.UaaToken;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,17 +51,16 @@ public class AuthService implements IAuthService{
 	/**
 	 * 根据userid检查用户的转换权限
 	 * @param convertParameterBO
-	 * @param userID
 	 * @return
 	 */
 	@Override
-	public IResult<EnumResultCode> checkConvertNum(ConvertParameterBO convertParameterBO,Long userID){
+	public IResult<EnumResultCode> checkConvertNum(ConvertParameterBO convertParameterBO, UaaToken uaaToken){
 
 		//根据convertType，拿authCode
 		String authCode = authManager.getAuthCode(convertParameterBO);
 		
 		//获取用户权限
-		IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID,EnumAuthCode.getModuleNum(authCode));
+		IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(uaaToken,EnumAuthCode.getModuleNum(authCode));
 		Map<String,Object> map = getPermissionResult.getData();
 
 		String booleanAuth = String.valueOf(map.get(authCode));
@@ -76,7 +76,7 @@ public class AuthService implements IAuthService{
 		Integer rpConvertNum =map.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode())==null?null:Integer.valueOf(map.get(EnumAuthCode.PTS_CONVERT_NUM.getAuthCode()).toString());
 
 		//转换次数检查
-		IResult<EnumResultCode> resultCheckConvertTimes = checkConvertTimes(userID,maxConvertTimes,EnumAuthCode.getValue(authCode),rpConvertNum);
+		IResult<EnumResultCode> resultCheckConvertTimes = checkConvertTimes(uaaToken.getUserId(),maxConvertTimes,EnumAuthCode.getValue(authCode),rpConvertNum);
 		if(!resultCheckConvertTimes.isSuccess()) {
 			return DefaultResult.failResult(resultCheckConvertTimes.getData());
 		}
@@ -142,12 +142,11 @@ public class AuthService implements IAuthService{
 
 	/**
 	 * 检查用户的上传文件大小权限
-	 * @param userID
 	 * @return
 	 */
 	@Override
-	public IResult<EnumResultCode> checkUploadSize(Long userID,Long uploadSize,Integer module){
-		IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(userID,EnumAuthCode.getModuleSize(module));
+	public IResult<EnumResultCode> checkUploadSize(UaaToken uaaToken,Long uploadSize,Integer module){
+		IResult<Map<String,Object>> getPermissionResult = authManager.getPermission(uaaToken,EnumAuthCode.getModuleSize(module));
 		Map<String,Object> map = getPermissionResult.getData();
 
 		Integer maxUploadSize = Integer.valueOf(map.get(EnumAuthCode.getModuleSize(module)).toString());

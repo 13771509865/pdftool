@@ -61,7 +61,7 @@ public class StatisticsController {
 	@GetMapping(value = "/convertTimes")
 	@ResponseBody
 	public Map<String,Object> getConvertTimes(HttpServletRequest request){
-		IResult<Map<String,Object>>  result = statisticsService.getConvertTimes(HttpUtils.getSessionUserID(request));
+		IResult<Map<String,Object>>  result = statisticsService.getConvertTimes(HttpUtils.getUaaToken(request));
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
 		}else {
@@ -82,7 +82,7 @@ public class StatisticsController {
 	@GetMapping(value = "/auth")
 	@ResponseBody
 	public Map<String,Object> getAuth(HttpServletRequest request){
-		IResult<Map<String,Object[]>>  result = statisticsService.getAuth(HttpUtils.getSessionUserID(request));
+		IResult<Map<String,Object[]>>  result = statisticsService.getAuth(HttpUtils.getUaaToken(request));
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
 		}else {

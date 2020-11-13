@@ -1,25 +1,12 @@
 package com.neo.service.order.impl;
 
-import java.time.OffsetDateTime;
-import java.util.Iterator;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
-import com.neo.commons.cons.DefaultResult;
-import com.neo.commons.cons.EnumAuthCode;
-import com.neo.commons.cons.EnumResultCode;
-import com.neo.commons.cons.IResult;
-import com.neo.commons.cons.UnitType;
+import com.neo.commons.cons.*;
 import com.neo.commons.cons.constants.RedisConsts;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.cons.constants.TimeConsts;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.DateViewUtils;
 import com.neo.model.dto.RedisOrderDto;
-import com.neo.service.authName.IAuthNameService;
 import com.neo.service.cache.impl.RedisCacheManager;
 import com.neo.service.order.IOrderService;
 import com.yozosoft.api.order.dto.OrderRequestDto;
@@ -28,6 +15,13 @@ import com.yozosoft.api.order.dto.ServiceAppUserRightDto;
 import com.yozosoft.api.tcc.Participant;
 import com.yozosoft.api.tcc.TccStatus;
 import com.yozosoft.saas.YozoServiceApp;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import java.time.OffsetDateTime;
+import java.util.Iterator;
 
 @Service
 public class OrderService implements IOrderService{
@@ -161,7 +155,7 @@ public class OrderService implements IOrderService{
 			boolean isRepeat = redisCacheManager.setnx(RedisConsts.ORDERIDMP + orderId, "confirm:" + DateViewUtils.getNowFull(), -1L);
 			if (isRepeat) {
 				//事务支持
-				IResult<String> result = orderManager.modifyOrderEffective(serviceAppUserRightDto,orderId,dto.getUserId());
+				IResult<String> result = orderManager.modifyOrderEffective(serviceAppUserRightDto,orderId,dto);
 				if (result.isSuccess()) {
 					//操作成功,删除记录的key
 					redisCacheManager.delete(RedisConsts.ORDERKEY + orderId);

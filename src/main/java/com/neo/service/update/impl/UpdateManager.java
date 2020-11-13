@@ -63,7 +63,7 @@ public class UpdateManager {
 
                 iAuthService.deletePtsAuth(userId);//删除当前用户所有权益
 
-                Map<String,Object> convertAuthCodeMap =  authManager.getPermissionByConfig(new HashMap<>());//拿到所有模块的authcode
+                Map<String,Object> convertAuthCodeMap =  authManager.getPermissionByConfig();//拿到所有模块的authcode
 
                 List<PtsAuthPO> authList = new ArrayList<>();
                 for(UserRightItem serRightItem : list) {

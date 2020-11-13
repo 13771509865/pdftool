@@ -107,27 +107,7 @@ public enum EnumAuthCode {
 		}
 		return null;
 	}
-	
-	
-	public static String getAuthCodeByModuleNum(String moduleNum) {
-		for (EnumAuthCode statu : values()) {
-			if(statu.getModuleNum()!=null && statu.getModuleNum().equals(moduleNum)){
-				return statu.getAuthCode();
-			}
-		}
-		return null;
-	}
 
-
-	public static Object getDefaultValue(String authCode) {
-		for (EnumAuthCode statu : values()) {
-			if(statu.getAuthCode()!=null && statu.getAuthCode().equals(authCode)){
-				return statu.getDefaultVaule();
-			}
-		}
-		return null;
-	}
-	
 	
 	public static Integer getValue(String authCode) {
 		for (EnumAuthCode code : values()) {
@@ -280,6 +260,41 @@ public enum EnumAuthCode {
 		return false;
 	}
 
+
+	/**
+	 * 判断是不是moduleSize
+	 * @param moduleSize
+	 * @return
+	 */
+	public static Boolean isModuleSize(String moduleSize) {
+		for (EnumAuthCode code : values()) {
+			if(code.getModuleSize()!=null && code.getModuleSize().equals(moduleSize)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	/**
+	 * 判断是不是moduleNum
+	 * @param moduleNum
+	 * @return
+	 */
+	public static Boolean isModuleNum(String moduleNum) {
+		for (EnumAuthCode code : values()) {
+			if(code.getModuleNum()!=null && code.getModuleNum().equals(moduleNum)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	public static void main(String[] args) {
+		System.out.println(EnumAuthCode.isModuleSize("convert001"));
+		System.out.println(EnumAuthCode.isModuleNum("convert001Num"));
+	}
 
 
 }
