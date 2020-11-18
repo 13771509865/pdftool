@@ -128,7 +128,7 @@ public class OrderManager {
      * 更新个人用户权益
      * @return
      */
-    private IResult<String> updatePtsAuth(List<UserRightItem> list, Long userId, Long orderId) {
+    public IResult<String> updatePtsAuth(List<UserRightItem> list, Long userId, Long orderId) {
         Integer deletePtsAuthNum = iAuthService.deletePtsAuth(userId);
         SysLogUtils.info("删除个人用户权益一共：" + deletePtsAuthNum + "条，userId为：" + userId);
         List<PtsAuthPO> authList = new ArrayList<>();
@@ -165,7 +165,7 @@ public class OrderManager {
 	 * @param orderId
 	 * @return
 	 */
-	private IResult<String> updatePtsAuthCorp(List<UserRightItem> list, Long corpId, Long orderId){
+	public IResult<String> updatePtsAuthCorp(List<UserRightItem> list, Long corpId, Long orderId){
 		Integer deletePtsAuthCorpNum = iAuthCorpService.deletePtsAuthCorp(corpId);
 		SysLogUtils.info("删除企业账号权益一共：" + deletePtsAuthCorpNum + "条，corpId为：" + corpId);
 		List<PtsAuthCorpPO> authCorpList = new ArrayList<>();

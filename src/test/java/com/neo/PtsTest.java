@@ -3,7 +3,10 @@ package com.neo;
 import com.neo.dao.PtsAuthPOMapper;
 import com.neo.dao.PtsFailRecordPOMapper;
 import com.neo.dao.PtsYcUploadPOMapper;
+import com.neo.model.po.PtsAuthCorpPO;
+import com.neo.model.qo.PtsAuthCorpQO;
 import com.neo.service.auth.IAuthService;
+import com.neo.service.authCorp.IAuthCorpService;
 import com.neo.service.cache.impl.RedisCacheManager;
 import com.neo.service.clear.IClearService;
 import com.neo.service.convertRecord.impl.TotalConvertRecordService;
@@ -15,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -48,6 +50,9 @@ public class PtsTest {
 
 	@Autowired
 	private PtsYcUploadPOMapper ptsYcUploadPOMapper;
+
+	@Autowired
+	private IAuthCorpService iAuthCorpService;
 
 //	@Test
 //	public void test() {
@@ -313,10 +318,48 @@ public class PtsTest {
 
 	@Test
 	public void updatePtsYcUploadByIds(){
-		List<Integer> list = new ArrayList<>();
-		list.add(2337);
-		list.add(2338);
-		ptsYcUploadPOMapper.updatePtsYcUploadByIds(list);
+//		List<PtsAuthCorpPO> list = new ArrayList<>();
+//		PtsAuthCorpPO p1 = new PtsAuthCorpPO();
+//		p1.setAuthCode("convert001Num");
+//		p1.setAuthValue("-1");
+//		p1.setCorpId(1111L);
+//		p1.setGmtCreate(DateViewUtils.getNowDate());
+//		p1.setGmtModified(DateViewUtils.getNowDate());
+//		p1.setGmtExpire(DateViewUtils.getNowDate());
+//		p1.setOrderId(4111111L);
+//		p1.setPriority(1);
+//		p1.setStatus(1);
+//		p1.setRemark("test");
+//		PtsAuthCorpPO p2 = new PtsAuthCorpPO();
+//		p2.setAuthCode("convert002Num");
+//		p2.setAuthValue("-1");
+//		p2.setCorpId(2222L);
+//		p2.setGmtCreate(DateViewUtils.getNowDate());
+//		p2.setGmtModified(DateViewUtils.getNowDate());
+//		p2.setGmtExpire(DateViewUtils.getNowDate());
+//		p2.setOrderId(422222222L);
+//		p2.setPriority(1);
+//		p2.setStatus(1);
+//		p2.setRemark("test2");
+//		list.add(p1);
+//		list.add(p2);
+//		iAuthCorpService.insertPtsAuthCorpPO(list);
+
+		PtsAuthCorpQO q = new PtsAuthCorpQO();
+		q.setCorpId(2222L);
+		q.setAuthCode("convert002Num");
+		q.setStatus(1);
+		List<PtsAuthCorpPO> list = iAuthCorpService.selectAuthCorp(q);
+		List<PtsAuthCorpPO> list2 = iAuthCorpService.selectPtsAuthCorpPO(q);
+		for (PtsAuthCorpPO ptsAuthCorpPO : list){
+			System.out.println(ptsAuthCorpPO.toString());
+		}
+		for (PtsAuthCorpPO ptsAuthCorpPO : list2){
+			System.out.println(ptsAuthCorpPO.toString());
+		}
+
+		iAuthCorpService.deletePtsAuthCorp(2222L);
+
 	}
 
 }

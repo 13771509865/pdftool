@@ -124,8 +124,8 @@
 
 	 <!-- 删除用户会员权限信息 -->
  	 <delete id="deletePtsAuthCorp" parameterType="java.lang.Long">
-        delete from
-      	where pts_auth_corp
+        delete from pts_auth_corp
+      	where
       	CORPID = #{corpId,jdbcType=BIGINT}
    	 </delete>
 

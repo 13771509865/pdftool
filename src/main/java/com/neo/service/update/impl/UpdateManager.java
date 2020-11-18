@@ -2,14 +2,13 @@ package com.neo.service.update.impl;
 
 import com.neo.commons.cons.DefaultResult;
 import com.neo.commons.cons.EnumAuthCode;
-import com.neo.commons.cons.EnumStatus;
 import com.neo.commons.cons.IResult;
 import com.neo.commons.cons.constants.SysConstant;
 import com.neo.commons.util.SysLogUtils;
-import com.neo.model.po.PtsAuthPO;
+import com.neo.model.qo.PtsAuthCorpQO;
 import com.neo.model.qo.PtsAuthQO;
-import com.neo.service.auth.IAuthService;
-import com.neo.service.auth.impl.AuthManager;
+import com.neo.service.authCorp.IAuthCorpService;
+import com.neo.service.order.impl.OrderManager;
 import com.neo.service.update.IUpdateService;
 import com.yozosoft.api.order.dto.ServiceAppUserRightDto;
 import com.yozosoft.api.order.dto.UserRightItem;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,13 +31,13 @@ import java.util.Map;
 public class UpdateManager {
 
     @Autowired
-    private IAuthService iAuthService;
+    private OrderManager orderManager;
 
     @Autowired
     private IUpdateService iUpdateService;
 
     @Autowired
-    private AuthManager authManager;
+    private IAuthCorpService iAuthCorpService;
 
     /**
      * 更新老用户权益
@@ -49,58 +47,29 @@ public class UpdateManager {
     @Transactional(rollbackFor = Exception.class)
     public IResult<String> updatePermissions(ServiceAppUserRightDto serviceAppUserRightDto, Long userId){
         try {
-
             YozoServiceApp app = serviceAppUserRightDto.getApp();
             List<UserRightItem> list = serviceAppUserRightDto.getRights();
             if(app!=null && YozoServiceApp.PdfTools.getApp().equalsIgnoreCase(app.getApp()) && list.size()>0 && !list.isEmpty()) {
-
-                //拿orderId
-                List<PtsAuthPO> ptsAuthPOList = iUpdateService.selectAuth(new PtsAuthQO(userId,null,null));
-                Long orderId = null;
-                if(!ptsAuthPOList.isEmpty()){
-                    orderId = ptsAuthPOList.get(0).getOrderId();
-                }
-
-                iAuthService.deletePtsAuth(userId);//删除当前用户所有权益
-
-                Map<String,Object> convertAuthCodeMap =  authManager.getPermissionByConfig();//拿到所有模块的authcode
-
-                List<PtsAuthPO> authList = new ArrayList<>();
-                for(UserRightItem serRightItem : list) {
-
-                    //不需要validityTime，convertNum，uploadSize这几个特性
-                    if(!StringUtils.equals(serRightItem.getFeature(), EnumAuthCode.PTS_VALIDITY_TIME.getAuthCode())&&
-                       !StringUtils.equals(serRightItem.getFeature(), EnumAuthCode.PTS_UPLOAD_SIZE.getAuthCode())&&
-                       !StringUtils.equals(serRightItem.getFeature(), EnumAuthCode.PTS_CONVERT_NUM.getAuthCode())) {
-
-                        //是老特性就拆分，新特性不需要拆
-                        Map<String,String> map = getFeature(serRightItem.getFeature(),serRightItem.getSpecs()[0],convertAuthCodeMap);
-
-                        for (Map.Entry<String, String> m : map.entrySet()) {
-                            PtsAuthPO ptsAuthPO = new PtsAuthPO();
-                            ptsAuthPO.setAuthCode(m.getKey());
-                            ptsAuthPO.setAuthValue(m.getValue());
-                            ptsAuthPO.setGmtCreate(serRightItem.getBegin());
-                            ptsAuthPO.setGmtModified(serRightItem.getBegin());
-                            ptsAuthPO.setGmtExpire(serRightItem.getEnd());
-                            ptsAuthPO.setOrderId(orderId);
-                            ptsAuthPO.setPriority(serRightItem.getPriority());
-                            ptsAuthPO.setStatus(EnumStatus.ENABLE.getValue());
-                            ptsAuthPO.setUserid(serRightItem.getUserId());
-                            authList.add(ptsAuthPO);
-                        }
-
-
+                Long corpId = list.get(0).getCorpId();
+                //企业订单
+                if (corpId != null){
+                    PtsAuthCorpQO ptsAuthCorpQO = new PtsAuthCorpQO();
+                    ptsAuthCorpQO.setCorpId(corpId);
+                    Long orderId =  iAuthCorpService.selectAuthCorp(ptsAuthCorpQO).get(0).getOrderId();
+                    IResult<String> updatePtsAuthCorp = orderManager.updatePtsAuthCorp(list,corpId,orderId);
+                    if(!updatePtsAuthCorp.isSuccess()){
+                        throw new RuntimeException();
+                    }
+                }else {
+                    PtsAuthQO ptsAuthQO = new PtsAuthQO();
+                    ptsAuthQO.setUserid(userId);
+                    Long orderId = iUpdateService.selectAuth(ptsAuthQO).get(0).getOrderId();
+                    IResult<String> updatePtsAuth = orderManager.updatePtsAuth(list,userId,orderId);
+                    if(!updatePtsAuth.isSuccess()){
+                        throw new RuntimeException();
                     }
                 }
-
-                Boolean insertPtsAuthPO = iAuthService.insertPtsAuthPO(authList)>0;
-                if(!insertPtsAuthPO) {
-                    SysLogUtils.error("更新用户权益失败，userId："+userId);
-                    throw new RuntimeException();
-                }
             }
-
             return DefaultResult.successResult();
         } catch (Exception e) {
             e.printStackTrace();

@@ -16,4 +16,6 @@ public interface IAuthCorpService {
     List<PtsAuthCorpPO> selectPtsAuthCorpPO(PtsAuthCorpQO ptsAuthCorpQO);
 
     Integer deletePtsAuthCorp(Long cropId);
+
+    List<PtsAuthCorpPO> selectAuthCorp(PtsAuthCorpQO ptsAuthCorpQO);
 }
