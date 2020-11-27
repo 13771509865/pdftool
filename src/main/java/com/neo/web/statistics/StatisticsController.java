@@ -12,7 +12,6 @@ import com.neo.model.qo.FcsFileInfoQO;
 import com.neo.service.convert.PtsConvertService;
 import com.neo.service.statistics.StatisticsService;
 import io.swagger.annotations.*;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -145,8 +144,8 @@ public class StatisticsController {
 													@RequestParam(required = false, defaultValue = "false")Boolean mergeYc,
 													HttpServletRequest request){
 		String header = request.getHeader("User-Agent");
-		Boolean ycApp =StringUtils.containsOnly("优云APP",header) || StringUtils.containsOnly("babeliphone",header);
-
+//		Boolean ycApp =StringUtils.containsOnly("优云APP",header) || StringUtils.containsOnly("babeliphone",header);
+		Boolean ycApp = false;
 		IResult<FcsFileInfoBO> result =  statisticsService.getFileInfoByFileHash(fileHash,ycApp,mergeYc,HttpUtils.getSessionUserID(request));
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());

@@ -106,7 +106,7 @@ public class PtsConvertService {
 			return DefaultResult.failResult(EnumResultCode.E_SERVER_BUSY.getInfo(), fcsFileInfoBO);
 		}
 		try {
-			ConvertParameterPO convertPO = ptsConvertParamService.buildConvertParameterPO(convertBO,uaaToken.getUserId());//暂只有给个超时时间
+			ConvertParameterPO convertPO = ptsConvertParamService.buildConvertParameterPO(convertBO,null);//暂只有给个超时时间
 			//调用fcs进行转码
 			IResult<HttpResultEntity> httpResult = httpAPIService.doPost(ptsProperty.getFcs_convert_url(), ptsConvertParamService.buildFcsMapParamPO(convertPO));
 			if (!HttpUtils.isHttpSuccess(httpResult)) {

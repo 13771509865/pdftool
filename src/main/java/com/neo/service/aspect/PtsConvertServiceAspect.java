@@ -12,10 +12,8 @@ import com.neo.service.yzcloud.IYzcloudService;
 import com.yozosoft.auth.client.security.UaaToken;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * 转换后的文档数据存储
@@ -24,8 +22,8 @@ import org.springframework.stereotype.Component;
  * @description
  * @create 2019年11月25日
  */
-@Aspect
-@Component
+//@Aspect
+//@Component
 public class PtsConvertServiceAspect {
 
     @Autowired

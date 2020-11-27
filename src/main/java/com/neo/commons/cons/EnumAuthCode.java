@@ -45,6 +45,7 @@ public enum EnumAuthCode {
 	PPT_LONG_PIC(24,"PPT转长图","convert024","69","true","pptLongPic","convert024Num","convert024Size",null),
 	WORD_LONG_PIC(25,"Word转长图","convert025","69","true","wordLongPic","convert025Num","convert025Size",null),
 	PDF_ADD_PAGE_NUMBER(26,"PDF加页码","convert026","75","true","pdfAddPageNumber","convert026Num","convert026Size","_已加页码"),
+	WORD_OFD(27,"Word转ofd","convert027","29","true","word2ofd","convert027Num","convert027Size",null),
 
 
 	PTS_UPLOAD_SIZE(99,"文件大小","uploadSize",null,3,null,"uploadSize","uploadSize",null),

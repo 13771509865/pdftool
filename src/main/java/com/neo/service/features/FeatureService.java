@@ -16,7 +16,6 @@ import com.yozosoft.util.SecretSignatureUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -44,7 +43,7 @@ public class FeatureService {
      * @author zhoufeng
      * @date 2019/10/30
      */
-    @PostConstruct
+//    @PostConstruct
     public void initFeatures() {
         registerFeatures();
     }

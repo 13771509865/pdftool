@@ -21,6 +21,7 @@ import com.neo.model.po.FcsFileInfoPO;
 import com.neo.model.po.PtsYcUploadPO;
 import com.neo.model.qo.FcsFileInfoQO;
 import com.neo.model.qo.PtsYcUploadQO;
+import com.neo.service.auth.impl.AuthManager;
 import com.neo.service.cache.impl.RedisCacheManager;
 import com.neo.service.httpclient.HttpAPIService;
 import com.neo.service.yzcloud.IYzcloudService;
@@ -59,6 +60,9 @@ public class StatisticsService {
 
 	@Autowired
 	private IYzcloudService iYzcloudService;
+
+	@Autowired
+	private AuthManager authManager;
 
 
 	/**
@@ -126,11 +130,12 @@ public class StatisticsService {
 	public IResult<Map<String,Object[]>> getAuth(UaaToken uaaToken){
 		try {
 			//获取用户剩余权益
-			IResult<Map<String,Object>> result =  staticsManager.getAuth(uaaToken);
-			if(!result.isSuccess()){
-				return DefaultResult.failResult(result.getMessage());
-			}
+//			IResult<Map<String,Object>> result =  staticsManager.getAuth(uaaToken);
+//			if(!result.isSuccess()){
+//				return DefaultResult.failResult(result.getMessage());
+//			}
 
+			IResult<Map<String,Object>> result = authManager.getPermission(uaaToken,null);
 			Map<String,Object[]> newMap = new HashMap<>();
 
 			//转换成前端想要的字符

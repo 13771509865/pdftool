@@ -42,6 +42,7 @@ public class PermissionDto {
 	private String convert024;
 	private String convert025;
 	private String convert026;
+	private String convert027;
 	private Integer validityTime;
 
 

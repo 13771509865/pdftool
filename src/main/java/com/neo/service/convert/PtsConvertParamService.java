@@ -170,7 +170,7 @@ public class PtsConvertParamService {
         fcsFileInfoPO.setDestStoragePath(fcsFileInfoBO.getDestStoragePath());
         fcsFileInfoPO.setStatus(EnumStatus.ENABLE.getValue());
         fcsFileInfoPO.setModule(convertEntity.getModule());
-        fcsFileInfoPO.setIsRPT(convertEntity.getIsRPT() ? EnumRPTCode.IS_RPT.getValue() : EnumRPTCode.UN_RPT.getValue());
+        fcsFileInfoPO.setIsRPT(convertEntity.getIsRPT()!=null&&convertEntity.getIsRPT() ? EnumRPTCode.IS_RPT.getValue() : EnumRPTCode.UN_RPT.getValue());
 
         //手写签批，做特殊处理DestFileName，需要保存上传的源文件
         //viewUrl需要修改成download
