@@ -109,11 +109,11 @@ pts:
   uaa_logout_url: http://auth.yozodocs.com/api/account/logout
   uaa_userinfo_url: http://auth.yozodocs.com/api/account/userinfo
 
-  fcs_upload_url: https://pdl.yozodocs.com/file/upload
-  fcs_convert_url: https://pdl.yozodocs.com/composite/convert
-  fcs_vToken_url: https://pdl.yozodocs.com/view/vToken
-  fcs_downLoad_url: https://pdl.yozodocs.com/view/download
-  fcs_http_download_url: https://pdl.yozodocs.com/file/http
+  fcs_upload_url: http://pdl.yozodocs.com/file/upload
+  fcs_convert_url: http://pdl.yozodocs.com/composite/convert
+  fcs_vToken_url: http://pdl.yozodocs.com/view/vToken
+  fcs_downLoad_url: http://pdl.yozodocs.com/view/download
+  fcs_http_download_url: http://pdl.yozodocs.com/file/http
 
   features_version: 0.0.2
   product_hmac_key: qaxet9223210^*&     #密钥

@@ -1,13 +1,6 @@
 package com.neo.model.dto;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.alibaba.fastjson.JSON;
-import com.neo.commons.cons.constants.SysConstant;
-import com.neo.commons.util.JsonUtils;
-import com.neo.commons.util.StrUtils;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,6 +31,18 @@ public class PermissionDto {
 	private String convert013;
 	private String convert014;
 	private String convert015;
+	private String convert016;
+	private String convert017;
+	private String convert018;
+	private String convert019;
+	private String convert020;
+	private String convert021;
+	private String convert022;
+	private String convert023;
+	private String convert024;
+	private String convert025;
+	private String convert026;
+	private String convert027;
 	private Integer validityTime;
 
 

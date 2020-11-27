@@ -54,18 +54,18 @@ public class SpringMVCConfigure implements WebMvcConfigurer{
 	     */
 	    @Override
 	    public void addInterceptors(InterceptorRegistry registry) {
-	        registry.addInterceptor(uaaAuthInterceptor)
-	        .addPathPatterns("/composite/**")
-	        .addPathPatterns("/file/**")
-	        .addPathPatterns("/statistics/**")
-	        .addPathPatterns("/uaa/**")
-	        .addPathPatterns("/feedback")
-	        .excludePathPatterns("/uaa/setCookie")
-	        .excludePathPatterns("/statistics/modules")
-			.excludePathPatterns("/statistics/show")
-			.excludePathPatterns("/statistics/version");
-	        registry.addInterceptor(uploadInterceptor).addPathPatterns("/file/defaultUpload","/file/uploadYc");
-	        registry.addInterceptor(convertInterceptor).addPathPatterns("/composite/**");
+//	        registry.addInterceptor(uaaAuthInterceptor)
+//	        .addPathPatterns("/composite/**")
+//	        .addPathPatterns("/file/**")
+//	        .addPathPatterns("/statistics/**")
+//	        .addPathPatterns("/uaa/**")
+//	        .addPathPatterns("/feedback")
+//	        .excludePathPatterns("/uaa/setCookie")
+//	        .excludePathPatterns("/statistics/modules")
+//			.excludePathPatterns("/statistics/show")
+//			.excludePathPatterns("/statistics/version");
+//	        registry.addInterceptor(uploadInterceptor).addPathPatterns("/file/defaultUpload","/file/uploadYc");
+//	        registry.addInterceptor(convertInterceptor).addPathPatterns("/composite/**");
 	    }
 
 	    /**
