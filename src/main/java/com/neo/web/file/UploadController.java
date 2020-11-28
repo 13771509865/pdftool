@@ -50,8 +50,8 @@ public class UploadController{
 		//处理微信小程序临时文件名问题
 		originalFilename = StringUtils.isBlank(originalFilename)?file.getOriginalFilename():originalFilename;
 
-		IResult<FileUploadBO> result  =uploadService.upload(file,originalFilename,request);
-		uploadService.insertPtsApply(HttpUtils.getSessionUserID(request),HttpUtils.getIpAddr(request),originalFilename,file.getSize(),request.getParameter(PtsConsts.MODULE));
+		IResult<FileUploadBO> result  =uploadService.upload(file,originalFilename,request);//
+//		uploadService.insertPtsApply(HttpUtils.getSessionUserID(request),HttpUtils.getIpAddr(request),originalFilename,file.getSize(),request.getParameter(PtsConsts.MODULE));
 		if(result.isSuccess()) {
 			return JsonResultUtils.successMapResult(result.getData());
 		}else {
