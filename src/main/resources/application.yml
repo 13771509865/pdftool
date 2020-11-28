@@ -29,22 +29,29 @@ spring:
   datasource:
 #    type: com.alibaba.druid.pool.DruidDataSource
     druid:                          #springboot2不支持配置继承,如多数据源每个要写完整配置
-      url: jdbc:mysql://localhost:3306/pts-hy?characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useAffectedRows=true          #数据库连接url,必须要加useAffectedRows=true,否则权限判断会有问题
-      username: root                            #数据库用户名
-      password: root                      #数据库密码
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      filters: mergeStat,config,wall,stat # wall:批量执行多条sql语句，不能注入wall过滤器
-      max-active: 20                 # 最大连接池数量
-      initial-size: 1                # 初始化时建立物理连接的个数
-      max-wait: 3000                 # 获取连接时最大等待时间,单位毫秒
-      min-idle: 1                    # 最小连接池数量
-      time-between-eviction-runs-millis: 60000   # 有两个含义:1) Destroy线程会检测连接的间隔时间 2) testWhileIdle的判断依据,详细看testWhileIdle属性的说明
-      min-evictable-idle-time-millis: 300000     # Destory线程中如果检测到当前连接的最后活跃时间和当前时间的差值大于minEvictableIdleTimeMillis,则关闭当前连接
-      validation-query: select 1     # 用来检测连接是否有效的sql
-      test-while-idle: true           # 建议配置为true,不影响性能,并且保证安全性,申请连接的时候检测,如果空闲时间大于timeBetweenEvictionRunsMillis,执行validationQuery检测连接是否有效
-      test-on-borrow: false           # 申请连接时执行validationQuery检测连接是否有效,做了这个配置会降低性能
-      test-on-return: false           # 归还连接时执行validationQuery检测连接是否有效,做了这个配置会降低性能
+      one:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/hy?characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useAffectedRows=true          #数据库连接url,必须要加useAffectedRows=true,否则权限判断会有问题
+        username: root                            #数据库用户名
+        password: root                      #数据库密码
+        connectionErrorRetryAttempts: 0
+        breakAfterAcquireFailure: true
 
+
+
+#      filters: mergeStat,config,wall,stat # wall:批量执行多条sql语句，不能注入wall过滤器
+#      max-active: 20                 # 最大连接池数量
+#      initial-size: 1                # 初始化时建立物理连接的个数
+#      max-wait: 3000                 # 获取连接时最大等待时间,单位毫秒
+#      min-idle: 1                    # 最小连接池数量
+#      time-between-eviction-runs-millis: 60000   # 有两个含义:1) Destroy线程会检测连接的间隔时间 2) testWhileIdle的判断依据,详细看testWhileIdle属性的说明
+#      min-evictable-idle-time-millis: 300000     # Destory线程中如果检测到当前连接的最后活跃时间和当前时间的差值大于minEvictableIdleTimeMillis,则关闭当前连接
+#      validation-query: select 1     # 用来检测连接是否有效的sql
+#      test-while-idle: true           # 建议配置为true,不影响性能,并且保证安全性,申请连接的时候检测,如果空闲时间大于timeBetweenEvictionRunsMillis,执行validationQuery检测连接是否有效
+#      test-on-borrow: false           # 申请连接时执行validationQuery检测连接是否有效,做了这个配置会降低性能
+#      test-on-return: false           # 归还连接时执行validationQuery检测连接是否有效,做了这个配置会降低性能
+#      connectionErrorRetryAttempts: 0
+#      breakAfterAcquireFailure: true
 
 
 

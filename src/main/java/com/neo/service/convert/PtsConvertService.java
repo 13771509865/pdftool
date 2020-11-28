@@ -122,7 +122,7 @@ public class PtsConvertService {
 				String message = fcsFileInfoBO.getCode() == 24?EnumResultCode.E_MERGE_FILE_NAME_ERROR.getInfo():fcsMap.get(SysConstant.FCS_MESSAGE).toString();
 				return DefaultResult.failResult(message,fcsFileInfoBO);
 			}
-			updateFcsFileInfo(convertBO,fcsFileInfoBO,convertEntity);
+//			updateFcsFileInfo(convertBO,fcsFileInfoBO,convertEntity);
 			SysLogUtils.info(System.currentTimeMillis()+"====ConvertType："+convertBO.getConvertType()+"==源文件相对路径:"+convertBO.getSrcRelativePath()+"==fcs转码结果："+ fcsFileInfoBO.getCode());
 			return DefaultResult.successResult(fcsMap.get(SysConstant.FCS_MESSAGE).toString(),fcsFileInfoBO);
 		} catch (Exception e) {

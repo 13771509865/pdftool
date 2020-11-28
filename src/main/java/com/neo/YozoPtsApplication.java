@@ -2,16 +2,11 @@ package com.neo;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure;
 
 
 @SpringBootApplication
@@ -19,7 +14,7 @@ import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure;
 @EnableScheduling //允许schedul定时任务
 @MapperScan("com.neo.dao")
 //@EnableCaching
-@EnableTransactionManagement //开启事务注解支持
+//@EnableTransactionManagement //开启事务注解支持
 public class YozoPtsApplication extends SpringBootServletInitializer{
 	
 	 @Override

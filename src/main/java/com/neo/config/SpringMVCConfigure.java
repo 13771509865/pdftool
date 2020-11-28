@@ -4,12 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.neo.interceptor.ConvertInterceptor;
-import com.neo.interceptor.FeedBackInterceptor;
-import com.neo.interceptor.UaaAuthInterceptor;
-import com.neo.interceptor.UploadInterceptor;
 import com.neo.json.JsonReturnHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -25,17 +20,17 @@ import java.util.List;
 @EnableWebMvc
 public class SpringMVCConfigure implements WebMvcConfigurer{
 	
-	@Autowired
-	private UploadInterceptor uploadInterceptor;
-	
-	@Autowired
-	private ConvertInterceptor convertInterceptor;
-	
-	@Autowired
-	private UaaAuthInterceptor uaaAuthInterceptor;
-	
-	@Autowired
-	private FeedBackInterceptor feedBackInterceptor;
+//	@Autowired
+//	private UploadInterceptor uploadInterceptor;
+//
+//	@Autowired
+//	private ConvertInterceptor convertInterceptor;
+//
+//	@Autowired
+//	private UaaAuthInterceptor uaaAuthInterceptor;
+//
+//	@Autowired
+//	private FeedBackInterceptor feedBackInterceptor;
 	
 	
 	 @Override

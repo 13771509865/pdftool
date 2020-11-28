@@ -1,12 +1,12 @@
 package com.neo.config;
 
 import org.aspectj.lang.annotation.Aspect;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -20,6 +20,7 @@ import org.springframework.transaction.interceptor.TransactionInterceptor;
  * @description DB事务控制
  * @create 2019-05-05 09:56
  **/
+@ConditionalOnExpression("false")
 @Aspect
 @Configuration
 public class DBTransactionAdviceConfig {
