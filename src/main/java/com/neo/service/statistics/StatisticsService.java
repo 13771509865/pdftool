@@ -9,6 +9,8 @@ import com.neo.commons.cons.constants.UaaConsts;
 import com.neo.commons.cons.constants.YzcloudConsts;
 import com.neo.commons.cons.entity.HttpResultEntity;
 import com.neo.commons.properties.ConfigProperty;
+import com.neo.commons.properties.ConvertNumProperty;
+import com.neo.commons.properties.ConvertSizeProperty;
 import com.neo.commons.properties.PtsProperty;
 import com.neo.commons.util.DateViewUtils;
 import com.neo.commons.util.HttpUtils;
@@ -63,6 +65,12 @@ public class StatisticsService {
 
 	@Autowired
 	private AuthManager authManager;
+
+	@Autowired
+	private ConvertNumProperty convertNumProperty;
+
+	@Autowired
+	private ConvertSizeProperty convertSizeProperty;
 
 
 	/**
@@ -135,18 +143,23 @@ public class StatisticsService {
 //				return DefaultResult.failResult(result.getMessage());
 //			}
 
-			IResult<Map<String,Object>> result = authManager.getPermission(uaaToken,null);
+			Map<String,Object> permissionDtoAuthMap = new HashMap<>();
+			Map<String,Object> numMap = JsonUtils.parseJSON2Map(convertNumProperty);
+			Map<String,Object> sizeMap = JsonUtils.parseJSON2Map(convertSizeProperty);
+			permissionDtoAuthMap.putAll(numMap);
+			permissionDtoAuthMap.putAll(sizeMap);
+//			IResult<Map<String,Object>> result = authManager.getPermission(uaaToken,null);
 			Map<String,Object[]> newMap = new HashMap<>();
 
 			//转换成前端想要的字符
-			for (Map.Entry<String, Object> numEntry : result.getData().entrySet()) {
+			for (Map.Entry<String, Object> numEntry : permissionDtoAuthMap.entrySet()) {
 				Object[] auth = new Object[2];
 				if(EnumAuthCode.getModuleByModuleNum(numEntry.getKey()) != null) {
 					auth[0] = numEntry.getValue();
 
 					//全局次数不拿size
 					if(!StringUtils.equals(numEntry.getKey(),EnumAuthCode.PTS_CONVERT_NUM.getAuthCode())){
-						auth[1] = result.getData().get(EnumAuthCode.getModuleSizeByModuleNum(numEntry.getKey()));
+						auth[1] = permissionDtoAuthMap.get(EnumAuthCode.getModuleSizeByModuleNum(numEntry.getKey()));
 					}
 					newMap.put(EnumAuthCode.getModuleByModuleNum(numEntry.getKey()), auth);
 				}

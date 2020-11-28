@@ -51,12 +51,12 @@ public class AsyncConvertService {
 		//异步转换结果存redis,保存24小时
 		redisCacheManager.setFileInfo(convertEntity.getFileHash(), fcsFileInfoBO.toString(), TimeConsts.SECOND_OF_DAY);
 		
-		ptsConvertService.updatePtsSummay(result, convertBO, convertEntity);
+//		ptsConvertService.updatePtsSummay(result, convertBO, convertEntity);
 
 		//转换失败归还转换次数
-		if (!result.isSuccess()) {
-			ptsConvertService.returnConvertNum(convertEntity,authManager.getAuthCode(convertBO));
-		} 
+//		if (!result.isSuccess()) {
+//			ptsConvertService.returnConvertNum(convertEntity,authManager.getAuthCode(convertBO));
+//		}
 	}
 
 
