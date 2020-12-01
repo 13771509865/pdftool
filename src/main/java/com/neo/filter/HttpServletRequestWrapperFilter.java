@@ -13,10 +13,10 @@ import java.io.IOException;
 @WebFilter(filterName = "httpServletRequestWrapperFilter", urlPatterns = { "/composite/*" })
 public class HttpServletRequestWrapperFilter implements Filter{
 
-//	@Override
-//	public void init(FilterConfig filterConfig) throws ServletException {
-//
-//	}
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {
+
+	}
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -35,10 +35,10 @@ public class HttpServletRequestWrapperFilter implements Filter{
 
 	}
 
-//	@Override
-//	public void destroy() {
-//
-//	}
+	@Override
+	public void destroy() {
+
+	}
 
 
 }
