@@ -12,6 +12,7 @@ import com.neo.commons.util.JsonResultUtils;
 import com.neo.service.auth.IAuthService;
 import com.neo.service.file.UploadService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tomcat.util.http.fileupload.servlet.ServletRequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -65,10 +66,9 @@ public class UploadInterceptor implements HandlerInterceptor {
             return false;
         }
 
-//        ServletRequestContext ctx = new ServletRequestContext(request);
+        ServletRequestContext ctx = new ServletRequestContext(request);
 
-//        Long uploadSize = ctx.contentLength();
-        Long uploadSize = 1L;
+        Long uploadSize = ctx.contentLength();
 
 
         //判断是普通上传还是优云上传

@@ -42,10 +42,7 @@ public class AccessControllerFilter implements Filter {
 		
 	}
 
-//	@Override
-//	public void destroy() {
-//	}
-//
+
 	
 	  public String getReferer(HttpServletRequest request) {
 	        String referer = request.getHeader("Referer");
